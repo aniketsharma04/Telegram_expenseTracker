@@ -58,7 +58,7 @@ The dashboard works locally against the real Supabase project. The webhook needs
 
 ## v2 features
 
-- **LLM fallback** — anything the rules parser can't confidently handle goes to Claude with a strict JSON schema (`src/lib/llm.ts`). Needs `ANTHROPIC_API_KEY`; model configurable via `LLM_MODEL` (default `claude-opus-5`, `claude-haiku-4-5` for cheapest).
+- **LLM fallback** — anything the rules parser can't confidently handle goes to an LLM with a strict JSON schema (`src/lib/llm.ts`). Provider picked from the environment: `GEMINI_API_KEY` (Gemini, default `gemini-2.5-flash`) or `ANTHROPIC_API_KEY` (Claude, default `claude-opus-5`); override the model with `LLM_MODEL`.
 - **Clarifying questions** — if even the LLM can't find an amount, the bot asks instead of guessing; uncertain categories get logged with a "reply /category to fix" nudge.
 - **Self-improving keywords** — confident LLM categorizations and manual `/category` corrections write the merchant back into the keyword table, so the free rules path handles more over time.
 - **Voice notes** — transcribed via Groq Whisper (`GROQ_API_KEY`, free tier) and routed through the same parser.
