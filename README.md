@@ -2,7 +2,7 @@
 
 Log expenses by texting a Telegram bot — `300 zomato`, `400 metro card`, `spent 1.2k on groceries yesterday` — and watch them appear on a live web dashboard within seconds.
 
-This is **v1** of the [three-week project plan](./expense-tracker-project-plan.md): the complete text → parse → store → visualize pipeline.
+This is **v2** of the [three-week project plan](./expense-tracker-project-plan.md): the full text/voice → parse → store → visualize pipeline, with an LLM fallback for messy phrasing and in-chat correction commands.
 
 ## How it works
 
@@ -56,9 +56,18 @@ The dashboard works locally against the real Supabase project. The webhook needs
 - The webhook always answers `200` so Telegram doesn't re-deliver messages that were already processed; real errors are logged to the Vercel function logs and reported back in-chat.
 - The dashboard URL is unlisted but not yet locked — the access lock ships in v3 per the plan. Don't share the URL until then.
 
+## v2 features
+
+- **LLM fallback** — anything the rules parser can't confidently handle goes to Claude with a strict JSON schema (`src/lib/llm.ts`). Needs `ANTHROPIC_API_KEY`; model configurable via `LLM_MODEL` (default `claude-opus-5`, `claude-haiku-4-5` for cheapest).
+- **Clarifying questions** — if even the LLM can't find an amount, the bot asks instead of guessing; uncertain categories get logged with a "reply /category to fix" nudge.
+- **Self-improving keywords** — confident LLM categorizations and manual `/category` corrections write the merchant back into the keyword table, so the free rules path handles more over time.
+- **Voice notes** — transcribed via Groq Whisper (`GROQ_API_KEY`, free tier) and routed through the same parser.
+- **Correction commands** — `/undo`, `/category <name>`, `/amount <n>`, `/last` act on the most recent entry.
+- **Dashboard analysis** — date-range presets (this month / 30 / 90 days), category filter with chart emphasis, top-merchants view, and period-over-period comparison. Realtime now reflects updates and deletes too.
+
 ## Roadmap
 
-- **v2** — LLM fallback for messy phrasing, clarifying questions on low confidence, self-improving keyword table, voice notes, undo/edit commands, dashboard filters.
 - **v3** — receipt OCR, budgets and proactive alerts, monthly auto-summary, dashboard access lock.
+- **Post-v3** — multi-user support (per-user expenses + Telegram-login dashboard).
 
 See the [full project plan](./expense-tracker-project-plan.md) for details.

@@ -1,32 +1,46 @@
 import { NextResponse } from "next/server";
-import { parseExpense, CategoryRule } from "@/lib/parser";
-import { sendMessage, TelegramUpdate } from "@/lib/telegram";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { parseExpense, localDate, CategoryRule } from "@/lib/parser";
+import { parseWithLLM } from "@/lib/llm";
+import { transcribeVoice, voiceConfigured } from "@/lib/voice";
+import { sendMessage, downloadTelegramFile, TelegramUpdate, TelegramMessage } from "@/lib/telegram";
 import { createServiceClient } from "@/lib/supabase-server";
+import type { Expense } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60; // LLM + transcription calls need more than the default
 
 const HELP_TEXT = [
   "Just text me an expense and I'll log it. Examples:",
   "",
   "• <code>300 zomato</code>",
-  "• <code>400 metro card</code>",
   "• <code>spent 1.2k on groceries yesterday</code>",
+  "• 🎤 a voice note works too",
   "",
-  "I pull out the amount, guess the category from the merchant, and it shows up on your dashboard within seconds.",
+  "Fixing mistakes (applies to the last entry):",
+  "• <code>/undo</code> — delete it",
+  "• <code>/category food</code> — change its category",
+  "• <code>/amount 350</code> — change its amount",
+  "• <code>/last</code> — show it",
 ].join("\n");
 
-/** Always answer 200 so Telegram doesn't endlessly retry a message we already saw. */
 function ok() {
   return NextResponse.json({ ok: true });
 }
 
+function fmtINR(n: number): string {
+  return `₹${Number(n).toLocaleString("en-IN")}`;
+}
+
+function confirmText(e: { amount: number; category: string; merchant: string | null; expense_date: string }): string {
+  const merchant = e.merchant ? ` (${e.merchant})` : "";
+  const date = e.expense_date !== localDate() ? ` on ${e.expense_date}` : "";
+  return `✅ Logged ${fmtINR(e.amount)} · ${e.category}${merchant}${date}`;
+}
+
 export async function POST(req: Request) {
-  // Telegram echoes back the secret we registered the webhook with.
   const secret = req.headers.get("x-telegram-bot-api-secret-token");
-  if (
-    !process.env.TELEGRAM_WEBHOOK_SECRET ||
-    secret !== process.env.TELEGRAM_WEBHOOK_SECRET
-  ) {
+  if (!process.env.TELEGRAM_WEBHOOK_SECRET || secret !== process.env.TELEGRAM_WEBHOOK_SECRET) {
     return new NextResponse("unauthorized", { status: 401 });
   }
 
@@ -37,68 +51,19 @@ export async function POST(req: Request) {
     return ok();
   }
 
-  const message = update.message;
-  const text = message?.text?.trim();
-  if (!message || !text) return ok(); // ignore stickers, edits, etc. in v1
+  const message = update.message; // edits are handled via /undo & /category instead
+  if (!message) return ok();
 
   const chatId = message.chat.id;
-
-  // Single-user tool: silently ignore anyone who isn't the owner.
   const allowed = process.env.TELEGRAM_ALLOWED_CHAT_ID;
   if (allowed && String(chatId) !== allowed) return ok();
 
   try {
-    if (text === "/start" || text === "/help") {
-      await sendMessage(chatId, HELP_TEXT);
-      return ok();
-    }
-
-    const supabase = createServiceClient();
-
-    const { data: categories, error: catError } = await supabase
-      .from("categories")
-      .select("name, keywords");
-    if (catError) throw catError;
-
-    const parsed = parseExpense(text, (categories ?? []) as CategoryRule[]);
-
-    if (!parsed.ok) {
-      await sendMessage(
-        chatId,
-        "I couldn't find an amount in that. Try something like <code>300 zomato</code>.",
-      );
-      return ok();
-    }
-
-    const category = parsed.category ?? "Uncategorized";
-    const { error: insertError } = await supabase.from("expenses").insert({
-      amount: parsed.amount,
-      category,
-      merchant: parsed.merchant,
-      raw_message: text,
-      source: "telegram_text",
-      parsed_by: "rules",
-      expense_date: parsed.expenseDate,
-    });
-    if (insertError) throw insertError;
-
-    const amountStr = `₹${parsed.amount!.toLocaleString("en-IN")}`;
-    const merchantStr = parsed.merchant ? ` (${parsed.merchant})` : "";
-    const dateStr =
-      parsed.expenseDate !== todayIST() ? ` on ${parsed.expenseDate}` : "";
-    await sendMessage(
-      chatId,
-      `✅ Logged ${amountStr} · ${category}${merchantStr}${dateStr}`,
-    );
+    await handleMessage(message, chatId);
   } catch (err) {
-    // Log for visibility (Vercel function logs), but still tell the user —
-    // a silent failure means an expense they think is logged, isn't.
     console.error("webhook error", err);
     try {
-      await sendMessage(
-        chatId,
-        "⚠️ Something went wrong — that expense was NOT logged. Try again in a minute.",
-      );
+      await sendMessage(chatId, "⚠️ Something went wrong — that message was NOT logged. Try again in a minute.");
     } catch {
       // nothing more we can do
     }
@@ -106,11 +71,274 @@ export async function POST(req: Request) {
   return ok();
 }
 
-function todayIST(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kolkata",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+async function handleMessage(message: TelegramMessage, chatId: number) {
+  // Photos are a v3 feature — acknowledge rather than silently ignore.
+  if (message.photo) {
+    await sendMessage(chatId, "📷 Receipt photos are coming in v3 — for now, text or voice works!");
+    return;
+  }
+
+  if (message.voice) {
+    if (!voiceConfigured()) {
+      await sendMessage(chatId, "🎤 Voice logging isn't set up yet (GROQ_API_KEY missing). Text me instead!");
+      return;
+    }
+    const audio = await downloadTelegramFile(message.voice.file_id);
+    const transcript = audio ? await transcribeVoice(audio, message.voice.mime_type ?? "audio/ogg") : null;
+    if (!transcript) {
+      await sendMessage(chatId, "🎤 I couldn't make out that voice note — try again or type it.");
+      return;
+    }
+    await handleExpenseText(transcript, chatId, "telegram_voice", `\n🎤 <i>"${escapeHtml(transcript)}"</i>`);
+    return;
+  }
+
+  const text = message.text?.trim();
+  if (!text) return;
+
+  if (text.startsWith("/")) {
+    await handleCommand(text, chatId);
+    return;
+  }
+
+  await handleExpenseText(text, chatId, "telegram_text", "");
+}
+
+// ── Expense pipeline: rules fast path → LLM fallback → clarify ─────────────
+
+async function handleExpenseText(
+  text: string,
+  chatId: number,
+  source: "telegram_text" | "telegram_voice",
+  suffix: string
+) {
+  const supabase = createServiceClient();
+  const { data, error } = await supabase.from("categories").select("name, keywords");
+  if (error) throw error;
+  const categories = (data ?? []) as CategoryRule[];
+
+  const parsed = parseExpense(text, categories);
+
+  // Fast path: rules found both an amount and a category.
+  if (parsed.ok && parsed.category) {
+    const row = {
+      amount: parsed.amount!,
+      category: parsed.category,
+      merchant: parsed.merchant,
+      expense_date: parsed.expenseDate,
+    };
+    await insertExpense(supabase, { ...row, raw_message: text, source, parsed_by: "rules" });
+    await sendMessage(chatId, confirmText(row) + suffix);
+    return;
+  }
+
+  // Fallback: let the LLM take a shot at anything messier.
+  const llm = await parseWithLLM(text, categories, localDate());
+  if (llm) {
+    if (llm.amount && llm.amount > 0) {
+      const row = {
+        amount: llm.amount,
+        category: llm.category ?? "Uncategorized",
+        merchant: llm.merchant,
+        expense_date: llm.expense_date ?? parsed.expenseDate,
+      };
+      await insertExpense(supabase, { ...row, raw_message: text, source, parsed_by: "llm" });
+
+      // Self-improving keyword table: confident categorizations teach the fast path.
+      if (llm.confidence === "high" && llm.category && llm.merchant) {
+        await learnKeyword(supabase, categories, llm.category, llm.merchant);
+      }
+
+      const nudge =
+        llm.confidence === "low" || !llm.category
+          ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
+          : "";
+      await sendMessage(chatId, confirmText(row) + nudge + suffix);
+      return;
+    }
+
+    // LLM ran but found no amount → ask instead of guessing.
+    await sendMessage(
+      chatId,
+      (llm.clarifying_question ?? "How much was that? Send it with an amount, like <code>300 zomato</code>.") + suffix
+    );
+    return;
+  }
+
+  // No LLM configured (or it errored): fall back to v1 behavior.
+  if (parsed.ok) {
+    const row = {
+      amount: parsed.amount!,
+      category: "Uncategorized",
+      merchant: parsed.merchant,
+      expense_date: parsed.expenseDate,
+    };
+    await insertExpense(supabase, { ...row, raw_message: text, source, parsed_by: "rules" });
+    await sendMessage(chatId, confirmText(row) + suffix);
+  } else {
+    await sendMessage(chatId, "I couldn't find an amount in that. Try something like <code>300 zomato</code>." + suffix);
+  }
+}
+
+async function insertExpense(
+  supabase: SupabaseClient,
+  row: {
+    amount: number;
+    category: string;
+    merchant: string | null;
+    raw_message: string;
+    source: string;
+    parsed_by: string;
+    expense_date: string;
+  }
+) {
+  const { error } = await supabase.from("expenses").insert(row);
+  if (error) throw error;
+}
+
+/** Add a merchant keyword to a category so the rules parser catches it next time. */
+async function learnKeyword(
+  supabase: SupabaseClient,
+  categories: CategoryRule[],
+  categoryName: string,
+  merchant: string
+) {
+  const keyword = merchant.toLowerCase().trim();
+  if (keyword.length < 3 || keyword.length > 30 || /^\d+$/.test(keyword)) return;
+
+  const category = categories.find((c) => c.name === categoryName);
+  if (!category) return;
+
+  // Skip if any category already knows this keyword.
+  const known = categories.some((c) => c.keywords.some((k) => k.toLowerCase() === keyword));
+  if (known) return;
+
+  const { error } = await supabase
+    .from("categories")
+    .update({ keywords: [...category.keywords, keyword] })
+    .eq("name", categoryName);
+  if (error) console.error("keyword learn failed", error);
+  else console.log(`learned keyword "${keyword}" → ${categoryName}`);
+}
+
+// ── Correction commands (act on the most recent entry) ─────────────────────
+
+async function handleCommand(text: string, chatId: number) {
+  const [cmd, ...rest] = text.split(/\s+/);
+  const arg = rest.join(" ").trim();
+
+  switch (cmd.toLowerCase()) {
+    case "/start":
+    case "/help":
+      await sendMessage(chatId, HELP_TEXT);
+      return;
+    case "/undo":
+      await undoLast(chatId);
+      return;
+    case "/last":
+      await showLast(chatId);
+      return;
+    case "/category":
+      await recategorizeLast(chatId, arg);
+      return;
+    case "/amount":
+      await reamountLast(chatId, arg);
+      return;
+    default:
+      await sendMessage(chatId, `Unknown command. ${"\n"}${HELP_TEXT}`);
+  }
+}
+
+async function latestExpense(supabase: SupabaseClient): Promise<Expense | null> {
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("*")
+    .order("logged_at", { ascending: false })
+    .limit(1);
+  if (error) throw error;
+  return (data?.[0] as Expense) ?? null;
+}
+
+async function undoLast(chatId: number) {
+  const supabase = createServiceClient();
+  const last = await latestExpense(supabase);
+  if (!last) {
+    await sendMessage(chatId, "Nothing to undo — no expenses logged yet.");
+    return;
+  }
+  const { error } = await supabase.from("expenses").delete().eq("id", last.id);
+  if (error) throw error;
+  await sendMessage(chatId, `🗑️ Deleted ${fmtINR(last.amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}`);
+}
+
+async function showLast(chatId: number) {
+  const supabase = createServiceClient();
+  const last = await latestExpense(supabase);
+  if (!last) {
+    await sendMessage(chatId, "No expenses logged yet.");
+    return;
+  }
+  await sendMessage(
+    chatId,
+    `Last entry: ${fmtINR(last.amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""} on ${last.expense_date}`
+  );
+}
+
+async function recategorizeLast(chatId: number, arg: string) {
+  if (!arg) {
+    await sendMessage(chatId, "Tell me which category, e.g. <code>/category groceries</code>");
+    return;
+  }
+  const supabase = createServiceClient();
+  const { data, error } = await supabase.from("categories").select("name, keywords");
+  if (error) throw error;
+  const categories = (data ?? []) as CategoryRule[];
+
+  const needle = arg.toLowerCase();
+  const match =
+    categories.find((c) => c.name.toLowerCase() === needle) ??
+    categories.find((c) => c.name.toLowerCase().startsWith(needle)) ??
+    categories.find((c) => c.name.toLowerCase().includes(needle));
+  if (!match) {
+    await sendMessage(
+      chatId,
+      `No category matches "${escapeHtml(arg)}". Options:\n${categories.map((c) => `• ${c.name}`).join("\n")}`
+    );
+    return;
+  }
+
+  const last = await latestExpense(supabase);
+  if (!last) {
+    await sendMessage(chatId, "No expenses logged yet.");
+    return;
+  }
+  const { error: updateError } = await supabase.from("expenses").update({ category: match.name }).eq("id", last.id);
+  if (updateError) throw updateError;
+
+  // A manual correction is the strongest signal there is — learn from it.
+  if (last.merchant) {
+    await learnKeyword(supabase, categories, match.name, last.merchant);
+  }
+  await sendMessage(chatId, `✏️ Moved ${fmtINR(last.amount)}${last.merchant ? ` (${last.merchant})` : ""} → ${match.name}`);
+}
+
+async function reamountLast(chatId: number, arg: string) {
+  const amount = parseFloat(arg.replace(/[₹,]/g, ""));
+  if (!Number.isFinite(amount) || amount <= 0) {
+    await sendMessage(chatId, "Give me the corrected amount, e.g. <code>/amount 350</code>");
+    return;
+  }
+  const supabase = createServiceClient();
+  const last = await latestExpense(supabase);
+  if (!last) {
+    await sendMessage(chatId, "No expenses logged yet.");
+    return;
+  }
+  const { error } = await supabase.from("expenses").update({ amount }).eq("id", last.id);
+  if (error) throw error;
+  await sendMessage(chatId, `✏️ Changed ${fmtINR(last.amount)} → ${fmtINR(amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}`);
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

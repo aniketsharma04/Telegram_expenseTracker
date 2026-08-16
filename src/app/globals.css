@@ -108,6 +108,93 @@ body {
   margin-bottom: 16px;
 }
 
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.range-buttons {
+  display: inline-flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.range-btn {
+  border: none;
+  background: transparent;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.range-btn.active {
+  background: var(--page);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.cat-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 10px;
+}
+
+.merchant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.merchant-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.merchant-name {
+  color: var(--ink);
+  font-weight: 550;
+}
+
+.merchant-amount {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.merchant-count {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.merchant-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--grid);
+  overflow: hidden;
+}
+
+.merchant-bar {
+  height: 100%;
+  border-radius: 4px;
+}
+
 .tiles {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

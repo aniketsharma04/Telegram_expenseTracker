@@ -6,9 +6,18 @@ import type { Category, Expense } from "@/lib/types";
 import StatTiles from "./StatTiles";
 import CategoryChart from "./CategoryChart";
 import TrendChart from "./TrendChart";
+import TopMerchants from "./TopMerchants";
 import TransactionsTable from "./TransactionsTable";
 
-const LOOKBACK_DAYS = 90;
+const LOOKBACK_DAYS = 180; // covers the 90-day range plus its comparison window
+
+export type RangeKey = "month" | "30d" | "90d";
+
+const RANGE_LABELS: Record<RangeKey, string> = {
+  month: "This month",
+  "30d": "Last 30 days",
+  "90d": "Last 90 days",
+};
 
 function istDate(offsetDays = 0): string {
   return new Intl.DateTimeFormat("en-CA", {
@@ -23,6 +32,8 @@ export default function Dashboard() {
   const [expenses, setExpenses] = useState<Expense[] | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [range, setRange] = useState<RangeKey>("month");
+  const [catFilter, setCatFilter] = useState<string>("all");
 
   useEffect(() => {
     const supabase = getBrowserClient();
@@ -49,20 +60,29 @@ export default function Dashboard() {
 
     load();
 
-    // New rows pushed by Supabase realtime appear without a refresh.
     const channel = supabase
       .channel("expenses-live")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "expenses" },
+        { event: "*", schema: "public", table: "expenses" },
         (payload) => {
           setExpenses((prev) => {
-            const row = payload.new as Expense;
-            if (!prev) return [row];
-            if (prev.some((e) => e.id === row.id)) return prev;
-            return [row, ...prev];
+            if (!prev) return prev;
+            if (payload.eventType === "INSERT") {
+              const row = payload.new as Expense;
+              return prev.some((e) => e.id === row.id) ? prev : [row, ...prev];
+            }
+            if (payload.eventType === "UPDATE") {
+              const row = payload.new as Expense;
+              return prev.map((e) => (e.id === row.id ? row : e));
+            }
+            if (payload.eventType === "DELETE") {
+              const gone = payload.old as { id: string };
+              return prev.filter((e) => e.id !== gone.id);
+            }
+            return prev;
           });
-        },
+        }
       )
       .subscribe();
 
@@ -79,7 +99,34 @@ export default function Dashboard() {
   }, [categories]);
 
   const today = istDate();
-  const monthPrefix = today.slice(0, 7); // YYYY-MM
+  const monthPrefix = today.slice(0, 7);
+
+  const derived = useMemo(() => {
+    if (!expenses) return null;
+
+    const rangeStart = range === "month" ? `${monthPrefix}-01` : istDate(range === "30d" ? 29 : 89);
+    const inRange = expenses.filter((e) => e.expense_date >= rangeStart && e.expense_date <= today);
+    const filtered = catFilter === "all" ? inRange : inRange.filter((e) => e.category === catFilter);
+
+    // Previous window for the comparison sub-line: last calendar month for
+    // "This month", otherwise the same-length window immediately before.
+    let prev: Expense[];
+    let prevLabel: string;
+    if (range === "month") {
+      const [y, m] = monthPrefix.split("-").map(Number);
+      const prevPrefix = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
+      prev = expenses.filter((e) => e.expense_date.startsWith(prevPrefix));
+      prevLabel = "last month";
+    } else {
+      const days = range === "30d" ? 30 : 90;
+      const prevStart = istDate(days * 2 - 1);
+      prev = expenses.filter((e) => e.expense_date >= prevStart && e.expense_date < rangeStart);
+      prevLabel = `previous ${days} days`;
+    }
+    if (catFilter !== "all") prev = prev.filter((e) => e.category === catFilter);
+
+    return { rangeStart, inRange, filtered, prev, prevLabel };
+  }, [expenses, range, catFilter, monthPrefix, today]);
 
   return (
     <main className="container">
@@ -107,39 +154,73 @@ export default function Dashboard() {
           <div className="empty-state">
             No expenses yet.
             <br />
-            Text your Telegram bot something like <code>300 zomato</code> and it
-            will show up here in seconds.
+            Text your Telegram bot something like <code>300 zomato</code> and it will show up here in seconds.
           </div>
         </div>
       )}
 
-      {!error && expenses !== null && expenses.length > 0 && (
+      {!error && expenses !== null && expenses.length > 0 && derived && (
         <>
+          <div className="filters">
+            <div className="range-buttons" role="group" aria-label="Date range">
+              {(Object.keys(RANGE_LABELS) as RangeKey[]).map((key) => (
+                <button
+                  key={key}
+                  className={`range-btn${range === key ? " active" : ""}`}
+                  onClick={() => setRange(key)}
+                >
+                  {RANGE_LABELS[key]}
+                </button>
+              ))}
+            </div>
+            <select
+              className="cat-select"
+              value={catFilter}
+              onChange={(e) => setCatFilter(e.target.value)}
+              aria-label="Category filter"
+            >
+              <option value="all">All categories</option>
+              {categories
+                .map((c) => c.name)
+                .sort()
+                .map((name) => (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
           <StatTiles
-            expenses={expenses}
+            filtered={derived.filtered}
+            prev={derived.prev}
+            prevLabel={derived.prevLabel}
+            rangeLabel={RANGE_LABELS[range]}
             today={today}
-            monthPrefix={monthPrefix}
           />
           <div className="charts">
             <div className="card">
-              <h2>This month by category</h2>
+              <h2>{RANGE_LABELS[range]} by category</h2>
               <CategoryChart
-                expenses={expenses}
-                monthPrefix={monthPrefix}
+                expenses={derived.inRange}
+                selected={catFilter}
                 colorByCategory={colorByCategory}
               />
             </div>
             <div className="card">
-              <h2>Daily spend — last 30 days</h2>
-              <TrendChart expenses={expenses} />
+              <h2>Daily spend — {RANGE_LABELS[range].toLowerCase()}</h2>
+              <TrendChart expenses={derived.filtered} startDate={derived.rangeStart} today={today} />
             </div>
           </div>
-          <div className="card">
-            <h2>Recent transactions</h2>
-            <TransactionsTable
-              expenses={expenses.slice(0, 25)}
-              colorByCategory={colorByCategory}
-            />
+          <div className="charts">
+            <div className="card">
+              <h2>Top merchants — {RANGE_LABELS[range].toLowerCase()}</h2>
+              <TopMerchants expenses={derived.filtered} />
+            </div>
+            <div className="card">
+              <h2>Recent transactions</h2>
+              <TransactionsTable expenses={derived.filtered.slice(0, 25)} colorByCategory={colorByCategory} />
+            </div>
           </div>
         </>
       )}
