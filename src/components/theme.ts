@@ -59,6 +59,17 @@ export function seriesColor(lightHex: string | null, dark: boolean): string {
   return dark ? (DARK_VARIANT[hex] ?? hex) : hex;
 }
 
+/** Fixed member-identity colors — assigned by join order, never re-shuffled. */
+const MEMBER_SLOTS = {
+  light: ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"],
+  dark: ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"],
+};
+
+export function memberColor(index: number, dark: boolean): string {
+  const slots = dark ? MEMBER_SLOTS.dark : MEMBER_SLOTS.light;
+  return slots[index % slots.length];
+}
+
 /** Tracks the OS color-scheme preference so charts restyle live. */
 export function useIsDark(): boolean {
   const [dark, setDark] = useState(false);

@@ -10,6 +10,7 @@ import {
   TelegramMessage,
 } from "@/lib/telegram";
 import { createServiceClient } from "@/lib/supabase-server";
+import { signToken } from "@/lib/auth";
 import {
   ensureUser,
   getFamily,
@@ -135,7 +136,7 @@ export async function GET() {
   }
   return NextResponse.json({
     ok: true,
-    version: "v3.0",
+    version: "v3.1",
     telegram,
     llm: process.env.GEMINI_API_KEY
       ? "gemini"
@@ -525,10 +526,23 @@ async function handleCommand(text: string, chatId: number) {
     case "/loans":
       await sendMonthReport(chatId, "Loans & EMI");
       return;
+    case "/app": {
+      // Mobile-app login: long-lived signed token, pasted into the app once.
+      const appToken = signToken(chatId, 60 * 60 * 24 * 30);
+      await sendMessage(
+        chatId,
+        `📱 Your app login code (valid 30 days — tap to copy):\n\n<code>${appToken}</code>\n\nOpen the Expense Tracker app → paste the code → done.`,
+      );
+      return;
+    }
     case "/dashboard": {
       const url =
         process.env.APP_URL || "https://telegram-expense-tracker-nu.vercel.app";
-      await sendMessage(chatId, `📈 Your dashboard: ${url}`);
+      const link = `${url}/api/auth/login?token=${signToken(chatId, 900)}`;
+      await sendMessage(
+        chatId,
+        `📈 Tap to open <b>your</b> dashboard (link valid for 15 minutes, stays signed in after that):\n${link}`,
+      );
       return;
     }
     case "/amount":

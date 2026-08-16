@@ -6,6 +6,25 @@ export interface Category {
   monthly_budget: number | null;
 }
 
+export interface ApiMember {
+  id: number;
+  name: string;
+}
+
+export interface ApiData {
+  user: { id: number; name: string };
+  family: {
+    id: string;
+    name: string;
+    role: string;
+    invite_code: string;
+    members: ApiMember[];
+  } | null;
+  categories: Array<{ name: string; color: string | null }>;
+  expenses: Expense[];
+  today: string;
+}
+
 export interface Expense {
   id: string;
   user_id: number | null;
