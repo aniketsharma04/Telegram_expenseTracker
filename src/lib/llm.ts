@@ -28,10 +28,17 @@ const SYSTEM_PROMPT = [
   "Set confidence to high only when both the amount and the category are clear.",
 ].join(" ");
 
-function userPrompt(text: string, categories: CategoryRule[], todayIST: string): string {
+function userPrompt(
+  text: string,
+  categories: CategoryRule[],
+  todayIST: string,
+): string {
   const categoryLines = categories
     .filter((c) => c.name !== "Uncategorized")
-    .map((c) => `- ${c.name}${c.keywords.length ? ` (e.g. ${c.keywords.slice(0, 6).join(", ")})` : ""}`)
+    .map(
+      (c) =>
+        `- ${c.name}${c.keywords.length ? ` (e.g. ${c.keywords.slice(0, 6).join(", ")})` : ""}`,
+    )
     .join("\n");
   return `Today's date (IST): ${todayIST}\n\nCategories:\n${categoryLines}\n\nExpense message: "${text}"`;
 }
@@ -39,11 +46,13 @@ function userPrompt(text: string, categories: CategoryRule[], todayIST: string):
 export async function parseWithLLM(
   text: string,
   categories: CategoryRule[],
-  todayIST: string
+  todayIST: string,
 ): Promise<LLMParse | null> {
   try {
-    if (process.env.GEMINI_API_KEY) return await parseWithGemini(text, categories, todayIST);
-    if (process.env.ANTHROPIC_API_KEY) return await parseWithClaude(text, categories, todayIST);
+    if (process.env.GEMINI_API_KEY)
+      return await parseWithGemini(text, categories, todayIST);
+    if (process.env.ANTHROPIC_API_KEY)
+      return await parseWithClaude(text, categories, todayIST);
     return null;
   } catch (err) {
     console.error("LLM fallback failed", err);
@@ -56,20 +65,48 @@ export async function parseWithLLM(
 const GEMINI_SCHEMA = {
   type: "OBJECT",
   properties: {
-    amount: { type: "NUMBER", nullable: true, description: "Amount spent in rupees, null if missing" },
-    merchant: { type: "STRING", nullable: true, description: "Short title-cased merchant/what-it-was label" },
-    category: { type: "STRING", nullable: true, description: "Exactly one of the provided category names, or null" },
-    expense_date: { type: "STRING", nullable: true, description: "YYYY-MM-DD, only if the message implies a date" },
+    amount: {
+      type: "NUMBER",
+      nullable: true,
+      description: "Amount spent in rupees, null if missing",
+    },
+    merchant: {
+      type: "STRING",
+      nullable: true,
+      description: "Short title-cased merchant/what-it-was label",
+    },
+    category: {
+      type: "STRING",
+      nullable: true,
+      description: "Exactly one of the provided category names, or null",
+    },
+    expense_date: {
+      type: "STRING",
+      nullable: true,
+      description: "YYYY-MM-DD, only if the message implies a date",
+    },
     confidence: { type: "STRING", enum: ["high", "low"] },
-    clarifying_question: { type: "STRING", nullable: true, description: "One short question when confidence is low or amount missing" },
+    clarifying_question: {
+      type: "STRING",
+      nullable: true,
+      description:
+        "One short question when confidence is low or amount missing",
+    },
   },
-  required: ["amount", "merchant", "category", "expense_date", "confidence", "clarifying_question"],
+  required: [
+    "amount",
+    "merchant",
+    "category",
+    "expense_date",
+    "confidence",
+    "clarifying_question",
+  ],
 };
 
 async function parseWithGemini(
   text: string,
   categories: CategoryRule[],
-  todayIST: string
+  todayIST: string,
 ): Promise<LLMParse | null> {
   const model = process.env.LLM_MODEL || "gemini-2.5-flash";
   const res = await fetch(
@@ -82,14 +119,16 @@ async function parseWithGemini(
       },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ parts: [{ text: userPrompt(text, categories, todayIST) }] }],
+        contents: [
+          { parts: [{ text: userPrompt(text, categories, todayIST) }] },
+        ],
         generationConfig: {
           responseMimeType: "application/json",
           responseSchema: GEMINI_SCHEMA,
           temperature: 0,
         },
       }),
-    }
+    },
   );
   if (!res.ok) {
     console.error("gemini request failed", res.status, await res.text());
@@ -101,6 +140,87 @@ async function parseWithGemini(
   const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!raw) return null;
   return JSON.parse(raw) as LLMParse;
+}
+
+// ── Receipt photos (v3) — Gemini vision reads the bill directly ────────────
+
+const RECEIPT_PROMPT = [
+  "This image is a receipt, bill, or payment screenshot from India.",
+  "Extract the expense: the grand TOTAL actually paid (after taxes and discounts — not the subtotal or an item price),",
+  "the merchant/store name, and the receipt date if visible.",
+  "If the image is not a receipt or no total can be read, return amount null with a clarifying question.",
+].join(" ");
+
+export async function parseReceipt(
+  image: ArrayBuffer,
+  mimeType: string,
+  caption: string | null,
+  categories: CategoryRule[],
+  todayIST: string,
+): Promise<LLMParse | null> {
+  if (!process.env.GEMINI_API_KEY) return null;
+  const model = process.env.LLM_MODEL || "gemini-2.5-flash";
+
+  const categoryLines = categories
+    .filter((c) => c.name !== "Uncategorized")
+    .map((c) => `- ${c.name}`)
+    .join("\n");
+  const captionNote = caption
+    ? `\nThe user attached this note to the photo: "${caption}"`
+    : "";
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+      {
+        method: "POST",
+        headers: {
+          "x-goog-api-key": process.env.GEMINI_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: [
+            {
+              parts: [
+                {
+                  inlineData: {
+                    mimeType,
+                    data: Buffer.from(image).toString("base64"),
+                  },
+                },
+                {
+                  text: `${RECEIPT_PROMPT}${captionNote}\n\nToday's date (IST): ${todayIST}\n\nCategories:\n${categoryLines}`,
+                },
+              ],
+            },
+          ],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: GEMINI_SCHEMA,
+            temperature: 0,
+          },
+        }),
+      },
+    );
+    if (!res.ok) {
+      console.error(
+        "gemini receipt request failed",
+        res.status,
+        await res.text(),
+      );
+      return null;
+    }
+    const data = (await res.json()) as {
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+    };
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!raw) return null;
+    return JSON.parse(raw) as LLMParse;
+  } catch (err) {
+    console.error("receipt parse failed", err);
+    return null;
+  }
 }
 
 // ── Claude (alternative provider — used when only ANTHROPIC_API_KEY is set) ─
@@ -115,14 +235,21 @@ const CLAUDE_SCHEMA = {
     confidence: { type: "string", enum: ["high", "low"] },
     clarifying_question: { type: ["string", "null"] },
   },
-  required: ["amount", "merchant", "category", "expense_date", "confidence", "clarifying_question"],
+  required: [
+    "amount",
+    "merchant",
+    "category",
+    "expense_date",
+    "confidence",
+    "clarifying_question",
+  ],
   additionalProperties: false,
 } as const;
 
 async function parseWithClaude(
   text: string,
   categories: CategoryRule[],
-  todayIST: string
+  todayIST: string,
 ): Promise<LLMParse | null> {
   const client = new Anthropic();
   const response = await client.messages.create({
@@ -133,7 +260,9 @@ async function parseWithClaude(
       effort: "low",
       format: { type: "json_schema", schema: CLAUDE_SCHEMA },
     },
-    messages: [{ role: "user", content: userPrompt(text, categories, todayIST) }],
+    messages: [
+      { role: "user", content: userPrompt(text, categories, todayIST) },
+    ],
   } as Anthropic.MessageCreateParamsNonStreaming);
 
   if (response.stop_reason === "refusal") return null;

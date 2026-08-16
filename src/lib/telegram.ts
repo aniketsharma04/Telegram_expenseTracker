@@ -10,8 +10,14 @@ export interface TelegramUpdate {
 export interface TelegramMessage {
   message_id: number;
   text?: string;
-  voice?: { file_id: string; duration: number; mime_type?: string; file_size?: number };
-  photo?: Array<{ file_id: string }>;
+  caption?: string; // text the user attaches to a photo
+  voice?: {
+    file_id: string;
+    duration: number;
+    mime_type?: string;
+    file_size?: number;
+  };
+  photo?: Array<{ file_id: string; width?: number; height?: number }>;
   chat: { id: number };
   from?: { id: number; first_name?: string };
 }
@@ -34,7 +40,9 @@ export async function sendMessage(chatId: number, text: string): Promise<void> {
 }
 
 /** Resolve a file_id to bytes (used for voice notes; photos in v3). */
-export async function downloadTelegramFile(fileId: string): Promise<ArrayBuffer | null> {
+export async function downloadTelegramFile(
+  fileId: string,
+): Promise<ArrayBuffer | null> {
   const token = botToken();
   const infoRes = await fetch(`${API_BASE}/bot${token}/getFile`, {
     method: "POST",
@@ -42,10 +50,17 @@ export async function downloadTelegramFile(fileId: string): Promise<ArrayBuffer 
     body: JSON.stringify({ file_id: fileId }),
   });
   if (!infoRes.ok) {
-    console.error("telegram getFile failed", infoRes.status, await infoRes.text());
+    console.error(
+      "telegram getFile failed",
+      infoRes.status,
+      await infoRes.text(),
+    );
     return null;
   }
-  const info = (await infoRes.json()) as { ok: boolean; result?: { file_path?: string } };
+  const info = (await infoRes.json()) as {
+    ok: boolean;
+    result?: { file_path?: string };
+  };
   const filePath = info.result?.file_path;
   if (!filePath) return null;
 
