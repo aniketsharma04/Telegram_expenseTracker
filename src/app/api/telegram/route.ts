@@ -22,6 +22,8 @@ const HELP_TEXT = [
   "• <code>/category food</code> — change its category",
   "• <code>/amount 350</code> — change its amount",
   "• <code>/last</code> — show it",
+  "",
+  "<code>/status</code> — check that parsing &amp; voice are configured",
 ].join("\n");
 
 function ok() {
@@ -35,7 +37,35 @@ function fmtINR(n: number): string {
 function confirmText(e: { amount: number; category: string; merchant: string | null; expense_date: string }): string {
   const merchant = e.merchant ? ` (${e.merchant})` : "";
   const date = e.expense_date !== localDate() ? ` on ${e.expense_date}` : "";
-  return `✅ Logged ${fmtINR(e.amount)} · ${e.category}${merchant}${date}`;
+  return `✅ Added ${fmtINR(e.amount)} · ${e.category}${merchant}${date}`;
+}
+
+/** Running month totals appended to every confirmation — investments tracked separately from spending. */
+async function monthlySummary(supabase: SupabaseClient): Promise<string> {
+  const monthStart = `${localDate().slice(0, 7)}-01`;
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("amount, category")
+    .gte("expense_date", monthStart);
+  if (error) throw error;
+  let spent = 0;
+  let invested = 0;
+  for (const r of (data ?? []) as Array<{ amount: number; category: string }>) {
+    if (r.category === "Investments") invested += Number(r.amount);
+    else spent += Number(r.amount);
+  }
+  return `\n📊 Spent this month: ${fmtINR(spent)}\n📈 Invested this month: ${fmtINR(invested)}`;
+}
+
+/** Health/config check — booleans only, no secrets. Lets us verify env wiring in production. */
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    version: "v2.1",
+    llm: process.env.GEMINI_API_KEY ? "gemini" : process.env.ANTHROPIC_API_KEY ? "claude" : "none",
+    voice: Boolean(process.env.GROQ_API_KEY),
+    db: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
+  });
 }
 
 export async function POST(req: Request) {
@@ -128,7 +158,7 @@ async function handleExpenseText(
       expense_date: parsed.expenseDate,
     };
     await insertExpense(supabase, { ...row, raw_message: text, source, parsed_by: "rules" });
-    await sendMessage(chatId, confirmText(row) + suffix);
+    await sendMessage(chatId, confirmText(row) + suffix + (await monthlySummary(supabase)));
     return;
   }
 
@@ -153,7 +183,7 @@ async function handleExpenseText(
         llm.confidence === "low" || !llm.category
           ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
           : "";
-      await sendMessage(chatId, confirmText(row) + nudge + suffix);
+      await sendMessage(chatId, confirmText(row) + suffix + (await monthlySummary(supabase)) + nudge);
       return;
     }
 
@@ -174,7 +204,7 @@ async function handleExpenseText(
       expense_date: parsed.expenseDate,
     };
     await insertExpense(supabase, { ...row, raw_message: text, source, parsed_by: "rules" });
-    await sendMessage(chatId, confirmText(row) + suffix);
+    await sendMessage(chatId, confirmText(row) + suffix + (await monthlySummary(supabase)));
   } else {
     await sendMessage(chatId, "I couldn't find an amount in that. Try something like <code>300 zomato</code>." + suffix);
   }
@@ -241,12 +271,35 @@ async function handleCommand(text: string, chatId: number) {
     case "/category":
       await recategorizeLast(chatId, arg);
       return;
+    case "/status":
+      await sendStatus(chatId);
+      return;
     case "/amount":
       await reamountLast(chatId, arg);
       return;
     default:
       await sendMessage(chatId, `Unknown command. ${"\n"}${HELP_TEXT}`);
   }
+}
+
+async function sendStatus(chatId: number) {
+  const llm = process.env.GEMINI_API_KEY
+    ? `Gemini (${process.env.LLM_MODEL || "gemini-2.5-flash"})`
+    : process.env.ANTHROPIC_API_KEY
+      ? `Claude (${process.env.LLM_MODEL || "claude-opus-5"})`
+      : "❌ not configured — messy messages fall back to Uncategorized";
+  const voice = voiceConfigured()
+    ? "✅ configured (Groq Whisper)"
+    : "❌ not configured — add GROQ_API_KEY in Vercel and redeploy";
+  let db = "✅ connected";
+  try {
+    const supabase = createServiceClient();
+    const { error } = await supabase.from("expenses").select("id").limit(1);
+    if (error) db = `❌ ${error.message}`;
+  } catch (e) {
+    db = `❌ ${e instanceof Error ? e.message : "unreachable"}`;
+  }
+  await sendMessage(chatId, `⚙️ <b>Status</b>\nDatabase: ${db}\nSmart parsing: ${llm}\nVoice notes: ${voice}`);
 }
 
 async function latestExpense(supabase: SupabaseClient): Promise<Expense | null> {
@@ -268,7 +321,11 @@ async function undoLast(chatId: number) {
   }
   const { error } = await supabase.from("expenses").delete().eq("id", last.id);
   if (error) throw error;
-  await sendMessage(chatId, `🗑️ Deleted ${fmtINR(last.amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}`);
+  await sendMessage(
+    chatId,
+    `🗑️ Deleted ${fmtINR(last.amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}` +
+      (await monthlySummary(supabase))
+  );
 }
 
 async function showLast(chatId: number) {

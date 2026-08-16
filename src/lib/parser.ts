@@ -78,6 +78,15 @@ const FILLER_WORDS = new Set([
   "and",
   "with",
   "via",
+  "roughly",
+  "about",
+  "around",
+  "approx",
+  "nearly",
+  "some",
+  "worth",
+  "rupees",
+  "rs",
 ]);
 
 const DATE_WORDS: Array<{ re: RegExp; offsetDays: number }> = [
