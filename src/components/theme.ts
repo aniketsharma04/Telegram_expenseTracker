@@ -42,6 +42,14 @@ const DARK_VARIANT: Record<string, string> = {
   "#4a3aa7": "#9085e9", // violet
   "#e34948": "#e66767", // red
   "#898781": "#898781", // gray (Uncategorized / Other)
+  // Extended categories added after v1 launch — mid-ramp steps that already
+  // sit in the dark band keep their hex; the navy gets a lighter dark step.
+  "#d55181": "#d55181", // Personal care (magenta, dark step)
+  "#104281": "#5598e7", // Investments (navy → lighter blue on dark)
+  "#86b6ef": "#86b6ef", // Loans & EMI (light blue works on dark)
+  "#199e70": "#199e70", // Travel (aqua, dark step)
+  "#9085e9": "#9085e9", // Education (violet, dark step)
+  "#c98500": "#c98500", // Gifts & donations (yellow, dark step)
 };
 
 export const FALLBACK_COLOR = "#898781";

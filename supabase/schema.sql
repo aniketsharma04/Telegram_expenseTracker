@@ -48,13 +48,19 @@ alter publication supabase_realtime add table expenses;
 -- ── Seed categories ──────────────────────────────────────────────────────────
 -- Colors are the validated categorical palette used by the dashboard.
 insert into categories (name, keywords, color) values
-  ('Food delivery',  '{zomato,swiggy,dominos,"pizza hut",kfc,mcdonalds,"eatsure",faasos}', '#2a78d6'),
-  ('Groceries',      '{zepto,blinkit,bigbasket,instamart,jiomart,dmart,grocery,groceries,sabzi,vegetables}', '#eb6834'),
-  ('Transport',      '{metro,"metro card",uber,ola,rapido,auto,rickshaw,bus,train,cab,taxi,petrol,diesel,fuel,fastag,parking}', '#1baf7a'),
-  ('Shopping',       '{amazon,flipkart,myntra,ajio,meesho,nykaa,decathlon,ikea,clothes,shoes}', '#eda100'),
-  ('Entertainment',  '{netflix,spotify,hotstar,"prime video",bookmyshow,movie,movies,concert,game,steam}', '#e87ba4'),
-  ('Utilities & bills', '{electricity,water,gas,cylinder,recharge,jio,airtel,vi,wifi,broadband,rent,maintenance,bill}', '#008300'),
-  ('Health',         '{medicine,medicines,pharmacy,pharmeasy,1mg,apollo,doctor,hospital,gym,protein}', '#4a3aa7'),
-  ('Dining out',     '{restaurant,cafe,coffee,starbucks,chai,lunch,dinner,breakfast,snacks,"street food",juice}', '#e34948'),
+  ('Food delivery',  '{zomato,swiggy,dominos,"pizza hut",kfc,mcdonalds,"burger king","eatsure",faasos}', '#2a78d6'),
+  ('Groceries',      '{zepto,blinkit,bigbasket,instamart,jiomart,dmart,grocery,groceries,sabzi,vegetables,fruits,milk,kirana,ration}', '#eb6834'),
+  ('Transport',      '{metro,"metro card",uber,ola,rapido,auto,rickshaw,bus,train,cab,taxi,petrol,diesel,fuel,fastag,parking,toll}', '#1baf7a'),
+  ('Shopping',       '{amazon,flipkart,myntra,ajio,meesho,nykaa,decathlon,ikea,croma,clothes,shoes,jeans,tshirt,electronics}', '#eda100'),
+  ('Entertainment',  '{netflix,spotify,hotstar,"prime video",bookmyshow,movie,movies,concert,game,games,steam,"youtube premium"}', '#e87ba4'),
+  ('Utilities & bills', '{electricity,"water bill",gas,cylinder,recharge,jio,airtel,wifi,broadband,rent,maintenance,bill,dth,postpaid,insurance,premium,lic,mediclaim}', '#008300'),
+  ('Health',         '{medicine,medicines,pharmacy,pharmeasy,1mg,apollo,doctor,hospital,dentist,clinic,"lab test",gym,protein}', '#4a3aa7'),
+  ('Dining out',     '{restaurant,cafe,coffee,starbucks,chai,tea,lunch,dinner,breakfast,snacks,"street food",juice,dhaba,"ice cream",icecream}', '#e34948'),
+  ('Personal care',  '{barber,haircut,salon,spa,grooming,shave,facial,parlour,cosmetics,shampoo,soap,skincare,laundry}', '#d55181'),
+  ('Investments',    '{invest,invested,investment,sip,"mutual fund",stocks,shares,zerodha,groww,upstox,etf,gold,sgb,fd,rd,ppf,nps,crypto,bitcoin}', '#104281'),
+  ('Loans & EMI',    '{emi,loan,"credit card",cred,repayment,interest,borrowed,udhaar}', '#86b6ef'),
+  ('Travel',         '{flight,flights,hotel,irctc,makemytrip,goibibo,airbnb,oyo,trip,vacation,holiday,visa,indigo,"air india","train ticket"}', '#199e70'),
+  ('Education',      '{course,udemy,coursera,book,books,tuition,exam,fees,certification,stationery}', '#9085e9'),
+  ('Gifts & donations', '{gift,gifts,donation,charity,temple,wedding,birthday}', '#c98500'),
   ('Uncategorized',  '{}', '#898781')
 on conflict (name) do nothing;
