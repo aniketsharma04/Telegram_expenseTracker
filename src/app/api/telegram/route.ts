@@ -10,6 +10,14 @@ import {
   TelegramMessage,
 } from "@/lib/telegram";
 import { createServiceClient } from "@/lib/supabase-server";
+import {
+  ensureUser,
+  getFamily,
+  familyMembers,
+  createFamily,
+  joinFamilyByCode,
+  inviteLink,
+} from "@/lib/family";
 import type { Expense } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -34,6 +42,11 @@ const HELP_TEXT = [
   "• <code>/emi</code> — loans &amp; EMI this month",
   "• <code>/dashboard</code> — web dashboard link",
   "• <code>/status</code> — check bot configuration",
+  "",
+  "Family:",
+  "• <code>/family create Sharma Family</code> — start a family",
+  "• <code>/invite</code> — get a link to add members",
+  "• <code>/family</code> — this month's family report",
 ].join("\n");
 
 function ok() {
@@ -55,21 +68,48 @@ function confirmText(e: {
   return `✅ Added ${fmtINR(e.amount)} · ${e.category}${merchant}${date}`;
 }
 
-/** Running month totals appended to every confirmation — investments tracked separately from spending. */
-async function monthlySummary(supabase: SupabaseClient): Promise<string> {
+/** Running month totals for the sender (plus their family, if any) appended to every confirmation. */
+async function monthlySummary(
+  supabase: SupabaseClient,
+  chatId: number,
+): Promise<string> {
   const monthStart = `${localDate().slice(0, 7)}-01`;
   const { data, error } = await supabase
     .from("expenses")
-    .select("amount, category")
+    .select("amount, category, user_id")
     .gte("expense_date", monthStart);
   if (error) throw error;
+  const rows = (data ?? []) as Array<{
+    amount: number;
+    category: string;
+    user_id: number | null;
+  }>;
+
   let spent = 0;
   let invested = 0;
-  for (const r of (data ?? []) as Array<{ amount: number; category: string }>) {
+  for (const r of rows) {
+    if (r.user_id !== chatId) continue;
     if (r.category === "Investments") invested += Number(r.amount);
     else spent += Number(r.amount);
   }
-  return `\n📊 Spent this month: ${fmtINR(spent)}\n📈 Invested this month: ${fmtINR(invested)}`;
+
+  let familyLine = "";
+  const family = await getFamily(supabase, chatId);
+  if (family) {
+    const members = await familyMembers(supabase, family.id);
+    const memberIds = new Set(members.map((m) => m.id));
+    const familySpent = rows
+      .filter(
+        (r) =>
+          r.user_id !== null &&
+          memberIds.has(r.user_id) &&
+          r.category !== "Investments",
+      )
+      .reduce((s, r) => s + Number(r.amount), 0);
+    familyLine = `\n👨‍👩‍👧 ${family.name}: ${fmtINR(familySpent)} this month`;
+  }
+
+  return `\n📊 Spent this month: ${fmtINR(spent)}\n📈 Invested this month: ${fmtINR(invested)}${familyLine}`;
 }
 
 /** Health/config check — booleans only, no secrets. Lets us verify env wiring in production. */
@@ -95,7 +135,7 @@ export async function GET() {
   }
   return NextResponse.json({
     ok: true,
-    version: "v2.4",
+    version: "v3.0",
     telegram,
     llm: process.env.GEMINI_API_KEY
       ? "gemini"
@@ -128,11 +168,11 @@ export async function POST(req: Request) {
   const message = update.message; // edits are handled via /undo & /category instead
   if (!message) return ok();
 
+  // v3: open registration — anyone who messages the bot gets their own tracker.
   const chatId = message.chat.id;
-  const allowed = process.env.TELEGRAM_ALLOWED_CHAT_ID;
-  if (allowed && String(chatId) !== allowed) return ok();
 
   try {
+    await ensureUser(message, chatId);
     await handleMessage(message, chatId);
   } catch (err) {
     console.error("webhook error", err);
@@ -248,6 +288,7 @@ async function handleReceiptPhoto(message: TelegramMessage, chatId: number) {
   };
   await insertExpense(supabase, {
     ...row,
+    user_id: chatId,
     raw_message: caption ? `[photo] ${caption}` : "[photo]",
     source: "telegram_photo",
     parsed_by: "llm",
@@ -263,7 +304,7 @@ async function handleReceiptPhoto(message: TelegramMessage, chatId: number) {
       : "";
   await sendMessage(
     chatId,
-    `📷 ${confirmText(row)}` + (await monthlySummary(supabase)) + nudge,
+    `📷 ${confirmText(row)}` + (await monthlySummary(supabase, chatId)) + nudge,
   );
 }
 
@@ -294,13 +335,14 @@ async function handleExpenseText(
     };
     await insertExpense(supabase, {
       ...row,
+      user_id: chatId,
       raw_message: text,
       source,
       parsed_by: "rules",
     });
     await sendMessage(
       chatId,
-      confirmText(row) + suffix + (await monthlySummary(supabase)),
+      confirmText(row) + suffix + (await monthlySummary(supabase, chatId)),
     );
     return;
   }
@@ -317,6 +359,7 @@ async function handleExpenseText(
       };
       await insertExpense(supabase, {
         ...row,
+        user_id: chatId,
         raw_message: text,
         source,
         parsed_by: "llm",
@@ -333,7 +376,10 @@ async function handleExpenseText(
           : "";
       await sendMessage(
         chatId,
-        confirmText(row) + suffix + (await monthlySummary(supabase)) + nudge,
+        confirmText(row) +
+          suffix +
+          (await monthlySummary(supabase, chatId)) +
+          nudge,
       );
       return;
     }
@@ -358,13 +404,14 @@ async function handleExpenseText(
     };
     await insertExpense(supabase, {
       ...row,
+      user_id: chatId,
       raw_message: text,
       source,
       parsed_by: "rules",
     });
     await sendMessage(
       chatId,
-      confirmText(row) + suffix + (await monthlySummary(supabase)),
+      confirmText(row) + suffix + (await monthlySummary(supabase, chatId)),
     );
   } else {
     await sendMessage(
@@ -381,6 +428,7 @@ async function insertExpense(
     amount: number;
     category: string;
     merchant: string | null;
+    user_id: number;
     raw_message: string;
     source: string;
     parsed_by: string;
@@ -427,8 +475,30 @@ async function handleCommand(text: string, chatId: number) {
 
   switch (cmd.toLowerCase()) {
     case "/start":
+      // Deep-link payload: t.me/<bot>?start=fam_CODE → join that family.
+      if (arg.startsWith("fam_")) {
+        const supabase = createServiceClient();
+        const result = await joinFamilyByCode(supabase, chatId, arg.slice(4));
+        await sendMessage(
+          chatId,
+          result.message + (result.joined ? `\n\n${HELP_TEXT}` : ""),
+        );
+        return;
+      }
+      await sendMessage(chatId, HELP_TEXT);
+      return;
     case "/help":
       await sendMessage(chatId, HELP_TEXT);
+      return;
+    case "/family":
+      if (arg.toLowerCase().startsWith("create")) {
+        await handleFamilyCreate(chatId, arg.slice(6).trim());
+      } else {
+        await sendFamilyReport(chatId);
+      }
+      return;
+    case "/invite":
+      await sendInvite(chatId);
       return;
     case "/undo":
       await undoLast(chatId);
@@ -469,6 +539,105 @@ async function handleCommand(text: string, chatId: number) {
   }
 }
 
+// ── Family commands ─────────────────────────────────────────────────────────
+
+async function handleFamilyCreate(chatId: number, name: string) {
+  const supabase = createServiceClient();
+  const existing = await getFamily(supabase, chatId);
+  if (existing) {
+    await sendMessage(
+      chatId,
+      `You're already in <b>${existing.name}</b> — one family per person for now. Use <code>/invite</code> to add members.`,
+    );
+    return;
+  }
+  if (!name) {
+    await sendMessage(
+      chatId,
+      "Give the family a name, e.g. <code>/family create Sharma Family</code>",
+    );
+    return;
+  }
+  const family = await createFamily(supabase, chatId, name.slice(0, 60));
+  await sendMessage(
+    chatId,
+    `👨‍👩‍👧 <b>${family.name}</b> created!\n\nForward this link to your family members — one tap and they're in:\n${inviteLink(family.invite_code)}\n\nEveryone who joins logs their own expenses, and <code>/family</code> shows the combined picture.`,
+  );
+}
+
+async function sendInvite(chatId: number) {
+  const supabase = createServiceClient();
+  const family = await getFamily(supabase, chatId);
+  if (!family) {
+    await sendMessage(
+      chatId,
+      "You're not in a family yet — start one with <code>/family create Sharma Family</code>",
+    );
+    return;
+  }
+  await sendMessage(
+    chatId,
+    `Forward this to add someone to <b>${family.name}</b>:\n${inviteLink(family.invite_code)}`,
+  );
+}
+
+async function sendFamilyReport(chatId: number) {
+  const supabase = createServiceClient();
+  const family = await getFamily(supabase, chatId);
+  if (!family) {
+    await sendMessage(
+      chatId,
+      "You're not in a family yet.\n\nStart one with <code>/family create Sharma Family</code>, then <code>/invite</code> to add members — everyone's expenses roll up into one family view.",
+    );
+    return;
+  }
+
+  const members = await familyMembers(supabase, family.id);
+  const memberIds = new Set(members.map((m) => m.id));
+  const today = localDate();
+  const monthStart = `${today.slice(0, 7)}-01`;
+  const monthLabel = `1 ${MONTH_NAMES[Number(today.slice(5, 7)) - 1]}`;
+
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("amount, category, user_id")
+    .gte("expense_date", monthStart);
+  if (error) throw error;
+  const rows = (
+    (data ?? []) as Array<{
+      amount: number;
+      category: string;
+      user_id: number | null;
+    }>
+  ).filter((r) => r.user_id !== null && memberIds.has(r.user_id));
+
+  let spent = 0;
+  let invested = 0;
+  const byMember = new Map<number, number>();
+  for (const r of rows) {
+    if (r.category === "Investments") {
+      invested += Number(r.amount);
+    } else {
+      spent += Number(r.amount);
+      byMember.set(
+        r.user_id!,
+        (byMember.get(r.user_id!) ?? 0) + Number(r.amount),
+      );
+    }
+  }
+
+  const memberLines = members
+    .map((m) => ({ name: m.name, total: byMember.get(m.id) ?? 0 }))
+    .sort((a, b) => b.total - a.total)
+    .map((m) => `• ${m.name}: ${fmtINR(m.total)}`)
+    .join("\n");
+
+  await sendMessage(
+    chatId,
+    `👨‍👩‍👧 <b>${family.name} — since ${monthLabel}</b>\nSpent: ${fmtINR(spent)} · Invested: ${fmtINR(invested)}\n\n${memberLines}\n\nMembers: ${members.length} · <code>/invite</code> to add more`,
+  );
+}
+
 const MONTH_NAMES = [
   "Jan",
   "Feb",
@@ -494,6 +663,7 @@ async function sendMonthReport(chatId: number, categoryName: string | null) {
   const { data, error } = await supabase
     .from("expenses")
     .select("amount, category, merchant, expense_date")
+    .eq("user_id", chatId)
     .gte("expense_date", monthStart)
     .order("logged_at", { ascending: false });
   if (error) throw error;
@@ -581,10 +751,12 @@ async function sendStatus(chatId: number) {
 
 async function latestExpense(
   supabase: SupabaseClient,
+  chatId: number,
 ): Promise<Expense | null> {
   const { data, error } = await supabase
     .from("expenses")
     .select("*")
+    .eq("user_id", chatId)
     .order("logged_at", { ascending: false })
     .limit(1);
   if (error) throw error;
@@ -593,7 +765,7 @@ async function latestExpense(
 
 async function undoLast(chatId: number) {
   const supabase = createServiceClient();
-  const last = await latestExpense(supabase);
+  const last = await latestExpense(supabase, chatId);
   if (!last) {
     await sendMessage(chatId, "Nothing to undo — no expenses logged yet.");
     return;
@@ -603,13 +775,13 @@ async function undoLast(chatId: number) {
   await sendMessage(
     chatId,
     `🗑️ Deleted ${fmtINR(last.amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}` +
-      (await monthlySummary(supabase)),
+      (await monthlySummary(supabase, chatId)),
   );
 }
 
 async function showLast(chatId: number) {
   const supabase = createServiceClient();
-  const last = await latestExpense(supabase);
+  const last = await latestExpense(supabase, chatId);
   if (!last) {
     await sendMessage(chatId, "No expenses logged yet.");
     return;
@@ -648,7 +820,7 @@ async function recategorizeLast(chatId: number, arg: string) {
     return;
   }
 
-  const last = await latestExpense(supabase);
+  const last = await latestExpense(supabase, chatId);
   if (!last) {
     await sendMessage(chatId, "No expenses logged yet.");
     return;
@@ -679,7 +851,7 @@ async function reamountLast(chatId: number, arg: string) {
     return;
   }
   const supabase = createServiceClient();
-  const last = await latestExpense(supabase);
+  const last = await latestExpense(supabase, chatId);
   if (!last) {
     await sendMessage(chatId, "No expenses logged yet.");
     return;

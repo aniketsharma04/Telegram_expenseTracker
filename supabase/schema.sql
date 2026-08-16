@@ -1,6 +1,7 @@
 -- Expense tracker — v1 schema
 -- Run this in the Supabase SQL editor (or `supabase db push` if using the CLI).
 
+-- For an existing installation, also run migrations/v3-multiuser.sql.
 -- ── Tables ──────────────────────────────────────────────────────────────────
 
 create table if not exists categories (

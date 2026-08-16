@@ -19,7 +19,7 @@ export interface TelegramMessage {
   };
   photo?: Array<{ file_id: string; width?: number; height?: number }>;
   chat: { id: number };
-  from?: { id: number; first_name?: string };
+  from?: { id: number; first_name?: string; username?: string };
 }
 
 function botToken(): string {
