@@ -23,7 +23,12 @@ const HELP_TEXT = [
   "• <code>/amount 350</code> — change its amount",
   "• <code>/last</code> — show it",
   "",
-  "<code>/status</code> — check that parsing &amp; voice are configured",
+  "Reports:",
+  "• <code>/expense</code> — spent this month",
+  "• <code>/invest</code> — invested this month",
+  "• <code>/emi</code> — loans &amp; EMI this month",
+  "• <code>/dashboard</code> — web dashboard link",
+  "• <code>/status</code> — check bot configuration",
 ].join("\n");
 
 function ok() {
@@ -274,12 +279,90 @@ async function handleCommand(text: string, chatId: number) {
     case "/status":
       await sendStatus(chatId);
       return;
+    case "/expense":
+    case "/expenses":
+      await sendMonthReport(chatId, null);
+      return;
+    case "/invest":
+    case "/investments":
+      await sendMonthReport(chatId, "Investments");
+      return;
+    case "/emi":
+    case "/loan":
+    case "/loans":
+      await sendMonthReport(chatId, "Loans & EMI");
+      return;
+    case "/dashboard": {
+      const url = process.env.APP_URL || "https://telegram-expense-tracker-nu.vercel.app";
+      await sendMessage(chatId, `📈 Your dashboard: ${url}`);
+      return;
+    }
     case "/amount":
       await reamountLast(chatId, arg);
       return;
     default:
       await sendMessage(chatId, `Unknown command. ${"\n"}${HELP_TEXT}`);
   }
+}
+
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** /expense (all spending), /invest, /emi — month-to-date report starting from the 1st. */
+async function sendMonthReport(chatId: number, categoryName: string | null) {
+  const supabase = createServiceClient();
+  const today = localDate();
+  const monthStart = `${today.slice(0, 7)}-01`;
+  const monthLabel = `1 ${MONTH_NAMES[Number(today.slice(5, 7)) - 1]}`;
+
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("amount, category, merchant, expense_date")
+    .gte("expense_date", monthStart)
+    .order("logged_at", { ascending: false });
+  if (error) throw error;
+  const rows = (data ?? []) as Array<{ amount: number; category: string; merchant: string | null; expense_date: string }>;
+
+  if (categoryName) {
+    const subset = rows.filter((r) => r.category === categoryName);
+    if (subset.length === 0) {
+      await sendMessage(chatId, `No ${categoryName} entries yet this month (since ${monthLabel}).`);
+      return;
+    }
+    const total = subset.reduce((s, r) => s + Number(r.amount), 0);
+    const recent = subset
+      .slice(0, 5)
+      .map((r) => `• ${fmtINR(r.amount)}${r.merchant ? ` — ${r.merchant}` : ""} (${Number(r.expense_date.slice(8))} ${MONTH_NAMES[Number(r.expense_date.slice(5, 7)) - 1]})`)
+      .join("\n");
+    await sendMessage(
+      chatId,
+      `💰 <b>${categoryName}</b> since ${monthLabel}: ${fmtINR(total)} across ${subset.length} ${subset.length === 1 ? "entry" : "entries"}\n${recent}`
+    );
+    return;
+  }
+
+  let spent = 0;
+  let invested = 0;
+  const byCategory = new Map<string, number>();
+  for (const r of rows) {
+    if (r.category === "Investments") {
+      invested += Number(r.amount);
+    } else {
+      spent += Number(r.amount);
+      byCategory.set(r.category, (byCategory.get(r.category) ?? 0) + Number(r.amount));
+    }
+  }
+  const top = [...byCategory.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([name, sum]) => `• ${name}: ${fmtINR(sum)}`)
+    .join("\n");
+  const txCount = rows.filter((r) => r.category !== "Investments").length;
+  await sendMessage(
+    chatId,
+    `📊 <b>This month (since ${monthLabel})</b>\nSpent: ${fmtINR(spent)} across ${txCount} transactions` +
+      (top ? `\n${top}` : "") +
+      `\n📈 Invested: ${fmtINR(invested)}`
+  );
 }
 
 async function sendStatus(chatId: number) {
