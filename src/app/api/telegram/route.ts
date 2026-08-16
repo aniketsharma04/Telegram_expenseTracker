@@ -64,9 +64,22 @@ async function monthlySummary(supabase: SupabaseClient): Promise<string> {
 
 /** Health/config check — booleans only, no secrets. Lets us verify env wiring in production. */
 export async function GET() {
+  // Validate the bot token against Telegram itself — a wrong token here means
+  // replies and voice-file downloads silently fail while text logging works.
+  let telegram = "missing";
+  if (process.env.TELEGRAM_BOT_TOKEN) {
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getMe`);
+      const body = (await res.json()) as { ok: boolean; result?: { username?: string } };
+      telegram = body.ok ? `ok (@${body.result?.username})` : `INVALID (HTTP ${res.status})`;
+    } catch {
+      telegram = "unreachable";
+    }
+  }
   return NextResponse.json({
     ok: true,
-    version: "v2.2",
+    version: "v2.3",
+    telegram,
     llm: process.env.GEMINI_API_KEY ? "gemini" : process.env.ANTHROPIC_API_KEY ? "claude" : "none",
     voice: Boolean(process.env.GROQ_API_KEY),
     db: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
