@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Expense Tracker",
-    "slug": "expense-tracker",
+    "slug": "aniket-sharma",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,6 +23,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c9e5fb51-3cb2-42e1-b57b-51900c7704ef"
+      }
+    },
+    "owner": "aniketsharma054s-team"
   }
 }
