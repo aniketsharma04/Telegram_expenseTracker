@@ -144,6 +144,34 @@ const STRINGS = {
   kind_mobile: { en: "Mobile", hi: "मोबाइल" },
   kind_insurance: { en: "Insurance", hi: "बीमा" },
   kind_other: { en: "Other", hi: "अन्य" },
+  // BBPS auto-fetch
+  autoFetch: { en: "Auto-fetch", hi: "अपने आप लाएँ" },
+  manual: { en: "Manual", hi: "खुद भरें" },
+  searchBiller: {
+    en: "Search biller — BSES, HDFC card, Airtel…",
+    hi: "बिलर खोजें — BSES, HDFC कार्ड, Airtel…",
+  },
+  allCategories: { en: "All", hi: "सभी" },
+  noBillers: { en: "No billers match that.", hi: "कोई बिलर नहीं मिला।" },
+  fetchBill: { en: "Fetch bill", hi: "बिल लाएँ" },
+  fetching: { en: "Fetching from biller…", hi: "बिलर से ला रहे हैं…" },
+  fetchedBill: { en: "Bill found", hi: "बिल मिला" },
+  noDues: { en: "No outstanding bill right now", hi: "अभी कोई बकाया नहीं" },
+  dueOn: { en: "Due", hi: "देय" },
+  changeBiller: { en: "Change", hi: "बदलें" },
+  saveBill: { en: "Save bill", hi: "बिल सहेजें" },
+  linkedVia: { en: "Auto-fetched", hi: "अपने आप लाया" },
+  refresh: { en: "Refresh", hi: "ताज़ा करें" },
+  lastFetched: { en: "checked", hi: "जाँचा" },
+  justNow: { en: "just now", hi: "अभी" },
+  hoursAgo: { en: "h ago", hi: " घंटे पहले" },
+  daysAgo: { en: "d ago", hi: " दिन पहले" },
+  fetchFailed: { en: "Couldn't fetch", hi: "ला नहीं सके" },
+  identifiers: { en: "Your identifiers", hi: "आपकी पहचान संख्या" },
+  mockNote: {
+    en: "Demo billers until Bharat Connect onboarding completes — numbers ending 00 = no dues, 99 = not found.",
+    hi: "Bharat Connect जुड़ने तक डेमो बिलर — 00 पर खत्म = बकाया नहीं, 99 = नहीं मिला।",
+  },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;

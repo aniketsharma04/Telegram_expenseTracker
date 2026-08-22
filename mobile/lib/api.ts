@@ -77,7 +77,50 @@ export interface BillStatus {
   paidThisMonth: BillPayment | null;
   lastPaid: BillPayment | null;
   upiLink: string | null;
+  linked: boolean;
+  biller_id?: string | null;
+  biller_name?: string | null;
+  fetch_params?: Record<string, string> | null;
+  fetched_amount?: number | null;
+  fetched_due_date?: string | null;
+  fetched_bill_number?: string | null;
+  fetched_customer_name?: string | null;
+  fetched_at?: string | null;
+  fetch_error?: string | null;
 }
+
+export interface BillerParam {
+  name: string;
+  dataType: "NUMERIC" | "ALPHANUMERIC";
+  regex?: string;
+  minLength?: number | null;
+  maxLength?: number | null;
+  optional: boolean;
+}
+
+export interface Biller {
+  id: string;
+  name: string;
+  category: string;
+  params: BillerParam[];
+}
+
+export interface FetchedBill {
+  refId: string | null;
+  amount: number;
+  dueDate: string | null;
+  billDate: string | null;
+  billNumber: string | null;
+  customerName: string | null;
+}
+
+export type FetchResult =
+  | { ok: true; bill: FetchedBill }
+  | {
+      ok: false;
+      code: "not_found" | "no_dues" | "provider" | "invalid";
+      error: string;
+    };
 
 export interface BillInput {
   name: string;
@@ -88,6 +131,8 @@ export interface BillInput {
   upi_id: string | null;
   payee_name: string | null;
   consumer_number: string | null;
+  biller_id?: string | null;
+  fetch_params?: Record<string, string> | null;
 }
 
 export interface Anomaly {
@@ -369,4 +414,60 @@ export async function unpayBill(
     },
   );
   return res.ok;
+}
+
+// ── BBPS (auto-fetch) ───────────────────────────────────────────────────────
+
+export async function searchBillers(
+  token: string,
+  q: string,
+  category?: string | null,
+): Promise<{
+  provider: string;
+  billers: Biller[];
+  categories: string[];
+} | null> {
+  const url = `${API_BASE}/api/bbps/billers?q=${encodeURIComponent(q)}${category ? `&category=${encodeURIComponent(category)}` : ""}`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token.trim()}` },
+  });
+  if (!res.ok) return null;
+  return (await res.json()) as {
+    provider: string;
+    billers: Biller[];
+    categories: string[];
+  };
+}
+
+export async function previewFetch(
+  token: string,
+  biller_id: string,
+  params: Record<string, string>,
+): Promise<FetchResult | null> {
+  const res = await fetch(`${API_BASE}/api/bbps/fetch`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ biller_id, params }),
+  });
+  if (!res.ok) return null;
+  return (await res.json()) as FetchResult;
+}
+
+export async function refreshBillFetch(
+  token: string,
+  id: string,
+): Promise<{ fetch: FetchResult; bill: BillStatus | null } | null> {
+  const res = await fetch(`${API_BASE}/api/bills/refresh`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  });
+  if (!res.ok) return null;
+  return (await res.json()) as { fetch: FetchResult; bill: BillStatus | null };
 }

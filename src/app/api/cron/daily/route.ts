@@ -4,7 +4,13 @@ import { localDate } from "@/lib/parser";
 import { detectRecurring } from "@/lib/insights";
 import { composeMonthlyDigest } from "@/lib/digest";
 import { sendMessage } from "@/lib/telegram";
-import { loadBillStatuses, reminderText } from "@/lib/bills";
+import {
+  loadBillStatuses,
+  reminderText,
+  refreshBill,
+  getBills,
+} from "@/lib/bills";
+import { getBbpsProvider, setuConfigured, syncSetuBillers } from "@/lib/bbps";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -39,6 +45,18 @@ export async function GET(req: NextRequest) {
 
   let reminders = 0;
   let billReminders = 0;
+  let billFetches = 0;
+  let billerSync: number | null = null;
+  const provider = getBbpsProvider(supabase);
+
+  // Keep the biller directory fresh (Setu only; the mock is static).
+  if (setuConfigured() && provider.name === "setu") {
+    try {
+      billerSync = await syncSetuBillers(supabase);
+    } catch (err) {
+      console.error("biller sync failed", err);
+    }
+  }
   let digests = 0;
   const failures: number[] = [];
 
@@ -59,6 +77,17 @@ export async function GET(req: NextRequest) {
           `🔁 Heads up: <b>${charge.merchant}</b> (~₹${charge.amount.toLocaleString("en-IN")}, ${charge.category}) usually hits around the ${Number(charge.nextDate.slice(8))}th — that's in ${REMIND_DAYS_AHEAD} days.`,
         );
         reminders++;
+      }
+
+      // Re-fetch linked bills once a day so amounts/due dates stay current.
+      for (const b of await getBills(supabase, userId)) {
+        if (!b.biller_id || !b.fetch_params) continue;
+        const ageHours = b.fetched_at
+          ? (Date.now() - Date.parse(b.fetched_at)) / 36e5
+          : Infinity;
+        if (ageHours < 20) continue;
+        await refreshBill(supabase, provider, userId, b);
+        billFetches++;
       }
 
       for (const status of await loadBillStatuses(supabase, userId, today)) {
@@ -90,6 +119,8 @@ export async function GET(req: NextRequest) {
     users: users?.length ?? 0,
     reminders,
     billReminders,
+    billFetches,
+    billerSync,
     digests,
     failures,
   });

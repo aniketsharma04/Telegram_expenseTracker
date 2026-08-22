@@ -110,3 +110,59 @@ describe("reminderText", () => {
     expect(mk(5)).toBeNull();
   });
 });
+
+describe("linked (BBPS) bills", () => {
+  const linked = (over: Partial<Bill> = {}): Bill =>
+    bill({
+      id: "L1",
+      name: "BSES",
+      biller_id: "BSES00000DEL01",
+      fetch_params: { "CA Number": "123456789" },
+      fetched_amount: 1537,
+      fetched_due_date: "2026-09-03",
+      due_day: 3,
+      amount: null,
+      ...over,
+    });
+
+  it("uses the fetched amount and due date, even across a month boundary", () => {
+    const [s] = billStatuses([linked()], [], "2026-08-28");
+    expect(s.linked).toBe(true);
+    expect(s.amount).toBe(1537);
+    expect(s.dueDate).toBe("2026-09-03");
+    expect(s.daysUntil).toBe(6);
+    expect(s.cycleMonth).toBe("2026-09");
+    expect(s.upiLink).toBeNull();
+  });
+
+  it("treats a payment for the fetched cycle as paid, then rolls forward", () => {
+    const [s] = billStatuses(
+      [linked()],
+      [
+        {
+          id: "p",
+          bill_id: "L1",
+          month: "2026-09",
+          amount: 1537,
+          paid_on: "2026-08-29",
+          expense_id: null,
+        },
+      ],
+      "2026-08-30",
+    );
+    expect(s.paidThisMonth?.amount).toBe(1537);
+    expect(s.cycleMonth).toBe("2026-10");
+    expect(s.dueDate).toBe("2026-10-03");
+  });
+
+  it("falls back to manual scheduling when nothing has been fetched yet", () => {
+    const [s] = billStatuses(
+      [linked({ fetched_amount: null, fetched_due_date: null })],
+      [],
+      "2026-08-22",
+    );
+    expect(s.linked).toBe(true);
+    expect(s.amount).toBeNull();
+    expect(s.dueDate).toBe("2026-08-03"); // manual due_day path, overdue
+  });
+});

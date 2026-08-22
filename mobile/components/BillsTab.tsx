@@ -18,14 +18,14 @@ import {
   BillKind,
   BillStatus,
   RecurringCharge,
-  deleteBill,
   payBill,
-  saveBill,
+  refreshBillFetch,
   unpayBill,
 } from "../lib/api";
 import { StringKey, useSettings } from "../lib/i18n";
 import { formatINR, Palette } from "../lib/theme";
 import { Card, SectionTitle } from "./ui";
+import BillSheet from "./BillSheet";
 
 const KIND_ICON: Record<BillKind, string> = {
   electricity: "⚡",
@@ -124,6 +124,25 @@ export default function BillsTab({
     } catch {
       setError("That app doesn't seem to be installed.");
     }
+  };
+
+  const refreshOne = async (bill: BillStatus) => {
+    if (busyId) return;
+    setBusyId(bill.id);
+    setError(null);
+    const r = await refreshBillFetch(token, bill.id).catch(() => null);
+    setBusyId(null);
+    if (!r) setError(`${t("fetchFailed")} — try again in a minute.`);
+    else if (!r.fetch.ok && r.fetch.code !== "no_dues")
+      setError(`${t("fetchFailed")}: ${r.fetch.error}`);
+    onChanged();
+  };
+
+  const ago = (iso: string) => {
+    const h = (Date.now() - Date.parse(iso)) / 36e5;
+    if (h < 1) return t("justNow");
+    if (h < 48) return `${Math.round(h)}${t("hoursAgo")}`;
+    return `${Math.round(h / 24)}${t("daysAgo")}`;
   };
 
   const undoPaid = async (bill: BillStatus) => {
@@ -254,6 +273,44 @@ export default function BillsTab({
                 {b.amount ? formatINR(b.amount) : "—"}
               </Text>
             </Pressable>
+
+            {b.linked && (
+              <View style={[styles.row, { marginTop: 8 }]}>
+                <Text
+                  style={{ flex: 1, fontSize: fs(12), color: p.muted }}
+                  numberOfLines={1}
+                >
+                  🔗 {t("linkedVia")}
+                  {b.biller_name ? ` · ${b.biller_name}` : ""}
+                  {b.fetched_at
+                    ? ` · ${t("lastFetched")} ${ago(b.fetched_at)}`
+                    : ""}
+                  {b.fetch_error ? ` · ⚠️ ${t("fetchFailed")}` : ""}
+                  {b.linked && b.amount === null && !b.fetch_error
+                    ? ` · ${t("noDues")}`
+                    : ""}
+                </Text>
+                <Pressable
+                  onPress={() => refreshOne(b)}
+                  disabled={busyId === b.id}
+                  hitSlop={8}
+                >
+                  {busyId === b.id ? (
+                    <ActivityIndicator size="small" color={p.accent} />
+                  ) : (
+                    <Text
+                      style={{
+                        fontSize: fs(12.5),
+                        color: p.accent,
+                        fontWeight: "600",
+                      }}
+                    >
+                      ↻ {t("refresh")}
+                    </Text>
+                  )}
+                </Pressable>
+              </View>
+            )}
 
             {b.paidThisMonth ? (
               <View style={[styles.row, { marginTop: 10 }]}>
@@ -432,305 +489,6 @@ export default function BillsTab({
         </Modal>
       )}
     </View>
-  );
-}
-
-// ── Add / edit bill ──────────────────────────────────────────────────────────
-
-function BillSheet({
-  p,
-  token,
-  categories,
-  bill,
-  prefill,
-  onClose,
-  onChanged,
-}: {
-  p: Palette;
-  token: string;
-  categories: Array<{ name: string; color: string | null }>;
-  bill?: BillStatus;
-  prefill?: Partial<BillInput>;
-  onClose: () => void;
-  onChanged: () => void;
-}) {
-  const { t, fs } = useSettings();
-  const src = bill ?? prefill;
-  const [name, setName] = useState(src?.name ?? "");
-  const [kind, setKind] = useState<BillKind>(src?.kind ?? "electricity");
-  const [category, setCategory] = useState(
-    src?.category ?? KIND_CATEGORY[src?.kind ?? "electricity"],
-  );
-  const [dueDay, setDueDay] = useState(src?.due_day ? String(src.due_day) : "");
-  const [amount, setAmount] = useState(src?.amount ? String(src.amount) : "");
-  const [upi, setUpi] = useState(src?.upi_id ?? "");
-  const [payee, setPayee] = useState(src?.payee_name ?? "");
-  const [consumer, setConsumer] = useState(src?.consumer_number ?? "");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [categoryTouched, setCategoryTouched] = useState(!!src?.category);
-
-  useEffect(() => {
-    if (!categoryTouched) setCategory(KIND_CATEGORY[kind]);
-  }, [kind, categoryTouched]);
-
-  const day = parseInt(dueDay, 10);
-  const amt = amount.trim() ? parseFloat(amount.replace(/,/g, "")) : null;
-  const ready =
-    name.trim().length > 0 &&
-    Number.isInteger(day) &&
-    day >= 1 &&
-    day <= 31 &&
-    (amt === null || (Number.isFinite(amt) && amt > 0));
-
-  const save = async () => {
-    if (!ready || busy) return;
-    setBusy(true);
-    setError(null);
-    const input: BillInput = {
-      name: name.trim(),
-      kind,
-      category,
-      due_day: day,
-      amount: amt,
-      upi_id: upi.trim() || null,
-      payee_name: payee.trim() || null,
-      consumer_number: consumer.trim() || null,
-    };
-    const result = await saveBill(token, input, bill?.id).catch(() => null);
-    setBusy(false);
-    if (result === "unauthorized")
-      setError("Session expired — get a fresh /app code from the bot.");
-    else if (!result)
-      setError(
-        "Couldn't save — check the UPI ID format (name@bank) and try again.",
-      );
-    else {
-      onChanged();
-      onClose();
-    }
-  };
-
-  const remove = async () => {
-    if (!bill || busy) return;
-    setBusy(true);
-    const ok = await deleteBill(token, bill.id).catch(() => false);
-    setBusy(false);
-    if (ok) {
-      onChanged();
-      onClose();
-    } else setError("Couldn't delete that bill.");
-  };
-
-  const inputStyle = [
-    styles.input,
-    {
-      borderColor: p.grid,
-      backgroundColor: p.page,
-      color: p.ink,
-      fontSize: fs(14),
-    },
-  ];
-  const chips = categories.filter((c) => c.name !== "Uncategorized");
-
-  return (
-    <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        style={styles.backdropCol}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <Pressable style={{ flex: 1 }} onPress={onClose} />
-        <View
-          style={[
-            styles.sheet,
-            { backgroundColor: p.surface, borderColor: p.border },
-          ]}
-        >
-          <View style={[styles.grab, { backgroundColor: p.grid }]} />
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ gap: 12 }}
-          >
-            <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
-              {bill ? t("editBill") : t("addBill")}
-            </Text>
-
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ gap: 8 }}
-            >
-              {KINDS.map((k) => {
-                const active = kind === k;
-                return (
-                  <Pressable
-                    key={k}
-                    onPress={() => setKind(k)}
-                    style={[
-                      styles.chip,
-                      {
-                        borderColor: active ? p.accent : p.border,
-                        backgroundColor: active ? p.accentSoft : p.page,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={{
-                        fontSize: fs(13),
-                        color: active ? p.ink : p.ink2,
-                        fontWeight: active ? "600" : "400",
-                      }}
-                    >
-                      {KIND_ICON[k]} {t(`kind_${k}` as StringKey)}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-
-            <TextInput
-              style={inputStyle}
-              placeholder={t("billName")}
-              placeholderTextColor={p.muted}
-              value={name}
-              onChangeText={setName}
-            />
-
-            <View style={styles.row}>
-              <TextInput
-                style={[...inputStyle, { flex: 1 }]}
-                placeholder={t("dueDay")}
-                placeholderTextColor={p.muted}
-                value={dueDay}
-                onChangeText={setDueDay}
-                keyboardType="number-pad"
-                maxLength={2}
-              />
-              <TextInput
-                style={[...inputStyle, { flex: 1.4 }]}
-                placeholder={t("usualAmount")}
-                placeholderTextColor={p.muted}
-                value={amount}
-                onChangeText={setAmount}
-                keyboardType="numeric"
-              />
-            </View>
-
-            <TextInput
-              style={inputStyle}
-              placeholder={t("upiId")}
-              placeholderTextColor={p.muted}
-              value={upi}
-              onChangeText={setUpi}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-            {!!upi.trim() && (
-              <TextInput
-                style={inputStyle}
-                placeholder={t("payeeName")}
-                placeholderTextColor={p.muted}
-                value={payee}
-                onChangeText={setPayee}
-              />
-            )}
-            <TextInput
-              style={inputStyle}
-              placeholder={t("consumerNo")}
-              placeholderTextColor={p.muted}
-              value={consumer}
-              onChangeText={setConsumer}
-            />
-
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ gap: 8 }}
-            >
-              {chips.map((c) => {
-                const active = category === c.name;
-                return (
-                  <Pressable
-                    key={c.name}
-                    onPress={() => {
-                      setCategory(c.name);
-                      setCategoryTouched(true);
-                    }}
-                    style={[
-                      styles.chip,
-                      {
-                        borderColor: active ? p.accent : p.border,
-                        backgroundColor: active ? p.accentSoft : p.page,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={{
-                        fontSize: fs(12.5),
-                        color: active ? p.ink : p.ink2,
-                        fontWeight: active ? "600" : "400",
-                      }}
-                    >
-                      {c.name}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-
-            {error && (
-              <Text style={[styles.error, { fontSize: fs(13) }]}>{error}</Text>
-            )}
-
-            <View style={styles.row}>
-              {bill && (
-                <Pressable
-                  style={styles.btnDanger}
-                  onPress={remove}
-                  disabled={busy}
-                >
-                  <Text
-                    style={{
-                      color: "#d03b3b",
-                      fontWeight: "600",
-                      fontSize: fs(14),
-                    }}
-                  >
-                    🗑️ {t("delete")}
-                  </Text>
-                </Pressable>
-              )}
-              <Pressable
-                style={[
-                  styles.btn,
-                  {
-                    backgroundColor: p.accent,
-                    flex: 1,
-                    opacity: ready && !busy ? 1 : 0.5,
-                  },
-                ]}
-                onPress={save}
-                disabled={!ready || busy}
-              >
-                {busy ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontWeight: "700",
-                      fontSize: fs(15),
-                    }}
-                  >
-                    {t("save")}
-                  </Text>
-                )}
-              </Pressable>
-            </View>
-          </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
   );
 }
 

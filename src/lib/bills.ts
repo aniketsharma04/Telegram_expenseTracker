@@ -1,6 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { addDays, daysBetween } from "./insights";
 import { insertExpense } from "./log-expense";
+import type { BbpsProvider, FetchResult } from "./bbps/types";
 
 /**
  * Bills module (Phase A): user-registered recurring bills with due-day
@@ -47,6 +48,17 @@ export interface Bill {
   consumer_number: string | null;
   biller_id: string | null;
   active: boolean;
+  // v6: BBPS auto-fetch (all null for manual bills)
+  biller_name?: string | null;
+  fetch_params?: Record<string, string> | null;
+  fetched_amount?: number | null;
+  fetched_due_date?: string | null;
+  fetched_bill_date?: string | null;
+  fetched_bill_number?: string | null;
+  fetched_customer_name?: string | null;
+  fetched_ref_id?: string | null;
+  fetched_at?: string | null;
+  fetch_error?: string | null;
 }
 
 export interface BillPayment {
@@ -65,10 +77,23 @@ export interface BillStatus extends Bill {
   paidThisMonth: BillPayment | null; // payment for the *current* calendar month, if any
   lastPaid: BillPayment | null;
   upiLink: string | null;
+  linked: boolean; // BBPS-linked (auto-fetch) vs manual
 }
 
-const BILL_COLUMNS =
+const BASE_COLUMNS =
   "id, user_id, name, kind, category, due_day, amount, upi_id, payee_name, consumer_number, biller_id, active";
+const BILL_COLUMNS =
+  BASE_COLUMNS +
+  ", biller_name, fetch_params, fetched_amount, fetched_due_date, fetched_bill_date, fetched_bill_number, fetched_customer_name, fetched_ref_id, fetched_at, fetch_error";
+
+/** Billing month a linked bill's fetched due date belongs to (null for manual bills). */
+export function fetchedCycleMonth(
+  b: Pick<Bill, "biller_id" | "fetched_due_date" | "fetched_amount">,
+): string | null {
+  return b.biller_id && b.fetched_due_date && b.fetched_amount != null
+    ? b.fetched_due_date.slice(0, 7)
+    : null;
+}
 
 export function monthAdd(month: string, delta: number): string {
   let [y, m] = month.split("-").map(Number);
@@ -132,6 +157,32 @@ export function billStatuses(
   for (const b of bills) {
     if (!b.active) continue;
     const mine = byBill.get(b.id) ?? [];
+    const lastPaid =
+      [...mine].sort((a, c) => (a.paid_on < c.paid_on ? 1 : -1))[0] ?? null;
+
+    const fm = fetchedCycleMonth(b);
+    if (fm) {
+      // Linked bill with a fetched cycle: the biller's due date and amount are the truth.
+      const paidFetched = mine.find((p) => p.month === fm) ?? null;
+      const amount = Number(b.fetched_amount);
+      const cycleMonth = paidFetched ? monthAdd(fm, 1) : fm;
+      const dueDate = paidFetched
+        ? dueDateFor(cycleMonth, b.due_day)
+        : b.fetched_due_date!;
+      out.push({
+        ...b,
+        amount,
+        cycleMonth,
+        dueDate,
+        daysUntil: daysBetween(today, dueDate),
+        paidThisMonth: paidFetched,
+        lastPaid,
+        upiLink: upiLink(b, amount),
+        linked: true,
+      });
+      continue;
+    }
+
     const paidThisMonth = mine.find((p) => p.month === thisMonth) ?? null;
     let cycleMonth = thisMonth;
     if (paidThisMonth) cycleMonth = monthAdd(thisMonth, 1);
@@ -140,17 +191,17 @@ export function billStatuses(
       cycleMonth = monthAdd(cycleMonth, 1);
 
     const dueDate = dueDateFor(cycleMonth, b.due_day);
-    const lastPaid =
-      [...mine].sort((a, c) => (a.paid_on < c.paid_on ? 1 : -1))[0] ?? null;
+    const amount = b.amount === null ? null : Number(b.amount);
     out.push({
       ...b,
-      amount: b.amount === null ? null : Number(b.amount),
+      amount,
       cycleMonth,
       dueDate,
       daysUntil: daysBetween(today, dueDate),
       paidThisMonth,
       lastPaid,
-      upiLink: upiLink(b, b.amount === null ? null : Number(b.amount)),
+      upiLink: upiLink(b, amount),
+      linked: Boolean(b.biller_id),
     });
   }
   return out.sort((a, b) => a.daysUntil - b.daysUntil);
@@ -163,14 +214,22 @@ export async function getBills(
   userId: number,
 ): Promise<Bill[]> {
   try {
-    const { data, error } = await supabase
+    const full = await supabase
       .from("bills")
       .select(BILL_COLUMNS)
       .eq("user_id", userId)
       .eq("active", true)
       .order("due_day");
-    if (error) throw error;
-    return (data ?? []) as Bill[];
+    if (!full.error) return (full.data ?? []) as unknown as Bill[];
+    // v6 migration not applied yet — read the v5 shape.
+    const base = await supabase
+      .from("bills")
+      .select(BASE_COLUMNS)
+      .eq("user_id", userId)
+      .eq("active", true)
+      .order("due_day");
+    if (base.error) throw base.error;
+    return (base.data ?? []) as unknown as Bill[];
   } catch (err) {
     console.error("getBills failed (v5 migration applied?)", err);
     return [];
@@ -221,6 +280,64 @@ export interface BillInput {
   upi_id: string | null;
   payee_name: string | null;
   consumer_number: string | null;
+  // v6 (optional): link to a BBPS biller for auto-fetch
+  biller_id?: string | null;
+  biller_name?: string | null;
+  fetch_params?: Record<string, string> | null;
+}
+
+/** Column updates for a fetch outcome (success or failure). */
+export function fetchPatch(result: FetchResult): Record<string, unknown> {
+  const now = new Date().toISOString();
+  if (result.ok) {
+    return {
+      fetched_amount: result.bill.amount,
+      fetched_due_date: result.bill.dueDate,
+      fetched_bill_date: result.bill.billDate,
+      fetched_bill_number: result.bill.billNumber,
+      fetched_customer_name: result.bill.customerName,
+      fetched_ref_id: result.bill.refId,
+      fetched_at: now,
+      fetch_error: null,
+    };
+  }
+  // No dues: clear the amount so the card shows "nothing due" rather than a stale bill.
+  return result.code === "no_dues"
+    ? {
+        fetched_amount: null,
+        fetched_due_date: null,
+        fetched_at: now,
+        fetch_error: null,
+      }
+    : { fetched_at: now, fetch_error: result.error };
+}
+
+/** Re-fetch one linked bill from the provider and persist the outcome. */
+export async function refreshBill(
+  supabase: SupabaseClient,
+  provider: BbpsProvider,
+  userId: number,
+  bill: Pick<Bill, "id" | "biller_id" | "fetch_params">,
+): Promise<FetchResult> {
+  if (!bill.biller_id || !bill.fetch_params) {
+    return {
+      ok: false,
+      code: "invalid",
+      error: "Bill isn't linked to a biller",
+    };
+  }
+  const result = await provider.fetchBill(
+    bill.biller_id,
+    bill.fetch_params,
+    null,
+  );
+  const { error } = await supabase
+    .from("bills")
+    .update(fetchPatch(result))
+    .eq("id", bill.id)
+    .eq("user_id", userId);
+  if (error) console.error("refreshBill persist failed", error);
+  return result;
 }
 
 export async function createBill(
@@ -234,7 +351,7 @@ export async function createBill(
     .select(BILL_COLUMNS)
     .single();
   if (error) throw error;
-  return data as Bill;
+  return data as unknown as Bill;
 }
 
 export async function updateBill(
@@ -251,7 +368,7 @@ export async function updateBill(
     .select(BILL_COLUMNS)
     .limit(1);
   if (error) throw error;
-  return (data?.[0] as Bill) ?? null;
+  return (data?.[0] as unknown as Bill) ?? null;
 }
 
 /** Soft-delete so payment history (and linked expenses) stay intact. */
@@ -289,10 +406,10 @@ export async function markBillPaid(
     .eq("user_id", userId)
     .limit(1);
   if (error) throw error;
-  const bill = rows?.[0] as Bill | undefined;
+  const bill = rows?.[0] as unknown as Bill | undefined;
   if (!bill) throw new Error("bill not found");
 
-  const month = paidOn.slice(0, 7);
+  const month = fetchedCycleMonth(bill) ?? paidOn.slice(0, 7);
 
   // Already paid this cycle? Replace the old expense so nothing double-counts.
   const { data: existing } = await supabase

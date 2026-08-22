@@ -12,7 +12,9 @@ import {
   loadBillStatuses,
   removeBill,
   updateBill,
+  fetchPatch,
 } from "@/lib/bills";
+import { getBbpsProvider, validateParams } from "@/lib/bbps";
 
 export const dynamic = "force-dynamic";
 
@@ -28,21 +30,22 @@ async function parseBill(
   const input: Partial<BillInput> = {};
 
   if (body.name !== undefined || !partial) {
-    if (typeof body.name !== "string" || !body.name.trim())
-      return { error: "name required" };
-    input.name = body.name.trim().slice(0, 60);
+    if (typeof body.name !== "string" || !body.name.trim()) {
+      if (!body.biller_id) return { error: "name required" };
+      input.name = ""; // filled from the biller name on create
+    } else input.name = body.name.trim().slice(0, 60);
   }
   if (body.kind !== undefined || !partial) {
     if (!BILL_KINDS.includes(body.kind as BillKind))
       return { error: "invalid kind" };
     input.kind = body.kind as BillKind;
   }
-  if (body.due_day !== undefined || !partial) {
+  if (body.due_day !== undefined || (!partial && !body.biller_id)) {
     const d = Number(body.due_day);
     if (!Number.isInteger(d) || d < 1 || d > 31)
       return { error: "due_day must be 1–31" };
     input.due_day = d;
-  }
+  } else if (!partial) input.due_day = 1; // overwritten by the fetched due date
   if (body.amount !== undefined) {
     if (body.amount === null || body.amount === "") input.amount = null;
     else {
@@ -65,6 +68,25 @@ async function parseBill(
     input.payee_name = str(body.payee_name, 60);
   if (body.consumer_number !== undefined || !partial)
     input.consumer_number = str(body.consumer_number, 60);
+
+  // v6: optional BBPS link
+  if (body.biller_id !== undefined) {
+    input.biller_id = str(body.biller_id, 80);
+    if (input.biller_id) {
+      if (typeof body.fetch_params !== "object" || !body.fetch_params)
+        return { error: "fetch_params required with biller_id" };
+      const params: Record<string, string> = {};
+      for (const [k, v] of Object.entries(
+        body.fetch_params as Record<string, unknown>,
+      ))
+        if (typeof v === "string")
+          params[k.slice(0, 60)] = v.trim().slice(0, 64);
+      input.fetch_params = params;
+    } else {
+      input.fetch_params = null;
+      input.biller_name = null;
+    }
+  }
 
   if (body.category !== undefined) {
     const categories = await loadCategories(createServiceClient());
@@ -106,12 +128,35 @@ export async function POST(req: NextRequest) {
   const parsed = await parseBill(body, false);
   if ("error" in parsed) return fail(parsed.error);
   try {
-    const bill = await createBill(
-      createServiceClient(),
-      userId,
-      parsed.input as BillInput,
-    );
-    return NextResponse.json({ status: "created", bill });
+    const supabase = createServiceClient();
+    let fetched: Record<string, unknown> = {};
+    let fetch: unknown = null;
+    if (parsed.input.biller_id && parsed.input.fetch_params) {
+      const provider = getBbpsProvider(supabase);
+      const biller = await provider.getBiller(parsed.input.biller_id);
+      if (!biller) return fail("unknown biller", 404);
+      const invalid = validateParams(biller, parsed.input.fetch_params);
+      if (invalid) return fail(invalid);
+      parsed.input.biller_name = biller.name;
+      if (!parsed.input.name) parsed.input.name = biller.name;
+      const result = await provider.fetchBill(
+        biller.id,
+        parsed.input.fetch_params,
+        null,
+      );
+      fetch = result;
+      fetched = fetchPatch(result);
+      if (result.ok) {
+        parsed.input.amount = result.bill.amount;
+        if (result.bill.dueDate)
+          parsed.input.due_day = Number(result.bill.dueDate.slice(8));
+      }
+    }
+    const bill = await createBill(supabase, userId, {
+      ...(parsed.input as BillInput),
+      ...fetched,
+    } as BillInput);
+    return NextResponse.json({ status: "created", bill, fetch });
   } catch (err) {
     return fail(err instanceof Error ? err.message : "create failed", 500);
   }
