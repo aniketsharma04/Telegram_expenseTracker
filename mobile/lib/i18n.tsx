@@ -33,24 +33,39 @@ const STRINGS = {
     hi: 'जैसे मैसेज करते हैं — "250 सब्ज़ी" लिखें',
   },
   orFillIn: { en: "or fill it in", hi: "या नीचे भरें" },
-  wherePlaceholder: { en: "Where / what for? (optional)", hi: "कहाँ / किस लिए? (ज़रूरी नहीं)" },
-  sourcePlaceholder: { en: "From where? e.g. Salary (optional)", hi: "कहाँ से? जैसे तनख्वाह (ज़रूरी नहीं)" },
+  wherePlaceholder: {
+    en: "Where / what for? (optional)",
+    hi: "कहाँ / किस लिए? (ज़रूरी नहीं)",
+  },
+  sourcePlaceholder: {
+    en: "From where? e.g. Salary (optional)",
+    hi: "कहाँ से? जैसे तनख्वाह (ज़रूरी नहीं)",
+  },
   today: { en: "Today", hi: "आज" },
   yesterday: { en: "Yesterday", hi: "कल" },
   save: { en: "Save", hi: "सहेजें" },
-  splitWithFamily: { en: "Split equally with family", hi: "परिवार में बराबर बाँटें" },
+  splitWithFamily: {
+    en: "Split equally with family",
+    hi: "परिवार में बराबर बाँटें",
+  },
   logged: { en: "Logged", hi: "दर्ज हुआ" },
   removed: { en: "Removed", hi: "हटाया गया" },
   undo: { en: "Undo", hi: "वापस लें" },
   addAnother: { en: "Add another", hi: "और जोड़ें" },
   holdToRecord: { en: "Voice", hi: "बोलें" },
-  recording: { en: "Listening… tap to finish", hi: "सुन रहा हूँ… रोकने के लिए दबाएँ" },
+  recording: {
+    en: "Listening… tap to finish",
+    hi: "सुन रहा हूँ… रोकने के लिए दबाएँ",
+  },
   receipt: { en: "Receipt", hi: "रसीद" },
   gallery: { en: "Gallery", hi: "गैलरी" },
   // edit sheet
   editExpense: { en: "Edit expense", hi: "खर्चा बदलें" },
   delete: { en: "Delete", hi: "हटाएँ" },
-  partOfSplit: { en: "Part of a family split", hi: "पारिवारिक बँटवारे का हिस्सा" },
+  partOfSplit: {
+    en: "Part of a family split",
+    hi: "पारिवारिक बँटवारे का हिस्सा",
+  },
   keepDate: { en: "Keep date", hi: "तारीख़ वही" },
   // cards
   budgets: { en: "Budgets", hi: "बजट" },
@@ -77,6 +92,58 @@ const STRINGS = {
   inDays: { en: "in", hi: "बचे दिन:" },
   days: { en: "days", hi: "" },
   usualPace: { en: "usual by now", hi: "आम तौर पर" },
+  // bills
+  bills: { en: "Bills", hi: "बिल" },
+  addBill: { en: "Add bill", hi: "बिल जोड़ें" },
+  editBill: { en: "Edit bill", hi: "बिल बदलें" },
+  noBills: {
+    en: "Register your monthly bills once — electricity, water, credit card, rent. I'll remind you before they're due, and Pay now opens your UPI app with the amount filled in.",
+    hi: "अपने मासिक बिल एक बार जोड़ें — बिजली, पानी, क्रेडिट कार्ड, किराया। समय से पहले याद दिलाऊँगा, और 'अभी चुकाएँ' से UPI ऐप में रकम भरी मिलेगी।",
+  },
+  payNow: { en: "Pay now", hi: "अभी चुकाएँ" },
+  markPaid: { en: "Mark paid", hi: "चुका दिया" },
+  paid: { en: "Paid", hi: "चुकाया" },
+  dueToday: { en: "Due today", hi: "आज देय" },
+  dueIn: { en: "Due in", hi: "देय:" },
+  overdue: { en: "overdue", hi: "बाकी" },
+  daysShort: { en: "d", hi: " दिन" },
+  billName: {
+    en: "Bill name, e.g. BSES Electricity",
+    hi: "बिल का नाम, जैसे BSES बिजली",
+  },
+  dueDay: { en: "Due day of month", hi: "महीने की तारीख़" },
+  usualAmount: { en: "Usual amount (optional)", hi: "आम रकम (ज़रूरी नहीं)" },
+  upiId: {
+    en: "UPI ID for Pay now (optional), e.g. biller@upi",
+    hi: "UPI ID (ज़रूरी नहीं), जैसे biller@upi",
+  },
+  payeeName: {
+    en: "Payee name (optional)",
+    hi: "भुगतान पाने वाला (ज़रूरी नहीं)",
+  },
+  consumerNo: {
+    en: "Consumer / account no. (optional)",
+    hi: "उपभोक्ता / खाता संख्या (ज़रूरी नहीं)",
+  },
+  didYouPay: { en: "Did the payment go through?", hi: "क्या भुगतान हो गया?" },
+  notYet: { en: "Not yet", hi: "अभी नहीं" },
+  openUpiApp: {
+    en: "No UPI ID saved — open your app to pay:",
+    hi: "UPI ID नहीं है — ऐप खोलकर चुकाएँ:",
+  },
+  suggested: { en: "Looks like a monthly bill", hi: "मासिक बिल लगता है" },
+  addAsBill: { en: "Add as bill", hi: "बिल बनाएँ" },
+  amountPaid: { en: "Amount paid", hi: "चुकाई रकम" },
+  undoPaid: { en: "Undo", hi: "वापस लें" },
+  kind_electricity: { en: "Electricity", hi: "बिजली" },
+  kind_water: { en: "Water", hi: "पानी" },
+  kind_gas: { en: "Gas", hi: "गैस" },
+  kind_credit_card: { en: "Credit card", hi: "क्रेडिट कार्ड" },
+  kind_rent: { en: "Rent", hi: "किराया" },
+  kind_internet: { en: "Internet", hi: "इंटरनेट" },
+  kind_mobile: { en: "Mobile", hi: "मोबाइल" },
+  kind_insurance: { en: "Insurance", hi: "बीमा" },
+  kind_other: { en: "Other", hi: "अन्य" },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;
@@ -110,7 +177,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     AsyncStorage.multiGet([LANG_KEY, SCALE_KEY]).then((pairs) => {
       for (const [key, value] of pairs) {
-        if (key === LANG_KEY && (value === "hi" || value === "en")) setLangState(value);
+        if (key === LANG_KEY && (value === "hi" || value === "en"))
+          setLangState(value);
         if (key === SCALE_KEY && value === "1") setScale(LARGE_SCALE);
       }
     });
@@ -130,7 +198,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       AsyncStorage.setItem(SCALE_KEY, large ? "1" : "0");
     },
   };
-  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
+  return (
+    <SettingsContext.Provider value={value}>
+      {children}
+    </SettingsContext.Provider>
+  );
 }
 
 export function useSettings(): Settings {

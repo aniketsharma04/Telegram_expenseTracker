@@ -5,7 +5,12 @@ import { getFamily, familyMembers } from "@/lib/family";
 import { localDate } from "@/lib/parser";
 import { getBudgets } from "@/lib/budgets";
 import { getIncomes } from "@/lib/income";
-import { budgetProgress, detectAnomalies, detectRecurring } from "@/lib/insights";
+import {
+  budgetProgress,
+  detectAnomalies,
+  detectRecurring,
+} from "@/lib/insights";
+import { loadBillStatuses } from "@/lib/bills";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +24,8 @@ const LOOKBACK_DAYS = 180;
  */
 export async function GET(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const supabase = createServiceClient();
 
@@ -28,9 +34,11 @@ export async function GET(req: NextRequest) {
     .select("id, first_name, username")
     .eq("id", userId)
     .limit(1);
-  if (userError) return NextResponse.json({ error: userError.message }, { status: 500 });
+  if (userError)
+    return NextResponse.json({ error: userError.message }, { status: 500 });
   const user = users?.[0];
-  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!user)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const family = await getFamily(supabase, userId);
   const members = family ? await familyMembers(supabase, family.id) : [];
@@ -52,13 +60,17 @@ export async function GET(req: NextRequest) {
     // Pre-migration schema without split columns — retry with the old shape.
     expRes = (await supabase
       .from("expenses")
-      .select("id, user_id, amount, category, merchant, expense_date, logged_at, source")
+      .select(
+        "id, user_id, amount, category, merchant, expense_date, logged_at, source",
+      )
       .in("user_id", memberIds)
       .gte("expense_date", since)
       .order("logged_at", { ascending: false })) as typeof expRes;
   }
-  if (expRes.error) return NextResponse.json({ error: expRes.error.message }, { status: 500 });
-  if (catRes.error) return NextResponse.json({ error: catRes.error.message }, { status: 500 });
+  if (expRes.error)
+    return NextResponse.json({ error: expRes.error.message }, { status: 500 });
+  if (catRes.error)
+    return NextResponse.json({ error: catRes.error.message }, { status: 500 });
 
   // v4 extras — all personal-scope, all tolerant of the migration not being applied yet.
   const today = localDate();
@@ -70,9 +82,10 @@ export async function GET(req: NextRequest) {
     y -= 1;
   }
   const incomeSince = `${y}-${String(m).padStart(2, "0")}-01`; // last month + this month
-  const [budgets, incomes] = await Promise.all([
+  const [budgets, incomes, bills] = await Promise.all([
     getBudgets(supabase, userId),
     getIncomes(supabase, userId, incomeSince),
+    loadBillStatuses(supabase, userId, today),
   ]);
 
   return NextResponse.json({
@@ -90,7 +103,11 @@ export async function GET(req: NextRequest) {
     expenses,
     today,
     budgets: budgetProgress(
-      budgets.map((b) => ({ id: b.id, category: b.category, monthly_cap: Number(b.monthly_cap) })),
+      budgets.map((b) => ({
+        id: b.id,
+        category: b.category,
+        monthly_cap: Number(b.monthly_cap),
+      })),
       mine,
       today,
     ),
@@ -100,10 +117,11 @@ export async function GET(req: NextRequest) {
       source: i.source,
       income_date: i.income_date,
     })),
+    bills,
     insights: {
-      recurring: detectRecurring(mine, today).filter(
-        (r) => r.daysUntil >= 0 && r.daysUntil <= 12,
-      ),
+      // All detected recurring charges; the app shows the next-12-days window
+      // as "Upcoming" and offers the rest as bill suggestions.
+      recurring: detectRecurring(mine, today),
       anomalies: detectAnomalies(mine, today),
     },
   });

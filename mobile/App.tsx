@@ -12,11 +12,16 @@ import {
   View,
 } from "react-native";
 import AddExpenseSheet from "./components/AddExpenseSheet";
+import BillsTab from "./components/BillsTab";
 import EditExpenseSheet from "./components/EditExpenseSheet";
 import FamilyTab from "./components/FamilyTab";
 import HomeTab, { RANGE_LABELS, RangeKey } from "./components/HomeTab";
 import LoginScreen from "./components/LoginScreen";
-import { BudgetsCard, InsightsCards, SavingsCard } from "./components/MoneyCards";
+import {
+  BudgetsCard,
+  InsightsCards,
+  SavingsCard,
+} from "./components/MoneyCards";
 import SettingsSheet from "./components/SettingsSheet";
 import TransactionsTab from "./components/TransactionsTab";
 import { Avatar } from "./components/ui";
@@ -24,13 +29,14 @@ import { ApiData, Expense, fetchData } from "./lib/api";
 import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
 import { memberColor, usePalette } from "./lib/theme";
 
-type Tab = "home" | "transactions" | "family";
+type Tab = "home" | "transactions" | "bills" | "family";
 type Scope = "personal" | "family";
 
 const TOKEN_KEY = "et_token";
 const TABS: Array<{ key: Tab; label: StringKey; icon: string }> = [
   { key: "home", label: "home", icon: "⌂" },
   { key: "transactions", label: "transactions", icon: "≡" },
+  { key: "bills", label: "bills", icon: "▤" },
   { key: "family", label: "family", icon: "⚭" },
 ];
 
@@ -92,7 +98,8 @@ function AppInner() {
   const login = useCallback(async (code: string): Promise<string | null> => {
     try {
       const result = await fetchData(code);
-      if (result === "unauthorized") return "That code isn't valid (or expired) — send /app to the bot for a fresh one.";
+      if (result === "unauthorized")
+        return "That code isn't valid (or expired) — send /app to the bot for a fresh one.";
       await AsyncStorage.setItem(TOKEN_KEY, code);
       setData(result);
       setToken(code);
@@ -111,8 +118,12 @@ function AppInner() {
   const derived = useMemo(() => {
     if (!data) return null;
     const members = data.family?.members ?? [];
-    const memberName = new Map<number, string>(members.map((m) => [m.id, m.name]));
-    const memberIndex = new Map<number, number>(members.map((m, i) => [m.id, i]));
+    const memberName = new Map<number, string>(
+      members.map((m) => [m.id, m.name]),
+    );
+    const memberIndex = new Map<number, number>(
+      members.map((m, i) => [m.id, i]),
+    );
     if (!memberName.has(data.user.id)) {
       memberName.set(data.user.id, data.user.name);
       memberIndex.set(data.user.id, 0);
@@ -125,35 +136,47 @@ function AppInner() {
           : [member]
         : [data.user.id];
     const idSet = new Set(activeIds);
-    const scoped = data.expenses.filter((e) => e.user_id !== null && idSet.has(e.user_id));
+    const scoped = data.expenses.filter(
+      (e) => e.user_id !== null && idSet.has(e.user_id),
+    );
 
-    const rangeStart = range === "month" ? `${data.today.slice(0, 7)}-01` : shiftDate(data.today, range === "30d" ? 29 : 89);
-    const inRange = scoped.filter((e) => e.expense_date >= rangeStart && e.expense_date <= data.today);
+    const rangeStart =
+      range === "month"
+        ? `${data.today.slice(0, 7)}-01`
+        : shiftDate(data.today, range === "30d" ? 29 : 89);
+    const inRange = scoped.filter(
+      (e) => e.expense_date >= rangeStart && e.expense_date <= data.today,
+    );
 
     let prev: Expense[];
     let prevLabel: string;
     if (range === "month") {
       const [y, m] = data.today.slice(0, 7).split("-").map(Number);
-      const prevPrefix = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
+      const prevPrefix =
+        m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
       prev = scoped.filter((e) => e.expense_date.startsWith(prevPrefix));
       prevLabel = "last month";
     } else {
       const days = range === "30d" ? 30 : 90;
       prev = scoped.filter(
-        (e) => e.expense_date >= shiftDate(data.today, days * 2 - 1) && e.expense_date < rangeStart
+        (e) =>
+          e.expense_date >= shiftDate(data.today, days * 2 - 1) &&
+          e.expense_date < rangeStart,
       );
       prevLabel = `previous ${days} days`;
     }
 
     const colorByCategory: Record<string, string> = {};
-    for (const c of data.categories) colorByCategory[c.name] = c.color ?? "#898781";
+    for (const c of data.categories)
+      colorByCategory[c.name] = c.color ?? "#898781";
 
     // Calendar-month personal totals for the savings card (independent of range).
     const monthPrefix = data.today.slice(0, 7);
     let monthSpent = 0;
     let monthInvested = 0;
     for (const e of data.expenses) {
-      if (e.user_id !== data.user.id || !e.expense_date.startsWith(monthPrefix)) continue;
+      if (e.user_id !== data.user.id || !e.expense_date.startsWith(monthPrefix))
+        continue;
       if (e.category === "Investments") monthInvested += Number(e.amount);
       else monthSpent += Number(e.amount);
     }
@@ -203,7 +226,7 @@ function AppInner() {
     scope === "family"
       ? member === "all"
         ? data.family!.name
-        : derived.memberName.get(member as number) ?? ""
+        : (derived.memberName.get(member as number) ?? "")
       : "Personal";
 
   return (
@@ -215,17 +238,30 @@ function AppInner() {
           <View style={[styles.mark, { backgroundColor: p.accent }]}>
             <Text style={styles.markText}>₹</Text>
           </View>
-          <Text style={{ fontSize: fs(16), fontWeight: "700", color: p.ink }}>{t("appName")}</Text>
+          <Text style={{ fontSize: fs(16), fontWeight: "700", color: p.ink }}>
+            {t("appName")}
+          </Text>
         </View>
         <View style={{ flexDirection: "row", gap: 8 }}>
           <Pressable
             onPress={() => setSettingsOpen(true)}
-            style={[styles.logout, { borderColor: p.border, backgroundColor: p.surface }]}
+            style={[
+              styles.logout,
+              { borderColor: p.border, backgroundColor: p.surface },
+            ]}
           >
             <Text style={{ fontSize: fs(12), color: p.ink2 }}>⚙️</Text>
           </Pressable>
-          <Pressable onPress={logout} style={[styles.logout, { borderColor: p.border, backgroundColor: p.surface }]}>
-            <Text style={{ fontSize: fs(12), color: p.ink2 }}>{t("logout")}</Text>
+          <Pressable
+            onPress={logout}
+            style={[
+              styles.logout,
+              { borderColor: p.border, backgroundColor: p.surface },
+            ]}
+          >
+            <Text style={{ fontSize: fs(12), color: p.ink2 }}>
+              {t("logout")}
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -246,17 +282,31 @@ function AppInner() {
       >
         {hasFamily && (
           <View style={styles.scopeRow}>
-            <View style={[styles.seg, { backgroundColor: p.surface, borderColor: p.border }]}>
+            <View
+              style={[
+                styles.seg,
+                { backgroundColor: p.surface, borderColor: p.border },
+              ]}
+            >
               {(["personal", "family"] as Scope[]).map((s) => (
                 <Pressable
                   key={s}
-                  style={[styles.segBtn, scope === s && { backgroundColor: p.accent }]}
+                  style={[
+                    styles.segBtn,
+                    scope === s && { backgroundColor: p.accent },
+                  ]}
                   onPress={() => {
                     setScope(s);
                     setMember("all");
                   }}
                 >
-                  <Text style={{ fontSize: fs(13.5), fontWeight: scope === s ? "600" : "400", color: scope === s ? "#fff" : p.ink2 }}>
+                  <Text
+                    style={{
+                      fontSize: fs(13.5),
+                      fontWeight: scope === s ? "600" : "400",
+                      color: scope === s ? "#fff" : p.ink2,
+                    }}
+                  >
                     {s === "personal" ? t("personal") : t("family")}
                   </Text>
                 </Pressable>
@@ -266,15 +316,24 @@ function AppInner() {
         )}
 
         {showChips && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.chips}
+          >
             <Pressable
               onPress={() => setMember("all")}
               style={[
                 styles.chip,
-                { borderColor: member === "all" ? p.accent : p.border, backgroundColor: member === "all" ? p.accentSoft : p.surface },
+                {
+                  borderColor: member === "all" ? p.accent : p.border,
+                  backgroundColor: member === "all" ? p.accentSoft : p.surface,
+                },
               ]}
             >
-              <Text style={{ fontSize: 13, color: p.ink }}>👨‍👩‍👧 {data.family!.name}</Text>
+              <Text style={{ fontSize: 13, color: p.ink }}>
+                👨‍👩‍👧 {data.family!.name}
+              </Text>
             </Pressable>
             {derived.members.map((m, i) => {
               const active = member === m.id;
@@ -284,11 +343,24 @@ function AppInner() {
                   onPress={() => setMember(m.id)}
                   style={[
                     styles.chip,
-                    { borderColor: active ? p.accent : p.border, backgroundColor: active ? p.accentSoft : p.surface },
+                    {
+                      borderColor: active ? p.accent : p.border,
+                      backgroundColor: active ? p.accentSoft : p.surface,
+                    },
                   ]}
                 >
-                  <Avatar color={memberColor(i, dark)} label={m.name.slice(0, 1).toUpperCase()} size={22} />
-                  <Text style={{ fontSize: 13, color: active ? p.ink : p.ink2, fontWeight: active ? "600" : "400" }}>
+                  <Avatar
+                    color={memberColor(i, dark)}
+                    label={m.name.slice(0, 1).toUpperCase()}
+                    size={22}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: active ? p.ink : p.ink2,
+                      fontWeight: active ? "600" : "400",
+                    }}
+                  >
                     {m.id === data.user.id ? "You" : m.name}
                   </Text>
                 </Pressable>
@@ -353,8 +425,24 @@ function AppInner() {
             }}
           />
         )}
+        {tab === "bills" && (
+          <BillsTab
+            p={p}
+            token={token}
+            bills={data.bills ?? []}
+            recurring={data.insights?.recurring ?? []}
+            categories={data.categories}
+            today={data.today}
+            onChanged={refresh}
+          />
+        )}
         {tab === "family" && (
-          <FamilyTab p={p} dark={dark} data={data} memberName={derived.memberName} />
+          <FamilyTab
+            p={p}
+            dark={dark}
+            data={data}
+            memberName={derived.memberName}
+          />
         )}
       </ScrollView>
 
@@ -388,12 +476,32 @@ function AppInner() {
         onChanged={refresh}
       />
 
-      <SettingsSheet visible={settingsOpen} onClose={() => setSettingsOpen(false)} p={p} />
+      <SettingsSheet
+        visible={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        p={p}
+      />
 
-      <View style={[styles.tabbar, { backgroundColor: p.surface, borderTopColor: p.border }]}>
+      <View
+        style={[
+          styles.tabbar,
+          { backgroundColor: p.surface, borderTopColor: p.border },
+        ]}
+      >
         {TABS.map((tb) => (
-          <Pressable key={tb.key} style={styles.tabItem} onPress={() => setTab(tb.key)}>
-            <Text style={{ fontSize: fs(18), color: tab === tb.key ? p.accent : p.muted }}>{tb.icon}</Text>
+          <Pressable
+            key={tb.key}
+            style={styles.tabItem}
+            onPress={() => setTab(tb.key)}
+          >
+            <Text
+              style={{
+                fontSize: fs(18),
+                color: tab === tb.key ? p.accent : p.muted,
+              }}
+            >
+              {tb.icon}
+            </Text>
             <Text
               style={{
                 fontSize: fs(11),
@@ -422,12 +530,29 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   brand: { flexDirection: "row", alignItems: "center", gap: 10 },
-  mark: { width: 30, height: 30, borderRadius: 9, alignItems: "center", justifyContent: "center" },
+  mark: {
+    width: 30,
+    height: 30,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   markText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  logout: { borderWidth: 1, borderRadius: 9, paddingVertical: 6, paddingHorizontal: 12 },
+  logout: {
+    borderWidth: 1,
+    borderRadius: 9,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
   scroll: { paddingHorizontal: 16, paddingBottom: 24, gap: 12 },
   scopeRow: { alignItems: "center", paddingBottom: 4 },
-  seg: { flexDirection: "row", borderRadius: 999, borderWidth: 1, padding: 4, gap: 4 },
+  seg: {
+    flexDirection: "row",
+    borderRadius: 999,
+    borderWidth: 1,
+    padding: 4,
+    gap: 4,
+  },
   segBtn: { paddingVertical: 7, paddingHorizontal: 24, borderRadius: 999 },
   chips: { gap: 8, paddingBottom: 6 },
   chip: {
@@ -440,7 +565,12 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
     paddingRight: 14,
   },
-  tabbar: { flexDirection: "row", borderTopWidth: 1, paddingBottom: 20, paddingTop: 8 },
+  tabbar: {
+    flexDirection: "row",
+    borderTopWidth: 1,
+    paddingBottom: 20,
+    paddingTop: 8,
+  },
   tabItem: { flex: 1, alignItems: "center", gap: 2 },
   fab: {
     position: "absolute",

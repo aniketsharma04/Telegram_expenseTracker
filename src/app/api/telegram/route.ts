@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { localDate, CategoryRule, parseExpense, extractAmount } from "@/lib/parser";
+import {
+  localDate,
+  CategoryRule,
+  parseExpense,
+  extractAmount,
+} from "@/lib/parser";
 import { parseReceipt } from "@/lib/llm";
 import {
   logExpenseFromText,
@@ -10,9 +15,15 @@ import {
   learnKeyword,
   loadCategories,
 } from "@/lib/log-expense";
-import { getBudgets, setBudget, removeBudget, collectBudgetAlerts } from "@/lib/budgets";
+import {
+  getBudgets,
+  setBudget,
+  removeBudget,
+  collectBudgetAlerts,
+} from "@/lib/budgets";
 import { budgetProgress, NON_SPEND_CATEGORIES } from "@/lib/insights";
 import { logIncome, getIncomes } from "@/lib/income";
+import { loadBillStatuses, markBillPaid } from "@/lib/bills";
 import { transcribeVoice, voiceConfigured } from "@/lib/voice";
 import {
   sendMessage,
@@ -451,6 +462,12 @@ async function handleCommand(text: string, chatId: number) {
     case "/split":
       await handleSplit(chatId, arg);
       return;
+    case "/bills":
+      await sendBills(chatId);
+      return;
+    case "/paid":
+      await handlePaid(chatId, arg);
+      return;
     default:
       await sendMessage(chatId, `Unknown command. ${"\n"}${HELP_TEXT}`);
   }
@@ -827,7 +844,9 @@ async function handleBudget(chatId: number, arg: string) {
         localDate(),
       );
       const lines = progress
-        .sort((a, b) => (a.category === null ? -1 : b.category === null ? 1 : b.pct - a.pct))
+        .sort((a, b) =>
+          a.category === null ? -1 : b.category === null ? 1 : b.pct - a.pct,
+        )
         .map((b) => {
           const pct = Math.round(b.pct * 100);
           const icon = pct >= 100 ? "🚨" : pct >= 80 ? "⚠️" : "✅";
@@ -842,7 +861,10 @@ async function handleBudget(chatId: number, arg: string) {
     if (arg.toLowerCase().startsWith("remove")) {
       const what = arg.slice(6).trim();
       if (!what) {
-        await sendMessage(chatId, "Remove which one? e.g. <code>/budget remove groceries</code> or <code>/budget remove overall</code>");
+        await sendMessage(
+          chatId,
+          "Remove which one? e.g. <code>/budget remove groceries</code> or <code>/budget remove overall</code>",
+        );
         return;
       }
       let category: string | null = null;
@@ -850,7 +872,10 @@ async function handleBudget(chatId: number, arg: string) {
         const categories = await loadCategories(supabase);
         const match = matchCategory(categories, what);
         if (!match) {
-          await sendMessage(chatId, `No category matches "${escapeHtml(what)}".`);
+          await sendMessage(
+            chatId,
+            `No category matches "${escapeHtml(what)}".`,
+          );
           return;
         }
         category = match.name;
@@ -951,7 +976,10 @@ async function handleIncome(chatId: number, arg: string) {
     }
     const { amount, rest } = extractAmount(working);
     if (!amount) {
-      await sendMessage(chatId, "How much? e.g. <code>/income 50000 salary</code>");
+      await sendMessage(
+        chatId,
+        "How much? e.g. <code>/income 50000 salary</code>",
+      );
       return;
     }
     const source = rest.trim() ? rest.trim().slice(0, 80) : null;
@@ -995,14 +1023,20 @@ async function handleSplit(chatId: number, arg: string) {
   }
   const members = await familyMembers(supabase, family.id);
   if (members.length < 2) {
-    await sendMessage(chatId, "Your family has no other members yet — <code>/invite</code> someone first.");
+    await sendMessage(
+      chatId,
+      "Your family has no other members yet — <code>/invite</code> someone first.",
+    );
     return;
   }
 
   const categories = await loadCategories(supabase);
   const parsed = parseExpense(arg, categories);
   if (!parsed.ok || !parsed.amount) {
-    await sendMessage(chatId, "I couldn't find an amount — try <code>/split 1200 dinner</code>");
+    await sendMessage(
+      chatId,
+      "I couldn't find an amount — try <code>/split 1200 dinner</code>",
+    );
     return;
   }
 
@@ -1048,6 +1082,109 @@ async function handleSplit(chatId: number, arg: string) {
     await sendMessage(
       chatId,
       "⚠️ Splits aren't available yet — the v4 database migration hasn't been applied.",
+    );
+  }
+}
+
+// ── v5: bills ───────────────────────────────────────────────────────────────
+
+async function sendBills(chatId: number) {
+  const supabase = createServiceClient();
+  const bills = await loadBillStatuses(supabase, chatId, localDate());
+  if (bills.length === 0) {
+    await sendMessage(
+      chatId,
+      "No bills registered yet. Add them in the app (Bills tab → +) — electricity, water, credit card, rent… I'll remind you before they're due, and <b>Pay now</b> opens your UPI app with the amount filled in.",
+    );
+    return;
+  }
+  const lines = bills.map((b) => {
+    const amt = b.amount ? ` · ${fmtINR(b.amount)}` : "";
+    const when =
+      b.daysUntil < 0
+        ? `⏰ ${-b.daysUntil}d overdue`
+        : b.daysUntil === 0
+          ? "🔴 due today"
+          : b.daysUntil <= 3
+            ? `🟠 in ${b.daysUntil}d`
+            : `🟢 in ${b.daysUntil}d (${Number(b.dueDate.slice(8))}th)`;
+    const paid = b.paidThisMonth ? " ✅ paid this month" : "";
+    return `• <b>${escapeHtml(b.name)}</b>${amt} — ${when}${paid}`;
+  });
+  await sendMessage(
+    chatId,
+    `🧾 <b>Your bills</b>\n${lines.join("\n")}\n\nMark one paid: <code>/paid electricity 1234</code> (amount optional if it's the usual).`,
+  );
+}
+
+async function handlePaid(chatId: number, arg: string) {
+  if (!arg) {
+    await sendMessage(
+      chatId,
+      "Which bill? e.g. <code>/paid electricity 1234</code> — see <code>/bills</code> for names.",
+    );
+    return;
+  }
+  const supabase = createServiceClient();
+  const bills = await loadBillStatuses(supabase, chatId, localDate());
+  if (bills.length === 0) {
+    await sendMessage(
+      chatId,
+      "No bills registered yet — add them in the app's Bills tab first.",
+    );
+    return;
+  }
+
+  // Amount is the last numeric token (if any); the rest names the bill.
+  const tokens = arg.split(/\s+/);
+  let amount: number | null = null;
+  const { amount: parsedAmt } = extractAmount(tokens[tokens.length - 1]);
+  if (parsedAmt && tokens.length > 1) {
+    amount = parsedAmt;
+    tokens.pop();
+  }
+  const needle = tokens.join(" ").toLowerCase();
+  const bill =
+    bills.find((b) => b.name.toLowerCase() === needle) ??
+    bills.find((b) => b.name.toLowerCase().includes(needle)) ??
+    bills.find((b) => b.kind.replace("_", " ").includes(needle));
+  if (!bill) {
+    await sendMessage(
+      chatId,
+      `No bill matches "${escapeHtml(needle)}". Your bills:\n${bills.map((b) => `• ${escapeHtml(b.name)}`).join("\n")}`,
+    );
+    return;
+  }
+  const finalAmount = amount ?? bill.amount;
+  if (!finalAmount) {
+    await sendMessage(
+      chatId,
+      `How much did you pay for ${escapeHtml(bill.name)}? e.g. <code>/paid ${escapeHtml(bill.name.split(" ")[0].toLowerCase())} 1234</code>`,
+    );
+    return;
+  }
+
+  try {
+    await markBillPaid(
+      supabase,
+      chatId,
+      bill.id,
+      finalAmount,
+      localDate(),
+      "telegram_bill",
+    );
+    const alerts = await collectBudgetAlerts(supabase, chatId);
+    await sendMessage(
+      chatId,
+      `✅ ${escapeHtml(bill.name)} marked paid — ${fmtINR(finalAmount)} logged under ${bill.category}.` +
+        (await monthlySummary(supabase, chatId)) +
+        (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),
+    );
+  } catch (err) {
+    console.error("/paid failed", err);
+    await sendMessage(
+      chatId,
+      "⚠️ Couldn't mark that paid — try again in a minute.",
     );
   }
 }

@@ -1,6 +1,7 @@
 /** Same API the web dashboard uses — the app is just another skin over it. */
 export const API_BASE =
-  process.env.EXPO_PUBLIC_API_URL ?? "https://telegram-expense-tracker-nu.vercel.app";
+  process.env.EXPO_PUBLIC_API_URL ??
+  "https://telegram-expense-tracker-nu.vercel.app";
 
 export const BOT_URL = "https://t.me/Aniket_financial_expense_bot";
 
@@ -40,6 +41,55 @@ export interface RecurringCharge {
   daysUntil: number;
 }
 
+export type BillKind =
+  | "electricity"
+  | "water"
+  | "gas"
+  | "credit_card"
+  | "rent"
+  | "internet"
+  | "mobile"
+  | "insurance"
+  | "other";
+
+export interface BillPayment {
+  id: string;
+  bill_id: string;
+  month: string;
+  amount: number;
+  paid_on: string;
+  expense_id: string | null;
+}
+
+export interface BillStatus {
+  id: string;
+  name: string;
+  kind: BillKind;
+  category: string;
+  due_day: number;
+  amount: number | null;
+  upi_id: string | null;
+  payee_name: string | null;
+  consumer_number: string | null;
+  cycleMonth: string;
+  dueDate: string;
+  daysUntil: number;
+  paidThisMonth: BillPayment | null;
+  lastPaid: BillPayment | null;
+  upiLink: string | null;
+}
+
+export interface BillInput {
+  name: string;
+  kind: BillKind;
+  category?: string;
+  due_day: number;
+  amount: number | null;
+  upi_id: string | null;
+  payee_name: string | null;
+  consumer_number: string | null;
+}
+
 export interface Anomaly {
   category: string;
   mtd: number;
@@ -65,10 +115,13 @@ export interface ApiData {
   today: string;
   budgets?: BudgetProgress[];
   incomes?: IncomeEntry[];
+  bills?: BillStatus[];
   insights?: { recurring: RecurringCharge[]; anomalies: Anomaly[] };
 }
 
-export async function fetchData(token: string): Promise<ApiData | "unauthorized"> {
+export async function fetchData(
+  token: string,
+): Promise<ApiData | "unauthorized"> {
   const res = await fetch(`${API_BASE}/api/data`, {
     headers: { Authorization: `Bearer ${token.trim()}` },
   });
@@ -125,11 +178,17 @@ export async function addExpense(
 }
 
 /** Undo: delete one of your own expenses. */
-export async function deleteExpense(token: string, id: string): Promise<boolean> {
-  const res = await fetch(`${API_BASE}/api/expense?id=${encodeURIComponent(id)}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token.trim()}` },
-  });
+export async function deleteExpense(
+  token: string,
+  id: string,
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/expense?id=${encodeURIComponent(id)}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    },
+  );
   if (!res.ok) return false;
   const json = (await res.json()) as { deleted: boolean };
   return json.deleted;
@@ -139,8 +198,17 @@ export async function deleteExpense(token: string, id: string): Promise<boolean>
 export async function patchExpense(
   token: string,
   id: string,
-  patch: { amount?: number; category?: string; merchant?: string | null; expense_date?: string },
-): Promise<{ status: "updated"; expense: LoggedExpense; alerts?: string[] } | "unauthorized" | null> {
+  patch: {
+    amount?: number;
+    category?: string;
+    merchant?: string | null;
+    expense_date?: string;
+  },
+): Promise<
+  | { status: "updated"; expense: LoggedExpense; alerts?: string[] }
+  | "unauthorized"
+  | null
+> {
   const res = await fetch(`${API_BASE}/api/expense`, {
     method: "PATCH",
     headers: {
@@ -151,7 +219,11 @@ export async function patchExpense(
   });
   if (res.status === 401) return "unauthorized";
   if (!res.ok) return null;
-  return (await res.json()) as { status: "updated"; expense: LoggedExpense; alerts?: string[] };
+  return (await res.json()) as {
+    status: "updated";
+    expense: LoggedExpense;
+    alerts?: string[];
+  };
 }
 
 /** Voice note or receipt photo → same brains as the bot. */
@@ -193,11 +265,17 @@ export async function addIncome(
   return (await res.json()) as { status: "logged"; income: IncomeEntry };
 }
 
-export async function deleteIncome(token: string, id: string): Promise<boolean> {
-  const res = await fetch(`${API_BASE}/api/income?id=${encodeURIComponent(id)}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token.trim()}` },
-  });
+export async function deleteIncome(
+  token: string,
+  id: string,
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/income?id=${encodeURIComponent(id)}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    },
+  );
   if (!res.ok) return false;
   return ((await res.json()) as { deleted: boolean }).deleted;
 }
@@ -218,10 +296,77 @@ export async function saveBudget(
   return res.ok;
 }
 
-export async function removeBudget(token: string, category: string | null): Promise<boolean> {
+export async function removeBudget(
+  token: string,
+  category: string | null,
+): Promise<boolean> {
   const res = await fetch(
     `${API_BASE}/api/budget?category=${encodeURIComponent(category ?? "overall")}`,
     { method: "DELETE", headers: { Authorization: `Bearer ${token.trim()}` } },
+  );
+  return res.ok;
+}
+
+// ── Bills ───────────────────────────────────────────────────────────────────
+
+async function jsonOrNull<T>(
+  res: Response,
+): Promise<T | "unauthorized" | null> {
+  if (res.status === 401) return "unauthorized";
+  if (!res.ok) return null;
+  return (await res.json()) as T;
+}
+
+export function saveBill(token: string, input: BillInput, id?: string) {
+  return fetch(`${API_BASE}/api/bills`, {
+    method: id ? "PATCH" : "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(id ? { id, ...input } : input),
+  }).then((r) => jsonOrNull<{ status: string; bill: { id: string } }>(r));
+}
+
+export async function deleteBill(token: string, id: string): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/bills?id=${encodeURIComponent(id)}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    },
+  );
+  return res.ok;
+}
+
+export function payBill(
+  token: string,
+  bill_id: string,
+  amount: number,
+  paid_on?: string,
+) {
+  return fetch(`${API_BASE}/api/bills/pay`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ bill_id, amount, paid_on }),
+  }).then((r) =>
+    jsonOrNull<{ status: "paid"; payment: BillPayment; alerts: string[] }>(r),
+  );
+}
+
+export async function unpayBill(
+  token: string,
+  paymentId: string,
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/bills/pay?id=${encodeURIComponent(paymentId)}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    },
   );
   return res.ok;
 }

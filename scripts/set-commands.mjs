@@ -14,6 +14,8 @@ const commands = [
   { command: "budget", description: "Budgets — /budget 15000 or /budget groceries 3000" },
   { command: "income", description: "Log income / see savings — /income 50000 salary" },
   { command: "split", description: "Split a bill with family — /split 1200 dinner" },
+  { command: "bills", description: "What's due this month" },
+  { command: "paid", description: "Mark a bill paid — /paid electricity 1234" },
   { command: "family", description: "Family report / create a family" },
   { command: "invite", description: "Invite link for your family" },
   { command: "invest", description: "Invested this month" },
