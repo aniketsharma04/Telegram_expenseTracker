@@ -51,6 +51,8 @@ export async function insertExpense(
     source: string;
     parsed_by: string;
     expense_date: string;
+    paid_by?: number;
+    split_id?: string;
   },
 ): Promise<LoggedExpense> {
   const { data, error } = await supabase
@@ -60,6 +62,90 @@ export async function insertExpense(
     .single();
   if (error) throw error;
   return data as LoggedExpense;
+}
+
+/**
+ * Equal split among family members (payer included): one expense row per
+ * member for their share, grouped by split_id, with paid_by = the payer.
+ * Rounding drift lands on the payer so shares always sum to the total.
+ */
+export async function logSplitExpense(
+  supabase: SupabaseClient,
+  payerId: number,
+  memberIds: number[],
+  entry: {
+    amount: number;
+    category: string;
+    merchant: string | null;
+    expense_date: string;
+    raw_message: string;
+    source: string;
+    parsed_by: string;
+  },
+): Promise<{ payerShare: LoggedExpense; perHead: number; count: number }> {
+  const ids = [...new Set([payerId, ...memberIds])];
+  const split_id = crypto.randomUUID();
+  const perHead = Math.floor((entry.amount / ids.length) * 100) / 100;
+  const payerShare =
+    Math.round((entry.amount - perHead * (ids.length - 1)) * 100) / 100;
+
+  let payerRow: LoggedExpense | null = null;
+  for (const memberId of ids) {
+    const row = await insertExpense(supabase, {
+      ...entry,
+      amount: memberId === payerId ? payerShare : perHead,
+      user_id: memberId,
+      paid_by: payerId,
+      split_id,
+    });
+    if (memberId === payerId) payerRow = row;
+  }
+  return { payerShare: payerRow!, perHead, count: ids.length };
+}
+
+/**
+ * Delete an expense the caller owns. If it's their own share of a split they
+ * paid for, the whole split group goes (their money, their entry). Returns
+ * the number of rows removed.
+ */
+export async function deleteExpenseScoped(
+  supabase: SupabaseClient,
+  userId: number,
+  id: string,
+): Promise<number> {
+  const { data: rows, error: findError } = await supabase
+    .from("expenses")
+    .select("id, user_id, paid_by, split_id")
+    .eq("id", id)
+    .limit(1);
+  let row = rows?.[0] as
+    | { id: string; user_id: number | null; paid_by?: number | null; split_id?: string | null }
+    | undefined;
+  if (findError) {
+    // Pre-migration schema (no split columns): fall back to a plain scoped delete.
+    console.error("split-aware lookup failed, falling back", findError);
+    row = { id, user_id: userId };
+  }
+  if (!row || row.user_id !== userId) return 0;
+
+  if (row.split_id && row.paid_by === userId) {
+    const { data, error } = await supabase
+      .from("expenses")
+      .delete()
+      .eq("split_id", row.split_id)
+      .select("id");
+    if (error) throw error;
+    return data?.length ?? 0;
+  }
+
+  const { data, error } = await supabase
+    .from("expenses")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", userId)
+    .select("id");
+  if (error) throw error;
+  return data?.length ?? 0;
 }
 
 /** Add a merchant keyword to a category so the rules parser catches it next time. */

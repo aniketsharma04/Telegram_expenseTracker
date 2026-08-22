@@ -11,12 +11,16 @@ export function voiceConfigured(): boolean {
   return Boolean(process.env.GROQ_API_KEY);
 }
 
-export async function transcribeVoice(audio: ArrayBuffer, mimeType: string): Promise<string | null> {
+export async function transcribeVoice(
+  audio: ArrayBuffer,
+  mimeType: string,
+  filename = "voice.ogg",
+): Promise<string | null> {
   const key = process.env.GROQ_API_KEY;
   if (!key) return null;
 
   const form = new FormData();
-  form.append("file", new Blob([audio], { type: mimeType || "audio/ogg" }), "voice.ogg");
+  form.append("file", new Blob([audio], { type: mimeType || "audio/ogg" }), filename);
   form.append("model", MODEL);
   form.append("temperature", "0");
   form.append("response_format", "text");

@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { localDate, CategoryRule } from "@/lib/parser";
+import { localDate, CategoryRule, parseExpense, extractAmount } from "@/lib/parser";
 import { parseReceipt } from "@/lib/llm";
 import {
   logExpenseFromText,
+  logSplitExpense,
+  deleteExpenseScoped,
   insertExpense,
   learnKeyword,
   loadCategories,
 } from "@/lib/log-expense";
+import { getBudgets, setBudget, removeBudget, collectBudgetAlerts } from "@/lib/budgets";
+import { budgetProgress, NON_SPEND_CATEGORIES } from "@/lib/insights";
+import { logIncome, getIncomes } from "@/lib/income";
 import { transcribeVoice, voiceConfigured } from "@/lib/voice";
 import {
   sendMessage,
@@ -54,6 +59,13 @@ const HELP_TEXT = [
   "• <code>/family create Sharma Family</code> — start a family",
   "• <code>/invite</code> — get a link to add members",
   "• <code>/family</code> — this month's family report",
+  "• <code>/split 1200 dinner</code> — split a bill equally with your family",
+  "",
+  "Money habits:",
+  "• <code>/budget 15000</code> — overall monthly cap (alerts at 80% and 100%)",
+  "• <code>/budget groceries 3000</code> — cap one category",
+  "• <code>/budget</code> — see how the month is tracking",
+  "• <code>/income 50000 salary</code> — log income; <code>/income</code> shows savings",
 ].join("\n");
 
 function ok() {
@@ -305,9 +317,13 @@ async function handleReceiptPhoto(message: TelegramMessage, chatId: number) {
     parsed.confidence === "low" || !parsed.category
       ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
       : "";
+  const alerts = await collectBudgetAlerts(supabase, chatId);
   await sendMessage(
     chatId,
-    `📷 ${confirmText(row)}` + (await monthlySummary(supabase, chatId)) + nudge,
+    `📷 ${confirmText(row)}` +
+      (await monthlySummary(supabase, chatId)) +
+      nudge +
+      (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),
   );
 }
 
@@ -335,12 +351,14 @@ async function handleExpenseText(
   const nudge = result.nudge
     ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
     : "";
+  const alerts = await collectBudgetAlerts(supabase, chatId);
   await sendMessage(
     chatId,
     confirmText(result.expense) +
       suffix +
       (await monthlySummary(supabase, chatId)) +
-      nudge,
+      nudge +
+      (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),
   );
 }
 
@@ -423,6 +441,15 @@ async function handleCommand(text: string, chatId: number) {
     }
     case "/amount":
       await reamountLast(chatId, arg);
+      return;
+    case "/budget":
+      await handleBudget(chatId, arg);
+      return;
+    case "/income":
+      await handleIncome(chatId, arg);
+      return;
+    case "/split":
+      await handleSplit(chatId, arg);
       return;
     default:
       await sendMessage(chatId, `Unknown command. ${"\n"}${HELP_TEXT}`);
@@ -660,11 +687,11 @@ async function undoLast(chatId: number) {
     await sendMessage(chatId, "Nothing to undo — no expenses logged yet.");
     return;
   }
-  const { error } = await supabase.from("expenses").delete().eq("id", last.id);
-  if (error) throw error;
+  const removed = await deleteExpenseScoped(supabase, chatId, last.id);
+  const splitNote = removed > 1 ? ` (whole split — ${removed} shares)` : "";
   await sendMessage(
     chatId,
-    `🗑️ Deleted ${fmtINR(last.amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}` +
+    `🗑️ Deleted ${fmtINR(last.amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}${splitNote}` +
       (await monthlySummary(supabase, chatId)),
   );
 }
@@ -755,6 +782,274 @@ async function reamountLast(chatId: number, arg: string) {
     chatId,
     `✏️ Changed ${fmtINR(last.amount)} → ${fmtINR(amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}`,
   );
+}
+
+// ── v4: budgets, income, splits ─────────────────────────────────────────────
+
+/** Fuzzy category lookup shared by /budget (same rules as /category). */
+function matchCategory(
+  categories: CategoryRule[],
+  needleRaw: string,
+): CategoryRule | null {
+  const needle = needleRaw.toLowerCase().trim();
+  return (
+    categories.find((c) => c.name.toLowerCase() === needle) ??
+    categories.find((c) => c.name.toLowerCase().startsWith(needle)) ??
+    categories.find((c) => c.name.toLowerCase().includes(needle)) ??
+    null
+  );
+}
+
+async function handleBudget(chatId: number, arg: string) {
+  const supabase = createServiceClient();
+
+  try {
+    // "/budget" → progress list
+    if (!arg) {
+      const budgets = await getBudgets(supabase, chatId);
+      if (budgets.length === 0) {
+        await sendMessage(
+          chatId,
+          "No budgets set yet.\n\n• <code>/budget 15000</code> — overall monthly cap\n• <code>/budget groceries 3000</code> — cap one category\n\nI'll warn you at 80% and 100%.",
+        );
+        return;
+      }
+      const monthStart = `${localDate().slice(0, 7)}-01`;
+      const { data, error } = await supabase
+        .from("expenses")
+        .select("amount, category, expense_date")
+        .eq("user_id", chatId)
+        .gte("expense_date", monthStart);
+      if (error) throw error;
+      const progress = budgetProgress(
+        budgets,
+        (data ?? []).map((e) => ({ ...e, merchant: null })),
+        localDate(),
+      );
+      const lines = progress
+        .sort((a, b) => (a.category === null ? -1 : b.category === null ? 1 : b.pct - a.pct))
+        .map((b) => {
+          const pct = Math.round(b.pct * 100);
+          const icon = pct >= 100 ? "🚨" : pct >= 80 ? "⚠️" : "✅";
+          return `${icon} ${b.category ?? "Overall"}: ${fmtINR(b.spent)} / ${fmtINR(b.monthly_cap)} (${pct}%)`;
+        })
+        .join("\n");
+      await sendMessage(chatId, `🎯 <b>Budgets this month</b>\n${lines}`);
+      return;
+    }
+
+    // "/budget remove groceries" | "/budget remove overall"
+    if (arg.toLowerCase().startsWith("remove")) {
+      const what = arg.slice(6).trim();
+      if (!what) {
+        await sendMessage(chatId, "Remove which one? e.g. <code>/budget remove groceries</code> or <code>/budget remove overall</code>");
+        return;
+      }
+      let category: string | null = null;
+      if (what.toLowerCase() !== "overall") {
+        const categories = await loadCategories(supabase);
+        const match = matchCategory(categories, what);
+        if (!match) {
+          await sendMessage(chatId, `No category matches "${escapeHtml(what)}".`);
+          return;
+        }
+        category = match.name;
+      }
+      const removed = await removeBudget(supabase, chatId, category);
+      await sendMessage(
+        chatId,
+        removed
+          ? `🗑️ Removed the ${category ?? "overall"} budget.`
+          : `There's no ${category ?? "overall"} budget to remove.`,
+      );
+      return;
+    }
+
+    // "/budget 15000" (overall) or "/budget groceries 3000"
+    const tokens = arg.split(/\s+/);
+    const capRaw = tokens[tokens.length - 1];
+    const { amount: cap } = extractAmount(capRaw);
+    if (!cap) {
+      await sendMessage(
+        chatId,
+        "Give me a number, e.g. <code>/budget 15000</code> or <code>/budget groceries 3000</code>",
+      );
+      return;
+    }
+    let category: string | null = null;
+    const catText = tokens.slice(0, -1).join(" ").trim();
+    if (catText) {
+      const categories = await loadCategories(supabase);
+      const match = matchCategory(categories, catText);
+      if (!match) {
+        await sendMessage(
+          chatId,
+          `No category matches "${escapeHtml(catText)}". Options:\n${categories.map((c) => `• ${c.name}`).join("\n")}`,
+        );
+        return;
+      }
+      category = match.name;
+    }
+    await setBudget(supabase, chatId, category, cap);
+    await sendMessage(
+      chatId,
+      `🎯 Budget set: ${category ?? "overall spending"} capped at ${fmtINR(cap)}/month. I'll warn you at 80% and 100%.`,
+    );
+  } catch (err) {
+    console.error("/budget failed", err);
+    await sendMessage(
+      chatId,
+      "⚠️ Budgets aren't available yet — the v4 database migration hasn't been applied.",
+    );
+  }
+}
+
+async function handleIncome(chatId: number, arg: string) {
+  const supabase = createServiceClient();
+  const today = localDate();
+  const monthStart = `${today.slice(0, 7)}-01`;
+
+  try {
+    // "/income" → month report with savings rate
+    if (!arg) {
+      const incomes = await getIncomes(supabase, chatId, monthStart);
+      const earned = incomes.reduce((s, i) => s + Number(i.amount), 0);
+      if (earned === 0) {
+        await sendMessage(
+          chatId,
+          "No income logged this month. Log it like <code>/income 50000 salary</code> and I'll track how much you keep.",
+        );
+        return;
+      }
+      const { data, error } = await supabase
+        .from("expenses")
+        .select("amount, category")
+        .eq("user_id", chatId)
+        .gte("expense_date", monthStart);
+      if (error) throw error;
+      let spent = 0;
+      let invested = 0;
+      for (const r of data ?? []) {
+        if (NON_SPEND_CATEGORIES.has(r.category)) invested += Number(r.amount);
+        else spent += Number(r.amount);
+      }
+      const kept = earned - spent - invested;
+      const rate = Math.round((Math.max(kept, 0) / earned) * 100);
+      await sendMessage(
+        chatId,
+        `💵 <b>This month</b>\nEarned: ${fmtINR(earned)}\nSpent: ${fmtINR(spent)} · Invested: ${fmtINR(invested)}\nKept: ${fmtINR(kept)} (${rate}% saved)`,
+      );
+      return;
+    }
+
+    // "/income 50000 salary [yesterday]"
+    let working = arg;
+    let offsetDays = 0;
+    if (/\byesterday\b/i.test(working)) {
+      offsetDays = 1;
+      working = working.replace(/\byesterday\b/i, " ");
+    }
+    const { amount, rest } = extractAmount(working);
+    if (!amount) {
+      await sendMessage(chatId, "How much? e.g. <code>/income 50000 salary</code>");
+      return;
+    }
+    const source = rest.trim() ? rest.trim().slice(0, 80) : null;
+    await logIncome(supabase, chatId, {
+      amount,
+      source,
+      income_date: localDate(offsetDays),
+      raw_message: `/income ${arg}`,
+      channel: "telegram",
+    });
+    await sendMessage(
+      chatId,
+      `💵 Logged income ${fmtINR(amount)}${source ? ` (${escapeHtml(source)})` : ""}. Send <code>/income</code> anytime to see this month's savings.`,
+    );
+  } catch (err) {
+    console.error("/income failed", err);
+    await sendMessage(
+      chatId,
+      "⚠️ Income tracking isn't available yet — the v4 database migration hasn't been applied.",
+    );
+  }
+}
+
+async function handleSplit(chatId: number, arg: string) {
+  const supabase = createServiceClient();
+  if (!arg) {
+    await sendMessage(
+      chatId,
+      "Split a bill equally with your family, e.g. <code>/split 1200 dinner</code> — you pay, everyone's share gets logged.",
+    );
+    return;
+  }
+
+  const family = await getFamily(supabase, chatId);
+  if (!family) {
+    await sendMessage(
+      chatId,
+      "You're not in a family yet — <code>/family create</code> first, then invite members to split with.",
+    );
+    return;
+  }
+  const members = await familyMembers(supabase, family.id);
+  if (members.length < 2) {
+    await sendMessage(chatId, "Your family has no other members yet — <code>/invite</code> someone first.");
+    return;
+  }
+
+  const categories = await loadCategories(supabase);
+  const parsed = parseExpense(arg, categories);
+  if (!parsed.ok || !parsed.amount) {
+    await sendMessage(chatId, "I couldn't find an amount — try <code>/split 1200 dinner</code>");
+    return;
+  }
+
+  try {
+    const split = await logSplitExpense(
+      supabase,
+      chatId,
+      members.map((m) => m.id),
+      {
+        amount: parsed.amount,
+        category: parsed.category ?? "Uncategorized",
+        merchant: parsed.merchant,
+        expense_date: parsed.expenseDate,
+        raw_message: `/split ${arg}`,
+        source: "telegram_text",
+        parsed_by: "rules",
+      },
+    );
+    const names = members
+      .filter((m) => m.id !== chatId)
+      .map((m) => m.name)
+      .join(", ");
+    const alerts = await collectBudgetAlerts(supabase, chatId);
+    await sendMessage(
+      chatId,
+      `🤝 Split ${fmtINR(parsed.amount)} · ${parsed.category ?? "Uncategorized"}${parsed.merchant ? ` (${escapeHtml(parsed.merchant)})` : ""} across ${split.count} people — ${fmtINR(split.perHead)} each (${escapeHtml(names)}).\nYou paid, so <code>/undo</code> removes the whole split.` +
+        (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),
+    );
+    // Tell the other members their share was logged.
+    for (const m of members) {
+      if (m.id === chatId) continue;
+      try {
+        await sendMessage(
+          m.id,
+          `🤝 ${escapeHtml(members.find((x) => x.id === chatId)?.name ?? "A family member")} split ${fmtINR(parsed.amount)}${parsed.merchant ? ` (${escapeHtml(parsed.merchant)})` : ""} — your share ${fmtINR(split.perHead)} was logged for you.`,
+        );
+      } catch (err) {
+        console.error("split notify failed", err);
+      }
+    }
+  } catch (err) {
+    console.error("/split failed", err);
+    await sendMessage(
+      chatId,
+      "⚠️ Splits aren't available yet — the v4 database migration hasn't been applied.",
+    );
+  }
 }
 
 function escapeHtml(s: string): string {

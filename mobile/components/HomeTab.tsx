@@ -22,6 +22,8 @@ interface Props {
   today: string;
   colorByCategory: Record<string, string>;
   scopeLabel: string;
+  /** Budgets / savings / insights cards injected by the shell (personal scope only). */
+  extraCards?: React.ReactNode;
 }
 
 function spentOf(list: Expense[]): number {
@@ -29,7 +31,7 @@ function spentOf(list: Expense[]): number {
 }
 
 export default function HomeTab(props: Props) {
-  const { p, dark, inRange, prev, prevLabel, range, setRange, today, colorByCategory, scopeLabel } = props;
+  const { p, dark, inRange, prev, prevLabel, range, setRange, today, colorByCategory, scopeLabel, extraCards } = props;
 
   const spent = spentOf(inRange);
   const invested = inRange
@@ -100,6 +102,8 @@ export default function HomeTab(props: Props) {
           <Text style={{ fontSize: 13, color: p.ink2 }}>{inRange.length} transactions</Text>
         </View>
       </Card>
+
+      {extraCards}
 
       <Card p={p}>
         <SectionTitle p={p}>By category</SectionTitle>

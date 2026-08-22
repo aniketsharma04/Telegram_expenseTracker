@@ -12,22 +12,26 @@ import {
   View,
 } from "react-native";
 import AddExpenseSheet from "./components/AddExpenseSheet";
+import EditExpenseSheet from "./components/EditExpenseSheet";
 import FamilyTab from "./components/FamilyTab";
 import HomeTab, { RANGE_LABELS, RangeKey } from "./components/HomeTab";
 import LoginScreen from "./components/LoginScreen";
+import { BudgetsCard, InsightsCards, SavingsCard } from "./components/MoneyCards";
+import SettingsSheet from "./components/SettingsSheet";
 import TransactionsTab from "./components/TransactionsTab";
 import { Avatar } from "./components/ui";
 import { ApiData, Expense, fetchData } from "./lib/api";
+import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
 import { memberColor, usePalette } from "./lib/theme";
 
 type Tab = "home" | "transactions" | "family";
 type Scope = "personal" | "family";
 
 const TOKEN_KEY = "et_token";
-const TABS: Array<{ key: Tab; label: string; icon: string }> = [
-  { key: "home", label: "Home", icon: "⌂" },
-  { key: "transactions", label: "Transactions", icon: "≡" },
-  { key: "family", label: "Family", icon: "⚭" },
+const TABS: Array<{ key: Tab; label: StringKey; icon: string }> = [
+  { key: "home", label: "home", icon: "⌂" },
+  { key: "transactions", label: "transactions", icon: "≡" },
+  { key: "family", label: "family", icon: "⚭" },
 ];
 
 function shiftDate(iso: string, days: number): string {
@@ -37,7 +41,16 @@ function shiftDate(iso: string, days: number): string {
 }
 
 export default function App() {
+  return (
+    <SettingsProvider>
+      <AppInner />
+    </SettingsProvider>
+  );
+}
+
+function AppInner() {
   const { p, dark } = usePalette();
+  const { t, fs } = useSettings();
   const [token, setToken] = useState<string | null | undefined>(undefined);
   const [data, setData] = useState<ApiData | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -46,6 +59,8 @@ export default function App() {
   const [member, setMember] = useState<number | "all">("all");
   const [range, setRange] = useState<RangeKey>("month");
   const [addOpen, setAddOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Expense | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(TOKEN_KEY).then((t) => setToken(t));
@@ -133,7 +148,27 @@ export default function App() {
     const colorByCategory: Record<string, string> = {};
     for (const c of data.categories) colorByCategory[c.name] = c.color ?? "#898781";
 
-    return { members, memberName, memberIndex, inRange, prev, prevLabel, colorByCategory };
+    // Calendar-month personal totals for the savings card (independent of range).
+    const monthPrefix = data.today.slice(0, 7);
+    let monthSpent = 0;
+    let monthInvested = 0;
+    for (const e of data.expenses) {
+      if (e.user_id !== data.user.id || !e.expense_date.startsWith(monthPrefix)) continue;
+      if (e.category === "Investments") monthInvested += Number(e.amount);
+      else monthSpent += Number(e.amount);
+    }
+
+    return {
+      members,
+      memberName,
+      memberIndex,
+      inRange,
+      prev,
+      prevLabel,
+      colorByCategory,
+      monthSpent,
+      monthInvested,
+    };
   }, [data, scope, member, range]);
 
   if (token === undefined) {
@@ -180,11 +215,19 @@ export default function App() {
           <View style={[styles.mark, { backgroundColor: p.accent }]}>
             <Text style={styles.markText}>₹</Text>
           </View>
-          <Text style={{ fontSize: 16, fontWeight: "700", color: p.ink }}>Expense Tracker</Text>
+          <Text style={{ fontSize: fs(16), fontWeight: "700", color: p.ink }}>{t("appName")}</Text>
         </View>
-        <Pressable onPress={logout} style={[styles.logout, { borderColor: p.border, backgroundColor: p.surface }]}>
-          <Text style={{ fontSize: 12, color: p.ink2 }}>Log out</Text>
-        </Pressable>
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          <Pressable
+            onPress={() => setSettingsOpen(true)}
+            style={[styles.logout, { borderColor: p.border, backgroundColor: p.surface }]}
+          >
+            <Text style={{ fontSize: fs(12), color: p.ink2 }}>⚙️</Text>
+          </Pressable>
+          <Pressable onPress={logout} style={[styles.logout, { borderColor: p.border, backgroundColor: p.surface }]}>
+            <Text style={{ fontSize: fs(12), color: p.ink2 }}>{t("logout")}</Text>
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView
@@ -213,8 +256,8 @@ export default function App() {
                     setMember("all");
                   }}
                 >
-                  <Text style={{ fontSize: 13.5, fontWeight: scope === s ? "600" : "400", color: scope === s ? "#fff" : p.ink2 }}>
-                    {s === "personal" ? "Personal" : "Family"}
+                  <Text style={{ fontSize: fs(13.5), fontWeight: scope === s ? "600" : "400", color: scope === s ? "#fff" : p.ink2 }}>
+                    {s === "personal" ? t("personal") : t("family")}
                   </Text>
                 </Pressable>
               ))}
@@ -255,18 +298,45 @@ export default function App() {
         )}
 
         {tab === "home" && (
-          <HomeTab
-            p={p}
-            dark={dark}
-            inRange={derived.inRange}
-            prev={derived.prev}
-            prevLabel={derived.prevLabel}
-            range={range}
-            setRange={setRange}
-            today={data.today}
-            colorByCategory={derived.colorByCategory}
-            scopeLabel={scopeLabel}
-          />
+          <>
+            <HomeTab
+              p={p}
+              dark={dark}
+              inRange={derived.inRange}
+              prev={derived.prev}
+              prevLabel={derived.prevLabel}
+              range={range}
+              setRange={setRange}
+              today={data.today}
+              colorByCategory={derived.colorByCategory}
+              scopeLabel={scopeLabel}
+              extraCards={
+                scope === "personal" ? (
+                  <>
+                    <SavingsCard
+                      p={p}
+                      incomes={data.incomes ?? []}
+                      spent={derived.monthSpent}
+                      invested={derived.monthInvested}
+                      monthPrefix={data.today.slice(0, 7)}
+                    />
+                    <BudgetsCard
+                      p={p}
+                      budgets={data.budgets ?? []}
+                      categories={data.categories}
+                      token={token}
+                      onChanged={refresh}
+                    />
+                    <InsightsCards
+                      p={p}
+                      recurring={data.insights?.recurring ?? []}
+                      anomalies={data.insights?.anomalies ?? []}
+                    />
+                  </>
+                ) : null
+              }
+            />
+          </>
         )}
         {tab === "transactions" && (
           <TransactionsTab
@@ -278,9 +348,14 @@ export default function App() {
             memberName={derived.memberName}
             memberIndex={derived.memberIndex}
             today={data.today}
+            onEdit={(e) => {
+              if (e.user_id === data.user.id) setEditTarget(e);
+            }}
           />
         )}
-        {tab === "family" && <FamilyTab p={p} dark={dark} data={data} />}
+        {tab === "family" && (
+          <FamilyTab p={p} dark={dark} data={data} memberName={derived.memberName} />
+        )}
       </ScrollView>
 
       <Pressable
@@ -296,23 +371,37 @@ export default function App() {
         token={token}
         categories={data.categories}
         today={data.today}
+        hasFamily={hasFamily && (data.family?.members.length ?? 0) > 1}
         p={p}
         dark={dark}
         onLogged={refresh}
       />
 
+      <EditExpenseSheet
+        expense={editTarget}
+        onClose={() => setEditTarget(null)}
+        token={token}
+        categories={data.categories}
+        today={data.today}
+        p={p}
+        dark={dark}
+        onChanged={refresh}
+      />
+
+      <SettingsSheet visible={settingsOpen} onClose={() => setSettingsOpen(false)} p={p} />
+
       <View style={[styles.tabbar, { backgroundColor: p.surface, borderTopColor: p.border }]}>
-        {TABS.map((t) => (
-          <Pressable key={t.key} style={styles.tabItem} onPress={() => setTab(t.key)}>
-            <Text style={{ fontSize: 18, color: tab === t.key ? p.accent : p.muted }}>{t.icon}</Text>
+        {TABS.map((tb) => (
+          <Pressable key={tb.key} style={styles.tabItem} onPress={() => setTab(tb.key)}>
+            <Text style={{ fontSize: fs(18), color: tab === tb.key ? p.accent : p.muted }}>{tb.icon}</Text>
             <Text
               style={{
-                fontSize: 11,
-                color: tab === t.key ? p.accent : p.muted,
-                fontWeight: tab === t.key ? "600" : "400",
+                fontSize: fs(11),
+                color: tab === tb.key ? p.accent : p.muted,
+                fontWeight: tab === tb.key ? "600" : "400",
               }}
             >
-              {t.label}
+              {t(tb.label)}
             </Text>
           </Pressable>
         ))}

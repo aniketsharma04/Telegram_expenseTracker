@@ -24,6 +24,20 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Snap receipts to log expenses automatically."
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Record short voice notes to log expenses hands-free."
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "c9e5fb51-3cb2-42e1-b57b-51900c7704ef"

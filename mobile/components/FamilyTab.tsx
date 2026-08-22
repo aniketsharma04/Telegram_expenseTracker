@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { Linking, Pressable, Share, StyleSheet, Text, View } from "react-native";
 import { ApiData, BOT_URL } from "../lib/api";
+import { useSettings } from "../lib/i18n";
+import { settleUp } from "../lib/settle";
 import { formatINR, memberColor, Palette } from "../lib/theme";
 import { Avatar, Card, SectionTitle, TrackBar } from "./ui";
 
@@ -8,9 +10,11 @@ interface Props {
   p: Palette;
   dark: boolean;
   data: ApiData;
+  memberName: Map<number, string>;
 }
 
-export default function FamilyTab({ p, dark, data }: Props) {
+export default function FamilyTab({ p, dark, data, memberName }: Props) {
+  const { t, fs } = useSettings();
   const monthPrefix = data.today.slice(0, 7);
 
   const totals = useMemo(() => {
@@ -51,9 +55,36 @@ export default function FamilyTab({ p, dark, data }: Props) {
 
   const inviteUrl = `${BOT_URL}?start=fam_${data.family.invite_code}`;
   const maxMember = Math.max(1, ...data.family.members.map((m) => totals.byMember.get(m.id) ?? 0));
+  const balances = settleUp(data.expenses);
+  const hasSplits = data.expenses.some((e) => e.split_id);
 
   return (
     <View style={{ gap: 14 }}>
+      {hasSplits && (
+        <Card p={p}>
+          <SectionTitle p={p}>🤝 {t("settleUp")}</SectionTitle>
+          {balances.length === 0 ? (
+            <Text style={{ fontSize: fs(14), color: p.ink2 }}>{t("allSettled")}</Text>
+          ) : (
+            <View style={{ gap: 8 }}>
+              {balances.map((b) => (
+                <View key={`${b.from}-${b.to}`} style={styles.settleRow}>
+                  <Text style={{ fontSize: fs(14), color: p.ink, flex: 1 }}>
+                    {b.from === data.user.id ? "You" : (memberName.get(b.from) ?? `User ${b.from}`)}{" "}
+                    {t("owes")}{" "}
+                    <Text style={{ fontWeight: "600" }}>
+                      {b.to === data.user.id ? "you" : (memberName.get(b.to) ?? `User ${b.to}`)}
+                    </Text>
+                  </Text>
+                  <Text style={{ fontSize: fs(14.5), fontWeight: "700", color: b.to === data.user.id ? p.good : p.ink }}>
+                    {formatINR(b.amount)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          )}
+        </Card>
+      )}
       <Card p={p}>
         <Text style={{ fontSize: 13, color: p.ink2 }}>👨‍👩‍👧 {data.family.name} · this month</Text>
         <Text style={[styles.hero, { color: p.ink }]}>{formatINR(totals.spent)}</Text>
@@ -114,6 +145,7 @@ const styles = StyleSheet.create({
   hero: { fontSize: 34, fontWeight: "800", letterSpacing: -0.5, marginTop: 4 },
   heroSub: { flexDirection: "row", columnGap: 16, marginTop: 10 },
   memberRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+  settleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   badge: { fontSize: 10, fontWeight: "700", borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2, overflow: "hidden" },
   btn: { borderRadius: 12, paddingVertical: 12, alignItems: "center" },
   btnText: { color: "#fff", fontWeight: "600", fontSize: 14 },

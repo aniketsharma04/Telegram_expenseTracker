@@ -9,6 +9,10 @@ const SOURCE_ICON: Record<string, string> = {
   telegram_text: "💬",
   telegram_voice: "🎤",
   telegram_photo: "📷",
+  app_form: "📱",
+  app_text: "📱",
+  app_voice: "🎤",
+  app_photo: "📷",
 };
 
 interface Props {
@@ -20,6 +24,8 @@ interface Props {
   memberName: Map<number, string>;
   memberIndex: Map<number, number>;
   today: string;
+  /** Tap a row to edit — only fires for the signed-in user's own entries. */
+  onEdit: (e: Expense) => void;
 }
 
 function prettyDate(iso: string, today: string): string {
@@ -37,6 +43,7 @@ export default function TransactionsTab({
   memberName,
   memberIndex,
   today,
+  onEdit,
 }: Props) {
   const [catFilter, setCatFilter] = useState("all");
 
@@ -103,8 +110,9 @@ export default function TransactionsTab({
               const mIdx = e.user_id !== null ? (memberIndex.get(e.user_id) ?? 0) : 0;
               const mName = e.user_id !== null ? (memberName.get(e.user_id) ?? "—") : "—";
               return (
-                <View
+                <Pressable
                   key={e.id}
+                  onPress={() => onEdit(e)}
                   style={[styles.row, i < rows.length - 1 && { borderBottomWidth: 1, borderBottomColor: p.grid }]}
                 >
                   {showMember ? (
@@ -119,6 +127,7 @@ export default function TransactionsTab({
                     <Text style={{ fontSize: 12, color: p.muted, marginTop: 1 }}>
                       {showMember ? `${mName} · ` : ""}
                       {e.category} · {SOURCE_ICON[e.source] ?? "💬"}
+                      {e.split_id ? " · 🤝" : ""}
                     </Text>
                   </View>
                   <Text
@@ -131,7 +140,7 @@ export default function TransactionsTab({
                     {e.category === "Investments" ? "↗ " : ""}
                     {formatINR(Number(e.amount))}
                   </Text>
-                </View>
+                </Pressable>
               );
             })}
           </Card>
