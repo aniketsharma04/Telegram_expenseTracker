@@ -9,7 +9,8 @@ export const dynamic = "force-dynamic";
 /** Set a monthly cap: { category: string | null, monthly_cap: number }. null = overall. */
 export async function POST(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   let body: Record<string, unknown>;
   try {
@@ -32,7 +33,8 @@ export async function POST(req: NextRequest) {
         typeof body.category === "string" &&
         c.name.toLowerCase() === body.category.trim().toLowerCase(),
     );
-    if (!match) return NextResponse.json({ error: "unknown category" }, { status: 400 });
+    if (!match)
+      return NextResponse.json({ error: "unknown category" }, { status: 400 });
     category = match.name;
   }
 
@@ -50,12 +52,20 @@ export async function POST(req: NextRequest) {
 /** Remove a cap: ?category=Groceries, or ?category=overall (the overall cap). */
 export async function DELETE(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const raw = req.nextUrl.searchParams.get("category");
-  if (!raw) return NextResponse.json({ error: "missing category" }, { status: 400 });
-  const category = raw.toLowerCase() === "overall" ? null : raw;
-
+  if (!raw)
+    return NextResponse.json({ error: "missing category" }, { status: 400 });
   const supabase = createServiceClient();
+  let category: string | null = null;
+  if (raw.toLowerCase() !== "overall") {
+    // Case-insensitive match so "groceries" removes the "Groceries" cap.
+    const categories = await loadCategories(supabase);
+    category =
+      categories.find((c) => c.name.toLowerCase() === raw.trim().toLowerCase())
+        ?.name ?? raw;
+  }
   try {
     const deleted = await removeBudget(supabase, userId, category);
     return NextResponse.json({ deleted });
