@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { parseExpense, localDate, CategoryRule } from "@/lib/parser";
-import { parseWithLLM, parseReceipt } from "@/lib/llm";
+import { localDate, CategoryRule } from "@/lib/parser";
+import { parseReceipt } from "@/lib/llm";
+import {
+  logExpenseFromText,
+  insertExpense,
+  learnKeyword,
+  loadCategories,
+} from "@/lib/log-expense";
 import { transcribeVoice, voiceConfigured } from "@/lib/voice";
 import {
   sendMessage,
@@ -257,11 +263,7 @@ async function handleReceiptPhoto(message: TelegramMessage, chatId: number) {
   }
 
   const supabase = createServiceClient();
-  const { data, error } = await supabase
-    .from("categories")
-    .select("name, keywords");
-  if (error) throw error;
-  const categories = (data ?? []) as CategoryRule[];
+  const categories = await loadCategories(supabase);
 
   const caption = message.caption?.trim() || null;
   const parsed = await parseReceipt(
@@ -318,154 +320,28 @@ async function handleExpenseText(
   suffix: string,
 ) {
   const supabase = createServiceClient();
-  const { data, error } = await supabase
-    .from("categories")
-    .select("name, keywords");
-  if (error) throw error;
-  const categories = (data ?? []) as CategoryRule[];
+  const result = await logExpenseFromText(supabase, chatId, text, source);
 
-  const parsed = parseExpense(text, categories);
-
-  // Fast path: rules found both an amount and a category.
-  if (parsed.ok && parsed.category) {
-    const row = {
-      amount: parsed.amount!,
-      category: parsed.category,
-      merchant: parsed.merchant,
-      expense_date: parsed.expenseDate,
-    };
-    await insertExpense(supabase, {
-      ...row,
-      user_id: chatId,
-      raw_message: text,
-      source,
-      parsed_by: "rules",
-    });
+  if (result.status === "need_amount") {
     await sendMessage(
       chatId,
-      confirmText(row) + suffix + (await monthlySummary(supabase, chatId)),
-    );
-    return;
-  }
-
-  // Fallback: let the LLM take a shot at anything messier.
-  const llm = await parseWithLLM(text, categories, localDate());
-  if (llm) {
-    if (llm.amount && llm.amount > 0) {
-      const row = {
-        amount: llm.amount,
-        category: llm.category ?? "Uncategorized",
-        merchant: llm.merchant,
-        expense_date: llm.expense_date ?? parsed.expenseDate,
-      };
-      await insertExpense(supabase, {
-        ...row,
-        user_id: chatId,
-        raw_message: text,
-        source,
-        parsed_by: "llm",
-      });
-
-      // Self-improving keyword table: confident categorizations teach the fast path.
-      if (llm.confidence === "high" && llm.category && llm.merchant) {
-        await learnKeyword(supabase, categories, llm.category, llm.merchant);
-      }
-
-      const nudge =
-        llm.confidence === "low" || !llm.category
-          ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
-          : "";
-      await sendMessage(
-        chatId,
-        confirmText(row) +
-          suffix +
-          (await monthlySummary(supabase, chatId)) +
-          nudge,
-      );
-      return;
-    }
-
-    // LLM ran but found no amount → ask instead of guessing.
-    await sendMessage(
-      chatId,
-      (llm.clarifying_question ??
-        "How much was that? Send it with an amount, like <code>300 zomato</code>.") +
+      (result.question ??
+        "I couldn't find an amount in that. Try something like <code>300 zomato</code>.") +
         suffix,
     );
     return;
   }
 
-  // No LLM configured (or it errored): fall back to v1 behavior.
-  if (parsed.ok) {
-    const row = {
-      amount: parsed.amount!,
-      category: "Uncategorized",
-      merchant: parsed.merchant,
-      expense_date: parsed.expenseDate,
-    };
-    await insertExpense(supabase, {
-      ...row,
-      user_id: chatId,
-      raw_message: text,
-      source,
-      parsed_by: "rules",
-    });
-    await sendMessage(
-      chatId,
-      confirmText(row) + suffix + (await monthlySummary(supabase, chatId)),
-    );
-  } else {
-    await sendMessage(
-      chatId,
-      "I couldn't find an amount in that. Try something like <code>300 zomato</code>." +
-        suffix,
-    );
-  }
-}
-
-async function insertExpense(
-  supabase: SupabaseClient,
-  row: {
-    amount: number;
-    category: string;
-    merchant: string | null;
-    user_id: number;
-    raw_message: string;
-    source: string;
-    parsed_by: string;
-    expense_date: string;
-  },
-) {
-  const { error } = await supabase.from("expenses").insert(row);
-  if (error) throw error;
-}
-
-/** Add a merchant keyword to a category so the rules parser catches it next time. */
-async function learnKeyword(
-  supabase: SupabaseClient,
-  categories: CategoryRule[],
-  categoryName: string,
-  merchant: string,
-) {
-  const keyword = merchant.toLowerCase().trim();
-  if (keyword.length < 3 || keyword.length > 30 || /^\d+$/.test(keyword))
-    return;
-
-  const category = categories.find((c) => c.name === categoryName);
-  if (!category) return;
-
-  // Skip if any category already knows this keyword.
-  const known = categories.some((c) =>
-    c.keywords.some((k) => k.toLowerCase() === keyword),
+  const nudge = result.nudge
+    ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
+    : "";
+  await sendMessage(
+    chatId,
+    confirmText(result.expense) +
+      suffix +
+      (await monthlySummary(supabase, chatId)) +
+      nudge,
   );
-  if (known) return;
-
-  const { error } = await supabase
-    .from("categories")
-    .update({ keywords: [...category.keywords, keyword] })
-    .eq("name", categoryName);
-  if (error) console.error("keyword learn failed", error);
-  else console.log(`learned keyword "${keyword}" → ${categoryName}`);
 }
 
 // ── Correction commands (act on the most recent entry) ─────────────────────

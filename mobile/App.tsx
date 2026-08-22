@@ -11,6 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
+import AddExpenseSheet from "./components/AddExpenseSheet";
 import FamilyTab from "./components/FamilyTab";
 import HomeTab, { RANGE_LABELS, RangeKey } from "./components/HomeTab";
 import LoginScreen from "./components/LoginScreen";
@@ -44,6 +45,7 @@ export default function App() {
   const [scope, setScope] = useState<Scope>("personal");
   const [member, setMember] = useState<number | "all">("all");
   const [range, setRange] = useState<RangeKey>("month");
+  const [addOpen, setAddOpen] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(TOKEN_KEY).then((t) => setToken(t));
@@ -281,6 +283,24 @@ export default function App() {
         {tab === "family" && <FamilyTab p={p} dark={dark} data={data} />}
       </ScrollView>
 
+      <Pressable
+        style={[styles.fab, { backgroundColor: p.accent }]}
+        onPress={() => setAddOpen(true)}
+      >
+        <Text style={styles.fabText}>＋</Text>
+      </Pressable>
+
+      <AddExpenseSheet
+        visible={addOpen}
+        onClose={() => setAddOpen(false)}
+        token={token}
+        categories={data.categories}
+        today={data.today}
+        p={p}
+        dark={dark}
+        onLogged={refresh}
+      />
+
       <View style={[styles.tabbar, { backgroundColor: p.surface, borderTopColor: p.border }]}>
         {TABS.map((t) => (
           <Pressable key={t.key} style={styles.tabItem} onPress={() => setTab(t.key)}>
@@ -333,4 +353,20 @@ const styles = StyleSheet.create({
   },
   tabbar: { flexDirection: "row", borderTopWidth: 1, paddingBottom: 20, paddingTop: 8 },
   tabItem: { flex: 1, alignItems: "center", gap: 2 },
+  fab: {
+    position: "absolute",
+    right: 18,
+    bottom: 92,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  fabText: { color: "#fff", fontSize: 26, fontWeight: "600", lineHeight: 30 },
 });
