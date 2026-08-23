@@ -8,7 +8,8 @@
     "start": "next start",
     "test": "vitest run",
     "set-webhook": "node scripts/set-webhook.mjs",
-    "set-commands": "node scripts/set-commands.mjs"
+    "set-commands": "node scripts/set-commands.mjs",
+    "setu-check": "node scripts/setu-check.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.117.1",

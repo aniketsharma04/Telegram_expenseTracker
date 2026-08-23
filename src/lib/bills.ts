@@ -284,6 +284,8 @@ export interface BillInput {
   biller_id?: string | null;
   biller_name?: string | null;
   fetch_params?: Record<string, string> | null;
+  // v7 (optional): which detector proposed this bill — gmail | notification
+  detected_from?: string | null;
 }
 
 /** Column updates for a fetch outcome (success or failure). */

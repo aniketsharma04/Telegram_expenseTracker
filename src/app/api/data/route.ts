@@ -11,6 +11,7 @@ import {
   detectRecurring,
 } from "@/lib/insights";
 import { loadBillStatuses } from "@/lib/bills";
+import { getGmailAccount, listDetected } from "@/lib/detected";
 
 export const dynamic = "force-dynamic";
 
@@ -82,10 +83,12 @@ export async function GET(req: NextRequest) {
     y -= 1;
   }
   const incomeSince = `${y}-${String(m).padStart(2, "0")}-01`; // last month + this month
-  const [budgets, incomes, bills] = await Promise.all([
+  const [budgets, incomes, bills, detectedBills, gmail] = await Promise.all([
     getBudgets(supabase, userId),
     getIncomes(supabase, userId, incomeSince),
     loadBillStatuses(supabase, userId, today),
+    listDetected(supabase, userId),
+    getGmailAccount(supabase, userId),
   ]);
 
   return NextResponse.json({
@@ -118,6 +121,15 @@ export async function GET(req: NextRequest) {
       income_date: i.income_date,
     })),
     bills,
+    // v7: bills spotted in email / notifications, awaiting confirm or dismiss.
+    detected_bills: detectedBills,
+    gmail: gmail
+      ? {
+          connected: true,
+          email: gmail.email,
+          last_sync_at: gmail.last_sync_at,
+        }
+      : { connected: false, email: null, last_sync_at: null },
     insights: {
       // All detected recurring charges; the app shows the next-12-days window
       // as "Upcoming" and offers the rest as bill suggestions.

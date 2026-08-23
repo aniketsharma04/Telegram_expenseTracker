@@ -11,6 +11,8 @@ import {
   getBills,
 } from "@/lib/bills";
 import { getBbpsProvider, setuConfigured, syncSetuBillers } from "@/lib/bbps";
+import { detectedNotice, listDetected, syncGmail } from "@/lib/detected";
+import { gmailConfigured } from "@/lib/gmail";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -22,6 +24,7 @@ const REMIND_DAYS_AHEAD = 2;
  * Daily cron (Vercel, 03:30 UTC = 09:00 IST):
  *  - every day: remind users of recurring charges due in 2 days
  *  - every day: bill reminders at T-3, due day, and 2 days overdue
+ *  - every day: scan connected Gmail inboxes for new bills
  *  - on the 1st: send everyone their month-in-review digest
  * Stateless dedup: a reminder fires only on the exact day daysUntil == 2.
  */
@@ -46,6 +49,7 @@ export async function GET(req: NextRequest) {
   let reminders = 0;
   let billReminders = 0;
   let billFetches = 0;
+  let gmailDetected = 0;
   let billerSync: number | null = null;
   const provider = getBbpsProvider(supabase);
 
@@ -90,6 +94,18 @@ export async function GET(req: NextRequest) {
         billFetches++;
       }
 
+      // Bills that arrived by email — detected here, confirmed by the user.
+      if (gmailConfigured()) {
+        const sync = await syncGmail(supabase, userId, today);
+        if (sync.detected > 0) {
+          gmailDetected += sync.detected;
+          const notice = detectedNotice(
+            (await listDetected(supabase, userId)).slice(0, sync.detected),
+          );
+          if (notice) await sendMessage(userId, notice);
+        }
+      }
+
       for (const status of await loadBillStatuses(supabase, userId, today)) {
         const text = reminderText(status);
         if (!text) continue;
@@ -121,6 +137,7 @@ export async function GET(req: NextRequest) {
     billReminders,
     billFetches,
     billerSync,
+    gmailDetected,
     digests,
     failures,
   });
