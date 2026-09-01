@@ -11,7 +11,7 @@ import {
   detectRecurring,
 } from "@/lib/insights";
 import { loadBillStatuses } from "@/lib/bills";
-import { getGmailAccount, listDetected } from "@/lib/detected";
+import { getGmailAccount, listDetected, needsReauth } from "@/lib/detected";
 
 export const dynamic = "force-dynamic";
 
@@ -128,8 +128,16 @@ export async function GET(req: NextRequest) {
           connected: true,
           email: gmail.email,
           last_sync_at: gmail.last_sync_at,
+          // Google drops the consent every 7 days while the app is unpublished;
+          // the app shows a Reconnect prompt instead of silently finding nothing.
+          needs_reauth: needsReauth(gmail),
         }
-      : { connected: false, email: null, last_sync_at: null },
+      : {
+          connected: false,
+          email: null,
+          last_sync_at: null,
+          needs_reauth: false,
+        },
     insights: {
       // All detected recurring charges; the app shows the next-12-days window
       // as "Upcoming" and offers the rest as bill suggestions.

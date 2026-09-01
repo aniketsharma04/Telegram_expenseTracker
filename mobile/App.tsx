@@ -430,6 +430,7 @@ function AppInner() {
             p={p}
             token={token}
             bills={data.bills ?? []}
+            detected={data.detected_bills ?? []}
             recurring={data.insights?.recurring ?? []}
             categories={data.categories}
             today={data.today}
@@ -480,6 +481,9 @@ function AppInner() {
         visible={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         p={p}
+        token={token}
+        gmail={data.gmail}
+        onChanged={refresh}
       />
 
       <View

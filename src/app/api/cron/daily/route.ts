@@ -11,7 +11,12 @@ import {
   getBills,
 } from "@/lib/bills";
 import { getBbpsProvider, setuConfigured, syncSetuBillers } from "@/lib/bbps";
-import { detectedNotice, listDetected, syncGmail } from "@/lib/detected";
+import {
+  detectedNotice,
+  listDetected,
+  reauthNotice,
+  syncGmail,
+} from "@/lib/detected";
 import { gmailConfigured } from "@/lib/gmail";
 
 export const dynamic = "force-dynamic";
@@ -50,6 +55,7 @@ export async function GET(req: NextRequest) {
   let billReminders = 0;
   let billFetches = 0;
   let gmailDetected = 0;
+  let gmailReauth = 0;
   let billerSync: number | null = null;
   const provider = getBbpsProvider(supabase);
 
@@ -97,6 +103,12 @@ export async function GET(req: NextRequest) {
       // Bills that arrived by email — detected here, confirmed by the user.
       if (gmailConfigured()) {
         const sync = await syncGmail(supabase, userId, today);
+        // Google drops the refresh token every 7 days while unpublished —
+        // tell the user once rather than going quiet.
+        if (sync.newly_expired) {
+          await sendMessage(userId, reauthNotice(process.env.APP_URL));
+          gmailReauth++;
+        }
         if (sync.detected > 0) {
           gmailDetected += sync.detected;
           const notice = detectedNotice(
@@ -138,6 +150,7 @@ export async function GET(req: NextRequest) {
     billFetches,
     billerSync,
     gmailDetected,
+    gmailReauth,
     digests,
     failures,
   });

@@ -17,6 +17,7 @@ import {
   BillInput,
   BillKind,
   BillStatus,
+  DetectedBill,
   RecurringCharge,
   payBill,
   refreshBillFetch,
@@ -26,6 +27,7 @@ import { StringKey, useSettings } from "../lib/i18n";
 import { formatINR, Palette } from "../lib/theme";
 import { Card, SectionTitle } from "./ui";
 import BillSheet from "./BillSheet";
+import DetectedBillsCard from "./DetectedBillsCard";
 
 const KIND_ICON: Record<BillKind, string> = {
   electricity: "⚡",
@@ -64,6 +66,7 @@ interface Props {
   p: Palette;
   token: string;
   bills: BillStatus[];
+  detected: DetectedBill[];
   recurring: RecurringCharge[];
   categories: Array<{ name: string; color: string | null }>;
   today: string;
@@ -74,6 +77,7 @@ export default function BillsTab({
   p,
   token,
   bills,
+  detected,
   recurring,
   categories,
   today,
@@ -231,6 +235,14 @@ export default function BillsTab({
           </View>
         </Card>
       )}
+
+      <DetectedBillsCard
+        p={p}
+        token={token}
+        detected={detected}
+        bills={bills}
+        onChanged={onChanged}
+      />
 
       {bills.length === 0 && (
         <Card p={p}>

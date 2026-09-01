@@ -135,6 +135,31 @@ export interface BillInput {
   fetch_params?: Record<string, string> | null;
 }
 
+export interface DetectedBill {
+  id: string;
+  source: "gmail" | "notification";
+  biller_name: string;
+  kind: BillKind;
+  amount: number | null;
+  due_date: string | null;
+  bill_date: string | null;
+  account_hint: string | null;
+  subject: string | null;
+  snippet: string | null;
+  confidence: "high" | "low";
+  detected_at: string;
+}
+
+export interface GmailStatus {
+  connected: boolean;
+  email: string | null;
+  last_sync_at: string | null;
+  configured?: boolean;
+  last_error?: string | null;
+  /** Google dropped the consent (every 7 days while the app is unpublished). */
+  needs_reauth?: boolean;
+}
+
 export interface Anomaly {
   category: string;
   mtd: number;
@@ -161,6 +186,8 @@ export interface ApiData {
   budgets?: BudgetProgress[];
   incomes?: IncomeEntry[];
   bills?: BillStatus[];
+  detected_bills?: DetectedBill[];
+  gmail?: GmailStatus;
   insights?: { recurring: RecurringCharge[]; anomalies: Anomaly[] };
 }
 
@@ -470,4 +497,86 @@ export async function refreshBillFetch(
   });
   if (!res.ok) return null;
   return (await res.json()) as { fetch: FetchResult; bill: BillStatus | null };
+}
+
+// ── Detected bills (v7: Gmail / notifications) ──────────────────────────────
+
+const auth = (token: string) => ({ Authorization: `Bearer ${token.trim()}` });
+const authJson = (token: string) => ({
+  ...auth(token),
+  "Content-Type": "application/json",
+});
+
+export async function gmailStatus(token: string): Promise<GmailStatus | null> {
+  const res = await fetch(`${API_BASE}/api/gmail`, { headers: auth(token) });
+  if (!res.ok) return null;
+  return (await res.json()) as GmailStatus;
+}
+
+/** Consent URL to open in a system browser; null when Google keys aren't set. */
+export async function gmailConnectUrl(token: string): Promise<string | null> {
+  const res = await fetch(`${API_BASE}/api/gmail/connect?json=1`, {
+    headers: auth(token),
+  });
+  if (!res.ok) return null;
+  return ((await res.json()) as { url?: string }).url ?? null;
+}
+
+export async function gmailSync(
+  token: string,
+): Promise<{
+  detected: number;
+  scanned: number;
+  detected_bills: DetectedBill[];
+} | null> {
+  const res = await fetch(`${API_BASE}/api/gmail`, {
+    method: "POST",
+    headers: auth(token),
+  });
+  if (!res.ok) return null;
+  return (await res.json()) as {
+    detected: number;
+    scanned: number;
+    detected_bills: DetectedBill[];
+  };
+}
+
+export async function gmailDisconnect(token: string): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/gmail`, {
+    method: "DELETE",
+    headers: auth(token),
+  });
+  return res.ok;
+}
+
+/** Confirm a detection — with `bill_id` it updates that bill, else creates one. */
+export async function confirmDetected(
+  token: string,
+  id: string,
+  opts: {
+    bill_id?: string;
+    name?: string;
+    kind?: BillKind;
+    amount?: number;
+    due_day?: number;
+  } = {},
+): Promise<{ bill: BillStatus | null } | null> {
+  const res = await fetch(`${API_BASE}/api/detected-bills`, {
+    method: "POST",
+    headers: authJson(token),
+    body: JSON.stringify({ id, ...opts }),
+  });
+  if (!res.ok) return null;
+  return (await res.json()) as { bill: BillStatus | null };
+}
+
+export async function dismissDetected(
+  token: string,
+  id: string,
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/detected-bills?id=${encodeURIComponent(id)}`,
+    { method: "DELETE", headers: auth(token) },
+  );
+  return res.ok;
 }

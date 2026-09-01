@@ -96,6 +96,23 @@ export async function disconnectGmail(
   await supabase.from("gmail_accounts").delete().eq("user_id", userId);
 }
 
+/**
+ * Did this failure mean "the consent is gone" rather than "Gmail hiccuped"?
+ *
+ * Google answers a dead refresh token with `invalid_grant`. That happens on
+ * revoke, on a password change, and — the common one here — every 7 days while
+ * the OAuth app is still in Testing. Only these need the user to act; network
+ * blips and rate limits recover on their own, so they must not raise the flag.
+ */
+function isAuthFailure(message: string | null | undefined): boolean {
+  return /invalid_grant|expired or revoked|invalid_token/i.test(message ?? "");
+}
+
+/** Is the stored consent dead, so the user has to reconnect? */
+export function needsReauth(account: GmailAccount | null): boolean {
+  return Boolean(account) && isAuthFailure(account!.last_error);
+}
+
 // ── Detected rows ───────────────────────────────────────────────────────────
 
 export async function listDetected(
@@ -264,6 +281,12 @@ export interface SyncResult {
   detected: number; // new rows created
   duplicates: number;
   error?: string;
+  /**
+   * This run is the one that found the consent dead. Set only on the first
+   * such run — a later pass sees the flag already stored and leaves it false,
+   * so the cron nudges the user once instead of every day.
+   */
+  newly_expired?: boolean;
 }
 
 /**
@@ -316,6 +339,10 @@ export async function syncGmail(
   } catch (err) {
     const message = err instanceof Error ? err.message : "Gmail sync failed";
     out.error = message;
+    // `account` holds the state from before this run, so comparing against it
+    // tells us whether the expiry is news.
+    out.newly_expired =
+      isAuthFailure(message) && !isAuthFailure(account.last_error);
     await supabase
       .from("gmail_accounts")
       .update({ last_sync_at: new Date().toISOString(), last_error: message })
@@ -344,4 +371,20 @@ export function detectedNotice(rows: DetectedBill[]): string | null {
   ]
     .filter(Boolean)
     .join("\n");
+}
+
+/**
+ * Telegram nudge when the Gmail consent dies. Sent once per expiry, so it
+ * says what happened and what to do rather than just reporting an error.
+ */
+export function reauthNotice(appUrl?: string): string {
+  const where = appUrl
+    ? `<a href="${appUrl.replace(/\/$/, "")}">Open the app</a>`
+    : "Open the app";
+  return [
+    "📧 <b>Gmail needs reconnecting</b>",
+    "",
+    "Google drops the connection every 7 days while the app is unpublished — nothing is wrong with your account.",
+    `${where} → Settings → Reconnect Gmail to keep finding bills in your email.`,
+  ].join("\n");
 }

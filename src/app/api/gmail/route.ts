@@ -7,6 +7,7 @@ import {
   disconnectGmail,
   getGmailAccount,
   listDetected,
+  needsReauth,
   syncGmail,
 } from "@/lib/detected";
 
@@ -28,6 +29,9 @@ export async function GET(req: NextRequest) {
     email: account?.email ?? null,
     last_sync_at: account?.last_sync_at ?? null,
     last_error: account?.last_error ?? null,
+    // Dead consent (Google expires it weekly while unpublished) reads as
+    // connected-but-broken, so the app can offer Reconnect rather than Connect.
+    needs_reauth: needsReauth(account),
   });
 }
 

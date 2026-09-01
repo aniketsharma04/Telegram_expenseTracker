@@ -172,6 +172,35 @@ const STRINGS = {
     en: "Demo billers until Bharat Connect onboarding completes — numbers ending 00 = no dues, 99 = not found.",
     hi: "Bharat Connect जुड़ने तक डेमो बिलर — 00 पर खत्म = बकाया नहीं, 99 = नहीं मिला।",
   },
+  // v7: bills detected from email / notifications
+  foundInEmail: { en: "Found in your email", hi: "आपके ईमेल में मिला" },
+  foundInNotification: {
+    en: "Spotted in a notification",
+    hi: "नोटिफिकेशन में दिखा",
+  },
+  detectedNote: {
+    en: "Nothing is added until you confirm.",
+    hi: "आपकी पुष्टि के बिना कुछ नहीं जुड़ेगा।",
+  },
+  confirmAdd: { en: "Add as bill", hi: "बिल बनाएँ" },
+  updateExisting: { en: "Update", hi: "अपडेट करें" },
+  dismiss: { en: "Not a bill", hi: "बिल नहीं है" },
+  unsureAmount: { en: "check the amount", hi: "रकम जाँच लें" },
+  connectGmail: { en: "Connect Gmail", hi: "Gmail जोड़ें" },
+  disconnectGmail: { en: "Disconnect", hi: "हटाएँ" },
+  gmailConnected: { en: "Gmail connected", hi: "Gmail जुड़ा है" },
+  gmailBlurb: {
+    en: "Read-only. The app looks for bill emails and never sends, labels or deletes anything.",
+    hi: "सिर्फ़ पढ़ने के लिए। ऐप बिल वाले ईमेल ढूँढता है — कुछ भेजता या मिटाता नहीं।",
+  },
+  scanNow: { en: "Scan now", hi: "अभी देखें" },
+  scanning: { en: "Scanning your inbox…", hi: "इनबॉक्स देख रहे हैं…" },
+  scanFoundNone: { en: "No new bills found.", hi: "कोई नया बिल नहीं मिला।" },
+  reconnectGmail: { en: "Reconnect Gmail", hi: "Gmail फिर से जोड़ें" },
+  reauthNeeded: {
+    en: "Google drops the connection every 7 days until the app is published. Reconnect to keep finding bills.",
+    hi: "ऐप प्रकाशित होने तक Google हर 7 दिन में कनेक्शन हटा देता है। बिल ढूँढते रहने के लिए फिर से जोड़ें।",
+  },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;
