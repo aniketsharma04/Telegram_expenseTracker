@@ -1,6 +1,8 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { addDays, daysBetween } from "./insights";
 import { insertExpense } from "./log-expense";
+import { listAccounts, resolveAccountId, type Account } from "./accounts";
+import { createTransfer } from "./transfers";
 import type { BbpsProvider, FetchResult } from "./bbps/types";
 
 /**
@@ -400,7 +402,13 @@ export async function markBillPaid(
   amount: number,
   paidOn: string,
   source: string,
-): Promise<{ bill: Bill; payment: BillPayment; expenseId: string }> {
+): Promise<{
+  bill: Bill;
+  payment: BillPayment;
+  /** Null when the payment was a card settlement — see markBillPaid. */
+  expenseId: string | null;
+  transferId: string | null;
+}> {
   const { data: rows, error } = await supabase
     .from("bills")
     .select(BILL_COLUMNS)
@@ -429,17 +437,33 @@ export async function markBillPaid(
       .eq("id", prior.expense_id)
       .eq("user_id", userId);
   }
+  if (prior?.id) {
+    // Re-paying the same cycle must not leave the previous movement behind.
+    await supabase.from("transfers").delete().eq("bill_payment_id", prior.id);
+  }
 
-  const expense = await insertExpense(supabase, {
-    amount,
-    category: bill.category,
-    merchant: bill.name,
-    expense_date: paidOn,
-    user_id: userId,
-    raw_message: `[bill] ${bill.name} ${amount}`,
-    source,
-    parsed_by: "user",
-  });
+  // v8: settling a credit card is a movement, not new spending — the
+  // spending happened at each swipe. Recording an expense here would count
+  // the same money twice.
+  const accounts = await listAccounts(supabase, userId);
+  const card =
+    bill.kind === "credit_card"
+      ? matchCardAccount(bill.name, accounts)
+      : undefined;
+
+  const expense = card
+    ? null
+    : await insertExpense(supabase, {
+        amount,
+        category: bill.category,
+        merchant: bill.name,
+        expense_date: paidOn,
+        user_id: userId,
+        raw_message: `[bill] ${bill.name} ${amount}`,
+        source,
+        parsed_by: "user",
+        account_id: await resolveAccountId(supabase, userId, null),
+      });
 
   const { data: payment, error: payError } = await supabase
     .from("bill_payments")
@@ -450,7 +474,7 @@ export async function markBillPaid(
         month,
         amount,
         paid_on: paidOn,
-        expense_id: expense.id,
+        expense_id: expense?.id ?? null,
       },
       { onConflict: "bill_id,month" },
     )
@@ -458,11 +482,55 @@ export async function markBillPaid(
     .single();
   if (payError) throw payError;
 
+  let transferId: string | null = null;
+  if (card) {
+    const payFrom =
+      accounts.find((a) => a.kind !== "credit_card" && a.is_default) ??
+      accounts.find((a) => a.kind === "bank") ??
+      null;
+    try {
+      const transfer = await createTransfer(supabase, userId, {
+        from_account_id: payFrom?.id ?? null,
+        to_account_id: card.id,
+        amount,
+        transfer_date: paidOn,
+        kind: "card_payment",
+        note: `${bill.name} bill`,
+        bill_payment_id: payment.id,
+      });
+      transferId = transfer.id;
+    } catch (err) {
+      console.error("card payment transfer failed", err);
+    }
+  }
+
   return {
     bill,
     payment: { ...payment, amount: Number(payment.amount) } as BillPayment,
-    expenseId: expense.id,
+    expenseId: expense?.id ?? null,
+    transferId,
   };
+}
+
+/**
+ * Pair a credit card bill with the card account it settles: a name match in
+ * either direction, else the only card on file. Returns undefined when the
+ * user has no card account, so the bill keeps its pre-v8 expense behaviour.
+ */
+function matchCardAccount(
+  billName: string,
+  accounts: Account[],
+): Account | undefined {
+  const cards = accounts.filter((a) => a.kind === "credit_card");
+  if (!cards.length) return undefined;
+  const name = billName.toLowerCase();
+  return (
+    cards.find(
+      (c) =>
+        name.includes(c.name.toLowerCase()) ||
+        c.name.toLowerCase().includes(name),
+    ) ?? (cards.length === 1 ? cards[0] : undefined)
+  );
 }
 
 /** Undo a mark-paid: removes the payment and its linked expense. */

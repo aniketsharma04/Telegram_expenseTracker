@@ -20,6 +20,8 @@ export async function logIncome(
     income_date: string;
     raw_message: string;
     channel: string;
+    /** Which account the money landed in (v8). */
+    account_id?: string | null;
   },
 ): Promise<Income> {
   const { data, error } = await supabase
@@ -27,8 +29,19 @@ export async function logIncome(
     .insert({ user_id: userId, ...entry })
     .select("id, user_id, amount, source, income_date, logged_at")
     .single();
-  if (error) throw error;
-  return data as Income;
+  if (!error) return data as Income;
+
+  // Pre-v8 schema has no account_id — record the income anyway.
+  if (entry.account_id !== undefined) {
+    const { account_id: _dropped, ...legacy } = entry;
+    const retry = await supabase
+      .from("incomes")
+      .insert({ user_id: userId, ...legacy })
+      .select("id, user_id, amount, source, income_date, logged_at")
+      .single();
+    if (!retry.error) return retry.data as Income;
+  }
+  throw error;
 }
 
 export async function getIncomes(
