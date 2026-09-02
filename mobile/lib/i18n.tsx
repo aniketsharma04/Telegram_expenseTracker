@@ -201,6 +201,59 @@ const STRINGS = {
     en: "Google drops the connection every 7 days until the app is published. Reconnect to keep finding bills.",
     hi: "ऐप प्रकाशित होने तक Google हर 7 दिन में कनेक्शन हटा देता है। बिल ढूँढते रहने के लिए फिर से जोड़ें।",
   },
+  // accounts & transfers (v8)
+  accounts: { en: "Accounts", hi: "खाते" },
+  netWorth: { en: "Net position", hi: "कुल स्थिति" },
+  youHold: { en: "You hold", hi: "आपके पास" },
+  youOwe: { en: "You owe", hi: "आप पर बकाया" },
+  addAccount: { en: "Add account", hi: "खाता जोड़ें" },
+  editAccount: { en: "Edit account", hi: "खाता बदलें" },
+  accountName: { en: "Account name", hi: "खाते का नाम" },
+  accountNamePlaceholder: {
+    en: "HDFC Savings, Cash, Paytm…",
+    hi: "HDFC बचत, नकद, Paytm…",
+  },
+  lastDigits: {
+    en: "Last 4 digits (optional)",
+    hi: "आख़िरी 4 अंक (ज़रूरी नहीं)",
+  },
+  openingBalance: { en: "Balance today", hi: "आज का बैलेंस" },
+  creditLimit: {
+    en: "Credit limit (optional)",
+    hi: "क्रेडिट सीमा (ज़रूरी नहीं)",
+  },
+  bank: { en: "Bank", hi: "बैंक" },
+  cash: { en: "Cash", hi: "नकद" },
+  wallet: { en: "Wallet", hi: "वॉलेट" },
+  creditCard: { en: "Credit card", hi: "क्रेडिट कार्ड" },
+  defaultAccount: { en: "Default", hi: "मुख्य" },
+  makeDefault: { en: "Use as default account", hi: "मुख्य खाता बनाएँ" },
+  available: { en: "available", hi: "उपलब्ध" },
+  outstanding: { en: "outstanding", hi: "बकाया" },
+  archiveAccount: { en: "Archive", hi: "हटाएँ" },
+  noAccountsYet: {
+    en: "Add your bank, cash and cards to see what you're actually worth.",
+    hi: "बैंक, नकद और कार्ड जोड़ें — तभी असली स्थिति दिखेगी।",
+  },
+  unassignedNote: {
+    en: "not linked to an account yet",
+    hi: "अभी किसी खाते से नहीं जुड़ा",
+  },
+  transfer: { en: "Transfer", hi: "ट्रांसफ़र" },
+  moveMoney: { en: "Move money", hi: "पैसे भेजें" },
+  fromAccount: { en: "From", hi: "से" },
+  toAccount: { en: "To", hi: "तक" },
+  transferNote: {
+    en: "Moving your own money isn't spending — it won't touch your totals.",
+    hi: "अपना पैसा इधर-उधर करना खर्चा नहीं है — कुल में नहीं जुड़ेगा।",
+  },
+  cardPayment: { en: "Card payment", hi: "कार्ड भुगतान" },
+  recordTransfer: { en: "Record transfer", hi: "ट्रांसफ़र दर्ज करें" },
+  notSpending: {
+    en: "Recorded as a transfer, not spending.",
+    hi: "ट्रांसफ़र दर्ज हुआ, खर्चा नहीं।",
+  },
+  payFrom: { en: "Paid from", hi: "किस खाते से" },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;

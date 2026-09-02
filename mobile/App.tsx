@@ -23,9 +23,12 @@ import {
   SavingsCard,
 } from "./components/MoneyCards";
 import SettingsSheet from "./components/SettingsSheet";
+import AccountsCard from "./components/AccountsCard";
+import AccountSheet from "./components/AccountSheet";
+import TransferSheet from "./components/TransferSheet";
 import TransactionsTab from "./components/TransactionsTab";
 import { Avatar } from "./components/ui";
-import { ApiData, Expense, fetchData } from "./lib/api";
+import { Account, ApiData, Expense, fetchData } from "./lib/api";
 import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
 import { memberColor, usePalette } from "./lib/theme";
 
@@ -67,6 +70,11 @@ function AppInner() {
   const [addOpen, setAddOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Expense | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // v8: "new" opens a blank account form, an Account object edits that one.
+  const [accountTarget, setAccountTarget] = useState<Account | "new" | null>(
+    null,
+  );
+  const [transferOpen, setTransferOpen] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(TOKEN_KEY).then((t) => setToken(t));
@@ -385,6 +393,14 @@ function AppInner() {
               extraCards={
                 scope === "personal" ? (
                   <>
+                    <AccountsCard
+                      p={p}
+                      accounts={data.accounts ?? []}
+                      position={data.position}
+                      onAdd={() => setAccountTarget("new")}
+                      onEdit={(a) => setAccountTarget(a)}
+                      onTransfer={() => setTransferOpen(true)}
+                    />
                     <SavingsCard
                       p={p}
                       incomes={data.incomes ?? []}
@@ -455,6 +471,7 @@ function AppInner() {
       </Pressable>
 
       <AddExpenseSheet
+        accounts={data.accounts ?? []}
         visible={addOpen}
         onClose={() => setAddOpen(false)}
         token={token}
@@ -475,6 +492,24 @@ function AppInner() {
         p={p}
         dark={dark}
         onChanged={refresh}
+      />
+
+      <AccountSheet
+        account={accountTarget}
+        onClose={() => setAccountTarget(null)}
+        onChanged={refresh}
+        token={token}
+        p={p}
+      />
+
+      <TransferSheet
+        visible={transferOpen}
+        accounts={data.accounts ?? []}
+        onClose={() => setTransferOpen(false)}
+        onDone={refresh}
+        token={token}
+        today={data.today}
+        p={p}
       />
 
       <SettingsSheet

@@ -19,12 +19,14 @@ import {
   useAudioRecorder,
 } from "expo-audio";
 import {
+  Account,
   addExpense,
   AddBody,
   AddResult,
   addIncome,
   deleteExpense,
   deleteIncome,
+  deleteTransfer,
   LoggedExpense,
   uploadMedia,
 } from "../lib/api";
@@ -36,6 +38,8 @@ interface Props {
   onClose: () => void;
   token: string;
   categories: Array<{ name: string; color: string | null }>;
+  /** v8: pockets to attribute the entry to; empty until accounts are set up. */
+  accounts: Account[];
   today: string; // YYYY-MM-DD from the API — server truth for IST
   hasFamily: boolean;
   p: Palette;
@@ -53,7 +57,7 @@ type Day = "today" | "yesterday";
 type Mode = "expense" | "income";
 
 interface Success {
-  kind: "expense" | "income";
+  kind: "expense" | "income" | "transfer";
   id: string;
   title: string;
   subtitle: string | null;
@@ -67,6 +71,7 @@ export default function AddExpenseSheet({
   onClose,
   token,
   categories,
+  accounts,
   today,
   hasFamily,
   p,
@@ -88,6 +93,7 @@ export default function AddExpenseSheet({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<Success | null>(null);
   const [undone, setUndone] = useState(false);
+  const [accountId, setAccountId] = useState<string | null>(null);
 
   const chips = categories.filter((c) => c.name !== "Uncategorized");
 
@@ -110,9 +116,14 @@ export default function AddExpenseSheet({
     onClose();
   };
 
-  const applyResult = (result: AddResult | "unauthorized", transcript?: string) => {
+  const applyResult = (
+    result: AddResult | "unauthorized",
+    transcript?: string,
+  ) => {
     if (result === "unauthorized") {
-      setError("Session expired — log in again with a fresh /app code from the bot.");
+      setError(
+        "Session expired — log in again with a fresh /app code from the bot.",
+      );
       return;
     }
     if (result.status === "need_amount") {
@@ -122,6 +133,22 @@ export default function AddExpenseSheet({
       );
       return;
     }
+    // v8: the pipeline recognised a movement between the user's own accounts.
+    if (result.status === "transferred") {
+      const route = [result.from, result.to].filter(Boolean).join(" → ");
+      setSuccess({
+        kind: "transfer",
+        id: result.transfer.id,
+        title: `⇄ ${formatINR(result.transfer.amount)}${route ? ` · ${route}` : ""}`,
+        subtitle: `${t("notSpending")} ${result.reason}`,
+        nudge: false,
+        alerts: [],
+        transcript,
+      });
+      onLogged();
+      return;
+    }
+
     const e: LoggedExpense = result.expense;
     const splitNote = result.split
       ? ` · ${formatINR(result.split.perHead)} × ${result.split.count}`
@@ -145,7 +172,9 @@ export default function AddExpenseSheet({
     try {
       await fn();
     } catch {
-      setError("Couldn't reach the server — check your connection and try again.");
+      setError(
+        "Couldn't reach the server — check your connection and try again.",
+      );
     }
     setBusy(false);
   };
@@ -156,6 +185,7 @@ export default function AddExpenseSheet({
       applyResult(await addExpense(token, { text: text.trim() }));
     });
 
+  const liveAccounts = accounts.filter((a) => !a.archived);
   const parsedAmount = parseFloat(amount.replace(/,/g, ""));
   const amountOk = Number.isFinite(parsedAmount) && parsedAmount > 0;
   const formReady = mode === "income" ? amountOk : amountOk && !!category;
@@ -169,11 +199,16 @@ export default function AddExpenseSheet({
           amount: parsedAmount,
           source: merchant.trim() || undefined,
           income_date: expense_date,
+          account_id: accountId ?? undefined,
         });
         if (result === "unauthorized") {
-          setError("Session expired — log in again with a fresh /app code from the bot.");
+          setError(
+            "Session expired — log in again with a fresh /app code from the bot.",
+          );
         } else if (!result) {
-          setError("Couldn't save that — income tracking may not be enabled yet.");
+          setError(
+            "Couldn't save that — income tracking may not be enabled yet.",
+          );
         } else {
           setSuccess({
             kind: "income",
@@ -193,6 +228,7 @@ export default function AddExpenseSheet({
         merchant: merchant.trim() || undefined,
         expense_date,
         split: split || undefined,
+        account_id: accountId ?? undefined,
       };
       applyResult(await addExpense(token, body));
     });
@@ -205,7 +241,10 @@ export default function AddExpenseSheet({
           setError("Microphone permission is needed for voice logging.");
           return;
         }
-        await setAudioModeAsync({ playsInSilentMode: true, allowsRecording: true });
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          allowsRecording: true,
+        });
         await recorder.prepareToRecordAsync();
         recorder.record();
         setRecording(true);
@@ -236,8 +275,14 @@ export default function AddExpenseSheet({
         }
       }
       const picked = fromCamera
-        ? await ImagePicker.launchCameraAsync({ mediaTypes: ["images"], quality: 0.7 })
-        : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.7 });
+        ? await ImagePicker.launchCameraAsync({
+            mediaTypes: ["images"],
+            quality: 0.7,
+          })
+        : await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
+            quality: 0.7,
+          });
       if (picked.canceled || picked.assets.length === 0) return;
       const asset = picked.assets[0];
       const result = await uploadMedia(token, "receipt", {
@@ -254,7 +299,9 @@ export default function AddExpenseSheet({
       const ok =
         success.kind === "income"
           ? await deleteIncome(token, success.id)
-          : await deleteExpense(token, success.id);
+          : success.kind === "transfer"
+            ? await deleteTransfer(token, success.id)
+            : await deleteExpense(token, success.id);
       if (ok) {
         setUndone(true);
         onLogged();
@@ -266,73 +313,150 @@ export default function AddExpenseSheet({
   const inputBg = { borderColor: p.grid, backgroundColor: p.page };
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={close}
+    >
       <KeyboardAvoidingView
         style={styles.backdrop}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Pressable style={styles.backdropTouch} onPress={close} />
-        <View style={[styles.sheet, { backgroundColor: p.surface, borderColor: p.border }]}>
+        <View
+          style={[
+            styles.sheet,
+            { backgroundColor: p.surface, borderColor: p.border },
+          ]}
+        >
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
 
           {success ? (
             <View style={styles.done}>
               <Text style={{ fontSize: 40 }}>{undone ? "↩️" : "✅"}</Text>
-              <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink, textAlign: "center" }}>
+              <Text
+                style={{
+                  fontSize: fs(18),
+                  fontWeight: "700",
+                  color: p.ink,
+                  textAlign: "center",
+                }}
+              >
                 {undone ? t("removed") : success.title}
               </Text>
               {!undone && success.subtitle && (
-                <Text style={{ fontSize: fs(14), color: p.ink2 }}>{success.subtitle}</Text>
+                <Text style={{ fontSize: fs(14), color: p.ink2 }}>
+                  {success.subtitle}
+                </Text>
               )}
               {!undone && success.transcript && (
-                <Text style={{ fontSize: fs(13), color: p.muted, fontStyle: "italic" }}>
+                <Text
+                  style={{
+                    fontSize: fs(13),
+                    color: p.muted,
+                    fontStyle: "italic",
+                  }}
+                >
                   🎤 “{success.transcript}”
                 </Text>
               )}
               {!undone && success.nudge && (
-                <Text style={[styles.nudge, { color: p.ink2, backgroundColor: p.accentSoft, fontSize: fs(13) }]}>
-                  🤔 Not fully sure about the category — tap the entry in Transactions to fix it.
+                <Text
+                  style={[
+                    styles.nudge,
+                    {
+                      color: p.ink2,
+                      backgroundColor: p.accentSoft,
+                      fontSize: fs(13),
+                    },
+                  ]}
+                >
+                  🤔 Not fully sure about the category — tap the entry in
+                  Transactions to fix it.
                 </Text>
               )}
               {!undone &&
                 success.alerts.map((a) => (
-                  <Text
-                    key={a}
-                    style={[styles.alert, { fontSize: fs(13) }]}
-                  >
+                  <Text key={a} style={[styles.alert, { fontSize: fs(13) }]}>
                     {a}
                   </Text>
                 ))}
-              {error && <Text style={[styles.error, { fontSize: fs(13) }]}>{error}</Text>}
+              {error && (
+                <Text style={[styles.error, { fontSize: fs(13) }]}>
+                  {error}
+                </Text>
+              )}
               <View style={styles.doneRow}>
                 {!undone && (
-                  <Pressable style={[styles.btnGhost, { borderColor: p.border }]} onPress={undo} disabled={busy}>
+                  <Pressable
+                    style={[styles.btnGhost, { borderColor: p.border }]}
+                    onPress={undo}
+                    disabled={busy}
+                  >
                     {busy ? (
                       <ActivityIndicator color={p.accent} />
                     ) : (
-                      <Text style={{ color: p.ink2, fontWeight: "600", fontSize: fs(14) }}>{t("undo")}</Text>
+                      <Text
+                        style={{
+                          color: p.ink2,
+                          fontWeight: "600",
+                          fontSize: fs(14),
+                        }}
+                      >
+                        {t("undo")}
+                      </Text>
                     )}
                   </Pressable>
                 )}
-                <Pressable style={[styles.btnGhost, { borderColor: p.border }]} onPress={resetForm}>
-                  <Text style={{ color: p.ink2, fontWeight: "600", fontSize: fs(14) }}>{t("addAnother")}</Text>
+                <Pressable
+                  style={[styles.btnGhost, { borderColor: p.border }]}
+                  onPress={resetForm}
+                >
+                  <Text
+                    style={{
+                      color: p.ink2,
+                      fontWeight: "600",
+                      fontSize: fs(14),
+                    }}
+                  >
+                    {t("addAnother")}
+                  </Text>
                 </Pressable>
-                <Pressable style={[styles.btn, { backgroundColor: p.accent }]} onPress={close}>
-                  <Text style={[styles.btnText, { fontSize: fs(15) }]}>{t("done")}</Text>
+                <Pressable
+                  style={[styles.btn, { backgroundColor: p.accent }]}
+                  onPress={close}
+                >
+                  <Text style={[styles.btnText, { fontSize: fs(15) }]}>
+                    {t("done")}
+                  </Text>
                 </Pressable>
               </View>
             </View>
           ) : (
-            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.body}>
+            <ScrollView
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={styles.body}
+            >
               <View style={styles.headRow}>
-                <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
+                <Text
+                  style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}
+                >
                   {mode === "income" ? t("addIncome") : t("addExpense")}
                 </Text>
-                <View style={[styles.modeSeg, { backgroundColor: p.page, borderColor: p.border }]}>
+                <View
+                  style={[
+                    styles.modeSeg,
+                    { backgroundColor: p.page, borderColor: p.border },
+                  ]}
+                >
                   {(["expense", "income"] as Mode[]).map((m) => (
                     <Pressable
                       key={m}
-                      style={[styles.modeBtn, mode === m && { backgroundColor: p.accent }]}
+                      style={[
+                        styles.modeBtn,
+                        mode === m && { backgroundColor: p.accent },
+                      ]}
                       onPress={() => {
                         setMode(m);
                         setError(null);
@@ -356,7 +480,10 @@ export default function AddExpenseSheet({
                 <>
                   <View style={[styles.smartBox, inputBg]}>
                     <TextInput
-                      style={[styles.smartInput, { color: p.ink, fontSize: fs(14) }]}
+                      style={[
+                        styles.smartInput,
+                        { color: p.ink, fontSize: fs(14) },
+                      ]}
                       placeholder={t("smartPlaceholder")}
                       placeholderTextColor={p.muted}
                       value={text}
@@ -365,14 +492,25 @@ export default function AddExpenseSheet({
                       returnKeyType="send"
                     />
                     <Pressable
-                      style={[styles.sendBtn, { backgroundColor: text.trim() ? p.accent : p.grid }]}
+                      style={[
+                        styles.sendBtn,
+                        { backgroundColor: text.trim() ? p.accent : p.grid },
+                      ]}
                       onPress={submitText}
                       disabled={!text.trim() || busy}
                     >
                       {busy && text.trim() ? (
                         <ActivityIndicator color="#fff" size="small" />
                       ) : (
-                        <Text style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>↑</Text>
+                        <Text
+                          style={{
+                            color: "#fff",
+                            fontWeight: "700",
+                            fontSize: 16,
+                          }}
+                        >
+                          ↑
+                        </Text>
                       )}
                     </Pressable>
                   </View>
@@ -382,33 +520,65 @@ export default function AddExpenseSheet({
                       style={[
                         styles.mediaBtn,
                         recording
-                          ? { backgroundColor: "#d03b3b", borderColor: "#d03b3b", flex: 2.2 }
+                          ? {
+                              backgroundColor: "#d03b3b",
+                              borderColor: "#d03b3b",
+                              flex: 2.2,
+                            }
                           : [inputBg, { borderColor: p.border }],
                       ]}
                       onPress={toggleRecord}
                       disabled={busy && !recording}
                     >
-                      <Text style={{ fontSize: fs(13), color: recording ? "#fff" : p.ink2, fontWeight: "600" }}>
-                        {recording ? `⏺ ${t("recording")}` : `🎤 ${t("holdToRecord")}`}
+                      <Text
+                        style={{
+                          fontSize: fs(13),
+                          color: recording ? "#fff" : p.ink2,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {recording
+                          ? `⏺ ${t("recording")}`
+                          : `🎤 ${t("holdToRecord")}`}
                       </Text>
                     </Pressable>
                     {!recording && (
                       <>
                         <Pressable
-                          style={[styles.mediaBtn, inputBg, { borderColor: p.border }]}
+                          style={[
+                            styles.mediaBtn,
+                            inputBg,
+                            { borderColor: p.border },
+                          ]}
                           onPress={() => pickReceipt(true)}
                           disabled={busy}
                         >
-                          <Text style={{ fontSize: fs(13), color: p.ink2, fontWeight: "600" }}>
+                          <Text
+                            style={{
+                              fontSize: fs(13),
+                              color: p.ink2,
+                              fontWeight: "600",
+                            }}
+                          >
                             📷 {t("receipt")}
                           </Text>
                         </Pressable>
                         <Pressable
-                          style={[styles.mediaBtn, inputBg, { borderColor: p.border }]}
+                          style={[
+                            styles.mediaBtn,
+                            inputBg,
+                            { borderColor: p.border },
+                          ]}
                           onPress={() => pickReceipt(false)}
                           disabled={busy}
                         >
-                          <Text style={{ fontSize: fs(13), color: p.ink2, fontWeight: "600" }}>
+                          <Text
+                            style={{
+                              fontSize: fs(13),
+                              color: p.ink2,
+                              fontWeight: "600",
+                            }}
+                          >
                             🖼️ {t("gallery")}
                           </Text>
                         </Pressable>
@@ -417,15 +587,25 @@ export default function AddExpenseSheet({
                   </View>
 
                   <View style={styles.orRow}>
-                    <View style={[styles.orLine, { backgroundColor: p.grid }]} />
-                    <Text style={{ fontSize: fs(12), color: p.muted }}>{t("orFillIn")}</Text>
-                    <View style={[styles.orLine, { backgroundColor: p.grid }]} />
+                    <View
+                      style={[styles.orLine, { backgroundColor: p.grid }]}
+                    />
+                    <Text style={{ fontSize: fs(12), color: p.muted }}>
+                      {t("orFillIn")}
+                    </Text>
+                    <View
+                      style={[styles.orLine, { backgroundColor: p.grid }]}
+                    />
                   </View>
                 </>
               )}
 
               <View style={[styles.amountBox, inputBg]}>
-                <Text style={{ fontSize: 24, fontWeight: "700", color: p.muted }}>₹</Text>
+                <Text
+                  style={{ fontSize: 24, fontWeight: "700", color: p.muted }}
+                >
+                  ₹
+                </Text>
                 <TextInput
                   style={[styles.amountInput, { color: p.ink }]}
                   placeholder="0"
@@ -452,7 +632,12 @@ export default function AddExpenseSheet({
                           },
                         ]}
                       >
-                        <View style={[styles.dot, { backgroundColor: seriesColor(c.color, dark) }]} />
+                        <View
+                          style={[
+                            styles.dot,
+                            { backgroundColor: seriesColor(c.color, dark) },
+                          ]}
+                        />
                         <Text
                           style={{
                             fontSize: fs(13),
@@ -469,12 +654,53 @@ export default function AddExpenseSheet({
               )}
 
               <TextInput
-                style={[styles.merchantInput, inputBg, { color: p.ink, fontSize: fs(14) }]}
-                placeholder={mode === "income" ? t("sourcePlaceholder") : t("wherePlaceholder")}
+                style={[
+                  styles.merchantInput,
+                  inputBg,
+                  { color: p.ink, fontSize: fs(14) },
+                ]}
+                placeholder={
+                  mode === "income"
+                    ? t("sourcePlaceholder")
+                    : t("wherePlaceholder")
+                }
                 placeholderTextColor={p.muted}
                 value={merchant}
                 onChangeText={setMerchant}
               />
+
+              {liveAccounts.length > 0 && (
+                <View style={styles.chips}>
+                  {liveAccounts.map((a) => {
+                    const active =
+                      accountId === a.id || (!accountId && a.is_default);
+                    return (
+                      <Pressable
+                        key={a.id}
+                        onPress={() => setAccountId(a.id)}
+                        style={[
+                          styles.chip,
+                          {
+                            borderColor: active ? p.accent : p.border,
+                            backgroundColor: active ? p.accentSoft : p.page,
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={{
+                            fontSize: fs(13),
+                            color: active ? p.ink : p.ink2,
+                            fontWeight: active ? "600" : "400",
+                          }}
+                        >
+                          {a.kind === "credit_card" ? "💳 " : ""}
+                          {a.name}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              )}
 
               <View style={styles.dayRow}>
                 {(["today", "yesterday"] as Day[]).map((d) => (
@@ -503,23 +729,51 @@ export default function AddExpenseSheet({
               </View>
 
               {mode === "expense" && hasFamily && (
-                <Pressable style={styles.splitRow} onPress={() => setSplit(!split)}>
+                <Pressable
+                  style={styles.splitRow}
+                  onPress={() => setSplit(!split)}
+                >
                   <View
                     style={[
                       styles.checkbox,
-                      { borderColor: split ? p.accent : p.border, backgroundColor: split ? p.accent : "transparent" },
+                      {
+                        borderColor: split ? p.accent : p.border,
+                        backgroundColor: split ? p.accent : "transparent",
+                      },
                     ]}
                   >
-                    {split && <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>✓</Text>}
+                    {split && (
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontSize: 12,
+                          fontWeight: "700",
+                        }}
+                      >
+                        ✓
+                      </Text>
+                    )}
                   </View>
-                  <Text style={{ fontSize: fs(13.5), color: p.ink2 }}>🤝 {t("splitWithFamily")}</Text>
+                  <Text style={{ fontSize: fs(13.5), color: p.ink2 }}>
+                    🤝 {t("splitWithFamily")}
+                  </Text>
                 </Pressable>
               )}
 
-              {error && <Text style={[styles.error, { fontSize: fs(13) }]}>{error}</Text>}
+              {error && (
+                <Text style={[styles.error, { fontSize: fs(13) }]}>
+                  {error}
+                </Text>
+              )}
 
               <Pressable
-                style={[styles.btn, { backgroundColor: p.accent, opacity: formReady && !busy ? 1 : 0.5 }]}
+                style={[
+                  styles.btn,
+                  {
+                    backgroundColor: p.accent,
+                    opacity: formReady && !busy ? 1 : 0.5,
+                  },
+                ]}
                 onPress={submitForm}
                 disabled={!formReady || busy}
               >
@@ -527,7 +781,9 @@ export default function AddExpenseSheet({
                   <ActivityIndicator color="#fff" />
                 ) : (
                   <Text style={[styles.btnText, { fontSize: fs(15) }]}>
-                    {formReady ? `${t("save")} ${formatINR(parsedAmount)}` : t("save")}
+                    {formReady
+                      ? `${t("save")} ${formatINR(parsedAmount)}`
+                      : t("save")}
                   </Text>
                 )}
               </Pressable>
@@ -540,7 +796,11 @@ export default function AddExpenseSheet({
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" },
+  backdrop: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
   backdropTouch: { flex: 1 },
   sheet: {
     borderTopLeftRadius: 24,
@@ -551,10 +811,26 @@ const styles = StyleSheet.create({
     paddingBottom: 28,
     maxHeight: "90%",
   },
-  grab: { alignSelf: "center", width: 40, height: 4, borderRadius: 2, marginBottom: 12 },
+  grab: {
+    alignSelf: "center",
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    marginBottom: 12,
+  },
   body: { gap: 13 },
-  headRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  modeSeg: { flexDirection: "row", borderRadius: 999, borderWidth: 1, padding: 3, gap: 3 },
+  headRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  modeSeg: {
+    flexDirection: "row",
+    borderRadius: 999,
+    borderWidth: 1,
+    padding: 3,
+    gap: 3,
+  },
   modeBtn: { paddingVertical: 5, paddingHorizontal: 14, borderRadius: 999 },
   smartBox: {
     flexDirection: "row",
@@ -567,7 +843,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   smartInput: { flex: 1, paddingVertical: 8 },
-  sendBtn: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
+  sendBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   mediaRow: { flexDirection: "row", gap: 8 },
   mediaBtn: {
     flex: 1,
@@ -579,8 +861,20 @@ const styles = StyleSheet.create({
   },
   orRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   orLine: { flex: 1, height: 1 },
-  amountBox: { flexDirection: "row", alignItems: "center", borderWidth: 1, borderRadius: 14, paddingHorizontal: 16, gap: 8 },
-  amountInput: { flex: 1, fontSize: 28, fontWeight: "700", paddingVertical: 12 },
+  amountBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  amountInput: {
+    flex: 1,
+    fontSize: 28,
+    fontWeight: "700",
+    paddingVertical: 12,
+  },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: {
     flexDirection: "row",
@@ -592,14 +886,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
   },
   dot: { width: 8, height: 8, borderRadius: 4 },
-  merchantInput: { borderWidth: 1, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 11 },
+  merchantInput: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+  },
   dayRow: { flexDirection: "row", gap: 8 },
-  dayBtn: { borderWidth: 1, borderRadius: 999, paddingVertical: 8, paddingHorizontal: 18 },
-  splitRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 2 },
-  checkbox: { width: 22, height: 22, borderRadius: 7, borderWidth: 2, alignItems: "center", justifyContent: "center" },
+  dayBtn: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+  },
+  splitRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingVertical: 2,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 7,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   btn: { borderRadius: 14, paddingVertical: 14, alignItems: "center" },
   btnText: { color: "#fff", fontWeight: "700" },
-  btnGhost: { borderWidth: 1, borderRadius: 14, paddingVertical: 13, paddingHorizontal: 18, alignItems: "center" },
+  btnGhost: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingVertical: 13,
+    paddingHorizontal: 18,
+    alignItems: "center",
+  },
   done: { alignItems: "center", gap: 10, paddingVertical: 16 },
   doneRow: { flexDirection: "row", gap: 10, marginTop: 10 },
   nudge: { borderRadius: 10, padding: 10, textAlign: "center" },

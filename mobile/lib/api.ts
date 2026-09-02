@@ -171,6 +171,43 @@ export interface ApiMember {
   name: string;
 }
 
+export type AccountKind = "bank" | "cash" | "wallet" | "credit_card";
+
+export interface Account {
+  id: string;
+  name: string;
+  kind: AccountKind;
+  identifier: string | null;
+  opening_balance: number;
+  credit_limit: number | null;
+  statement_day: number | null;
+  due_day: number | null;
+  is_default: boolean;
+  archived: boolean;
+  /** Signed: negative on a card means money owed. */
+  balance: number;
+  outstanding: number | null;
+  available: number | null;
+}
+
+/** What you're worth right now: what you hold minus what you owe. */
+export interface Position {
+  assets: number;
+  liabilities: number;
+  net: number;
+  unassigned: { expenses: number; incomes: number };
+}
+
+export interface Transfer {
+  id: string;
+  from_account_id: string | null;
+  to_account_id: string | null;
+  amount: number;
+  transfer_date: string;
+  kind: "transfer" | "card_payment";
+  note: string | null;
+}
+
 export interface ApiData {
   user: { id: number; name: string };
   family: {
@@ -189,6 +226,9 @@ export interface ApiData {
   detected_bills?: DetectedBill[];
   gmail?: GmailStatus;
   insights?: { recurring: RecurringCharge[]; anomalies: Anomaly[] };
+  accounts?: Account[];
+  position?: Position;
+  transfers?: Transfer[];
 }
 
 export async function fetchData(
@@ -219,7 +259,20 @@ export type AddResult =
       transcript?: string;
       split?: { perHead: number; count: number; total: number };
     }
-  | { status: "need_amount"; question: string | null; alerts?: string[] };
+  | { status: "need_amount"; question: string | null; alerts?: string[] }
+  | {
+      /** Your own money moved between your own accounts — not spending. */
+      status: "transferred";
+      transfer: {
+        id: string;
+        amount: number;
+        transfer_date: string;
+        kind: "transfer" | "card_payment";
+      };
+      from: string | null;
+      to: string | null;
+      reason: string;
+    };
 
 export type AddBody =
   | { text: string }
@@ -229,6 +282,7 @@ export type AddBody =
       merchant?: string;
       expense_date?: string;
       split?: boolean;
+      account_id?: string;
     };
 
 /** Log an expense — free text (bot brain) or structured form fields. */
@@ -322,7 +376,12 @@ export async function uploadMedia(
 
 export async function addIncome(
   token: string,
-  body: { amount: number; source?: string; income_date?: string },
+  body: {
+    amount: number;
+    source?: string;
+    income_date?: string;
+    account_id?: string;
+  },
 ): Promise<{ status: "logged"; income: IncomeEntry } | "unauthorized" | null> {
   const res = await fetch(`${API_BASE}/api/income`, {
     method: "POST",
@@ -522,9 +581,7 @@ export async function gmailConnectUrl(token: string): Promise<string | null> {
   return ((await res.json()) as { url?: string }).url ?? null;
 }
 
-export async function gmailSync(
-  token: string,
-): Promise<{
+export async function gmailSync(token: string): Promise<{
   detected: number;
   scanned: number;
   detected_bills: DetectedBill[];
@@ -579,4 +636,116 @@ export async function dismissDetected(
     { method: "DELETE", headers: auth(token) },
   );
   return res.ok;
+}
+
+// ── Accounts & transfers (v8) ───────────────────────────────────────────────
+
+export interface BalanceSheet extends Position {
+  accounts: Account[];
+}
+
+const authHeaders = (token: string) => ({
+  Authorization: `Bearer ${token.trim()}`,
+  "Content-Type": "application/json",
+});
+
+export async function fetchAccounts(
+  token: string,
+): Promise<BalanceSheet | "unauthorized"> {
+  const res = await fetch(`${API_BASE}/api/accounts`, {
+    headers: { Authorization: `Bearer ${token.trim()}` },
+  });
+  if (res.status === 401) return "unauthorized";
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) as BalanceSheet;
+}
+
+export interface AccountInput {
+  name: string;
+  kind: AccountKind;
+  identifier?: string | null;
+  opening_balance?: number;
+  credit_limit?: number | null;
+  statement_day?: number | null;
+  due_day?: number | null;
+  is_default?: boolean;
+}
+
+export async function createAccount(
+  token: string,
+  body: AccountInput,
+): Promise<Account> {
+  const res = await fetch(`${API_BASE}/api/accounts`, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error((await errorText(res)) ?? `HTTP ${res.status}`);
+  return ((await res.json()) as { account: Account }).account;
+}
+
+export async function updateAccount(
+  token: string,
+  id: string,
+  patch: Partial<AccountInput> & { archived?: boolean },
+): Promise<Account> {
+  const res = await fetch(`${API_BASE}/api/accounts`, {
+    method: "PATCH",
+    headers: authHeaders(token),
+    body: JSON.stringify({ id, ...patch }),
+  });
+  if (!res.ok) throw new Error((await errorText(res)) ?? `HTTP ${res.status}`);
+  return ((await res.json()) as { account: Account }).account;
+}
+
+export async function archiveAccount(
+  token: string,
+  id: string,
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/accounts?id=${encodeURIComponent(id)}`,
+    { method: "DELETE", headers: { Authorization: `Bearer ${token.trim()}` } },
+  );
+  return res.ok;
+}
+
+export async function createTransfer(
+  token: string,
+  body: {
+    from_account_id: string | null;
+    to_account_id: string | null;
+    amount: number;
+    transfer_date?: string;
+    kind?: "transfer" | "card_payment";
+    note?: string | null;
+  },
+): Promise<{ transfer: Transfer; balances: BalanceSheet }> {
+  const res = await fetch(`${API_BASE}/api/transfers`, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error((await errorText(res)) ?? `HTTP ${res.status}`);
+  return (await res.json()) as { transfer: Transfer; balances: BalanceSheet };
+}
+
+export async function deleteTransfer(
+  token: string,
+  id: string,
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/transfers?id=${encodeURIComponent(id)}`,
+    { method: "DELETE", headers: { Authorization: `Bearer ${token.trim()}` } },
+  );
+  return res.ok;
+}
+
+/** Server error messages are far more useful than "HTTP 400" in a toast. */
+async function errorText(res: Response): Promise<string | null> {
+  try {
+    const body = (await res.json()) as { error?: string };
+    return body.error ?? null;
+  } catch {
+    return null;
+  }
 }
