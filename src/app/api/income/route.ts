@@ -3,13 +3,15 @@ import { authedUser } from "@/lib/api-auth";
 import { createServiceClient } from "@/lib/supabase-server";
 import { localDate } from "@/lib/parser";
 import { logIncome, deleteIncome } from "@/lib/income";
+import { resolveAccountId } from "@/lib/accounts";
 
 export const dynamic = "force-dynamic";
 
 /** Log income: { amount, source?, income_date? }. Income is personal, never family-shared. */
 export async function POST(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   let body: Record<string, unknown>;
   try {
@@ -38,6 +40,11 @@ export async function POST(req: NextRequest) {
       amount,
       source,
       income_date,
+      account_id: await resolveAccountId(
+        supabase,
+        userId,
+        typeof body.account_id === "string" ? body.account_id : null,
+      ),
       raw_message: `[app] income ${amount}${source ? ` ${source}` : ""}`,
       channel: "app_form",
     });
@@ -52,7 +59,8 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "missing id" }, { status: 400 });
   const supabase = createServiceClient();

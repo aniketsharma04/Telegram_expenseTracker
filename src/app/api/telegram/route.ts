@@ -359,6 +359,23 @@ async function handleExpenseText(
     return;
   }
 
+  // v8: your own money moving between your own accounts isn't spending, so
+  // say what was recorded and why rather than confirming an expense.
+  if (result.status === "transferred") {
+    const route = [result.from, result.to].filter(Boolean).join(" → ");
+    const label =
+      result.transfer.kind === "card_payment" ? "Card payment" : "Transfer";
+    await sendMessage(
+      chatId,
+      `🔄 <b>${label}</b> ₹${result.transfer.amount.toLocaleString("en-IN")}` +
+        (route ? `\n${escapeHtml(route)}` : "") +
+        `\n<i>${escapeHtml(result.reason)}</i>` +
+        "\nNot counted as spending." +
+        suffix,
+    );
+    return;
+  }
+
   const nudge = result.nudge
     ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
     : "";

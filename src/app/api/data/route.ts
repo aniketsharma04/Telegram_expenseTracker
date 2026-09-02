@@ -12,6 +12,8 @@ import {
 } from "@/lib/insights";
 import { loadBillStatuses } from "@/lib/bills";
 import { getGmailAccount, listDetected, needsReauth } from "@/lib/detected";
+import { loadBalanceSheet } from "@/lib/accounts";
+import { listTransfers } from "@/lib/transfers";
 
 export const dynamic = "force-dynamic";
 
@@ -83,13 +85,17 @@ export async function GET(req: NextRequest) {
     y -= 1;
   }
   const incomeSince = `${y}-${String(m).padStart(2, "0")}-01`; // last month + this month
-  const [budgets, incomes, bills, detectedBills, gmail] = await Promise.all([
-    getBudgets(supabase, userId),
-    getIncomes(supabase, userId, incomeSince),
-    loadBillStatuses(supabase, userId, today),
-    listDetected(supabase, userId),
-    getGmailAccount(supabase, userId),
-  ]);
+  const [budgets, incomes, bills, detectedBills, gmail, balances, transfers] =
+    await Promise.all([
+      getBudgets(supabase, userId),
+      getIncomes(supabase, userId, incomeSince),
+      loadBillStatuses(supabase, userId, today),
+      listDetected(supabase, userId),
+      getGmailAccount(supabase, userId),
+      // v8: accounts with live balances, and the movements between them.
+      loadBalanceSheet(supabase, userId),
+      listTransfers(supabase, userId, since),
+    ]);
 
   return NextResponse.json({
     user: { id: user.id, name: user.first_name || user.username || "You" },
@@ -121,6 +127,15 @@ export async function GET(req: NextRequest) {
       income_date: i.income_date,
     })),
     bills,
+    // v8: the pockets the money sits in, and what you're worth right now.
+    accounts: balances.accounts,
+    position: {
+      assets: balances.assets,
+      liabilities: balances.liabilities,
+      net: balances.net,
+      unassigned: balances.unassigned,
+    },
+    transfers,
     // v7: bills spotted in email / notifications, awaiting confirm or dismiss.
     detected_bills: detectedBills,
     gmail: gmail

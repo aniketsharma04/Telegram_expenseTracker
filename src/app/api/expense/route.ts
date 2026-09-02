@@ -12,6 +12,7 @@ import {
 } from "@/lib/log-expense";
 import { collectBudgetAlerts, pushAlertsToTelegram } from "@/lib/budgets";
 import { getFamily, familyMembers } from "@/lib/family";
+import { resolveAccountId } from "@/lib/accounts";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // free-text mode may call the LLM fallback
@@ -34,7 +35,8 @@ async function alertsFor(userId: number): Promise<string[]> {
  */
 export async function POST(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   let body: Record<string, unknown>;
   try {
@@ -84,11 +86,17 @@ export async function POST(req: NextRequest) {
   if (body.split === true) {
     const family = await getFamily(supabase, userId);
     if (!family) {
-      return NextResponse.json({ error: "no family to split with" }, { status: 400 });
+      return NextResponse.json(
+        { error: "no family to split with" },
+        { status: 400 },
+      );
     }
     const members = await familyMembers(supabase, family.id);
     if (members.length < 2) {
-      return NextResponse.json({ error: "family has no other members" }, { status: 400 });
+      return NextResponse.json(
+        { error: "family has no other members" },
+        { status: 400 },
+      );
     }
     const split = await logSplitExpense(
       supabase,
@@ -114,6 +122,14 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // v8: the account the money left. Falls back to the user's default so
+  // form entries don't quietly pile up as unassigned.
+  const account_id = await resolveAccountId(
+    supabase,
+    userId,
+    typeof body.account_id === "string" ? body.account_id : null,
+  );
+
   const expense = await insertExpense(supabase, {
     amount,
     category,
@@ -123,6 +139,7 @@ export async function POST(req: NextRequest) {
     raw_message: `[app form] ${amount} ${category}${merchant ? ` ${merchant}` : ""}`,
     source: "app_form",
     parsed_by: "user",
+    account_id,
   });
   const alerts = await alertsFor(userId);
   return NextResponse.json({ status: "logged", expense, nudge: false, alerts });
@@ -131,7 +148,8 @@ export async function POST(req: NextRequest) {
 /** Edit one of your own expenses: amount, category, merchant, and/or date. */
 export async function PATCH(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   let body: Record<string, unknown>;
   try {
@@ -162,7 +180,8 @@ export async function PATCH(req: NextRequest) {
         typeof body.category === "string" &&
         c.name.toLowerCase() === body.category.trim().toLowerCase(),
     );
-    if (!match) return NextResponse.json({ error: "unknown category" }, { status: 400 });
+    if (!match)
+      return NextResponse.json({ error: "unknown category" }, { status: 400 });
     patch.category = match.name;
     learnedCategory = match.name;
   }
@@ -195,9 +214,11 @@ export async function PATCH(req: NextRequest) {
     .eq("user_id", userId)
     .select("id, amount, category, merchant, expense_date")
     .limit(1);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
   const expense = data?.[0];
-  if (!expense) return NextResponse.json({ error: "not found" }, { status: 404 });
+  if (!expense)
+    return NextResponse.json({ error: "not found" }, { status: 404 });
 
   // A manual correction is the strongest categorization signal — learn from it.
   if (learnedCategory && expense.merchant) {
@@ -212,7 +233,8 @@ export async function PATCH(req: NextRequest) {
 /** Undo: delete one of your own expenses (payer deleting a split removes the group). */
 export async function DELETE(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "missing id" }, { status: 400 });
