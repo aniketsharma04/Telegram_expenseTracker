@@ -28,6 +28,9 @@ export interface Account {
   due_day: number | null;
   is_default: boolean;
   archived: boolean;
+  /** v9: the balance the bank itself last reported, and when. */
+  reported_balance?: number | null;
+  reported_at?: string | null;
 }
 
 export interface LedgerRows {
@@ -43,6 +46,11 @@ export interface LedgerRows {
 export interface AccountBalance extends Account {
   /** Signed: negative on a credit card means money owed. */
   balance: number;
+  /**
+   * reported − computed. Non-zero means the bank and our rows disagree:
+   * something was spent without being captured (or captured twice).
+   */
+  drift: number | null;
   /** Positive amount owed, for cards only; null elsewhere. */
   outstanding: number | null;
   /** credit_limit − outstanding, when a limit is set. */
@@ -61,8 +69,9 @@ export interface BalanceSheet {
   unassigned: { expenses: number; incomes: number };
 }
 
-const ACCOUNT_COLUMNS =
+const BASE_COLUMNS =
   "id, user_id, name, kind, identifier, opening_balance, credit_limit, statement_day, due_day, is_default, archived";
+const ACCOUNT_COLUMNS = BASE_COLUMNS + ", reported_balance, reported_at";
 
 export function isLiability(kind: AccountKind): boolean {
   return kind === "credit_card";
@@ -98,7 +107,12 @@ export function balanceSheet(
       outstanding !== null && account.credit_limit != null
         ? Math.round((num(account.credit_limit) - outstanding) * 100) / 100
         : null;
-    return { ...account, balance, outstanding, available };
+    const reported = account.reported_balance;
+    const drift =
+      reported == null
+        ? null
+        : Math.round((Number(reported) - balance) * 100) / 100;
+    return { ...account, balance, outstanding, available, drift };
   });
 
   let assets = 0;
@@ -139,17 +153,19 @@ export async function listAccounts(
   userId: number,
   { includeArchived = false } = {},
 ): Promise<Account[]> {
-  try {
-    let query = supabase
-      .from("accounts")
-      .select(ACCOUNT_COLUMNS)
-      .eq("user_id", userId);
+  const read = async (columns: string) => {
+    let query = supabase.from("accounts").select(columns).eq("user_id", userId);
     if (!includeArchived) query = query.eq("archived", false);
-    const { data, error } = await query.order("created_at", {
-      ascending: true,
-    });
-    if (error) throw error;
-    return (data ?? []) as Account[];
+    return query.order("created_at", { ascending: true });
+  };
+
+  try {
+    const full = await read(ACCOUNT_COLUMNS);
+    if (!full.error) return (full.data ?? []) as unknown as Account[];
+    // Pre-v9 schema has no reported balance columns — read the v8 shape.
+    const base = await read(BASE_COLUMNS);
+    if (base.error) throw base.error;
+    return (base.data ?? []) as unknown as Account[];
   } catch (err) {
     console.error("listAccounts failed (v8 migration applied?)", err);
     return [];
@@ -219,7 +235,7 @@ export async function createAccount(
     .select(ACCOUNT_COLUMNS)
     .single();
   if (error) throw error;
-  return data as Account;
+  return data as unknown as Account;
 }
 
 export async function updateAccount(
@@ -249,7 +265,7 @@ export async function updateAccount(
     .eq("user_id", userId)
     .select(ACCOUNT_COLUMNS);
   if (error) throw error;
-  return (data?.[0] as Account) ?? null;
+  return (data?.[0] as unknown as Account) ?? null;
 }
 
 /**

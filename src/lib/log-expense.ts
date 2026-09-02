@@ -281,9 +281,16 @@ export async function logExpenseFromText(
       if (moved) return moved;
 
       const normalised = normaliseMerchant(llm.merchant, merchantRules);
+      // A merchant rule's category is only a hint, and the rule table can
+      // drift from the category list (different deployments, renamed
+      // categories). An unknown hint would write an expense nothing can
+      // filter on, so it has to match a real category to be used.
+      const hinted = categories.some((c) => c.name === normalised?.category)
+        ? normalised!.category
+        : null;
       const expense = await insertExpense(supabase, {
         amount: llm.amount,
-        category: llm.category ?? normalised?.category ?? "Uncategorized",
+        category: llm.category ?? hinted ?? "Uncategorized",
         merchant: normalised?.merchant ?? llm.merchant,
         expense_date: llm.expense_date ?? parsed.expenseDate,
         user_id: userId,

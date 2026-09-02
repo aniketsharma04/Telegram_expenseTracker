@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Linking,
@@ -14,6 +14,8 @@ import {
   gmailDisconnect,
   gmailSync,
 } from "../lib/api";
+import { captureStatus, syncCaptures } from "../lib/capture";
+import { openCaptureSettings } from "../modules/notification-capture";
 import { Palette } from "../lib/theme";
 import { Lang, useSettings } from "../lib/i18n";
 
@@ -36,6 +38,42 @@ export default function SettingsSheet({
   const { t, fs, lang, scale, setLang, setLarge } = useSettings();
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+
+  // v9: notification capture. Permission is granted in a system screen, so
+  // the status is re-read every time this sheet opens.
+  const [capture, setCapture] = useState(captureStatus);
+  const [capturing, setCapturing] = useState(false);
+  const [captureNote, setCaptureNote] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (visible) setCapture(captureStatus());
+  }, [visible]);
+
+  const grantCapture = () => {
+    openCaptureSettings();
+    setCaptureNote(t("grantHint"));
+  };
+
+  const syncNow = async () => {
+    if (!token) return;
+    setCapturing(true);
+    setCaptureNote(null);
+    const result = await syncCaptures(token);
+    setCapture(captureStatus());
+    setCapturing(false);
+    setCaptureNote(
+      result.error
+        ? t("captureFailed")
+        : result.sent === 0
+          ? t("captureNothing")
+          : `${result.logged} ${t("captureLogged")}${
+              result.duplicates
+                ? ` · ${result.duplicates} ${t("captureSkipped")}`
+                : ""
+            }`,
+    );
+    if (!result.error && result.logged > 0) onChanged?.();
+  };
 
   // Consent runs in the system browser; coming back, "Scan now" picks it up.
   const connect = async () => {
@@ -254,6 +292,84 @@ export default function SettingsSheet({
                         {gmail?.needs_reauth
                           ? t("reconnectGmail")
                           : t("connectGmail")}
+                      </Text>
+                    </Pressable>
+                  )}
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* v9: auto-capture from bank notifications (Android only). */}
+          {token && capture.supported && (
+            <View style={[styles.block, { borderTopColor: p.border }]}>
+              <Text
+                style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}
+              >
+                🔔 {t("autoCapture")}
+              </Text>
+              <Text
+                style={{
+                  fontSize: fs(12),
+                  color: p.muted,
+                  marginTop: 3,
+                  lineHeight: 17,
+                }}
+              >
+                {capture.granted ? t("captureOn") : t("captureBlurb")}
+              </Text>
+              {capture.granted && capture.pending > 0 && (
+                <Text
+                  style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}
+                >
+                  {capture.pending} {t("capturePending")}
+                </Text>
+              )}
+              {captureNote && (
+                <Text
+                  style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}
+                >
+                  {captureNote}
+                </Text>
+              )}
+              {capturing ? (
+                <ActivityIndicator color={p.accent} style={{ marginTop: 10 }} />
+              ) : (
+                <View style={[styles.row, { marginTop: 10 }]}>
+                  {capture.granted ? (
+                    <Pressable
+                      style={[
+                        styles.smallBtn,
+                        { backgroundColor: p.accent, flex: 1 },
+                      ]}
+                      onPress={syncNow}
+                    >
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontWeight: "700",
+                          fontSize: fs(13),
+                        }}
+                      >
+                        {t("syncNow")}
+                      </Text>
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      style={[
+                        styles.smallBtn,
+                        { backgroundColor: p.accent, flex: 1 },
+                      ]}
+                      onPress={grantCapture}
+                    >
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontWeight: "700",
+                          fontSize: fs(13),
+                        }}
+                      >
+                        {t("grantAccess")}
                       </Text>
                     </Pressable>
                   )}

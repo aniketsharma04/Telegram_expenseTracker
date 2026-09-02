@@ -1,0 +1,19 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application>
+    <!--
+      The listener runs only after the user grants notification access in
+      Android settings; there is no way to grant it silently. Declared with
+      the fully-qualified name because a leading dot would resolve against
+      the app's package, not this module's.
+    -->
+    <service
+      android:name="expo.modules.notificationcapture.BankNotificationListenerService"
+      android:label="Expense Tracker capture"
+      android:exported="true"
+      android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+      <intent-filter>
+        <action android:name="android.service.notification.NotificationListenerService" />
+      </intent-filter>
+    </service>
+  </application>
+</manifest>

@@ -91,8 +91,8 @@ create unique index if not exists merchants_pattern_idx
 
 -- Seed the merchants that show up in almost every Indian statement.
 insert into merchants (user_id, pattern, canonical, category) values
-  (null, 'swiggy',     'Swiggy',      'Food & dining'),
-  (null, 'zomato',     'Zomato',      'Food & dining'),
+  (null, 'swiggy',     'Swiggy',      'Food delivery'),
+  (null, 'zomato',     'Zomato',      'Food delivery'),
   (null, 'blinkit',    'Blinkit',     'Groceries'),
   (null, 'zepto',      'Zepto',       'Groceries'),
   (null, 'bigbasket',  'BigBasket',   'Groceries'),

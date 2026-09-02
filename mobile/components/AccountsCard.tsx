@@ -64,6 +64,10 @@ export default function AccountsCard({
 
   const net = position?.net ?? 0;
   const unassigned = position?.unassigned.expenses ?? 0;
+  // v9: accounts where the bank's own balance disagrees with our rows.
+  const drifting = live.filter(
+    (a) => a.drift != null && Math.abs(a.drift) >= 1,
+  );
 
   return (
     <Card p={p}>
@@ -158,24 +162,41 @@ export default function AccountsCard({
                     : ""}
                 </Text>
               </View>
-              <Text
-                style={{
-                  color:
-                    owed && shown > 0
-                      ? "#d03b3b"
-                      : shown < 0
+              <View style={{ alignItems: "flex-end" }}>
+                <Text
+                  style={{
+                    color:
+                      owed && shown > 0
                         ? "#d03b3b"
-                        : p.ink,
-                  fontSize: fs(14.5),
-                  fontWeight: "600",
-                }}
-              >
-                {formatINR(shown)}
-              </Text>
+                        : shown < 0
+                          ? "#d03b3b"
+                          : p.ink,
+                    fontSize: fs(14.5),
+                    fontWeight: "600",
+                  }}
+                >
+                  {formatINR(shown)}
+                </Text>
+                {/* v9: what the bank itself last told us, when it disagrees. */}
+                {a.drift != null && Math.abs(a.drift) >= 1 && (
+                  <Text style={{ color: p.muted, fontSize: fs(10.5) }}>
+                    {t("bankSays")} {formatINR(a.reported_balance ?? 0)}
+                  </Text>
+                )}
+              </View>
             </Pressable>
           );
         })}
       </View>
+
+      {drifting.length > 0 && (
+        <Text style={{ color: "#b0740f", fontSize: fs(11.5), marginTop: 10 }}>
+          {formatINR(
+            Math.abs(drifting.reduce((sum, a) => sum + (a.drift ?? 0), 0)),
+          )}{" "}
+          {t("checkDrift")}
+        </Text>
+      )}
 
       {unassigned > 0 && (
         <Text style={{ color: p.muted, fontSize: fs(11.5), marginTop: 10 }}>

@@ -188,6 +188,11 @@ export interface Account {
   balance: number;
   outstanding: number | null;
   available: number | null;
+  /** v9: the balance the bank itself last reported, and when. */
+  reported_balance?: number | null;
+  reported_at?: string | null;
+  /** reported − computed. Non-zero means something wasn't captured. */
+  drift: number | null;
 }
 
 /** What you're worth right now: what you hold minus what you owe. */

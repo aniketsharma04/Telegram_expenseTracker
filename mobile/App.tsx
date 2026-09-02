@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  AppState,
   Pressable,
   RefreshControl,
   SafeAreaView,
@@ -29,6 +30,7 @@ import TransferSheet from "./components/TransferSheet";
 import TransactionsTab from "./components/TransactionsTab";
 import { Avatar } from "./components/ui";
 import { Account, ApiData, Expense, fetchData } from "./lib/api";
+import { syncCaptures } from "./lib/capture";
 import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
 import { memberColor, usePalette } from "./lib/theme";
 
@@ -101,6 +103,28 @@ function AppInner() {
     refresh();
     const interval = setInterval(refresh, 30000);
     return () => clearInterval(interval);
+  }, [token, refresh]);
+
+  // v9: the notification listener queues bank alerts while the app is closed.
+  // Drain and upload them on open and on every return to the foreground —
+  // with an empty queue this touches no network at all.
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+
+    const drain = async () => {
+      const result = await syncCaptures(token);
+      if (!cancelled && result.logged > 0) refresh();
+    };
+
+    drain();
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") drain();
+    });
+    return () => {
+      cancelled = true;
+      subscription.remove();
+    };
   }, [token, refresh]);
 
   const login = useCallback(async (code: string): Promise<string | null> => {

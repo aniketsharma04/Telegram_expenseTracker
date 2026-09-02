@@ -41,6 +41,8 @@ import {
   joinFamilyByCode,
   inviteLink,
 } from "@/lib/family";
+import { looksLikeBankMessage } from "@/lib/bank-message";
+import { ingestBankMessage } from "@/lib/ingest";
 import type { Expense } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -340,12 +342,62 @@ async function handleReceiptPhoto(message: TelegramMessage, chatId: number) {
 
 // ── Expense pipeline: rules fast path → LLM fallback → clarify ─────────────
 
+/**
+ * v9: a forwarded bank SMS is not an expense message — it's a statement of
+ * something that already happened, with the bank's own balance attached.
+ * Route it to the capture pipeline instead of the expense parser.
+ */
+async function handleBankMessage(
+  text: string,
+  chatId: number,
+  suffix: string,
+): Promise<boolean> {
+  if (!looksLikeBankMessage(text)) return false;
+  const supabase = createServiceClient();
+  const result = await ingestBankMessage(supabase, chatId, {
+    body: text,
+    source: "telegram",
+  });
+  if (result.status === "ignored") return false;
+
+  const money = `₹${result.txn?.amount?.toLocaleString("en-IN") ?? ""}`;
+  const where = result.accountName
+    ? ` · ${escapeHtml(result.accountName)}`
+    : "";
+  const balance =
+    result.balance != null
+      ? `
+Bank says balance: <b>₹${result.balance.toLocaleString("en-IN")}</b>`
+      : "";
+  const drift =
+    result.drift != null && Math.abs(result.drift) >= 1
+      ? `
+⚠️ Off by ₹${Math.abs(result.drift).toLocaleString("en-IN")} from what's logged.`
+      : "";
+  const icon =
+    result.status === "duplicate"
+      ? "🔁"
+      : result.txn?.direction === "credit"
+        ? "📥"
+        : "📤";
+
+  await sendMessage(
+    chatId,
+    `${icon} <b>${money}</b>${where}
+${escapeHtml(result.note)}${balance}${drift}` + suffix,
+  );
+  return true;
+}
+
 async function handleExpenseText(
   text: string,
   chatId: number,
   source: "telegram_text" | "telegram_voice",
   suffix: string,
 ) {
+  // Forwarded bank alerts go through capture, not the expense parser.
+  if (await handleBankMessage(text, chatId, suffix)) return;
+
   const supabase = createServiceClient();
   const result = await logExpenseFromText(supabase, chatId, text, source);
 

@@ -254,6 +254,38 @@ const STRINGS = {
     hi: "ट्रांसफ़र दर्ज हुआ, खर्चा नहीं।",
   },
   payFrom: { en: "Paid from", hi: "किस खाते से" },
+  // auto-capture (v9)
+  autoCapture: {
+    en: "Auto-capture from notifications",
+    hi: "सूचनाओं से अपने-आप दर्ज",
+  },
+  captureBlurb: {
+    en: "Read bank SMS alerts as they arrive, so spending logs itself and balances stay right.",
+    hi: "बैंक के SMS अपने-आप पढ़े जाएँगे, जिससे खर्चे खुद दर्ज हों और बैलेंस सही रहे।",
+  },
+  captureOn: {
+    en: "On. Bank alerts are captured and uploaded when you open the app.",
+    hi: "चालू है। ऐप खोलने पर बैंक अलर्ट दर्ज हो जाते हैं।",
+  },
+  grantAccess: { en: "Grant access", hi: "अनुमति दें" },
+  grantHint: {
+    en: 'Find "Expense Tracker" in the list and turn it on, then come back.',
+    hi: 'सूची में "Expense Tracker" चुनकर चालू करें, फिर वापस आएँ।',
+  },
+  syncNow: { en: "Sync now", hi: "अभी सिंक करें" },
+  capturePending: { en: "waiting to upload", hi: "अपलोड बाकी" },
+  captureLogged: { en: "logged", hi: "दर्ज हुए" },
+  captureSkipped: { en: "already known", hi: "पहले से दर्ज" },
+  captureNothing: { en: "Nothing new to capture.", hi: "कुछ नया नहीं मिला।" },
+  captureFailed: {
+    en: "Couldn't upload — kept for the next try.",
+    hi: "अपलोड नहीं हुआ — अगली बार फिर कोशिश होगी।",
+  },
+  bankSays: { en: "Bank says", hi: "बैंक के अनुसार" },
+  checkDrift: {
+    en: "off from what's logged — some spending wasn't captured",
+    hi: "दर्ज रकम से अंतर — कुछ खर्चे दर्ज नहीं हुए",
+  },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;
