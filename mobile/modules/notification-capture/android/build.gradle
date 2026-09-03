@@ -3,6 +3,15 @@ plugins {
   id 'expo-module-gradle-plugin'
 }
 
+group = 'com.aniketsharma.expensetracker'
+version = '1.0.0'
+
 android {
   namespace "expo.modules.notificationcapture"
+  // expo-module-gradle-plugin publishes a release component and fails
+  // configuration without these — every shipped Expo module declares them.
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
 }

@@ -754,3 +754,67 @@ async function errorText(res: Response): Promise<string | null> {
     return null;
   }
 }
+
+// ── Itemised receipts (v10) ─────────────────────────────────────────────────
+
+export interface ReceiptItem {
+  line_no: number;
+  name: string;
+  quantity: number | null;
+  unit_price: number | null;
+  amount: number;
+}
+
+export interface Receipt {
+  expense_id: string;
+  merchant: string | null;
+  bill_number: string | null;
+  bill_date: string | null;
+  subtotal: number | null;
+  tax: number | null;
+  discount: number | null;
+  tip: number | null;
+  total: number | null;
+  currency: string;
+  items_total: number | null;
+  /** False when the lines don't add up to the total — show it as partial. */
+  reconciled: boolean;
+  items: ReceiptItem[];
+}
+
+/** The bill behind one expense. Null is normal: most expenses are typed in. */
+export async function fetchReceipt(
+  token: string,
+  expenseId: string,
+): Promise<Receipt | null> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/api/receipt?expense_id=${encodeURIComponent(expenseId)}`,
+      { headers: { Authorization: `Bearer ${token.trim()}` } },
+    );
+    if (!res.ok) return null;
+    return ((await res.json()) as { receipt: Receipt | null }).receipt;
+  } catch {
+    return null;
+  }
+}
+
+/** What you actually order, ranked by spend, across every stored bill. */
+export async function fetchTopItems(
+  token: string,
+  days = 90,
+): Promise<Array<{ name: string; times: number; total: number }>> {
+  try {
+    const res = await fetch(`${API_BASE}/api/receipt?top=1&days=${days}`, {
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    });
+    if (!res.ok) return [];
+    return (
+      (await res.json()) as {
+        items: Array<{ name: string; times: number; total: number }>;
+      }
+    ).items;
+  } catch {
+    return [];
+  }
+}

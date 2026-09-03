@@ -254,6 +254,17 @@ const STRINGS = {
     hi: "ट्रांसफ़र दर्ज हुआ, खर्चा नहीं।",
   },
   payFrom: { en: "Paid from", hi: "किस खाते से" },
+  // itemised receipts (v10)
+  billItems: { en: "On this bill", hi: "इस बिल में" },
+  billSubtotal: { en: "Subtotal", hi: "उप-योग" },
+  billTax: { en: "Tax & charges", hi: "कर व शुल्क" },
+  billDiscount: { en: "Discount", hi: "छूट" },
+  billTip: { en: "Tip", hi: "टिप" },
+  billTotal: { en: "Total", hi: "कुल" },
+  billPartial: {
+    en: "The lines don't add up to the total — some may have been missed.",
+    hi: "लाइनें कुल से मेल नहीं खातीं — कुछ छूट गई होंगी।",
+  },
   // auto-capture (v9)
   autoCapture: {
     en: "Auto-capture from notifications",

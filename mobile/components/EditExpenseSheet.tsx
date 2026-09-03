@@ -14,6 +14,7 @@ import {
 import { deleteExpense, Expense, patchExpense } from "../lib/api";
 import { formatINR, Palette, seriesColor } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
+import ReceiptLines from "./ReceiptLines";
 
 interface Props {
   expense: Expense | null; // null = closed
@@ -77,8 +78,10 @@ export default function EditExpenseSheet({
       const patch: Parameters<typeof patchExpense>[2] = {};
       if (parsedAmount !== Number(expense.amount)) patch.amount = parsedAmount;
       if (category !== expense.category) patch.category = category;
-      if ((merchant.trim() || null) !== expense.merchant) patch.merchant = merchant.trim() || null;
-      if (day !== "keep") patch.expense_date = day === "today" ? today : yesterdayOf(today);
+      if ((merchant.trim() || null) !== expense.merchant)
+        patch.merchant = merchant.trim() || null;
+      if (day !== "keep")
+        patch.expense_date = day === "today" ? today : yesterdayOf(today);
 
       if (Object.keys(patch).length === 0) {
         onClose();
@@ -126,20 +129,39 @@ export default function EditExpenseSheet({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Pressable style={styles.backdropTouch} onPress={onClose} />
-        <View style={[styles.sheet, { backgroundColor: p.surface, borderColor: p.border }]}>
+        <View
+          style={[
+            styles.sheet,
+            { backgroundColor: p.surface, borderColor: p.border },
+          ]}
+        >
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
-          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.body}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={styles.body}
+          >
             <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
               {t("editExpense")}
             </Text>
             {isSplit && (
-              <Text style={[styles.splitNote, { color: p.ink2, backgroundColor: p.accentSoft, fontSize: fs(12.5) }]}>
+              <Text
+                style={[
+                  styles.splitNote,
+                  {
+                    color: p.ink2,
+                    backgroundColor: p.accentSoft,
+                    fontSize: fs(12.5),
+                  },
+                ]}
+              >
                 🤝 {t("partOfSplit")}
               </Text>
             )}
 
             <View style={[styles.amountBox, inputBg]}>
-              <Text style={{ fontSize: 24, fontWeight: "700", color: p.muted }}>₹</Text>
+              <Text style={{ fontSize: 24, fontWeight: "700", color: p.muted }}>
+                ₹
+              </Text>
               <TextInput
                 style={[styles.amountInput, { color: p.ink }]}
                 value={amount}
@@ -163,7 +185,12 @@ export default function EditExpenseSheet({
                       },
                     ]}
                   >
-                    <View style={[styles.dot, { backgroundColor: seriesColor(c.color, dark) }]} />
+                    <View
+                      style={[
+                        styles.dot,
+                        { backgroundColor: seriesColor(c.color, dark) },
+                      ]}
+                    />
                     <Text
                       style={{
                         fontSize: fs(13),
@@ -179,12 +206,19 @@ export default function EditExpenseSheet({
             </View>
 
             <TextInput
-              style={[styles.merchantInput, inputBg, { color: p.ink, fontSize: fs(14) }]}
+              style={[
+                styles.merchantInput,
+                inputBg,
+                { color: p.ink, fontSize: fs(14) },
+              ]}
               placeholder={t("wherePlaceholder")}
               placeholderTextColor={p.muted}
               value={merchant}
               onChangeText={setMerchant}
             />
+
+            {/* v10: the itemised bill, when this expense came from a photo. */}
+            <ReceiptLines expenseId={expense.id} token={token} p={p} />
 
             <View style={styles.dayRow}>
               {(["keep", "today", "yesterday"] as DayPick[]).map((d) => (
@@ -216,23 +250,48 @@ export default function EditExpenseSheet({
               ))}
             </View>
 
-            {error && <Text style={[styles.error, { fontSize: fs(13) }]}>{error}</Text>}
+            {error && (
+              <Text style={[styles.error, { fontSize: fs(13) }]}>{error}</Text>
+            )}
 
             <View style={styles.actionRow}>
-              <Pressable style={[styles.btnDanger]} onPress={remove} disabled={busy}>
-                <Text style={{ color: "#d03b3b", fontWeight: "600", fontSize: fs(14) }}>
+              <Pressable
+                style={[styles.btnDanger]}
+                onPress={remove}
+                disabled={busy}
+              >
+                <Text
+                  style={{
+                    color: "#d03b3b",
+                    fontWeight: "600",
+                    fontSize: fs(14),
+                  }}
+                >
                   🗑️ {t("delete")}
                 </Text>
               </Pressable>
               <Pressable
-                style={[styles.btn, { backgroundColor: p.accent, opacity: ready && !busy ? 1 : 0.5, flex: 1 }]}
+                style={[
+                  styles.btn,
+                  {
+                    backgroundColor: p.accent,
+                    opacity: ready && !busy ? 1 : 0.5,
+                    flex: 1,
+                  },
+                ]}
                 onPress={save}
                 disabled={!ready || busy}
               >
                 {busy ? (
                   <ActivityIndicator color="#fff" />
                 ) : (
-                  <Text style={{ color: "#fff", fontWeight: "700", fontSize: fs(15) }}>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontWeight: "700",
+                      fontSize: fs(15),
+                    }}
+                  >
                     {t("save")} {ready ? formatINR(parsedAmount) : ""}
                   </Text>
                 )}
@@ -246,7 +305,11 @@ export default function EditExpenseSheet({
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" },
+  backdrop: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
   backdropTouch: { flex: 1 },
   sheet: {
     borderTopLeftRadius: 24,
@@ -257,11 +320,34 @@ const styles = StyleSheet.create({
     paddingBottom: 28,
     maxHeight: "90%",
   },
-  grab: { alignSelf: "center", width: 40, height: 4, borderRadius: 2, marginBottom: 12 },
+  grab: {
+    alignSelf: "center",
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    marginBottom: 12,
+  },
   body: { gap: 13 },
-  splitNote: { borderRadius: 10, padding: 8, textAlign: "center", overflow: "hidden" },
-  amountBox: { flexDirection: "row", alignItems: "center", borderWidth: 1, borderRadius: 14, paddingHorizontal: 16, gap: 8 },
-  amountInput: { flex: 1, fontSize: 28, fontWeight: "700", paddingVertical: 12 },
+  splitNote: {
+    borderRadius: 10,
+    padding: 8,
+    textAlign: "center",
+    overflow: "hidden",
+  },
+  amountBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  amountInput: {
+    flex: 1,
+    fontSize: 28,
+    fontWeight: "700",
+    paddingVertical: 12,
+  },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: {
     flexDirection: "row",
@@ -273,9 +359,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
   },
   dot: { width: 8, height: 8, borderRadius: 4 },
-  merchantInput: { borderWidth: 1, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 11 },
+  merchantInput: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+  },
   dayRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  dayBtn: { borderWidth: 1, borderRadius: 999, paddingVertical: 8, paddingHorizontal: 14 },
+  dayBtn: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+  },
   actionRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   btn: { borderRadius: 14, paddingVertical: 14, alignItems: "center" },
   btnDanger: { paddingVertical: 14, paddingHorizontal: 14 },
