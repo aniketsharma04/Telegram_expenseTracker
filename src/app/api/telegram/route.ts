@@ -43,6 +43,7 @@ import {
 } from "@/lib/family";
 import { looksLikeBankMessage } from "@/lib/bank-message";
 import { ingestBankMessage } from "@/lib/ingest";
+import { saveParsedReceipt } from "@/lib/receipts";
 import type { Expense } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -314,7 +315,7 @@ async function handleReceiptPhoto(message: TelegramMessage, chatId: number) {
     merchant: parsed.merchant,
     expense_date: parsed.expense_date ?? localDate(),
   };
-  await insertExpense(supabase, {
+  const logged = await insertExpense(supabase, {
     ...row,
     user_id: chatId,
     raw_message: caption ? `[photo] ${caption}` : "[photo]",
@@ -326,6 +327,19 @@ async function handleReceiptPhoto(message: TelegramMessage, chatId: number) {
     await learnKeyword(supabase, categories, parsed.category, parsed.merchant);
   }
 
+  // v10: keep the itemised bill behind the total.
+  const receipt = await saveParsedReceipt(
+    supabase,
+    chatId,
+    logged.id,
+    parsed,
+    "telegram_photo",
+  );
+  const itemLine = receipt.items
+    ? `
+🧾 ${receipt.items} item${receipt.items === 1 ? "" : "s"} saved${receipt.reconciled ? "" : " (partial — check the total)"}`
+    : "";
+
   const nudge =
     parsed.confidence === "low" || !parsed.category
       ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
@@ -334,6 +348,7 @@ async function handleReceiptPhoto(message: TelegramMessage, chatId: number) {
   await sendMessage(
     chatId,
     `📷 ${confirmText(row)}` +
+      itemLine +
       (await monthlySummary(supabase, chatId)) +
       nudge +
       (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),

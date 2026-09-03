@@ -19,6 +19,26 @@ export interface LLMParse {
   clarifying_question: string | null;
 }
 
+/**
+ * A receipt carries more than an expense does: the lines that make up the
+ * total, and the tax/tip/discount that explain the gap between them (v10).
+ */
+export interface ReceiptLine {
+  name: string | null;
+  quantity: number | null;
+  unit_price: number | null;
+  amount: number | null;
+}
+
+export interface ReceiptParse extends LLMParse {
+  items: ReceiptLine[];
+  subtotal: number | null;
+  tax: number | null;
+  discount: number | null;
+  tip: number | null;
+  bill_number: string | null;
+}
+
 const SYSTEM_PROMPT = [
   "You parse casual personal expense messages from a user in India into structured data.",
   "Messages may be sloppy, misspelled, transcribed from voice notes, or in Hinglish.",
@@ -148,8 +168,71 @@ const RECEIPT_PROMPT = [
   "This image is a receipt, bill, or payment screenshot from India.",
   "Extract the expense: the grand TOTAL actually paid (after taxes and discounts — not the subtotal or an item price),",
   "the merchant/store name, and the receipt date if visible.",
+  "Also list every ordered line item exactly as printed, in order, with its quantity, unit price and line total.",
+  "Read only real purchased lines — never turn a subtotal, tax, service charge, discount, tip, round-off or grand total into an item.",
+  "Put those in their own fields instead, and leave any field you cannot read as null rather than guessing.",
   "If the image is not a receipt or no total can be read, return amount null with a clarifying question.",
 ].join(" ");
+
+/** The expense fields plus the bill breakdown. */
+const RECEIPT_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    ...GEMINI_SCHEMA.properties,
+    items: {
+      type: "ARRAY",
+      description: "Every purchased line on the bill, in printed order",
+      items: {
+        type: "OBJECT",
+        properties: {
+          name: {
+            type: "STRING",
+            nullable: true,
+            description: "Item name as printed",
+          },
+          quantity: { type: "NUMBER", nullable: true },
+          unit_price: {
+            type: "NUMBER",
+            nullable: true,
+            description: "Price for one unit",
+          },
+          amount: { type: "NUMBER", nullable: true, description: "Line total" },
+        },
+        required: ["name", "quantity", "unit_price", "amount"],
+      },
+    },
+    subtotal: {
+      type: "NUMBER",
+      nullable: true,
+      description: "Total before tax",
+    },
+    tax: {
+      type: "NUMBER",
+      nullable: true,
+      description: "GST/VAT plus service charge",
+    },
+    discount: {
+      type: "NUMBER",
+      nullable: true,
+      description: "Discount as a positive number",
+    },
+    tip: { type: "NUMBER", nullable: true },
+    bill_number: {
+      type: "STRING",
+      nullable: true,
+      description: "Invoice/bill number",
+    },
+  },
+  required: [
+    ...GEMINI_SCHEMA.required,
+    "items",
+    "subtotal",
+    "tax",
+    "discount",
+    "tip",
+    "bill_number",
+  ],
+};
 
 export async function parseReceipt(
   image: ArrayBuffer,
@@ -157,7 +240,7 @@ export async function parseReceipt(
   caption: string | null,
   categories: CategoryRule[],
   todayIST: string,
-): Promise<LLMParse | null> {
+): Promise<ReceiptParse | null> {
   if (!process.env.GEMINI_API_KEY) return null;
   const model = process.env.LLM_MODEL || "gemini-2.5-flash";
 
@@ -197,7 +280,7 @@ export async function parseReceipt(
           ],
           generationConfig: {
             responseMimeType: "application/json",
-            responseSchema: GEMINI_SCHEMA,
+            responseSchema: RECEIPT_SCHEMA,
             temperature: 0,
           },
         }),
@@ -216,7 +299,13 @@ export async function parseReceipt(
     };
     const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!raw) return null;
-    return JSON.parse(raw) as LLMParse;
+    const parsed = JSON.parse(raw) as ReceiptParse;
+    // An older model response (or a re-run against the plain schema) simply
+    // has no lines; the caller treats that as "total only", not an error.
+    return {
+      ...parsed,
+      items: Array.isArray(parsed.items) ? parsed.items : [],
+    };
   } catch (err) {
     console.error("receipt parse failed", err);
     return null;

@@ -11,6 +11,7 @@ import {
   learnKeyword,
 } from "@/lib/log-expense";
 import { collectBudgetAlerts, pushAlertsToTelegram } from "@/lib/budgets";
+import { saveParsedReceipt } from "@/lib/receipts";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // transcription + vision calls
@@ -24,22 +25,32 @@ export const maxDuration = 60; // transcription + vision calls
  */
 export async function POST(req: NextRequest) {
   const userId = authedUser(req);
-  if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   let form: FormData;
   try {
     form = await req.formData();
   } catch {
-    return NextResponse.json({ error: "expected multipart form-data" }, { status: 400 });
+    return NextResponse.json(
+      { error: "expected multipart form-data" },
+      { status: 400 },
+    );
   }
 
   const kind = form.get("kind");
   const file = form.get("file");
   if ((kind !== "voice" && kind !== "receipt") || !(file instanceof Blob)) {
-    return NextResponse.json({ error: "need kind=voice|receipt and a file" }, { status: 400 });
+    return NextResponse.json(
+      { error: "need kind=voice|receipt and a file" },
+      { status: 400 },
+    );
   }
   if (file.size > 15 * 1024 * 1024) {
-    return NextResponse.json({ error: "file too large (15MB max)" }, { status: 400 });
+    return NextResponse.json(
+      { error: "file too large (15MB max)" },
+      { status: 400 },
+    );
   }
 
   const bytes = await file.arrayBuffer();
@@ -47,31 +58,51 @@ export async function POST(req: NextRequest) {
 
   if (kind === "voice") {
     if (!voiceConfigured()) {
-      return NextResponse.json({ error: "voice transcription not configured" }, { status: 503 });
+      return NextResponse.json(
+        { error: "voice transcription not configured" },
+        { status: 503 },
+      );
     }
     const name = (file as File).name || "voice.m4a";
-    const transcript = await transcribeVoice(bytes, file.type || "audio/m4a", name);
+    const transcript = await transcribeVoice(
+      bytes,
+      file.type || "audio/m4a",
+      name,
+    );
     if (!transcript) {
       return NextResponse.json({
         status: "need_amount",
-        question: "Couldn't make out that recording — try again closer to the mic, or type it.",
+        question:
+          "Couldn't make out that recording — try again closer to the mic, or type it.",
         alerts: [],
       });
     }
-    const result = await logExpenseFromText(supabase, userId, transcript, "app_voice");
+    const result = await logExpenseFromText(
+      supabase,
+      userId,
+      transcript,
+      "app_voice",
+    );
     const alerts =
-      result.status === "logged" ? await collectBudgetAlerts(supabase, userId) : [];
+      result.status === "logged"
+        ? await collectBudgetAlerts(supabase, userId)
+        : [];
     if (alerts.length > 0) await pushAlertsToTelegram(userId, alerts);
     return NextResponse.json({ ...result, transcript, alerts });
   }
 
   // Receipt photo → vision parse → insert (mirrors the Telegram photo handler).
   if (!process.env.GEMINI_API_KEY) {
-    return NextResponse.json({ error: "receipt reading not configured" }, { status: 503 });
+    return NextResponse.json(
+      { error: "receipt reading not configured" },
+      { status: 503 },
+    );
   }
   const captionRaw = form.get("caption");
   const caption =
-    typeof captionRaw === "string" && captionRaw.trim() ? captionRaw.trim() : null;
+    typeof captionRaw === "string" && captionRaw.trim()
+      ? captionRaw.trim()
+      : null;
 
   const categories = await loadCategories(supabase);
   const parsed = await parseReceipt(
@@ -107,12 +138,22 @@ export async function POST(req: NextRequest) {
     await learnKeyword(supabase, categories, parsed.category, parsed.merchant);
   }
 
+  // v10: keep the itemised bill behind the total.
+  const receipt = await saveParsedReceipt(
+    supabase,
+    userId,
+    expense.id,
+    parsed,
+    "app_photo",
+  );
+
   const alerts = await collectBudgetAlerts(supabase, userId);
   if (alerts.length > 0) await pushAlertsToTelegram(userId, alerts);
   return NextResponse.json({
     status: "logged",
     expense,
     nudge: parsed.confidence === "low" || !parsed.category,
+    receipt,
     alerts,
   });
 }
