@@ -818,3 +818,165 @@ export async function fetchTopItems(
     return [];
   }
 }
+
+// ── Email sign-in (v12) ─────────────────────────────────────────────────────
+
+export interface EmailSignIn {
+  token: string;
+  user: { id: number; name: string | null; email: string | null };
+  telegram_linked: boolean;
+}
+
+/** Ask for a 6-digit code. Answers the same whether or not an account exists. */
+export async function requestLoginCode(
+  email: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (res.ok) return { ok: true };
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
+    return {
+      ok: false,
+      error: body.error ?? `Couldn't send the code (HTTP ${res.status}).`,
+    };
+  } catch {
+    return {
+      ok: false,
+      error: "Couldn't reach the server — check your connection.",
+    };
+  }
+}
+
+/** Exchange the code for a 30-day session token. */
+export async function verifyLoginCode(
+  email: string,
+  code: string,
+): Promise<{ ok: true; session: EmailSignIn } | { ok: false; error: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code }),
+    });
+    const body = (await res
+      .json()
+      .catch(() => ({}))) as Partial<EmailSignIn> & {
+      error?: string;
+    };
+    if (!res.ok || !body.token) {
+      return { ok: false, error: body.error ?? "That code didn't work." };
+    }
+    return {
+      ok: true,
+      session: {
+        token: body.token,
+        user: body.user ?? { id: 0, name: null, email },
+        telegram_linked: Boolean(body.telegram_linked),
+      },
+    };
+  } catch {
+    return {
+      ok: false,
+      error: "Couldn't reach the server — check your connection.",
+    };
+  }
+}
+
+// ── Accounts you can sign in to without Telegram (v12) ─────────────────────
+
+export interface SignInResult {
+  status: "code_sent" | "signed_in";
+  token?: string;
+  created?: boolean;
+  user?: { id: number; name: string; email: string | null };
+}
+
+/** Step 1: ask for a code. Step 2: send the code back to get a token. */
+export async function emailSignIn(
+  email: string,
+  code?: string,
+): Promise<SignInResult | { error: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(code ? { email, code } : { email }),
+    });
+    const body = (await res.json()) as SignInResult & { error?: string };
+    if (!res.ok) return { error: body.error ?? `HTTP ${res.status}` };
+    return body;
+  } catch {
+    return { error: "Couldn't reach the server — check your connection." };
+  }
+}
+
+export interface AccountInfo {
+  account: {
+    id: number;
+    name: string;
+    email: string | null;
+    telegram_linked: boolean;
+    consent_at: string | null;
+  };
+  usage: Array<{ kind: string; used: number; limit: number }>;
+}
+
+export async function fetchAccount(token: string): Promise<AccountInfo | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/account`, {
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as AccountInfo;
+  } catch {
+    return null;
+  }
+}
+
+/** A short code to send to the bot, so alerts can reach a Telegram chat. */
+export async function requestTelegramLinkCode(
+  token: string,
+): Promise<string | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/link`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    });
+    if (!res.ok) return null;
+    return ((await res.json()) as { code: string }).code;
+  } catch {
+    return null;
+  }
+}
+
+/** Everything we hold about this account, as JSON the user can keep. */
+export async function exportMyData(token: string): Promise<unknown | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/account?export=1`, {
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteMyAccount(token: string): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/api/account?confirm=delete-my-account`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token.trim()}` },
+      },
+    );
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
