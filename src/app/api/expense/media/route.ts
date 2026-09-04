@@ -12,6 +12,8 @@ import {
 } from "@/lib/log-expense";
 import { collectBudgetAlerts, pushAlertsToTelegram } from "@/lib/budgets";
 import { saveParsedReceipt } from "@/lib/receipts";
+import { consumeQuota } from "@/lib/quota";
+import { geminiConfigured, userGeminiKey } from "@/lib/ai-keys";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // transcription + vision calls
@@ -63,6 +65,13 @@ export async function POST(req: NextRequest) {
         { status: 503 },
       );
     }
+    const voiceQuota = await consumeQuota(supabase, userId, "voice");
+    if (!voiceQuota.allowed)
+      return NextResponse.json(
+        { status: "need_amount", question: voiceQuota.message, alerts: [] },
+        { status: 429 },
+      );
+
     const name = (file as File).name || "voice.m4a";
     const transcript = await transcribeVoice(
       bytes,
@@ -87,12 +96,12 @@ export async function POST(req: NextRequest) {
       result.status === "logged"
         ? await collectBudgetAlerts(supabase, userId)
         : [];
-    if (alerts.length > 0) await pushAlertsToTelegram(userId, alerts);
+    if (alerts.length > 0) await pushAlertsToTelegram(supabase, userId, alerts);
     return NextResponse.json({ ...result, transcript, alerts });
   }
 
   // Receipt photo → vision parse → insert (mirrors the Telegram photo handler).
-  if (!process.env.GEMINI_API_KEY) {
+  if (!geminiConfigured()) {
     return NextResponse.json(
       { error: "receipt reading not configured" },
       { status: 503 },
@@ -105,12 +114,22 @@ export async function POST(req: NextRequest) {
       : null;
 
   const categories = await loadCategories(supabase);
+  // Vision calls cost real money; a per-day cap stops one account spending
+  // the whole budget, without taking anything away from normal use.
+  const visionQuota = await consumeQuota(supabase, userId, "llm_vision");
+  if (!visionQuota.allowed)
+    return NextResponse.json(
+      { status: "need_amount", question: visionQuota.message, alerts: [] },
+      { status: 429 },
+    );
+
   const parsed = await parseReceipt(
     bytes,
     file.type || "image/jpeg",
     caption,
     categories,
     localDate(),
+    await userGeminiKey(supabase, userId),
   );
 
   if (!parsed || !parsed.amount || parsed.amount <= 0) {
@@ -148,7 +167,7 @@ export async function POST(req: NextRequest) {
   );
 
   const alerts = await collectBudgetAlerts(supabase, userId);
-  if (alerts.length > 0) await pushAlertsToTelegram(userId, alerts);
+  if (alerts.length > 0) await pushAlertsToTelegram(supabase, userId, alerts);
   return NextResponse.json({
     status: "logged",
     expense,

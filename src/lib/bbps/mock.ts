@@ -1,6 +1,12 @@
 import { localDate } from "../parser";
 import { addDays } from "../insights";
 import type { BbpsProvider, Biller, FetchResult } from "./types";
+import {
+  DISCOMS,
+  GAS_BILLERS,
+  WATER_BILLERS,
+  type BillerSpec,
+} from "../billers";
 
 /**
  * Built-in mock BBPS provider: realistic billers and deterministic fake
@@ -34,67 +40,35 @@ const ALNUM = (
   optional: false,
 });
 
+/** Turn a shared biller spec into the BBPS shape the picker expects. */
+function fromSpec(spec: BillerSpec, category: string): Biller {
+  const [min, max] = spec.digits;
+  return {
+    id: spec.id,
+    name: spec.name,
+    category,
+    params: [
+      spec.alphanumeric
+        ? ALNUM(spec.field, min, max)
+        : NUM(spec.field, min, max),
+    ],
+  };
+}
+
+/**
+ * Utilities come from the shared list in ../billers so the picker, the email
+ * detector and merchant normalisation can never disagree about who exists.
+ * The cards and telecom entries below are mock-only.
+ */
+const UTILITY_BILLERS: Biller[] = [
+  ...DISCOMS.map((b) => fromSpec(b, "Electricity")),
+  ...GAS_BILLERS.map((b) => fromSpec(b, "Gas")),
+  ...WATER_BILLERS.map((b) => fromSpec(b, "Water")),
+];
+
 export const MOCK_BILLERS: Biller[] = [
-  {
-    id: "BSES00000DEL01",
-    name: "BSES Rajdhani Power Limited",
-    category: "Electricity",
-    params: [NUM("CA Number", 9, 9)],
-  },
-  {
-    id: "BSES00000DEL02",
-    name: "BSES Yamuna Power Limited",
-    category: "Electricity",
-    params: [NUM("CA Number", 9, 9)],
-  },
-  {
-    id: "TATA00000DEL01",
-    name: "Tata Power Delhi Distribution",
-    category: "Electricity",
-    params: [NUM("CA Number", 11, 11)],
-  },
-  {
-    id: "MSED00000MAH01",
-    name: "Maharashtra State Electricity (MSEDCL)",
-    category: "Electricity",
-    params: [NUM("Consumer Number", 12, 12)],
-  },
-  {
-    id: "UPPC00000UTP01",
-    name: "UPPCL (Uttar Pradesh Power)",
-    category: "Electricity",
-    params: [NUM("Account Number", 10, 12)],
-  },
-  {
-    id: "BESC00000KAR01",
-    name: "BESCOM (Bangalore Electricity)",
-    category: "Electricity",
-    params: [ALNUM("Account ID", 8, 12)],
-  },
-  {
-    id: "DJBO00000DEL01",
-    name: "Delhi Jal Board",
-    category: "Water",
-    params: [ALNUM("K Number", 8, 12)],
-  },
-  {
-    id: "BMCW00000MAH01",
-    name: "BMC Water (Mumbai)",
-    category: "Water",
-    params: [ALNUM("Consumer Number", 8, 14)],
-  },
-  {
-    id: "IGLC00000DEL01",
-    name: "Indraprastha Gas (IGL)",
-    category: "Gas",
-    params: [NUM("BP Number", 10, 10)],
-  },
-  {
-    id: "MGLC00000MAH01",
-    name: "Mahanagar Gas (MGL)",
-    category: "Gas",
-    params: [NUM("CA Number", 12, 12)],
-  },
+  // Electricity, gas and water: one shared national list.
+  ...UTILITY_BILLERS,
   {
     id: "HDFC00000NATCC",
     name: "HDFC Bank Credit Card",

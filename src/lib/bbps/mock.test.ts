@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MockBbpsProvider } from "./mock";
+import { MOCK_BILLERS, MockBbpsProvider } from "./mock";
 import { validateParams } from "./index";
 
 const mock = new MockBbpsProvider();
@@ -7,10 +7,27 @@ const mock = new MockBbpsProvider();
 describe("mock BBPS provider", () => {
   it("searches billers by name and category", async () => {
     const r = await mock.searchBillers("bses");
-    expect(r.map((b) => b.name)).toContain("BSES Rajdhani Power Limited");
+    expect(r.map((b) => b.name)).toContain("BSES Rajdhani Power");
     const cards = await mock.searchBillers("", "Credit Card");
     expect(cards.length).toBeGreaterThan(3);
     expect(cards.every((b) => b.category === "Credit Card")).toBe(true);
+  });
+
+  it("covers state DISCOMs beyond the metros", async () => {
+    // Haryana, Punjab and Tamil Nadu are as reachable as Delhi is.
+    for (const [query, expected] of [
+      ["dhbvn", "DHBVN (Dakshin Haryana)"],
+      ["uhbvn", "UHBVN (Uttar Haryana)"],
+      ["pspcl", "PSPCL (Punjab)"],
+      ["tangedco", "TANGEDCO (Tamil Nadu)"],
+    ] as const) {
+      const found = await mock.searchBillers(query);
+      expect(found.map((b) => b.name)).toContain(expected);
+    }
+    // The list itself is national; searchBillers caps a page at 25.
+    const power = MOCK_BILLERS.filter((b) => b.category === "Electricity");
+    expect(power.length).toBeGreaterThan(30);
+    expect(new Set(power.map((b) => b.id)).size).toBe(power.length);
   });
 
   it("fetches a deterministic bill for the same identifiers", async () => {

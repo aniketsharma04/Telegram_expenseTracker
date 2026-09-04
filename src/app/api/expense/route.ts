@@ -21,7 +21,7 @@ export const maxDuration = 60; // free-text mode may call the LLM fallback
 async function alertsFor(userId: number): Promise<string[]> {
   const supabase = createServiceClient();
   const alerts = await collectBudgetAlerts(supabase, userId);
-  if (alerts.length > 0) await pushAlertsToTelegram(userId, alerts);
+  if (alerts.length > 0) await pushAlertsToTelegram(supabase, userId, alerts);
   return alerts;
 }
 

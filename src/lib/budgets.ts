@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { notifyAll } from "./notify";
 import { localDate } from "./parser";
 import { budgetProgress, BudgetLike, NON_SPEND_CATEGORIES } from "./insights";
 import { sendMessage } from "./telegram";
@@ -36,10 +37,7 @@ export async function setBudget(
   monthlyCap: number,
 ): Promise<Budget> {
   // Upsert by hand — the unique index uses coalesce(), which upsert can't target.
-  const match = supabase
-    .from("budgets")
-    .select("id")
-    .eq("user_id", userId);
+  const match = supabase.from("budgets").select("id").eq("user_id", userId);
   const { data: existing, error: findError } = await (category
     ? match.eq("category", category)
     : match.is("category", null));
@@ -70,9 +68,8 @@ export async function removeBudget(
   category: string | null,
 ): Promise<boolean> {
   const del = supabase.from("budgets").delete().eq("user_id", userId);
-  const { data, error } = await (category
-    ? del.eq("category", category)
-    : del.is("category", null)
+  const { data, error } = await (
+    category ? del.eq("category", category) : del.is("category", null)
   ).select("id");
   if (error) throw error;
   return (data?.length ?? 0) > 0;
@@ -135,18 +132,17 @@ export async function collectBudgetAlerts(
   }
 }
 
-/** Deliver alerts over Telegram (used by app channels so the ping still arrives). */
+/**
+ * Deliver alerts over Telegram, when the user has linked it (v12).
+ * Silently does nothing for email-only accounts — they see the same alerts
+ * in the app's API response.
+ */
 export async function pushAlertsToTelegram(
+  supabase: SupabaseClient,
   userId: number,
   alerts: string[],
 ): Promise<void> {
-  for (const a of alerts) {
-    try {
-      await sendMessage(userId, a);
-    } catch (err) {
-      console.error("alert push failed", err);
-    }
-  }
+  await notifyAll(supabase, userId, alerts);
 }
 
 export { NON_SPEND_CATEGORIES };

@@ -26,15 +26,34 @@ export async function ensureUser(
   chatId: number,
 ): Promise<void> {
   const supabase = createServiceClient();
-  const { error } = await supabase.from("users").upsert(
-    {
-      id: chatId,
-      first_name: message.from?.first_name ?? null,
-      username: message.from?.username ?? null,
-    },
-    { onConflict: "id" },
-  );
-  if (error) console.error("ensureUser failed", error);
+  // v12: an account that arrived via email may already exist for this person,
+  // linked to this chat. Update that row rather than creating a second one.
+  const { data: linked } = await supabase
+    .from("users")
+    .select("id")
+    .eq("telegram_id", chatId)
+    .limit(1);
+  const existingId = (linked?.[0] as { id: number } | undefined)?.id;
+
+  const profile = {
+    first_name: message.from?.first_name ?? null,
+    username: message.from?.username ?? null,
+    telegram_id: chatId,
+  };
+
+  const { error } = existingId
+    ? await supabase.from("users").update(profile).eq("id", existingId)
+    : await supabase
+        .from("users")
+        .upsert({ id: chatId, ...profile }, { onConflict: "id" });
+  if (error) {
+    // Pre-v12 schema has no telegram_id — fall back to the original shape.
+    const { telegram_id: _dropped, ...legacy } = profile;
+    const retry = await supabase
+      .from("users")
+      .upsert({ id: chatId, ...legacy }, { onConflict: "id" });
+    if (retry.error) console.error("ensureUser failed", retry.error);
+  }
 }
 
 export async function getFamily(

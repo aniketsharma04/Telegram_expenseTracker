@@ -63,6 +63,12 @@ const BILL_SIGNALS = [
   "e-bill",
   "invoice",
   "premium due",
+  // How most Indian utility bills actually phrase it. Safe to include because
+  // a rupee figure is still required below before anything is treated as a bill.
+  "due on",
+  "bill of",
+  "bill for",
+  "your bill",
 ];
 
 // Words that mean it's already settled, or isn't a bill at all.
@@ -81,19 +87,17 @@ const NEGATIVE_SIGNALS = [
   "newsletter",
 ];
 
+import { aliasesFor, DISCOMS, GAS_BILLERS, WATER_BILLERS } from "./billers";
+
 const KIND_KEYWORDS: Array<[BillKind, string[]]> = [
   [
     "electricity",
     [
       "electricity",
       "power",
-      "bses",
-      "tata power",
-      "adani electricity",
-      "mseb",
-      "torrent power",
-      "kseb",
       "units consumed",
+      // Every state DISCOM by name and abbreviation, from the shared list.
+      ...aliasesFor(DISCOMS),
     ],
   ],
   [
@@ -143,9 +147,10 @@ const KIND_KEYWORDS: Array<[BillKind, string[]]> = [
       "bharat gas",
       "piped natural gas",
       "png",
+      ...aliasesFor(GAS_BILLERS),
     ],
   ],
-  ["water", ["water", "jal board", "djb", "water tax"]],
+  ["water", ["water", "jal board", "water tax", ...aliasesFor(WATER_BILLERS)]],
   [
     "insurance",
     ["insurance", "premium", "policy", "lic", "hdfc life", "renewal premium"],

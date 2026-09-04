@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase-server";
+import { notify } from "@/lib/notify";
 import { localDate } from "@/lib/parser";
 import { detectRecurring } from "@/lib/insights";
 import { composeMonthlyDigest } from "@/lib/digest";
@@ -82,7 +83,8 @@ export async function GET(req: NextRequest) {
 
       for (const charge of detectRecurring(expenses ?? [], today)) {
         if (charge.daysUntil !== REMIND_DAYS_AHEAD) continue;
-        await sendMessage(
+        await notify(
+          supabase,
           userId,
           `🔁 Heads up: <b>${charge.merchant}</b> (~₹${charge.amount.toLocaleString("en-IN")}, ${charge.category}) usually hits around the ${Number(charge.nextDate.slice(8))}th — that's in ${REMIND_DAYS_AHEAD} days.`,
         );
@@ -106,7 +108,7 @@ export async function GET(req: NextRequest) {
         // Google drops the refresh token every 7 days while unpublished —
         // tell the user once rather than going quiet.
         if (sync.newly_expired) {
-          await sendMessage(userId, reauthNotice(process.env.APP_URL));
+          await notify(supabase, userId, reauthNotice(process.env.APP_URL));
           gmailReauth++;
         }
         if (sync.detected > 0) {
@@ -114,14 +116,15 @@ export async function GET(req: NextRequest) {
           const notice = detectedNotice(
             (await listDetected(supabase, userId)).slice(0, sync.detected),
           );
-          if (notice) await sendMessage(userId, notice);
+          if (notice) await notify(supabase, userId, notice);
         }
       }
 
       for (const status of await loadBillStatuses(supabase, userId, today)) {
         const text = reminderText(status);
         if (!text) continue;
-        await sendMessage(
+        await notify(
+          supabase,
           userId,
           text.replace(/&/g, "&amp;").replace(/</g, "&lt;"),
         );
@@ -131,7 +134,7 @@ export async function GET(req: NextRequest) {
       if (isFirstOfMonth) {
         const digest = await composeMonthlyDigest(supabase, userId, today);
         if (digest) {
-          await sendMessage(userId, digest);
+          await notify(supabase, userId, digest);
           digests++;
         }
       }

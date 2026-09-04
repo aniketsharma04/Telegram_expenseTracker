@@ -4,6 +4,7 @@ import { parseWithLLM } from "./llm";
 import { listAccounts, resolveAccountId, type Account } from "./accounts";
 import { createTransfer, detectTransferIntent } from "./transfers";
 import { loadMerchantRules, normaliseMerchant } from "./merchants";
+import { userGeminiKey } from "./ai-keys";
 
 /**
  * Channel-agnostic expense logging pipeline: rules fast path → LLM fallback.
@@ -265,7 +266,13 @@ export async function logExpenseFromText(
   }
 
   // Fallback: let the LLM take a shot at anything messier.
-  const llm = await parseWithLLM(text, categories, localDate());
+  // v13: their own Gemini key when supplied, else the app's pool.
+  const llm = await parseWithLLM(
+    text,
+    categories,
+    localDate(),
+    await userGeminiKey(supabase, userId),
+  );
   if (llm) {
     if (llm.amount && llm.amount > 0) {
       // The rules parser may have missed the amount on a movement; now that

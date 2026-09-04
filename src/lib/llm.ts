@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { CategoryRule } from "./parser";
+import { geminiConfigured, withGeminiKey } from "./ai-keys";
 
 /**
  * LLM fallback (v2): anything the rules parser can't confidently handle gets
@@ -67,10 +68,12 @@ export async function parseWithLLM(
   text: string,
   categories: CategoryRule[],
   todayIST: string,
+  /** A user's own Gemini key, when they've supplied one (v13). */
+  apiKey?: string | null,
 ): Promise<LLMParse | null> {
   try {
-    if (process.env.GEMINI_API_KEY)
-      return await parseWithGemini(text, categories, todayIST);
+    if (geminiConfigured() || apiKey)
+      return await parseWithGemini(text, categories, todayIST, apiKey);
     if (process.env.ANTHROPIC_API_KEY)
       return await parseWithClaude(text, categories, todayIST);
     return null;
@@ -123,21 +126,50 @@ const GEMINI_SCHEMA = {
   ],
 };
 
-async function parseWithGemini(
-  text: string,
-  categories: CategoryRule[],
-  todayIST: string,
-): Promise<LLMParse | null> {
+/**
+ * One Gemini call with a given key. Returns the parsed result plus the raw
+ * status, so withGeminiKey() can tell "this key is exhausted" (try the next)
+ * from "the request was wrong" (don't bother).
+ */
+async function callGemini<T>(
+  apiKey: string,
+  body: Record<string, unknown>,
+): Promise<{ result: T | null; attempt: { status: number; body: string } }> {
   const model = process.env.LLM_MODEL || "gemini-2.5-flash";
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
       method: "POST",
-      headers: {
-        "x-goog-api-key": process.env.GEMINI_API_KEY!,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+      headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+
+  if (!res.ok) {
+    const detail = await res.text();
+    console.error("gemini request failed", res.status, detail.slice(0, 300));
+    return { result: null, attempt: { status: res.status, body: detail } };
+  }
+
+  const data = (await res.json()) as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+  };
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  return {
+    result: raw ? (JSON.parse(raw) as T) : null,
+    attempt: { status: res.status, body: "" },
+  };
+}
+
+async function parseWithGemini(
+  text: string,
+  categories: CategoryRule[],
+  todayIST: string,
+  apiKey?: string | null,
+): Promise<LLMParse | null> {
+  return withGeminiKey<LLMParse>(
+    (key) =>
+      callGemini<LLMParse>(key, {
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: [
           { parts: [{ text: userPrompt(text, categories, todayIST) }] },
@@ -148,18 +180,8 @@ async function parseWithGemini(
           temperature: 0,
         },
       }),
-    },
+    apiKey,
   );
-  if (!res.ok) {
-    console.error("gemini request failed", res.status, await res.text());
-    return null;
-  }
-  const data = (await res.json()) as {
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-  };
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!raw) return null;
-  return JSON.parse(raw) as LLMParse;
 }
 
 // ── Receipt photos (v3) — Gemini vision reads the bill directly ────────────
@@ -240,9 +262,10 @@ export async function parseReceipt(
   caption: string | null,
   categories: CategoryRule[],
   todayIST: string,
+  /** A user's own Gemini key, when they've supplied one (v13). */
+  apiKey?: string | null,
 ): Promise<ReceiptParse | null> {
-  if (!process.env.GEMINI_API_KEY) return null;
-  const model = process.env.LLM_MODEL || "gemini-2.5-flash";
+  if (!geminiConfigured() && !apiKey) return null;
 
   const categoryLines = categories
     .filter((c) => c.name !== "Uncategorized")
@@ -253,15 +276,9 @@ export async function parseReceipt(
     : "";
 
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-      {
-        method: "POST",
-        headers: {
-          "x-goog-api-key": process.env.GEMINI_API_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    const parsed = await withGeminiKey<ReceiptParse>(
+      (key) =>
+        callGemini<ReceiptParse>(key, {
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents: [
             {
@@ -273,7 +290,12 @@ export async function parseReceipt(
                   },
                 },
                 {
-                  text: `${RECEIPT_PROMPT}${captionNote}\n\nToday's date (IST): ${todayIST}\n\nCategories:\n${categoryLines}`,
+                  text: `${RECEIPT_PROMPT}${captionNote}
+
+Today's date (IST): ${todayIST}
+
+Categories:
+${categoryLines}`,
                 },
               ],
             },
@@ -284,22 +306,9 @@ export async function parseReceipt(
             temperature: 0,
           },
         }),
-      },
+      apiKey,
     );
-    if (!res.ok) {
-      console.error(
-        "gemini receipt request failed",
-        res.status,
-        await res.text(),
-      );
-      return null;
-    }
-    const data = (await res.json()) as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-    };
-    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as ReceiptParse;
+    if (!parsed) return null;
     // An older model response (or a re-run against the plain schema) simply
     // has no lines; the caller treats that as "total only", not an error.
     return {
