@@ -34,10 +34,11 @@ The Telegram bot goes away; the app is the product.
 
 ## Order of work
 
-1. **Push notifications + in-app inbox (Firebase via Expo push)** — this doc.
-2. Android capture reliability: permission onboarding, OEM background-kill guidance, bank format coverage, categorisation, missed-payment detection.
+1. **Push notifications + in-app inbox (Firebase via Expo push)** — this doc. ✅ built (v15)
+2. Android capture reliability ✅ background upload, setup/disclosure card, OEM guidance, more bank formats, OTP-safe.
+   Still open: categorisation quality, missed-payment detection from balance drift.
 3. Retire Telegram: Google sign-in, migrate Telegram-only users, delete the bot.
-4. Planning: salary-cycle months, goals, net worth.
+4. Planning ✅ salary-cycle months (v16), goals with automatic credits (v17). Still open: net worth view.
 5. Play Store readiness: privacy policy, Data Safety, prominent disclosure, CASA, hosting.
 6. iOS build + Shortcuts capture.
 7. Account Aggregator (later).
