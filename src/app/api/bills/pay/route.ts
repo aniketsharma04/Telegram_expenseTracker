@@ -3,7 +3,7 @@ import { authedUser } from "@/lib/api-auth";
 import { createServiceClient } from "@/lib/supabase-server";
 import { localDate } from "@/lib/parser";
 import { markBillPaid, unmarkBillPaid } from "@/lib/bills";
-import { collectBudgetAlerts, pushAlertsToTelegram } from "@/lib/budgets";
+import { collectBudgetAlerts, deliverBudgetAlerts } from "@/lib/budgets";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       "app_bill",
     );
     const alerts = await collectBudgetAlerts(supabase, userId);
-    if (alerts.length > 0) await pushAlertsToTelegram(supabase, userId, alerts);
+    if (alerts.length > 0) await deliverBudgetAlerts(supabase, userId, alerts);
     return NextResponse.json({ status: "paid", ...result, alerts });
   } catch (err) {
     const message = err instanceof Error ? err.message : "mark paid failed";

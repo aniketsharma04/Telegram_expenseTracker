@@ -239,6 +239,42 @@ export interface ApiData {
   position?: Position;
   transfers?: Transfer[];
   daily?: DailyStatus | null;
+  /** v15: unread notices in the in-app inbox. */
+  inbox_unread?: number;
+}
+
+// ── Inbox (v15) ─────────────────────────────────────────────────────────────
+
+export interface InboxItem {
+  id: string;
+  kind: "daily" | "spend" | "alerts" | "digest" | string;
+  title: string;
+  body: string;
+  data: { expenseId?: string; bigSpend?: boolean } & Record<string, unknown>;
+  created_at: string;
+  read_at: string | null;
+}
+
+export async function fetchInbox(
+  token: string,
+): Promise<{ items: InboxItem[]; unread: number } | null> {
+  const res = await fetch(`${API_BASE}/api/notifications`, {
+    headers: { Authorization: `Bearer ${token.trim()}` },
+  });
+  return res.ok ? res.json() : null;
+}
+
+/** Mark these read — or everything, with no ids. */
+export async function markInboxRead(token: string, ids?: string[]): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/notifications`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(ids ? { ids } : {}),
+  });
+  return res.ok;
 }
 
 // ── Daily budget (v14) ──────────────────────────────────────────────────────

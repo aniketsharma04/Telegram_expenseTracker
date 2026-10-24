@@ -20,6 +20,7 @@ import {
   setBudget,
   removeBudget,
   collectBudgetAlerts,
+  deliverBudgetAlerts,
 } from "@/lib/budgets";
 import { budgetProgress, NON_SPEND_CATEGORIES } from "@/lib/insights";
 import { logIncome, getIncomes } from "@/lib/income";
@@ -44,7 +45,7 @@ import {
 import { looksLikeBankMessage } from "@/lib/bank-message";
 import { ingestBankMessage } from "@/lib/ingest";
 import { redeemLinkCode, resolveTelegramUserId } from "@/lib/identity";
-import { notify } from "@/lib/notify";
+import { notify, notifyTelegram } from "@/lib/notify";
 import { saveParsedReceipt } from "@/lib/receipts";
 import { geminiConfigured, userGeminiKey } from "@/lib/ai-keys";
 import type { Expense } from "@/lib/types";
@@ -105,12 +106,11 @@ const HELP_TEXT = [
 ].join("\n");
 
 /**
- * Reply to whoever this account belongs to. Goes through notify() rather
- * than sendMessage() because the account id is no longer necessarily a chat
- * id — an email account has whatever chat it linked, or none at all.
+ * Reply in the Telegram chat. Chat only — replies don't belong in the app
+ * inbox or on the phone's lock screen; real notices go through notify().
  */
 async function reply(userId: number, text: string): Promise<void> {
-  await notify(createServiceClient(), userId, text);
+  await notifyTelegram(createServiceClient(), userId, text);
 }
 
 function ok() {
@@ -416,6 +416,8 @@ async function handleReceiptPhoto(message: TelegramMessage, userId: number) {
       ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
       : "";
   const alerts = await collectBudgetAlerts(supabase, userId);
+  // The chat reply carries them; the inbox and phone get them too.
+  await deliverBudgetAlerts(supabase, userId, alerts, { telegram: false });
   await reply(
     userId,
     `📷 ${confirmText(row)}` +
@@ -520,6 +522,8 @@ async function handleExpenseText(
     ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
     : "";
   const alerts = await collectBudgetAlerts(supabase, userId);
+  // The chat reply carries them; the inbox and phone get them too.
+  await deliverBudgetAlerts(supabase, userId, alerts, { telegram: false });
   await reply(
     userId,
     confirmText(result.expense) +
@@ -1227,6 +1231,8 @@ async function handleSplit(userId: number, arg: string) {
       .map((m) => m.name)
       .join(", ");
     const alerts = await collectBudgetAlerts(supabase, userId);
+  // The chat reply carries them; the inbox and phone get them too.
+  await deliverBudgetAlerts(supabase, userId, alerts, { telegram: false });
     await reply(
       userId,
       `🤝 Split ${fmtINR(parsed.amount)} · ${parsed.category ?? "Uncategorized"}${parsed.merchant ? ` (${escapeHtml(parsed.merchant)})` : ""} across ${split.count} people — ${fmtINR(split.perHead)} each (${escapeHtml(names)}).\nYou paid, so <code>/undo</code> removes the whole split.` +
@@ -1342,6 +1348,8 @@ async function handlePaid(userId: number, arg: string) {
       "telegram_bill",
     );
     const alerts = await collectBudgetAlerts(supabase, userId);
+  // The chat reply carries them; the inbox and phone get them too.
+  await deliverBudgetAlerts(supabase, userId, alerts, { telegram: false });
     await reply(
       userId,
       `✅ ${escapeHtml(bill.name)} marked paid — ${fmtINR(finalAmount)} logged under ${bill.category}.` +

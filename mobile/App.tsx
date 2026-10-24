@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import * as Notifications from "expo-notifications";
 import {
   ActivityIndicator,
   AppState,
@@ -31,6 +32,8 @@ import TransactionsTab from "./components/TransactionsTab";
 import { Avatar } from "./components/ui";
 import { Account, ApiData, Expense, fetchData } from "./lib/api";
 import { DailyBudgetCard } from "./components/DailyBudgetCard";
+import { InboxBell, InboxSheet, PushPromptCard } from "./components/Inbox";
+import { PushState, registerForPush, unregisterPush } from "./lib/push";
 import { syncCaptures } from "./lib/capture";
 import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
 import { memberColor, usePalette } from "./lib/theme";
@@ -39,6 +42,7 @@ type Tab = "home" | "transactions" | "bills" | "family";
 type Scope = "personal" | "family";
 
 const TOKEN_KEY = "et_token";
+const PUSH_PROMPT_DISMISSED_KEY = "et_push_prompt_dismissed";
 const TABS: Array<{ key: Tab; label: StringKey; icon: string }> = [
   { key: "home", label: "home", icon: "⌂" },
   { key: "transactions", label: "transactions", icon: "≡" },
@@ -78,6 +82,11 @@ function AppInner() {
     null,
   );
   const [transferOpen, setTransferOpen] = useState(false);
+  // v15: notifications — the inbox sheet, and whether this phone can be pinged.
+  const [inboxOpen, setInboxOpen] = useState(false);
+  const [pushState, setPushState] = useState<PushState>("unavailable");
+  const [pushPromptDismissed, setPushPromptDismissed] = useState(true);
+  const handledColdStart = useRef(false);
 
   useEffect(() => {
     AsyncStorage.getItem(TOKEN_KEY).then((t) => setToken(t));
@@ -104,6 +113,35 @@ function AppInner() {
     refresh();
     const interval = setInterval(refresh, 30000);
     return () => clearInterval(interval);
+  }, [token, refresh]);
+
+  // v15: register this phone for pushes on every launch (a cheap upsert —
+  // tokens rotate). Never prompts here; the prompt card asks with a reason.
+  useEffect(() => {
+    if (!token) return;
+    registerForPush(token, { ask: false }).then(setPushState);
+    AsyncStorage.getItem(PUSH_PROMPT_DISMISSED_KEY).then((v) =>
+      setPushPromptDismissed(v === "1"),
+    );
+  }, [token]);
+
+  // Tapping a push opens the inbox — also when the tap launched the app.
+  useEffect(() => {
+    if (!token) return;
+    const open = () => {
+      setInboxOpen(true);
+      refresh();
+    };
+    if (!handledColdStart.current) {
+      handledColdStart.current = true;
+      Notifications.getLastNotificationResponseAsync()
+        .then((r) => {
+          if (r) open();
+        })
+        .catch(() => {});
+    }
+    const sub = Notifications.addNotificationResponseReceivedListener(open);
+    return () => sub.remove();
   }, [token, refresh]);
 
   // v9: the notification listener queues bank alerts while the app is closed.
@@ -143,10 +181,12 @@ function AppInner() {
   }, []);
 
   const logout = useCallback(async () => {
+    // This phone must stop getting the old account's notices.
+    if (token) await unregisterPush(token);
     await AsyncStorage.removeItem(TOKEN_KEY);
     setToken(null);
     setData(null);
-  }, []);
+  }, [token]);
 
   const derived = useMemo(() => {
     if (!data) return null;
@@ -276,6 +316,11 @@ function AppInner() {
           </Text>
         </View>
         <View style={{ flexDirection: "row", gap: 8 }}>
+          <InboxBell
+            p={p}
+            unread={data.inbox_unread ?? 0}
+            onPress={() => setInboxOpen(true)}
+          />
           <Pressable
             onPress={() => setSettingsOpen(true)}
             style={[
@@ -417,12 +462,26 @@ function AppInner() {
               scopeLabel={scopeLabel}
               topCard={
                 scope === "personal" ? (
-                  <DailyBudgetCard
-                    p={p}
-                    daily={data.daily}
-                    token={token}
-                    onChanged={refresh}
-                  />
+                  <>
+                    {!pushPromptDismissed && (
+                      <PushPromptCard
+                        p={p}
+                        state={pushState}
+                        token={token}
+                        onResult={setPushState}
+                        onDismiss={() => {
+                          setPushPromptDismissed(true);
+                          AsyncStorage.setItem(PUSH_PROMPT_DISMISSED_KEY, "1");
+                        }}
+                      />
+                    )}
+                    <DailyBudgetCard
+                      p={p}
+                      daily={data.daily}
+                      token={token}
+                      onChanged={refresh}
+                    />
+                  </>
                 ) : null
               }
               extraCards={
@@ -547,6 +606,14 @@ function AppInner() {
         p={p}
       />
 
+      {inboxOpen && (
+        <InboxSheet
+          p={p}
+          token={token}
+          onClose={() => setInboxOpen(false)}
+          onChanged={refresh}
+        />
+      )}
       <SettingsSheet
         visible={settingsOpen}
         onClose={() => setSettingsOpen(false)}

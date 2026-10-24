@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase-server";
-import { notify } from "@/lib/notify";
+import { notify, noticeFromHtml } from "@/lib/notify";
 import { localDate } from "@/lib/parser";
 import { detectRecurring } from "@/lib/insights";
 import { composeMonthlyDigest } from "@/lib/digest";
@@ -134,7 +134,7 @@ export async function GET(req: NextRequest) {
       if (isFirstOfMonth) {
         const digest = await composeMonthlyDigest(supabase, userId, today);
         if (digest) {
-          await notify(supabase, userId, digest);
+          await notify(supabase, userId, noticeFromHtml(digest, "digest"));
           digests++;
         }
       }

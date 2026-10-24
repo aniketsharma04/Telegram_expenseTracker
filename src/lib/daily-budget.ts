@@ -422,3 +422,74 @@ export function spendLine(e: ScopedExpense, s: DailyStatus): string {
   }
   return line;
 }
+
+// ── Push versions (plain text, app wording) ─────────────────────────────────
+
+export interface PushText {
+  title: string;
+  body: string;
+}
+
+const plainLabel = (e: ScopedExpense) => e.merchant?.trim() || e.category;
+
+export function morningPush(s: DailyStatus, yesterday: DayPoint | null): PushText {
+  if (!s.ready)
+    return {
+      title: "☀️ Good morning",
+      body: "Add your monthly income in the app to get a daily budget.",
+    };
+  const lines = [`${inr(s.poolLeft)} left for everyday spending · ${s.daysLeft} day${s.daysLeft === 1 ? "" : "s"} to go.`];
+  if (yesterday) {
+    const diff = yesterday.budget - yesterday.spent;
+    lines.push(
+      diff >= 0
+        ? `Yesterday: ${inr(diff)} under budget 👍`
+        : `Yesterday: ${inr(-diff)} over — spread across the days ahead.`,
+    );
+  }
+  if (s.streak >= 2) lines.push(`🔥 ${s.streak}-day streak`);
+  return { title: `☀️ Today you can spend ${inr(s.todayBudget)}`, body: lines.join("\n") };
+}
+
+export function eveningPush(s: DailyStatus): PushText {
+  if (!s.ready)
+    return { title: "🌙 Today's report", body: "Add your monthly income in the app to get a daily budget." };
+  const everyday = s.today.filter((e) => e.dailyAmount > 0);
+  const top = everyday
+    .slice()
+    .sort((a, b) => b.dailyAmount - a.dailyAmount)
+    .slice(0, 3)
+    .map((e) => `${plainLabel(e)} ${inr(e.dailyAmount)}`);
+  const lines = [everyday.length ? top.join(" · ") + (everyday.length > 3 ? ` +${everyday.length - 3} more` : "") : "No everyday spending today 🎉"];
+  if (s.tomorrowBudget !== null) lines.push(`Tomorrow: ${inr(s.tomorrowBudget)}`);
+  const diff = s.todayLeft;
+  return {
+    title:
+      diff >= 0
+        ? `🌙 ${inr(s.todaySpent)} of ${inr(s.todayBudget)} — ${inr(diff)} under ✅`
+        : `🌙 ${inr(s.todaySpent)} of ${inr(s.todayBudget)} — ${inr(-diff)} over`,
+    body: lines.join("\n"),
+  };
+}
+
+export function spendPush(e: ScopedExpense, s: DailyStatus): PushText & { bigSpend: boolean } {
+  const amount = Number(e.amount);
+  if (e.dailyAmount === 0)
+    return {
+      title: `${plainLabel(e)} ${inr(amount)}`,
+      body: e.scope === "savings" ? "From savings — today's budget unchanged." : "Fixed cost — today's budget unchanged.",
+      bigSpend: false,
+    };
+  const left =
+    s.todayLeft >= 0
+      ? `${inr(s.todayLeft)} left today of ${inr(s.todayBudget)}`
+      : `${inr(-s.todayLeft)} over today's ${inr(s.todayBudget)}`;
+  const big = e.scope === "daily" && isBigSpend(amount, s.todayBudget);
+  return {
+    title: `${plainLabel(e)} −${inr(e.dailyAmount)}`,
+    body: big
+      ? `${left}. Spread over the rest of the month${s.tomorrowBudget !== null ? ` (≈${inr(s.tomorrowBudget)}/day)` : ""} — or mark it paid from savings.`
+      : left,
+    bigSpend: big,
+  };
+}

@@ -327,9 +327,28 @@ const STRINGS = {
   eveningMsg: { en: "Night report", hi: "रात की रिपोर्ट" },
   liveMsg: { en: "Ping on every spend", hi: "हर खर्चे पर मैसेज" },
   messagesVia: {
-    en: "Messages arrive on Telegram (link it in Settings).",
-    hi: "मैसेज टेलीग्राम पर आते हैं (सेटिंग्स में जोड़ें)।",
+    en: "These arrive as notifications on this phone.",
+    hi: "ये इस फ़ोन पर नोटिफ़िकेशन की तरह आते हैं।",
   },
+  // inbox + push (v15)
+  inbox: { en: "Notifications", hi: "सूचनाएँ" },
+  inboxEmpty: {
+    en: "Nothing yet. Your morning number, spends and alerts will show up here.",
+    hi: "अभी कुछ नहीं। सुबह का बजट, खर्चे और अलर्ट यहाँ दिखेंगे।",
+  },
+  movedToSavings: { en: "Moved to savings ✓", hi: "बचत में डाला ✓" },
+  pushTitle: { en: "Get your daily number", hi: "रोज़ का बजट पाएँ" },
+  pushHint: {
+    en: "A morning brief, a ping when money leaves your account, and a short report at night.",
+    hi: "सुबह का बजट, पैसा कटने पर सूचना, और रात को छोटी रिपोर्ट।",
+  },
+  pushTurnOn: { en: "Turn on notifications", hi: "सूचनाएँ चालू करें" },
+  pushBlocked: {
+    en: "Notifications are off for this app. Turn them on in Settings to get your daily number.",
+    hi: "इस ऐप की सूचनाएँ बंद हैं। रोज़ का बजट पाने के लिए सेटिंग्स में चालू करें।",
+  },
+  openSettings: { en: "Open settings", hi: "सेटिंग्स खोलें" },
+  notNow: { en: "Not now", hi: "अभी नहीं" },
   fromSavings: { en: "Paid from savings", hi: "बचत से दिया" },
   fromSavingsHint: {
     en: "Won't touch your daily budget.",

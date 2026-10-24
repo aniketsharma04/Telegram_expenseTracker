@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "./supabase-server";
-import { notify } from "./notify";
+import { notify, type Notice } from "./notify";
 import { localDate } from "./parser";
 import { getUser } from "./identity";
 import { loadDailyStatus, plannedUsers } from "./plan";
 import {
+  eveningPush,
   eveningReport,
+  inr,
   morningBrief,
+  morningPush,
   spendLine,
+  spendPush,
   type DailyStatus,
 } from "./daily-budget";
 
@@ -44,11 +48,11 @@ export async function runBriefs(
     if (slot === "evening" && !plan.evening_report) continue;
     const userId = Number(plan.user_id);
     try {
-      const text =
+      const notice =
         slot === "morning"
           ? await composeMorning(supabase, userId, today)
-          : eveningReport((await loadDailyStatus(supabase, userId, today)).status, today);
-      if (await notify(supabase, userId, text)) sent++;
+          : await composeEvening(supabase, userId, today);
+      if (await notify(supabase, userId, notice)) sent++;
     } catch (err) {
       console.error(`${slot} brief failed for user ${userId}`, err);
       failures.push(userId);
@@ -61,19 +65,41 @@ async function composeMorning(
   supabase: SupabaseClient,
   userId: number,
   today: string,
-): Promise<string> {
+): Promise<Notice> {
   const [{ status }, user] = await Promise.all([
     loadDailyStatus(supabase, userId, today),
     getUser(supabase, userId),
   ]);
   // Yesterday's line only within the same month — on the 1st, last month is the digest's job.
   const yesterday = status.history.length >= 2 ? status.history[status.history.length - 2] : null;
-  return morningBrief(status, user?.display_name ?? user?.first_name ?? null, yesterday);
+  return {
+    kind: "daily",
+    ...morningPush(status, yesterday),
+    html: morningBrief(status, user?.display_name ?? user?.first_name ?? null, yesterday),
+    data: { screen: "home" },
+  };
 }
 
+async function composeEvening(
+  supabase: SupabaseClient,
+  userId: number,
+  today: string,
+): Promise<Notice> {
+  const { status } = await loadDailyStatus(supabase, userId, today);
+  return {
+    kind: "daily",
+    ...eveningPush(status),
+    html: eveningReport(status, today),
+    data: { screen: "home" },
+  };
+}
+
+/** A flushed offline queue can carry many spends — past this, one summary instead of a push each. */
+const MAX_SPEND_PUSHES = 3;
+
 /**
- * After new expenses land: one message with a line per spend and where the
- * day stands. Silent for users without a plan, or with live updates off.
+ * After new expenses land: a push per spend saying where the day stands.
+ * Silent for users without a plan, or with live updates off.
  */
 export async function pingSpends(
   supabase: SupabaseClient,
@@ -84,8 +110,33 @@ export async function pingSpends(
   try {
     const { status, plan } = await loadDailyStatus(supabase, userId);
     if (!plan || !plan.live_updates || !status.ready) return;
-    const text = spendMessage(status, expenseIds);
-    if (text) await notify(supabase, userId, text);
+    const spends = status.today.filter((e) => e.id && expenseIds.includes(e.id));
+    if (!spends.length) return;
+
+    if (spends.length > MAX_SPEND_PUSHES) {
+      const total = spends.reduce((sum, e) => sum + e.dailyAmount, 0);
+      await notify(supabase, userId, {
+        kind: "spend",
+        title: `${spends.length} spends captured · ${inr(total)}`,
+        body:
+          status.todayLeft >= 0
+            ? `${inr(status.todayLeft)} left today of ${inr(status.todayBudget)}`
+            : `${inr(-status.todayLeft)} over today's ${inr(status.todayBudget)}`,
+        html: spendMessage(status, expenseIds) ?? undefined,
+        data: { screen: "home" },
+      });
+      return;
+    }
+    for (const e of spends) {
+      const { bigSpend, ...text } = spendPush(e, status);
+      await notify(supabase, userId, {
+        kind: "spend",
+        ...text,
+        html: spendLine(e, status),
+        // The app offers "Paid from savings" right on a big one.
+        data: { screen: "home", expenseId: e.id, bigSpend },
+      });
+    }
   } catch (err) {
     console.error("spend ping failed", err);
   }

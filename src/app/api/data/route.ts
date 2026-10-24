@@ -15,6 +15,7 @@ import { getGmailAccount, listDetected, needsReauth } from "@/lib/detected";
 import { loadBalanceSheet } from "@/lib/accounts";
 import { listTransfers } from "@/lib/transfers";
 import { loadDailyStatus } from "@/lib/plan";
+import { unreadCount } from "@/lib/inbox";
 
 export const dynamic = "force-dynamic";
 
@@ -93,7 +94,7 @@ export async function GET(req: NextRequest) {
     y -= 1;
   }
   const incomeSince = `${y}-${String(m).padStart(2, "0")}-01`; // last month + this month
-  const [budgets, incomes, bills, detectedBills, gmail, balances, transfers, daily] =
+  const [budgets, incomes, bills, detectedBills, gmail, balances, transfers, daily, inboxUnread] =
     await Promise.all([
       getBudgets(supabase, userId),
       getIncomes(supabase, userId, incomeSince),
@@ -108,6 +109,7 @@ export async function GET(req: NextRequest) {
         console.error("daily status failed", err);
         return null;
       }),
+      unreadCount(supabase, userId),
     ]);
 
   return NextResponse.json({
@@ -149,6 +151,7 @@ export async function GET(req: NextRequest) {
       unassigned: balances.unassigned,
     },
     transfers,
+    inbox_unread: inboxUnread,
     daily: daily
       ? { ...daily.status, plan: daily.plan, commitment_list: daily.commitments }
       : null,

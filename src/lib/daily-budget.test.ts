@@ -155,3 +155,18 @@ describe("morning and night messages", () => {
     expect(morningBrief(empty, null, null)).toContain("/plan 100000");
   });
 });
+
+describe("push text", () => {
+  it("puts the number in the title and offers savings for big spends", async () => {
+    const { morningPush, spendPush } = await import("./daily-budget");
+    const s = computeDailyStatus({
+      plan, commitments, today: "2026-09-10",
+      expenses: [{ id: "x", amount: 12000, category: "Shopping", merchant: "Phone", expense_date: "2026-09-10", budget_scope: null }],
+    });
+    expect(morningPush(s, null).title).toBe(`☀️ Today you can spend ₹${s.todayBudget.toLocaleString("en-IN")}`);
+    const push = spendPush(s.today[0], s);
+    expect(push.title).toBe("Phone −₹12,000");
+    expect(push.bigSpend).toBe(true);
+    expect(push.body).not.toContain("/fromsavings"); // app wording, not bot commands
+  });
+});

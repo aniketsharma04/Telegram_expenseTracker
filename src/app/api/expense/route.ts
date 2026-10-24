@@ -10,7 +10,7 @@ import {
   loadCategories,
   learnKeyword,
 } from "@/lib/log-expense";
-import { collectBudgetAlerts, pushAlertsToTelegram } from "@/lib/budgets";
+import { collectBudgetAlerts, deliverBudgetAlerts } from "@/lib/budgets";
 import { getFamily, familyMembers } from "@/lib/family";
 import { resolveAccountId } from "@/lib/accounts";
 
@@ -21,7 +21,7 @@ export const maxDuration = 60; // free-text mode may call the LLM fallback
 async function alertsFor(userId: number): Promise<string[]> {
   const supabase = createServiceClient();
   const alerts = await collectBudgetAlerts(supabase, userId);
-  if (alerts.length > 0) await pushAlertsToTelegram(supabase, userId, alerts);
+  if (alerts.length > 0) await deliverBudgetAlerts(supabase, userId, alerts);
   return alerts;
 }
 
