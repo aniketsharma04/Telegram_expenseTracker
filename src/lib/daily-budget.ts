@@ -84,6 +84,8 @@ export interface DailyStatus {
   incomeSource: "plan" | "last_month" | null;
   fixed: number;
   savingsGoal: number;
+  /** Set aside for goals this month (v17). */
+  goals: number;
   /** The month's everyday money. */
   pool: number;
   /** pool ÷ days in month — the naive "per day" figure, for reference. */
@@ -230,6 +232,8 @@ export function computeDailyStatus(input: {
   today: string;
   /** Income logged last month — used when the plan names no income. */
   lastMonthIncome?: number;
+  /** Monthly set-asides for active goals (v17) — off the top, like savings. */
+  goalsMonthly?: number;
 }): DailyStatus {
   const { plan, commitments, today } = input;
   const cycle = cycleFor(today, plan?.payday);
@@ -245,7 +249,8 @@ export function computeDailyStatus(input: {
 
   const fixed = commitments.reduce((s, c) => s + Number(c.amount), 0);
   const savingsGoal = Number(plan?.savings_goal ?? 0);
-  const pool = Math.max(0, income - fixed - savingsGoal);
+  const goals = Math.max(0, input.goalsMonthly ?? 0);
+  const pool = Math.max(0, income - fixed - savingsGoal - goals);
 
   const month = input.expenses.filter(
     (e) => e.expense_date >= monthStart && e.expense_date <= today,
@@ -296,6 +301,7 @@ export function computeDailyStatus(input: {
     incomeSource,
     fixed: round(fixed),
     savingsGoal: round(savingsGoal),
+    goals: round(goals),
     pool: round(pool),
     baseDaily: round(pool / daysInMonth),
     cycleStart: cycle.start,

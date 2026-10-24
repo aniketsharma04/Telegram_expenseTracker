@@ -3,6 +3,7 @@ import { localDate } from "./parser";
 import { getIncomes } from "./income";
 import { getBills } from "./bills";
 import { detectRecurring } from "./insights";
+import { getGoals, goalsMonthly, type Goal } from "./goals";
 import {
   computeDailyStatus,
   cycleFor,
@@ -170,15 +171,16 @@ export async function loadDailyStatus(
   supabase: SupabaseClient,
   userId: number,
   today: string = localDate(),
-): Promise<{ status: DailyStatus; plan: Plan | null; commitments: Commitment[] }> {
+): Promise<{ status: DailyStatus; plan: Plan | null; commitments: Commitment[]; goals: Goal[] }> {
   // The plan decides where the budget month starts (payday), so it loads first.
   const plan = await getPlan(supabase, userId);
   const cycle = cycleFor(today, plan?.payday);
   const prevStart = cycleFor(addDaysIso(cycle.start, -1), plan?.payday).start;
-  const [commitments, expenses, incomes] = await Promise.all([
+  const [commitments, expenses, incomes, goals] = await Promise.all([
     getCommitments(supabase, userId),
     monthExpenses(supabase, userId, cycle.start, today),
     getIncomes(supabase, userId, prevStart),
+    getGoals(supabase, userId),
   ]);
   // "Last month" = the previous budget month, for the no-income-set fallback.
   const lastMonthIncome = incomes
@@ -186,9 +188,17 @@ export async function loadDailyStatus(
     .reduce((s, i) => s + Number(i.amount), 0);
 
   return {
-    status: computeDailyStatus({ plan, commitments, expenses, today, lastMonthIncome }),
+    status: computeDailyStatus({
+      plan,
+      commitments,
+      expenses,
+      today,
+      lastMonthIncome,
+      goalsMonthly: goalsMonthly(goals),
+    }),
     plan,
     commitments,
+    goals,
   };
 }
 

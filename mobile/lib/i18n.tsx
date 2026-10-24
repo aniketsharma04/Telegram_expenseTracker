@@ -336,6 +336,23 @@ const STRINGS = {
   monthlyIncome: { en: "Monthly income", hi: "महीने की आमदनी" },
   savingsGoal: { en: "Savings goal / month", hi: "महीने की बचत का लक्ष्य" },
   payday: { en: "Salary day", hi: "तनख्वाह का दिन" },
+  // goals (v17)
+  goals: { en: "Goals", hi: "लक्ष्य" },
+  addGoal: { en: "Add a goal", hi: "लक्ष्य जोड़ें" },
+  goalsHint: {
+    en: "Saving for a trip, a phone, an emergency fund? Set a goal — its monthly share comes off the top, and it's credited automatically each month.",
+    hi: "ट्रिप, फ़ोन, इमरजेंसी फ़ंड के लिए बचत? लक्ष्य बनाइए — हर महीने का हिस्सा पहले अलग होता है और अपने-आप जुड़ता है।",
+  },
+  goalName: { en: "What for? e.g. Goa trip", hi: "किसके लिए? जैसे गोवा ट्रिप" },
+  goalTarget: { en: "How much", hi: "कितना" },
+  goalBy: { en: "By when (YYYY-MM)", hi: "कब तक (YYYY-MM)" },
+  goalMonthly: { en: "or ₹ per month", hi: "या ₹ हर महीने" },
+  perMonth: { en: "/month", hi: "/महीना" },
+  onTrack: { en: "on track", hi: "समय पर" },
+  behind: { en: "behind", hi: "पीछे" },
+  monthsToGo: { en: "months to go", hi: "महीने बाकी" },
+  reached: { en: "Reached 🎉", hi: "पूरा हुआ 🎉" },
+  stopGoal: { en: "Stop goal", hi: "लक्ष्य बंद करें" },
   paydayHint: {
     en: "Your budget month runs from this day to the day before the next one. Leave empty for calendar months.",
     hi: "आपका बजट महीना इस दिन से अगली तनख्वाह से एक दिन पहले तक चलता है। खाली छोड़ें तो कैलेंडर महीना।",

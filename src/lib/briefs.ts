@@ -5,6 +5,7 @@ import { notify, type Notice } from "./notify";
 import { localDate } from "./parser";
 import { getUser } from "./identity";
 import { loadDailyStatus, plannedUsers } from "./plan";
+import { creditGoals, cycleCredits, goalOutlook } from "./goals";
 import {
   eveningPush,
   eveningReport,
@@ -44,14 +45,21 @@ export async function runBriefs(
   const failures: number[] = [];
 
   for (const plan of await plannedUsers(supabase)) {
-    if (slot === "morning" && !plan.morning_brief) continue;
-    if (slot === "evening" && !plan.evening_report) continue;
     const userId = Number(plan.user_id);
     try {
+      // A new budget month credits the goals — even with the brief switched off.
+      const goalLines = slot === "morning" ? await closeLastMonth(supabase, userId, today) : [];
+      if (slot === "morning" && !plan.morning_brief) continue;
+      if (slot === "evening" && !plan.evening_report) continue;
       const notice =
         slot === "morning"
           ? await composeMorning(supabase, userId, today)
           : await composeEvening(supabase, userId, today);
+      if (goalLines.length) {
+        const lines = goalLines.join("\n");
+        notice.body += `\n${lines}`;
+        if (notice.html) notice.html += `\n\n${lines}`;
+      }
       if (await notify(supabase, userId, notice)) sent++;
     } catch (err) {
       console.error(`${slot} brief failed for user ${userId}`, err);
@@ -59,6 +67,36 @@ export async function runBriefs(
     }
   }
   return NextResponse.json({ ok: true, slot, today, sent, failures });
+}
+
+/**
+ * On the first day of a budget month: credit each goal for the month that
+ * just ended (once — goal_credits dedupes) and say what moved.
+ */
+async function closeLastMonth(
+  supabase: SupabaseClient,
+  userId: number,
+  today: string,
+): Promise<string[]> {
+  const { status, goals } = await loadDailyStatus(supabase, userId, today);
+  if (status.dayOfMonth !== 1 || !status.ready || !goals.length) return [];
+  const lastDay = new Date(Date.parse(`${status.cycleStart}T00:00:00Z`) - 86_400_000)
+    .toISOString()
+    .slice(0, 10);
+  const last = (await loadDailyStatus(supabase, userId, lastDay)).status;
+  const applied = await creditGoals(
+    supabase,
+    goals,
+    cycleCredits(goals, last.poolLeft, last.cycleEnd),
+    last.cycleStart,
+  );
+  return applied
+    .filter((a) => a.amount > 0)
+    .map(({ goal, amount }) =>
+      goal.saved >= goal.target_amount
+        ? `🎉 ${goal.name} reached — ${inr(goal.target_amount)} saved!`
+        : `🎯 ${inr(amount)} → ${goal.name} (${goalOutlook(goal, today).pct}%)`,
+    );
 }
 
 async function composeMorning(

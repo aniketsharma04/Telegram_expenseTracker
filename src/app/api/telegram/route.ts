@@ -1442,6 +1442,7 @@ async function handlePlan(userId: number, arg: string) {
     `Income: ${status.income ? inr(status.income) : "not set"}${status.incomeSource === "last_month" ? " (last month's)" : ""}`,
     `− Fixed costs: ${inr(status.fixed)}${commitments.length ? "" : " — add with <code>/fixed rent 25000</code>"}`,
     `− Savings goal: ${inr(status.savingsGoal)}`,
+    ...(status.goals ? [`− Goals: ${inr(status.goals)}`] : []),
     `= Everyday money: <b>${inr(status.pool)}</b> (≈${inr(status.baseDaily)}/day)`,
     `Budget month: ${status.cycleStart.slice(8)}/${status.cycleStart.slice(5, 7)} → ${status.cycleEnd.slice(8)}/${status.cycleEnd.slice(5, 7)}${plan.payday ? ` (salary on the ${plan.payday})` : " — set salary day with <code>/plan payday 30</code>"}`,
   ];

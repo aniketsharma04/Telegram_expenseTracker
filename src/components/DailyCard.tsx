@@ -89,6 +89,7 @@ export default function DailyCard({ daily }: { daily: DailyStatus | null | undef
               <b>{formatINR(daily.pool)}</b>
               <small>
                 {formatINR(daily.income)} − {formatINR(daily.fixed)} fixed − {formatINR(daily.savingsGoal)} saved
+                {daily.goals ? ` − ${formatINR(daily.goals)} goals` : ""}
               </small>
             </div>
             {daily.streak >= 2 && (

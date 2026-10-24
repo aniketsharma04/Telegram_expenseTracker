@@ -34,6 +34,7 @@ import { Account, ApiData, Expense, fetchData } from "./lib/api";
 import { DailyBudgetCard } from "./components/DailyBudgetCard";
 import { InboxBell, InboxSheet, PushPromptCard } from "./components/Inbox";
 import { CaptureSetupCard } from "./components/CaptureSetupCard";
+import { GoalsCard } from "./components/GoalsCard";
 import { PushState, registerForPush, unregisterPush } from "./lib/push";
 import { connectCapture, syncCaptures } from "./lib/capture";
 import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
@@ -483,6 +484,12 @@ function AppInner() {
                     <DailyBudgetCard
                       p={p}
                       daily={data.daily}
+                      token={token}
+                      onChanged={refresh}
+                    />
+                    <GoalsCard
+                      p={p}
+                      goals={data.goals ?? []}
                       token={token}
                       onChanged={refresh}
                     />

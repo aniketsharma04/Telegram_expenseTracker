@@ -397,7 +397,8 @@ function PlanSheet({
 
               {daily?.ready && (
                 <Text style={{ color: p.ink2, fontSize: fs(13), lineHeight: 19 }}>
-                  {formatINR(daily.income)} − {formatINR(daily.fixed)} − {formatINR(daily.savingsGoal)} ={" "}
+                  {formatINR(daily.income)} − {formatINR(daily.fixed)} − {formatINR(daily.savingsGoal)}
+                  {daily.goals ? ` − ${formatINR(daily.goals)} (${t("goals").toLowerCase()})` : ""} ={" "}
                   <Text style={{ color: p.ink, fontWeight: "700" }}>{formatINR(daily.pool)}</Text> · ≈
                   {formatINR(daily.baseDaily)}
                   {t("perDay")}

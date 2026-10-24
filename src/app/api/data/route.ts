@@ -16,6 +16,7 @@ import { loadBalanceSheet } from "@/lib/accounts";
 import { listTransfers } from "@/lib/transfers";
 import { loadDailyStatus } from "@/lib/plan";
 import { unreadCount } from "@/lib/inbox";
+import { goalOutlook } from "@/lib/goals";
 
 export const dynamic = "force-dynamic";
 
@@ -155,6 +156,8 @@ export async function GET(req: NextRequest) {
     daily: daily
       ? { ...daily.status, plan: daily.plan, commitment_list: daily.commitments }
       : null,
+    // v17: goals with progress and when each will be reached.
+    goals: (daily?.goals ?? []).map((g) => ({ ...g, ...goalOutlook(g, today) })),
     // v7: bills spotted in email / notifications, awaiting confirm or dismiss.
     detected_bills: detectedBills,
     gmail: gmail

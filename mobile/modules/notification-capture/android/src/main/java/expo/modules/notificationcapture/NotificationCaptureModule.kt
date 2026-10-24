@@ -105,8 +105,9 @@ class NotificationCaptureModule : Module() {
 
     /** True when Android may stop the app in the background to save battery. */
     Function("isBatteryOptimized") {
-      val power = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-      !power.isIgnoringBatteryOptimizations(context.packageName)
+      val power = (context.getSystemService(Context.POWER_SERVICE) as PowerManager)
+      val exempt = power.isIgnoringBatteryOptimizations(context.packageName)
+      exempt.not()
     }
 
     /** The system list where the user can exempt this app (no special permission needed). */

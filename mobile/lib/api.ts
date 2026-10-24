@@ -241,6 +241,48 @@ export interface ApiData {
   daily?: DailyStatus | null;
   /** v15: unread notices in the in-app inbox. */
   inbox_unread?: number;
+  /** v17 */
+  goals?: GoalView[];
+}
+
+// ── Goals (v17) ─────────────────────────────────────────────────────────────
+
+export interface GoalView {
+  id: string;
+  name: string;
+  target_amount: number;
+  saved: number;
+  monthly: number;
+  target_date: string | null;
+  achieved_at: string | null;
+  pct: number;
+  monthsLeft: number | null;
+  onTrack: boolean | null;
+}
+
+export async function saveGoal(
+  token: string,
+  goal: { id?: string; name: string; target_amount: number; target_date?: string | null; monthly?: number | null },
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const res = await fetch(`${API_BASE}/api/goals`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(goal),
+  });
+  if (res.ok) return { ok: true };
+  const body = (await res.json().catch(() => ({}))) as { error?: string };
+  return { ok: false, error: body.error ?? `HTTP ${res.status}` };
+}
+
+export async function deleteGoal(token: string, id: string): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/goals?id=${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token.trim()}` },
+  });
+  return res.ok;
 }
 
 // ── Inbox (v15) ─────────────────────────────────────────────────────────────
@@ -321,6 +363,8 @@ export interface DailyStatus {
   incomeSource: "plan" | "last_month" | null;
   fixed: number;
   savingsGoal: number;
+  /** v17: set aside for goals this month. */
+  goals?: number;
   pool: number;
   baseDaily: number;
   cycleStart?: string;

@@ -32,6 +32,7 @@ const OWNED_TABLES = [
   "notifications",
   "commitments",
   "budget_plans",
+  "goals", // goal_credits cascade with their goal
   "receipt_items",
   "receipts",
   "bank_messages",
@@ -66,6 +67,7 @@ const EXPORT_TABLES = [
   "budget_plans",
   "commitments",
   "notifications",
+  "goals",
 ] as const;
 
 export async function GET(req: NextRequest) {
