@@ -68,8 +68,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // v14: "Starbucks −₹200 · ₹1,467 left today" — one message for the batch.
-  // Telegram-forwarded messages get their reply from the bot instead.
+  // "Starbucks −₹200 · ₹1,467 left today" — a push per spend, or one summary
+  // for a big offline batch. Telegram-forwarded messages get the bot's reply.
   const expenseIds = results.flatMap((r) => (r.expenseId ? [r.expenseId] : []));
   if (source !== "telegram") await pingSpends(supabase, userId, expenseIds);
   // Auto-captured spends cross budget thresholds too.
