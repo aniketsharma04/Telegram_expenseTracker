@@ -493,7 +493,7 @@ const plainLabel = (e: ScopedExpense) => e.merchant?.trim() || e.category;
 export function morningPush(s: DailyStatus, yesterday: DayPoint | null): PushText {
   if (!s.ready)
     return {
-      title: "☀️ Good morning",
+      title: "Good morning",
       body: "Add your monthly income in the app to get a daily budget.",
     };
   const lines = [`${inr(s.poolLeft)} left for everyday spending · ${s.daysLeft} day${s.daysLeft === 1 ? "" : "s"} to go.`];
@@ -506,12 +506,12 @@ export function morningPush(s: DailyStatus, yesterday: DayPoint | null): PushTex
     );
   }
   if (s.streak >= 2) lines.push(`🔥 ${s.streak}-day streak`);
-  return { title: `☀️ Today you can spend ${inr(s.todayBudget)}`, body: lines.join("\n") };
+  return { title: `Today you can spend ${inr(s.todayBudget)}`, body: lines.join("\n") };
 }
 
 export function eveningPush(s: DailyStatus): PushText {
   if (!s.ready)
-    return { title: "🌙 Today's report", body: "Add your monthly income in the app to get a daily budget." };
+    return { title: "Today's report", body: "Add your monthly income in the app to get a daily budget." };
   const everyday = s.today.filter((e) => e.dailyAmount > 0);
   const top = everyday
     .slice()
@@ -524,8 +524,8 @@ export function eveningPush(s: DailyStatus): PushText {
   return {
     title:
       diff >= 0
-        ? `🌙 ${inr(s.todaySpent)} of ${inr(s.todayBudget)}, ${inr(diff)} under ✅`
-        : `🌙 ${inr(s.todaySpent)} of ${inr(s.todayBudget)}, ${inr(-diff)} over`,
+        ? `Today: ${inr(s.todaySpent)} of ${inr(s.todayBudget)}, ${inr(diff)} under`
+        : `Today: ${inr(s.todaySpent)} of ${inr(s.todayBudget)}, ${inr(-diff)} over`,
     body: lines.join("\n"),
   };
 }

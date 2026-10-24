@@ -75,6 +75,9 @@ export function PlanSummaryCard({
             {daily.cycleStart && daily.cycleEnd ? ` · ${shortDate(daily.cycleStart)} – ${shortDate(daily.cycleEnd)}` : ""}
           </Text>
           <History p={p} history={daily.history.slice(-14)} />
+          {daily.history.length >= 2 && (
+            <Text style={{ color: p.muted, fontSize: fs(12) }}>{t("last14")}</Text>
+          )}
         </View>
       )}
       {editing && <PlanSheet p={p} token={token} onClose={() => setEditing(false)} onChanged={onChanged} />}

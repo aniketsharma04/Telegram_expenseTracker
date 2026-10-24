@@ -17,8 +17,14 @@ const AUTOSTART_DONE_KEY = "et_autostart_done";
 const AGGRESSIVE_OEMS = /xiaomi|redmi|poco|oppo|realme|vivo|iqoo|oneplus|honor|huawei/i;
 
 function manufacturer(): string {
-  const c = Platform.constants as { Manufacturer?: string; Brand?: string };
-  return `${c.Manufacturer ?? ""} ${c.Brand ?? ""}`;
+  // Autostart only exists on Android phones; elsewhere the constants differ or are absent.
+  if (Platform.OS !== "android") return "";
+  try {
+    const c = Platform.constants as { Manufacturer?: string; Brand?: string };
+    return `${c?.Manufacturer ?? ""} ${c?.Brand ?? ""}`;
+  } catch {
+    return "";
+  }
 }
 
 /**

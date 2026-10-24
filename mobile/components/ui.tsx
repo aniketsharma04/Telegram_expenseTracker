@@ -141,6 +141,8 @@ const styles = StyleSheet.create({
   card: { borderRadius: 24, borderWidth: StyleSheet.hairlineWidth, padding: 20 },
   sectionTitle: { fontWeight: "600", marginBottom: 14 },
   headerRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 },
-  track: { height: 8, borderRadius: 4, overflow: "hidden", flex: 1 },
+  // flexGrow (not flex: 1) — flex: 1 sets a zero basis, which collapses the bar
+  // to nothing when it sits in a column (goals, budgets) instead of a row.
+  track: { height: 8, borderRadius: 4, overflow: "hidden", flexGrow: 1, alignSelf: "stretch" },
   bar: { height: "100%", borderRadius: 4 },
 });

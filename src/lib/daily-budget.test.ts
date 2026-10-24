@@ -163,7 +163,7 @@ describe("push text", () => {
       plan, commitments, today: "2026-09-10",
       expenses: [{ id: "x", amount: 12000, category: "Shopping", merchant: "Phone", expense_date: "2026-09-10", budget_scope: null }],
     });
-    expect(morningPush(s, null).title).toBe(`☀️ Today you can spend ₹${s.todayBudget.toLocaleString("en-IN")}`);
+    expect(morningPush(s, null).title).toBe(`Today you can spend ₹${s.todayBudget.toLocaleString("en-IN")}`);
     const push = spendPush(s.today[0], s);
     expect(push.title).toBe("Phone −₹12,000");
     expect(push.bigSpend).toBe(true);

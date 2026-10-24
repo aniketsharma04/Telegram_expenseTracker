@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Expense } from "../lib/api";
 import { FALLBACK_COLOR, formatINR, memberColor, Palette, seriesColor } from "../lib/theme";
-import { Avatar, Card } from "./ui";
+import { Avatar, Card, IconBubble } from "./ui";
+import { categoryIcon, clockTime, tint } from "../lib/categories";
 
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -111,22 +112,22 @@ export default function TransactionsTab({
                   {showMember ? (
                     <Avatar color={memberColor(mIdx, dark)} label={mName.slice(0, 1).toUpperCase()} />
                   ) : (
-                    <View style={[styles.catDot, { backgroundColor: catColor }]} />
+                    <IconBubble name={categoryIcon(e.category)} color={catColor} bg={tint(catColor, dark)} />
                   )}
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={{ fontSize: 14.5, fontWeight: "500", color: p.ink }} numberOfLines={1}>
+                    <Text style={{ fontSize: 15, fontWeight: "500", color: p.ink }} numberOfLines={1}>
                       {e.merchant ?? e.category}
                     </Text>
-                    <Text style={{ fontSize: 12, color: p.muted, marginTop: 1 }}>
-                      {showMember ? `${mName} · ` : ""}
-                      {e.category}
-                      {e.split_id ? " · split" : ""}
+                    <Text style={{ fontSize: 12.5, color: p.muted, marginTop: 2 }} numberOfLines={1}>
+                      {[showMember ? mName : null, clockTime(e.logged_at), e.category, e.split_id ? "split" : null]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </Text>
                   </View>
                   <Text
                     style={{
-                      fontSize: 14.5,
-                      fontWeight: "700",
+                      fontSize: 15,
+                      fontWeight: "600",
                       color: e.category === "Investments" ? p.good : p.ink,
                     }}
                   >
@@ -147,6 +148,5 @@ const styles = StyleSheet.create({
   chip: { borderWidth: 1, borderRadius: 999, paddingVertical: 7, paddingHorizontal: 14 },
   groupLabel: { flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 6 },
   groupText: { fontSize: 11.5, fontWeight: "600", letterSpacing: 0.5 },
-  row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 11 },
-  catDot: { width: 12, height: 12, borderRadius: 4, marginHorizontal: 11 },
+  row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, minHeight: 56 },
 });
