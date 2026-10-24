@@ -98,6 +98,7 @@ const HELP_TEXT = [
   "",
   "Daily budget:",
   "• <code>/plan 100000</code> — monthly income; <code>/plan save 15000</code> — savings goal",
+  "• <code>/plan payday 30</code> — budget months run salary to salary",
   "• <code>/fixed rent 25000</code> — a fixed monthly cost (kept out of the daily number)",
   "• <code>/fixed</code> — list them; <code>/fixed remove rent</code>",
   "• <code>/today</code> — what's left today",
@@ -1405,6 +1406,13 @@ async function handlePlan(userId: number, arg: string) {
     if (toggle >= 0 && (words[1] === "on" || words[1] === "off")) {
       const key = (["morning_brief", "evening_report", "live_updates"] as const)[toggle];
       await savePlan(supabase, userId, { [key]: words[1] === "on" });
+    } else if (words[0] === "payday" || words[0] === "salary") {
+      const day = words[1] === "off" ? null : Number(words[1]);
+      if (day !== null && !(Number.isInteger(day) && day >= 1 && day <= 31)) {
+        await reply(userId, "Which day does salary arrive? e.g. <code>/plan payday 30</code> (or <code>/plan payday off</code>)");
+        return;
+      }
+      await savePlan(supabase, userId, { payday: day });
     } else if (words[0] === "save" || words[0] === "savings") {
       const rest = words.slice(1).join(" ");
       const n = rest === "0" ? 0 : parseMoney(rest);
@@ -1435,6 +1443,7 @@ async function handlePlan(userId: number, arg: string) {
     `− Fixed costs: ${inr(status.fixed)}${commitments.length ? "" : " — add with <code>/fixed rent 25000</code>"}`,
     `− Savings goal: ${inr(status.savingsGoal)}`,
     `= Everyday money: <b>${inr(status.pool)}</b> (≈${inr(status.baseDaily)}/day)`,
+    `Budget month: ${status.cycleStart.slice(8)}/${status.cycleStart.slice(5, 7)} → ${status.cycleEnd.slice(8)}/${status.cycleEnd.slice(5, 7)}${plan.payday ? ` (salary on the ${plan.payday})` : " — set salary day with <code>/plan payday 30</code>"}`,
   ];
   if (status.ready)
     lines.push("", `Today: <b>${inr(status.todayLeft)}</b> left of ${inr(status.todayBudget)}`);

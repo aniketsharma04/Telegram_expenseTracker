@@ -335,6 +335,11 @@ const STRINGS = {
   notCounted: { en: "Not counted", hi: "गिना नहीं गया" },
   monthlyIncome: { en: "Monthly income", hi: "महीने की आमदनी" },
   savingsGoal: { en: "Savings goal / month", hi: "महीने की बचत का लक्ष्य" },
+  payday: { en: "Salary day", hi: "तनख्वाह का दिन" },
+  paydayHint: {
+    en: "Your budget month runs from this day to the day before the next one. Leave empty for calendar months.",
+    hi: "आपका बजट महीना इस दिन से अगली तनख्वाह से एक दिन पहले तक चलता है। खाली छोड़ें तो कैलेंडर महीना।",
+  },
   fixedCosts: { en: "Fixed monthly costs", hi: "हर महीने के तय खर्चे" },
   fixedHint: {
     en: "Rent, EMI, SIP, subscriptions — kept out of the daily number.",

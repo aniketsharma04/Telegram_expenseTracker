@@ -28,6 +28,8 @@ export type BudgetScope = "daily" | "fixed" | "savings";
 export interface PlanLike {
   monthly_income: number | null;
   savings_goal: number;
+  /** Day of the month salary arrives (v16); null = calendar months. */
+  payday?: number | null;
 }
 
 export interface CommitmentLike {
@@ -86,7 +88,12 @@ export interface DailyStatus {
   pool: number;
   /** pool ÷ days in month — the naive "per day" figure, for reference. */
   baseDaily: number;
+  /** The budget month — payday to the day before the next one (v16). */
+  cycleStart: string;
+  cycleEnd: string;
+  /** Days in the budget month (a calendar month when there's no payday). */
   daysInMonth: number;
+  /** Today's position in the budget month, 1-based. */
   dayOfMonth: number;
   /** Including today. */
   daysLeft: number;
@@ -112,6 +119,48 @@ const round = (n: number) => Math.round(n);
 
 export function daysInMonthOf(date: string): number {
   return new Date(Number(date.slice(0, 4)), Number(date.slice(5, 7)), 0).getDate();
+}
+
+const DAY_MS = 86_400_000;
+const isoAdd = (iso: string, days: number) =>
+  new Date(Date.parse(`${iso}T00:00:00Z`) + days * DAY_MS).toISOString().slice(0, 10);
+const daysFrom = (a: string, b: string) =>
+  Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / DAY_MS);
+
+/** Payday in a given month, pulled back to the last day when the month is short. */
+function paydayIn(year: number, month: number, payday: number): string {
+  const last = new Date(Date.UTC(year, month, 0)).getUTCDate(); // month is 1-based here
+  const day = Math.min(payday, last);
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+export interface Cycle {
+  start: string;
+  end: string;
+  days: number;
+  /** Today's position, 1-based. */
+  dayIndex: number;
+}
+
+/**
+ * The budget month containing `today`: from the most recent payday up to the
+ * day before the next. Salary on the 30th means the month starts on the 30th,
+ * not three days later on the 1st. No payday = the calendar month.
+ */
+export function cycleFor(today: string, payday: number | null | undefined): Cycle {
+  const y = Number(today.slice(0, 4));
+  const m = Number(today.slice(5, 7));
+  const p = payday && payday >= 1 && payday <= 31 ? payday : 1;
+  const prev = m === 1 ? [y - 1, 12] : [y, m - 1];
+  const next = m === 12 ? [y + 1, 1] : [y, m + 1];
+
+  const thisMonths = paydayIn(y, m, p);
+  const start = today >= thisMonths ? thisMonths : paydayIn(prev[0], prev[1], p);
+  const startMonth = Number(start.slice(5, 7));
+  const after =
+    startMonth === m ? paydayIn(next[0], next[1], p) : thisMonths;
+  const end = isoAdd(after, -1);
+  return { start, end, days: daysFrom(start, end) + 1, dayIndex: daysFrom(start, today) + 1 };
 }
 
 function keywordHit(c: CommitmentLike, e: BudgetExpense): boolean {
@@ -183,9 +232,10 @@ export function computeDailyStatus(input: {
   lastMonthIncome?: number;
 }): DailyStatus {
   const { plan, commitments, today } = input;
-  const monthStart = `${today.slice(0, 7)}-01`;
-  const daysInMonth = daysInMonthOf(today);
-  const dayOfMonth = Number(today.slice(8, 10));
+  const cycle = cycleFor(today, plan?.payday);
+  const monthStart = cycle.start;
+  const daysInMonth = cycle.days;
+  const dayOfMonth = cycle.dayIndex;
   const daysLeft = daysInMonth - dayOfMonth + 1;
 
   const planned = plan?.monthly_income ? Number(plan.monthly_income) : 0;
@@ -212,7 +262,7 @@ export function computeDailyStatus(input: {
   const history: DayPoint[] = [];
   let spentBefore = 0;
   for (let d = 1; d <= dayOfMonth; d++) {
-    const date = `${today.slice(0, 7)}-${String(d).padStart(2, "0")}`;
+    const date = isoAdd(monthStart, d - 1);
     const budget = Math.max(0, (pool - spentBefore) / (daysInMonth - d + 1));
     const spent = byDay.get(date) ?? 0;
     history.push({ date, budget: round(budget), spent: round(spent) });
@@ -248,6 +298,8 @@ export function computeDailyStatus(input: {
     savingsGoal: round(savingsGoal),
     pool: round(pool),
     baseDaily: round(pool / daysInMonth),
+    cycleStart: cycle.start,
+    cycleEnd: cycle.end,
     daysInMonth,
     dayOfMonth,
     daysLeft,

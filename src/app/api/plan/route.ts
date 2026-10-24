@@ -17,8 +17,9 @@ export async function GET(req: NextRequest) {
 }
 
 /**
- * Change the plan: { monthly_income?, savings_goal?, morning_brief?,
- * evening_report?, live_updates? }. monthly_income: null = use last month's.
+ * Change the plan: { monthly_income?, savings_goal?, payday?, morning_brief?,
+ * evening_report?, live_updates? }. monthly_income: null = use last month's;
+ * payday: null = calendar months.
  */
 export async function POST(req: NextRequest) {
   const userId = authedUser(req);
@@ -54,6 +55,13 @@ export async function POST(req: NextRequest) {
     if (n === null)
       return NextResponse.json({ error: "invalid savings goal" }, { status: 400 });
     patch.savings_goal = n;
+  }
+  // v16: salary day — the budget month starts on it. null = calendar months.
+  if (body.payday !== undefined) {
+    const day = body.payday === null ? null : Number(body.payday);
+    if (day !== null && !(Number.isInteger(day) && day >= 1 && day <= 31))
+      return NextResponse.json({ error: "payday must be 1–31" }, { status: 400 });
+    patch.payday = day;
   }
   for (const key of ["morning_brief", "evening_report", "live_updates"] as const) {
     if (typeof body[key] === "boolean") patch[key] = body[key] as boolean;

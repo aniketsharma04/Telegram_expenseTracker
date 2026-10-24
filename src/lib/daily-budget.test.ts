@@ -170,3 +170,40 @@ describe("push text", () => {
     expect(push.body).not.toContain("/fromsavings"); // app wording, not bot commands
   });
 });
+
+describe("salary cycles", () => {
+  it("is the calendar month without a payday", async () => {
+    const { cycleFor } = await import("./daily-budget");
+    expect(cycleFor("2026-10-24", null)).toEqual({ start: "2026-10-01", end: "2026-10-31", days: 31, dayIndex: 24 });
+  });
+
+  it("runs payday to the day before the next payday", async () => {
+    const { cycleFor } = await import("./daily-budget");
+    expect(cycleFor("2026-10-24", 30)).toEqual({ start: "2026-09-30", end: "2026-10-29", days: 30, dayIndex: 25 });
+    expect(cycleFor("2026-10-30", 30)).toMatchObject({ start: "2026-10-30", dayIndex: 1 });
+  });
+
+  it("pays on the last day when the month is short", async () => {
+    const { cycleFor } = await import("./daily-budget");
+    // Paid on the 31st → in February that's the 28th.
+    expect(cycleFor("2027-03-05", 31)).toEqual({ start: "2027-02-28", end: "2027-03-30", days: 31, dayIndex: 6 });
+    expect(cycleFor("2027-02-27", 31)).toMatchObject({ start: "2027-01-31", end: "2027-02-27" });
+  });
+
+  it("budgets across the month boundary", () => {
+    const s = computeDailyStatus({
+      plan: { monthly_income: 60000, savings_goal: 0, payday: 25 },
+      commitments: [],
+      today: "2026-11-02",
+      expenses: [
+        e(1000, "Dining out", "Cafe", "2026-10-25"),
+        e(500, "Dining out", "Cafe", "2026-10-24"), // last cycle — doesn't count
+      ],
+    });
+    expect(s.cycleStart).toBe("2026-10-25");
+    expect(s.daysInMonth).toBe(31); // 25 Oct → 24 Nov
+    expect(s.dayOfMonth).toBe(9);
+    expect(s.poolSpent).toBe(1000);
+    expect(s.history[0].date).toBe("2026-10-25");
+  });
+});

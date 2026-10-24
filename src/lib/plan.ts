@@ -5,6 +5,7 @@ import { getBills } from "./bills";
 import { detectRecurring } from "./insights";
 import {
   computeDailyStatus,
+  cycleFor,
   type BudgetExpense,
   type CommitmentLike,
   type DailyStatus,
@@ -38,6 +39,9 @@ export interface CommitmentSuggestion {
 }
 
 const PLAN_COLUMNS =
+  "user_id, monthly_income, savings_goal, morning_brief, evening_report, live_updates, payday";
+/** Pre-v16 shape, for databases without the payday column. */
+const PLAN_COLUMNS_V14 =
   "user_id, monthly_income, savings_goal, morning_brief, evening_report, live_updates";
 const COMMITMENT_COLUMNS = "id, user_id, name, amount, category, match";
 
@@ -46,18 +50,18 @@ export async function getPlan(
   userId: number,
 ): Promise<Plan | null> {
   try {
-    const { data, error } = await supabase
-      .from("budget_plans")
-      .select(PLAN_COLUMNS)
-      .eq("user_id", userId)
-      .limit(1);
+    const query = (cols: string) =>
+      supabase.from("budget_plans").select(cols).eq("user_id", userId).limit(1);
+    let { data, error } = await query(PLAN_COLUMNS);
+    if (error) ({ data, error } = await query(PLAN_COLUMNS_V14));
     if (error) throw error;
-    const row = data?.[0];
+    const row = (data as unknown as Array<Record<string, unknown>> | null)?.[0];
     if (!row) return null;
     return {
       ...row,
       monthly_income: row.monthly_income == null ? null : Number(row.monthly_income),
       savings_goal: Number(row.savings_goal ?? 0),
+      payday: row.payday == null ? null : Number(row.payday),
     } as Plan;
   } catch (err) {
     console.error("getPlan failed (v14 migration applied?)", err);
@@ -66,7 +70,7 @@ export async function getPlan(
 }
 
 export type PlanPatch = Partial<
-  Pick<Plan, "monthly_income" | "savings_goal" | "morning_brief" | "evening_report" | "live_updates">
+  Pick<Plan, "monthly_income" | "savings_goal" | "morning_brief" | "evening_report" | "live_updates" | "payday">
 >;
 
 export async function savePlan(
@@ -158,16 +162,8 @@ function defaultMatch(name: string): string | null {
   return word.length >= 3 ? word : null;
 }
 
-function previousMonth(today: string): { start: string; end: string } {
-  let [y, m] = [Number(today.slice(0, 4)), Number(today.slice(5, 7)) - 1];
-  if (m === 0) {
-    m = 12;
-    y -= 1;
-  }
-  const mm = String(m).padStart(2, "0");
-  const last = new Date(y, m, 0).getDate();
-  return { start: `${y}-${mm}-01`, end: `${y}-${mm}-${last}` };
-}
+const addDaysIso = (iso: string, days: number) =>
+  new Date(Date.parse(`${iso}T00:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
 
 /** Everything the daily number needs, loaded and computed for one user. */
 export async function loadDailyStatus(
@@ -175,15 +171,18 @@ export async function loadDailyStatus(
   userId: number,
   today: string = localDate(),
 ): Promise<{ status: DailyStatus; plan: Plan | null; commitments: Commitment[] }> {
-  const prev = previousMonth(today);
-  const [plan, commitments, expenses, incomes] = await Promise.all([
-    getPlan(supabase, userId),
+  // The plan decides where the budget month starts (payday), so it loads first.
+  const plan = await getPlan(supabase, userId);
+  const cycle = cycleFor(today, plan?.payday);
+  const prevStart = cycleFor(addDaysIso(cycle.start, -1), plan?.payday).start;
+  const [commitments, expenses, incomes] = await Promise.all([
     getCommitments(supabase, userId),
-    monthExpenses(supabase, userId, `${today.slice(0, 7)}-01`, today),
-    getIncomes(supabase, userId, prev.start),
+    monthExpenses(supabase, userId, cycle.start, today),
+    getIncomes(supabase, userId, prevStart),
   ]);
+  // "Last month" = the previous budget month, for the no-income-set fallback.
   const lastMonthIncome = incomes
-    .filter((i) => i.income_date <= prev.end)
+    .filter((i) => i.income_date < cycle.start)
     .reduce((s, i) => s + Number(i.amount), 0);
 
   return {

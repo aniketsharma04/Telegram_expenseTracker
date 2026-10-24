@@ -282,6 +282,8 @@ export async function markInboxRead(token: string, ids?: string[]): Promise<bool
 export interface DailyPlan {
   monthly_income: number | null;
   savings_goal: number;
+  /** v16: day salary arrives; null = calendar months. */
+  payday?: number | null;
   morning_brief: boolean;
   evening_report: boolean;
   live_updates: boolean;
@@ -321,6 +323,8 @@ export interface DailyStatus {
   savingsGoal: number;
   pool: number;
   baseDaily: number;
+  cycleStart?: string;
+  cycleEnd?: string;
   daysInMonth: number;
   dayOfMonth: number;
   daysLeft: number;

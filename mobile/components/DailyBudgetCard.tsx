@@ -200,6 +200,7 @@ function PlanSheet({
   const [suggestions, setSuggestions] = useState<CommitmentSuggestion[]>([]);
   const [income, setIncome] = useState("");
   const [savings, setSavings] = useState("");
+  const [payday, setPayday] = useState("");
   const [newName, setNewName] = useState("");
   const [newAmount, setNewAmount] = useState("");
 
@@ -214,6 +215,7 @@ function PlanSheet({
       setSuggestions(res.suggestions);
       setIncome(res.plan?.monthly_income ? String(res.plan.monthly_income) : "");
       setSavings(res.plan?.savings_goal ? String(res.plan.savings_goal) : "");
+      setPayday(res.plan?.payday ? String(res.plan.payday) : "");
     }
     setLoading(false);
   };
@@ -237,11 +239,18 @@ function PlanSheet({
   const saveMoney = () => {
     const i = num(income);
     const s = savings.trim() ? num(savings) : 0;
+    const d = payday.trim() ? Number(payday.trim()) : null;
     if (!Number.isFinite(i) || i <= 0 || !Number.isFinite(s) || s < 0) {
       setError("Enter your monthly income as a number.");
       return;
     }
-    run(() => savePlan(token, { monthly_income: Math.round(i), savings_goal: Math.round(s) }));
+    if (d !== null && !(Number.isInteger(d) && d >= 1 && d <= 31)) {
+      setError("Salary day is a date from 1 to 31.");
+      return;
+    }
+    run(() =>
+      savePlan(token, { monthly_income: Math.round(i), savings_goal: Math.round(s), payday: d }),
+    );
   };
 
   const addOne = () => {
@@ -301,6 +310,20 @@ function PlanSheet({
                     placeholderTextColor={p.muted}
                   />
                 </View>
+              </Field>
+              <Field p={p} label={t("payday")}>
+                <View style={inputBox}>
+                  <TextInput
+                    style={[styles.input, { color: p.ink }]}
+                    value={payday}
+                    onChangeText={setPayday}
+                    keyboardType="number-pad"
+                    maxLength={2}
+                    placeholder="30"
+                    placeholderTextColor={p.muted}
+                  />
+                </View>
+                <Text style={{ color: p.muted, fontSize: fs(12) }}>{t("paydayHint")}</Text>
               </Field>
               <Pressable
                 style={[styles.btn, { backgroundColor: p.accent, opacity: busy ? 0.6 : 1 }]}
