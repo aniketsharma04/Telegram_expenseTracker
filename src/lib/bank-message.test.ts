@@ -189,3 +189,45 @@ describe("matchAccountByHint", () => {
     expect(matchAccountByHint(null, accounts)).toBeNull();
   });
 });
+
+describe("parseBankMessage — merchant extraction (v15 capture hardening)", () => {
+  const cp = (text: string) => parseBankMessage(text)?.counterparty ?? null;
+
+  it("doesn't chop merchants whose names end in a noise word", () => {
+    expect(
+      cp("Rs.1,299.00 spent on HDFC Bank Card x1234 at AMAZON PAY INDIA on 2026-10-24:10:11:12 Avl Lmt: Rs.98,701.00"),
+    ).toBe("AMAZON PAY INDIA");
+    expect(cp("Rs.300 debited from a/c XX1234 to VPA decathlon@ybl on 24-10-26")).toBe("decathlon@ybl");
+  });
+
+  it("reads the merchant from the Axis UPI/P2M line, not the helpline", () => {
+    const txn = parseBankMessage(
+      "INR 400.00 debited\nA/c no. XX1234\n24-10-26, 10:12:11\nUPI/P2M/629812345678/BLINKIT\nNot you? SMS BLOCKUPI Cust ID to 919951860002\nAxis Bank",
+    );
+    expect(txn?.counterparty).toBe("BLINKIT");
+    expect(txn?.reference).toBe("629812345678");
+    expect(txn?.channel).toBe("upi");
+  });
+
+  it("reads ICICI's '; MERCHANT credited' and card 'on MERCHANT' forms", () => {
+    expect(
+      cp("ICICI Bank Acct XX123 debited for Rs 250.00 on 24-Oct-26; SWIGGY credited. UPI:629812345678. Call 18002662 for dispute."),
+    ).toBe("SWIGGY");
+    expect(
+      cp("INR 649.00 spent using ICICI Bank Card XX1234 on 24-Oct-26 on NETFLIX. Avl Limit: INR 1,00,000.00. If not you, call 1800 2662"),
+    ).toBe("NETFLIX");
+  });
+
+  it("treats 'Payment of Rs X to Y is successful' as a debit", () => {
+    const txn = parseBankMessage("Payment of Rs 600.00 to swiggy.stores@axisbank is successful");
+    expect(txn?.direction).toBe("debit");
+    expect(txn?.amount).toBe(600);
+    expect(txn?.counterparty).toBe("swiggy.stores@axisbank");
+  });
+
+  it("still ignores what isn't a completed payment", () => {
+    expect(parseBankMessage("Your OTP for transaction of Rs.500 at AMAZON is 123456. Do not share")).toBeNull();
+    expect(parseBankMessage("Rs.500 will be debited from your account on 25-10-26 towards SIP")).toBeNull();
+    expect(parseBankMessage("Payment of Rs 600.00 to swiggy.stores@axisbank has failed")).toBeNull();
+  });
+});

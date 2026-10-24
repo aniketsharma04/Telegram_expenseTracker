@@ -46,7 +46,28 @@ const NOISE = [
  * Pure: tidy a raw statement string into something a human would write.
  * Runs before rule matching and is also the fallback when nothing matches.
  */
+/** Handle suffixes that name the payment gateway, not the shop. */
+const HANDLE_NOISE = new Set(["stores", "store", "rzp", "razorpay", "payu", "pay", "upi", "online", "merchant", "cf", "ccavenue"]);
+
+/**
+ * A UPI handle ("swiggy.stores@axisbank") as a shop name, or an honest label
+ * when it's only an id: a QR code's handle or a phone number names nobody.
+ */
+function nameFromHandle(handle: string): string {
+  const local = handle.split("@")[0].trim();
+  const digits = (local.match(/\d/g) ?? []).length;
+  if (/^\+?\d{10,12}$/.test(local)) return "UPI transfer";
+  if (/^(paytmqr|bharatpe|q\d|gpay-|phonepeqr|upiqr|mab\.)/i.test(local) || digits >= 6)
+    return "UPI merchant";
+  const words = local
+    .split(/[._-]+/)
+    .filter((w) => w && !HANDLE_NOISE.has(w.toLowerCase()) && !/^\d+$/.test(w));
+  if (!words.length) return "UPI merchant";
+  return words.map((w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+}
+
 export function cleanMerchant(raw: string): string {
+  if (/^[\w.\-+]{2,}@[a-z]{2,}$/i.test(raw.trim())) return nameFromHandle(raw);
   let s = raw.trim();
   for (const pattern of NOISE) s = s.replace(pattern, "");
 
