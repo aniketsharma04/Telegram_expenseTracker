@@ -129,7 +129,7 @@ export async function composeMonthlyDigest(
     `Spent: ${fmtINR(spent)}${trend}\n` +
     (top ? `${top}\n` : "") +
     (biggest
-      ? `💸 Biggest: ${fmtINR(biggest.amount)}${biggest.merchant ? ` — ${biggest.merchant}` : ""} (${biggest.expense_date.slice(8)}‑${MONTH_NAMES[Number(biggest.expense_date.slice(5, 7)) - 1].slice(0, 3)})\n`
+      ? `💸 Biggest: ${fmtINR(biggest.amount)}${biggest.merchant ? ` at ${biggest.merchant}` : ""} (${biggest.expense_date.slice(8)}‑${MONTH_NAMES[Number(biggest.expense_date.slice(5, 7)) - 1].slice(0, 3)})\n`
       : "") +
     `📈 Invested: ${fmtINR(invested)}` +
     incomeLine +

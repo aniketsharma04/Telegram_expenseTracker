@@ -201,7 +201,7 @@ export default function BillSheet({
     setError(null);
     const r = await previewFetch(token, biller.id, params).catch(() => null);
     setFetching(false);
-    if (!r) setError(`${t("fetchFailed")} — check your connection.`);
+    if (!r) setError(`${t("fetchFailed")}. Check your connection.`);
     else if (r.ok) setPreview(r.bill);
     else if (r.code === "no_dues") setPreviewMsg(t("noDues"));
     else setError(r.error);
@@ -256,9 +256,9 @@ export default function BillSheet({
     const result = await saveBill(token, input, bill?.id).catch(() => null);
     setBusy(false);
     if (result === "unauthorized")
-      setError("Session expired — get a fresh /app code from the bot.");
+      setError("Session expired. Get a fresh /app code from the bot.");
     else if (!result)
-      setError("Couldn't save — check the fields and try again.");
+      setError("Couldn't save. Check the fields and try again.");
     else {
       onChanged();
       onClose();

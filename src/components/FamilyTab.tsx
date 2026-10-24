@@ -33,7 +33,7 @@ export default function FamilyTab({ data, onChanged }: { data: ApiData; onChange
         <section className="card">
           <h2>Start a family</h2>
           <p className="prose">
-            Track everyone&apos;s spending together — each member logs their own expenses with the
+            Track everyone&apos;s spending together. Each member logs their own expenses with the
             bot, and the family view rolls it all up while keeping individual trackers intact.
           </p>
           <ol className="login-steps">
@@ -41,7 +41,7 @@ export default function FamilyTab({ data, onChanged }: { data: ApiData; onChange
               Open the bot and send <code>/family create Sharma Family</code>
             </li>
             <li>Forward the invite link it gives you to your family group</li>
-            <li>One tap and they&apos;re in — their expenses appear here</li>
+            <li>One tap and they&apos;re in, and their expenses appear here</li>
           </ol>
           <a className="btn-primary" href={BOT_URL} target="_blank" rel="noreferrer">
             Open the Telegram bot

@@ -210,7 +210,7 @@ export default function LoginScreen({ onLogin }: Props) {
                   1. Open the Telegram bot
                 </Text>
                 <Text style={[styles.step, { color: p.ink2 }]}>
-                  2. Send <Text style={{ fontWeight: "700" }}>/app</Text> — it
+                  2. Send <Text style={{ fontWeight: "700" }}>/app</Text> and it
                   replies with a login code
                 </Text>
                 <Text style={[styles.step, { color: p.ink2 }]}>

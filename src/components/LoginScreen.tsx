@@ -22,7 +22,7 @@ export default function LoginScreen() {
           Open the Telegram bot
         </a>
         <p className="login-note">
-          No passwords — your Telegram account is your identity. New here? Send the bot any
+          No passwords: your Telegram account is your identity. New here? Send the bot any
           expense like <code>300 zomato</code> to get started.
         </p>
       </div>

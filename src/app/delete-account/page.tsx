@@ -24,7 +24,7 @@ export default function DeleteAccountPage() {
       body: JSON.stringify(body),
     });
     const json = (await res.json().catch(() => ({}))) as { error?: string; token?: string };
-    if (!res.ok) throw new Error(json.error ?? "Something went wrong — try again.");
+    if (!res.ok) throw new Error(json.error ?? "Something went wrong. Try again.");
     return json;
   };
 
@@ -34,7 +34,7 @@ export default function DeleteAccountPage() {
     try {
       await work();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong — try again.");
+      setError(e instanceof Error ? e.message : "Something went wrong. Try again.");
     }
     setBusy(false);
   };
@@ -48,7 +48,7 @@ export default function DeleteAccountPage() {
   const verify = () =>
     run(async () => {
       const json = await call({ email: email.trim(), code: code.trim() });
-      if (!json.token) throw new Error("That code didn't work — check it and try again.");
+      if (!json.token) throw new Error("That code didn't work. Check it and try again.");
       setToken(json.token);
       setStep("confirm");
     });
@@ -59,7 +59,7 @@ export default function DeleteAccountPage() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Couldn't delete the account — try again.");
+      if (!res.ok) throw new Error("Couldn't delete the account. Try again.");
       setStep("done");
     });
 

@@ -91,7 +91,7 @@ export default function TransactionsTab({
       {groups.length === 0 && (
         <Card p={p}>
           <Text style={{ color: p.ink2, fontSize: 14, textAlign: "center", padding: 12 }}>
-            Nothing here yet — text the bot an expense.
+            Nothing here yet. Payments appear here as soon as they're captured.
           </Text>
         </Card>
       )}

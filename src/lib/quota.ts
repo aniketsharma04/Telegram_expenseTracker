@@ -57,13 +57,13 @@ export function evaluate(
 function limitMessage(kind: QuotaKind): string {
   switch (kind) {
     case "llm_vision":
-      return "You've hit today's limit for reading receipt photos. It resets tomorrow — you can still type the amount in.";
+      return "You've hit today's limit for reading receipt photos. It resets tomorrow, and you can still type the amount in.";
     case "voice":
-      return "You've hit today's limit for voice notes. It resets tomorrow — typing still works.";
+      return "You've hit today's limit for voice notes. It resets tomorrow, and typing still works.";
     case "ingest":
       return "You've hit today's limit for captured messages. It resets tomorrow.";
     default:
-      return "You've hit today's limit for smart parsing. It resets tomorrow — simple entries like \"250 groceries\" still work.";
+      return "You've hit today's limit for smart parsing. It resets tomorrow, and simple entries like \"250 groceries\" still work.";
   }
 }
 

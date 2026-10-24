@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
-  description: "Log expenses in Telegram. Analyze them here — personal and family.",
+  description: "Your daily spending number, tracked automatically. Personal and family.",
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, statusBarStyle: "default", title: "Expenses" },
 };

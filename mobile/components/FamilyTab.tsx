@@ -38,7 +38,7 @@ export default function FamilyTab({ p, dark, data, memberName }: Props) {
       <Card p={p}>
         <SectionTitle p={p}>Start a family</SectionTitle>
         <Text style={[styles.prose, { color: p.ink2 }]}>
-          Track everyone&apos;s spending together — each member logs their own expenses with the
+          Track everyone&apos;s spending together. Each member logs their own expenses with the
           bot, and the family view rolls it all up.
         </Text>
         <Text style={[styles.prose, { color: p.ink2 }]}>
@@ -123,13 +123,13 @@ export default function FamilyTab({ p, dark, data, memberName }: Props) {
       <Card p={p}>
         <SectionTitle p={p}>Add a member</SectionTitle>
         <Text style={[styles.prose, { color: p.ink2 }]}>
-          Share this link — one tap in Telegram and they&apos;re part of {data.family.name}.
+          Share this link. One tap in Telegram and they&apos;re part of {data.family.name}.
         </Text>
         <Pressable
           style={[styles.btn, { backgroundColor: p.accent }]}
           onPress={() =>
             Share.share({
-              message: `Join our family expense tracker "${data.family!.name}" — tap, press Start, and log your first expense: ${inviteUrl}`,
+              message: `Join our family expense tracker "${data.family!.name}". Tap, press Start, and log your first expense: ${inviteUrl}`,
             })
           }
         >

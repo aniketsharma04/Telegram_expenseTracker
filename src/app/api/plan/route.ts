@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   if (body.payday !== undefined) {
     const day = body.payday === null ? null : Number(body.payday);
     if (day !== null && !(Number.isInteger(day) && day >= 1 && day <= 31))
-      return NextResponse.json({ error: "payday must be 1–31" }, { status: 400 });
+      return NextResponse.json({ error: "payday must be between 1 and 31" }, { status: 400 });
     patch.payday = day;
   }
   for (const key of ["morning_brief", "evening_report", "live_updates"] as const) {

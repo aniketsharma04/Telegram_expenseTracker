@@ -31,7 +31,7 @@ export default function PrivacyPage() {
         </li>
         <li>
           <b>Payment notifications (Android, only after you allow notification access):</b> the app reads notifications
-          from your SMS app, bank apps and UPI apps — and only those that mention money being debited or credited. The
+          from your SMS app, bank apps and UPI apps, and only those that mention money being debited or credited. The
           text of those notifications (up to 2,000 characters), the amount, merchant, account digits and the balance
           the bank reports are sent to your account. Messages containing an OTP or other code are discarded on your
           phone and never sent. Notifications from every other app (chats, email, social) are ignored.
@@ -62,14 +62,14 @@ export default function PrivacyPage() {
 
       <h2>Who processes it</h2>
       <ul>
-        <li>Supabase — database (Singapore region).</li>
-        <li>Vercel — runs the app's server.</li>
-        <li>Google (Gemini API) — reads receipt photos and messages the app couldn't parse itself.</li>
-        <li>Groq — turns voice notes into text.</li>
-        <li>Expo and Google Firebase / Apple — deliver push notifications.</li>
-        <li>Our email provider — sends sign-in codes.</li>
-        <li>Google (Gmail API) — only if you connect Gmail.</li>
-        <li>Telegram — only if you use the Telegram bot.</li>
+        <li>Supabase: database (Singapore region).</li>
+        <li>Vercel: runs the app's server.</li>
+        <li>Google (Gemini API): reads receipt photos and messages the app couldn't parse itself.</li>
+        <li>Groq: turns voice notes into text.</li>
+        <li>Expo and Google Firebase / Apple: deliver push notifications.</li>
+        <li>Our email provider: sends sign-in codes.</li>
+        <li>Google (Gmail API): only if you connect Gmail.</li>
+        <li>Telegram: only if you use the Telegram bot.</li>
       </ul>
       <p>Each receives only what its job needs. All traffic is encrypted in transit.</p>
 
@@ -81,7 +81,7 @@ export default function PrivacyPage() {
 
       <h2>Your choices</h2>
       <ul>
-        <li>Turn off notification access at any time in Android settings — capture stops at once.</li>
+        <li>Turn off notification access at any time in Android settings, and capture stops at once.</li>
         <li>Turn off any notification type in the app or in Android's notification settings.</li>
         <li>Download all your data: app → Settings → Export.</li>
         <li>

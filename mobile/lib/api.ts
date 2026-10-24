@@ -1049,7 +1049,7 @@ export async function requestLoginCode(
   } catch {
     return {
       ok: false,
-      error: "Couldn't reach the server — check your connection.",
+      error: "Couldn't reach the server. Check your connection.",
     };
   }
 }
@@ -1084,7 +1084,7 @@ export async function verifyLoginCode(
   } catch {
     return {
       ok: false,
-      error: "Couldn't reach the server — check your connection.",
+      error: "Couldn't reach the server. Check your connection.",
     };
   }
 }
@@ -1113,7 +1113,7 @@ export async function emailSignIn(
     if (!res.ok) return { error: body.error ?? `HTTP ${res.status}` };
     return body;
   } catch {
-    return { error: "Couldn't reach the server — check your connection." };
+    return { error: "Couldn't reach the server. Check your connection." };
   }
 }
 

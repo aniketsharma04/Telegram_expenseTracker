@@ -174,13 +174,13 @@ function AppInner() {
     try {
       const result = await fetchData(code);
       if (result === "unauthorized")
-        return "That code isn't valid (or expired) — send /app to the bot for a fresh one.";
+        return "That code isn't valid (or expired). Send /app to the bot for a fresh one.";
       await AsyncStorage.setItem(TOKEN_KEY, code);
       setData(result);
       setToken(code);
       return null;
     } catch {
-      return "Couldn't reach the server — check your connection and try again.";
+      return "Couldn't reach the server. Check your connection and try again.";
     }
   }, []);
 

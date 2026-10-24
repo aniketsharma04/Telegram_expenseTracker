@@ -94,7 +94,7 @@ async function closeLastMonth(
     .filter((a) => a.amount > 0)
     .map(({ goal, amount }) =>
       goal.saved >= goal.target_amount
-        ? `🎉 ${goal.name} reached — ${inr(goal.target_amount)} saved!`
+        ? `🎉 ${goal.name} reached: ${inr(goal.target_amount)} saved!`
         : `🎯 ${inr(amount)} → ${goal.name} (${goalOutlook(goal, today).pct}%)`,
     );
 }

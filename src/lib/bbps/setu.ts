@@ -275,7 +275,7 @@ export class SetuBbpsProvider implements BbpsProvider {
       return {
         ok: false,
         code: "provider",
-        error: "Biller is taking too long — try again in a minute",
+        error: "Biller is taking too long. Try again in a minute",
       };
     } catch (err) {
       return {

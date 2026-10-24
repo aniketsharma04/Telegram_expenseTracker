@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
         await notify(
           supabase,
           userId,
-          `🔁 Heads up: <b>${charge.merchant}</b> (~₹${charge.amount.toLocaleString("en-IN")}, ${charge.category}) usually hits around the ${Number(charge.nextDate.slice(8))}th — that's in ${REMIND_DAYS_AHEAD} days.`,
+          `🔁 Heads up: <b>${charge.merchant}</b> (~₹${charge.amount.toLocaleString("en-IN")}, ${charge.category}) usually hits around the ${Number(charge.nextDate.slice(8))}th, which is in ${REMIND_DAYS_AHEAD} days.`,
         );
         reminders++;
       }

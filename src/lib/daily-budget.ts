@@ -386,8 +386,8 @@ export function morningBrief(
     lines.push(
       "",
       diff >= 0
-        ? `Yesterday: ${inr(yesterday.spent)} of ${inr(yesterday.budget)} — ${inr(diff)} under 👍`
-        : `Yesterday: ${inr(yesterday.spent)} of ${inr(yesterday.budget)} — ${inr(-diff)} over, spread across the days ahead.`,
+        ? `Yesterday: ${inr(yesterday.spent)} of ${inr(yesterday.budget)}, ${inr(diff)} under 👍`
+        : `Yesterday: ${inr(yesterday.spent)} of ${inr(yesterday.budget)}, ${inr(-diff)} over. That's spread across the days ahead.`,
     );
   }
   if (s.streak >= 2) lines.push(`🔥 ${s.streak}-day streak under budget`);
@@ -405,7 +405,7 @@ export function morningBrief(
 
 /** The night report. */
 export function eveningReport(s: DailyStatus, today: string): string {
-  const head = `🌙 <b>Today's report</b> — ${prettyDate(today)}`;
+  const head = `🌙 <b>Today's report</b> · ${prettyDate(today)}`;
   if (!s.ready) return `${head}\n\n${SETUP_HINT}`;
 
   const diff = s.todayLeft;
@@ -460,9 +460,9 @@ export function eveningReport(s: DailyStatus, today: string): string {
 export function spendLine(e: ScopedExpense, s: DailyStatus): string {
   const amount = Number(e.amount);
   if (e.scope === "savings")
-    return `💰 ${label(e)} ${inr(amount)} — from savings, today's budget unchanged.`;
+    return `💰 ${label(e)} ${inr(amount)} from savings. Today's budget is unchanged.`;
   if (e.scope === "fixed" && e.dailyAmount === 0)
-    return `📌 ${label(e)} ${inr(amount)} — fixed cost, today's budget unchanged.`;
+    return `📌 ${label(e)} ${inr(amount)} is a fixed cost. Today's budget is unchanged.`;
 
   const head = `${label(e)} −${inr(e.dailyAmount)}`;
   const tail =
@@ -475,7 +475,7 @@ export function spendLine(e: ScopedExpense, s: DailyStatus): string {
     const days = s.todayBudget > 0 ? Math.round(amount / s.todayBudget) : null;
     line +=
       `\n\nThat's ${days ? `${days} days' worth` : "a big one"}. It's spread over the rest of the month` +
-      (s.tomorrowBudget !== null ? ` — about ${inr(s.tomorrowBudget)}/day from tomorrow.` : ".") +
+      (s.tomorrowBudget !== null ? `, about ${inr(s.tomorrowBudget)}/day from tomorrow.` : ".") +
       `\nPaid from savings instead? /fromsavings`;
   }
   return line;
@@ -502,7 +502,7 @@ export function morningPush(s: DailyStatus, yesterday: DayPoint | null): PushTex
     lines.push(
       diff >= 0
         ? `Yesterday: ${inr(diff)} under budget 👍`
-        : `Yesterday: ${inr(-diff)} over — spread across the days ahead.`,
+        : `Yesterday: ${inr(-diff)} over, spread across the days ahead.`,
     );
   }
   if (s.streak >= 2) lines.push(`🔥 ${s.streak}-day streak`);
@@ -524,8 +524,8 @@ export function eveningPush(s: DailyStatus): PushText {
   return {
     title:
       diff >= 0
-        ? `🌙 ${inr(s.todaySpent)} of ${inr(s.todayBudget)} — ${inr(diff)} under ✅`
-        : `🌙 ${inr(s.todaySpent)} of ${inr(s.todayBudget)} — ${inr(-diff)} over`,
+        ? `🌙 ${inr(s.todaySpent)} of ${inr(s.todayBudget)}, ${inr(diff)} under ✅`
+        : `🌙 ${inr(s.todaySpent)} of ${inr(s.todayBudget)}, ${inr(-diff)} over`,
     body: lines.join("\n"),
   };
 }
@@ -535,7 +535,7 @@ export function spendPush(e: ScopedExpense, s: DailyStatus): PushText & { bigSpe
   if (e.dailyAmount === 0)
     return {
       title: `${plainLabel(e)} ${inr(amount)}`,
-      body: e.scope === "savings" ? "From savings — today's budget unchanged." : "Fixed cost — today's budget unchanged.",
+      body: e.scope === "savings" ? "From savings. Today's budget is unchanged." : "Fixed cost. Today's budget is unchanged.",
       bigSpend: false,
     };
   const left =
@@ -546,7 +546,7 @@ export function spendPush(e: ScopedExpense, s: DailyStatus): PushText & { bigSpe
   return {
     title: `${plainLabel(e)} −${inr(e.dailyAmount)}`,
     body: big
-      ? `${left}. Spread over the rest of the month${s.tomorrowBudget !== null ? ` (≈${inr(s.tomorrowBudget)}/day)` : ""} — or mark it paid from savings.`
+      ? `${left}. Spread over the rest of the month${s.tomorrowBudget !== null ? ` (≈${inr(s.tomorrowBudget)}/day)` : ""}, or mark it paid from savings.`
       : left,
     bigSpend: big,
   };

@@ -29,8 +29,8 @@ const STRINGS = {
   expense: { en: "Expense", hi: "खर्चा" },
   income: { en: "Income", hi: "आमदनी" },
   smartPlaceholder: {
-    en: 'Type it like a text — "250 groceries at More"',
-    hi: 'जैसे मैसेज करते हैं — "250 सब्ज़ी" लिखें',
+    en: 'Type it like a text: "250 groceries at More"',
+    hi: 'जैसे मैसेज करते हैं, वैसे "250 सब्ज़ी" लिखें',
   },
   orFillIn: { en: "or fill it in", hi: "या नीचे भरें" },
   wherePlaceholder: {
@@ -73,8 +73,8 @@ const STRINGS = {
   editBudgets: { en: "Edit", hi: "बदलें" },
   overall: { en: "Overall", hi: "कुल" },
   budgetHint: {
-    en: "Cap a category (or everything) per month — the bot warns you at 80% and 100%.",
-    hi: "महीने की सीमा तय करें — 80% और 100% पर बॉट आगाह करेगा।",
+    en: "Cap a category (or everything) per month. You'll get a heads-up at 80% and 100%.",
+    hi: "महीने की सीमा तय करें। 80% और 100% पर आपको बताया जाएगा।",
   },
   monthlyCap: { en: "Monthly cap", hi: "मासिक सीमा" },
   remove: { en: "Remove", hi: "हटाएँ" },
@@ -97,8 +97,8 @@ const STRINGS = {
   addBill: { en: "Add bill", hi: "बिल जोड़ें" },
   editBill: { en: "Edit bill", hi: "बिल बदलें" },
   noBills: {
-    en: "Register your monthly bills once — electricity, water, credit card, rent. I'll remind you before they're due, and Pay now opens your UPI app with the amount filled in.",
-    hi: "अपने मासिक बिल एक बार जोड़ें — बिजली, पानी, क्रेडिट कार्ड, किराया। समय से पहले याद दिलाऊँगा, और 'अभी चुकाएँ' से UPI ऐप में रकम भरी मिलेगी।",
+    en: "Add your monthly bills once: electricity, water, credit card, rent. I'll remind you before they're due, and Pay now opens your UPI app with the amount filled in.",
+    hi: "अपने मासिक बिल एक बार जोड़ें: बिजली, पानी, क्रेडिट कार्ड, किराया। समय से पहले याद दिलाऊँगा, और 'अभी चुकाएँ' से UPI ऐप में रकम भरी मिलेगी।",
   },
   payNow: { en: "Pay now", hi: "अभी चुकाएँ" },
   markPaid: { en: "Mark paid", hi: "चुका दिया" },
@@ -128,8 +128,8 @@ const STRINGS = {
   didYouPay: { en: "Did the payment go through?", hi: "क्या भुगतान हो गया?" },
   notYet: { en: "Not yet", hi: "अभी नहीं" },
   openUpiApp: {
-    en: "No UPI ID saved — open your app to pay:",
-    hi: "UPI ID नहीं है — ऐप खोलकर चुकाएँ:",
+    en: "No UPI ID saved. Open your app to pay:",
+    hi: "UPI ID नहीं है। ऐप खोलकर चुकाएँ:",
   },
   suggested: { en: "Looks like a monthly bill", hi: "मासिक बिल लगता है" },
   addAsBill: { en: "Add as bill", hi: "बिल बनाएँ" },
@@ -148,8 +148,8 @@ const STRINGS = {
   autoFetch: { en: "Auto-fetch", hi: "अपने आप लाएँ" },
   manual: { en: "Manual", hi: "खुद भरें" },
   searchBiller: {
-    en: "Search biller — BSES, HDFC card, Airtel…",
-    hi: "बिलर खोजें — BSES, HDFC कार्ड, Airtel…",
+    en: "Search billers: BSES, HDFC card, Airtel…",
+    hi: "बिलर खोजें: BSES, HDFC कार्ड, Airtel…",
   },
   allCategories: { en: "All", hi: "सभी" },
   noBillers: { en: "No billers match that.", hi: "कोई बिलर नहीं मिला।" },
@@ -169,8 +169,8 @@ const STRINGS = {
   fetchFailed: { en: "Couldn't fetch", hi: "ला नहीं सके" },
   identifiers: { en: "Your identifiers", hi: "आपकी पहचान संख्या" },
   mockNote: {
-    en: "Demo billers until Bharat Connect onboarding completes — numbers ending 00 = no dues, 99 = not found.",
-    hi: "Bharat Connect जुड़ने तक डेमो बिलर — 00 पर खत्म = बकाया नहीं, 99 = नहीं मिला।",
+    en: "Demo billers until Bharat Connect is live. Numbers ending in 00 have no dues; 99 means not found.",
+    hi: "Bharat Connect जुड़ने तक डेमो बिलर। 00 पर खत्म = बकाया नहीं, 99 = नहीं मिला।",
   },
   // v7: bills detected from email / notifications
   foundInEmail: { en: "Found in your email", hi: "आपके ईमेल में मिला" },
@@ -191,7 +191,7 @@ const STRINGS = {
   gmailConnected: { en: "Gmail connected", hi: "Gmail जुड़ा है" },
   gmailBlurb: {
     en: "Read-only. The app looks for bill emails and never sends, labels or deletes anything.",
-    hi: "सिर्फ़ पढ़ने के लिए। ऐप बिल वाले ईमेल ढूँढता है — कुछ भेजता या मिटाता नहीं।",
+    hi: "सिर्फ़ पढ़ने के लिए। ऐप बिल वाले ईमेल ढूँढता है, कुछ भेजता या मिटाता नहीं।",
   },
   scanNow: { en: "Scan now", hi: "अभी देखें" },
   scanning: { en: "Scanning your inbox…", hi: "इनबॉक्स देख रहे हैं…" },
@@ -233,7 +233,7 @@ const STRINGS = {
   archiveAccount: { en: "Archive", hi: "हटाएँ" },
   noAccountsYet: {
     en: "Add your bank, cash and cards to see what you're actually worth.",
-    hi: "बैंक, नकद और कार्ड जोड़ें — तभी असली स्थिति दिखेगी।",
+    hi: "बैंक, नकद और कार्ड जोड़ें, तभी असली स्थिति दिखेगी।",
   },
   unassignedNote: {
     en: "not linked to an account yet",
@@ -244,8 +244,8 @@ const STRINGS = {
   fromAccount: { en: "From", hi: "से" },
   toAccount: { en: "To", hi: "तक" },
   transferNote: {
-    en: "Moving your own money isn't spending — it won't touch your totals.",
-    hi: "अपना पैसा इधर-उधर करना खर्चा नहीं है — कुल में नहीं जुड़ेगा।",
+    en: "Moving your own money isn't spending, so it won't touch your totals.",
+    hi: "अपना पैसा इधर-उधर करना खर्चा नहीं है, कुल में नहीं जुड़ेगा।",
   },
   cardPayment: { en: "Card payment", hi: "कार्ड भुगतान" },
   recordTransfer: { en: "Record transfer", hi: "ट्रांसफ़र दर्ज करें" },
@@ -262,8 +262,8 @@ const STRINGS = {
   billTip: { en: "Tip", hi: "टिप" },
   billTotal: { en: "Total", hi: "कुल" },
   billPartial: {
-    en: "The lines don't add up to the total — some may have been missed.",
-    hi: "लाइनें कुल से मेल नहीं खातीं — कुछ छूट गई होंगी।",
+    en: "The lines don't add up to the total. Some may have been missed.",
+    hi: "लाइनें कुल से मेल नहीं खातीं। कुछ छूट गई होंगी।",
   },
   // auto-capture (v9)
   autoCapture: {
@@ -281,8 +281,8 @@ const STRINGS = {
   // capture setup card (v15) — doubles as the Play "prominent disclosure"
   setupTitle: { en: "Track spending automatically", hi: "खर्चे अपने-आप ट्रैक करें" },
   setupDisclosure: {
-    en: "To log payments for you, this app reads notifications from your SMS app, bank apps and UPI apps — only ones that mention money being debited or credited. The amount, merchant and balance are sent securely to your account to update your budget. Messages containing OTPs or codes are skipped on your phone and never sent. Other notifications (chats, email) are ignored.",
-    hi: "आपके पेमेंट दर्ज करने के लिए यह ऐप SMS, बैंक और UPI ऐप्स की सूचनाएँ पढ़ता है — सिर्फ़ वे जिनमें पैसे कटने या आने की बात हो। रकम, दुकान और बैलेंस आपके खाते में सुरक्षित भेजे जाते हैं। OTP या कोड वाले मैसेज फ़ोन पर ही छोड़ दिए जाते हैं, कभी भेजे नहीं जाते। बाकी सूचनाएँ (चैट, ईमेल) अनदेखी की जाती हैं।",
+    en: "To log payments for you, this app reads notifications from your SMS app, bank apps and UPI apps, and only the ones that mention money being debited or credited. The amount, merchant and balance are sent securely to your account to update your budget. Messages containing OTPs or codes are skipped on your phone and never sent. Other notifications (chats, email) are ignored.",
+    hi: "आपके पेमेंट दर्ज करने के लिए यह ऐप SMS, बैंक और UPI ऐप्स की सूचनाएँ पढ़ता है, सिर्फ़ वे जिनमें पैसे कटने या आने की बात हो। रकम, दुकान और बैलेंस आपके खाते में सुरक्षित भेजे जाते हैं। OTP या कोड वाले मैसेज फ़ोन पर ही छोड़ दिए जाते हैं, कभी भेजे नहीं जाते। बाकी सूचनाएँ (चैट, ईमेल) अनदेखी की जाती हैं।",
   },
   setupStep1: { en: "Allow notification access", hi: "सूचना पढ़ने की अनुमति दें" },
   setupStep2: { en: "Let it run in the background", hi: "बैकग्राउंड में चलने दें" },
@@ -309,13 +309,13 @@ const STRINGS = {
   captureSkipped: { en: "already known", hi: "पहले से दर्ज" },
   captureNothing: { en: "Nothing new to capture.", hi: "कुछ नया नहीं मिला।" },
   captureFailed: {
-    en: "Couldn't upload — kept for the next try.",
-    hi: "अपलोड नहीं हुआ — अगली बार फिर कोशिश होगी।",
+    en: "Couldn't upload. Kept for the next try.",
+    hi: "अपलोड नहीं हुआ। अगली बार फिर कोशिश होगी।",
   },
   bankSays: { en: "Bank says", hi: "बैंक के अनुसार" },
   checkDrift: {
-    en: "off from what's logged — some spending wasn't captured",
-    hi: "दर्ज रकम से अंतर — कुछ खर्चे दर्ज नहीं हुए",
+    en: "off from what's logged, so some spending wasn't captured",
+    hi: "दर्ज रकम से अंतर, कुछ खर्चे दर्ज नहीं हुए",
   },
   // daily budget (v14)
   dailyBudget: { en: "Daily budget", hi: "रोज़ का बजट" },
@@ -326,7 +326,7 @@ const STRINGS = {
   editPlan: { en: "Plan", hi: "प्लान" },
   dailyHint: {
     en: "Tell the app your monthly income and fixed costs, and it turns them into one number to spend each day.",
-    hi: "अपनी महीने की आमदनी और तय खर्चे बताइए — ऐप उन्हें रोज़ खर्च करने लायक एक रकम में बदल देगा।",
+    hi: "अपनी महीने की आमदनी और तय खर्चे बताइए। ऐप उन्हें रोज़ खर्च करने लायक एक रकम में बदल देगा।",
   },
   everydayMoney: { en: "Everyday money left", hi: "रोज़मर्रा के लिए बचे" },
   daysToGo: { en: "days to go", hi: "दिन बाकी" },
@@ -343,17 +343,17 @@ const STRINGS = {
   deleteAccount: { en: "Delete account", hi: "खाता हटाएँ" },
   deleteConfirm: { en: "Yes, delete everything", hi: "हाँ, सब हटा दें" },
   deleteWarning: {
-    en: "This permanently deletes your account and all your expenses, income, plan, goals and notifications. It can't be undone — export first if you want a copy.",
-    hi: "यह आपका खाता और सारे खर्चे, आमदनी, प्लान, लक्ष्य और सूचनाएँ हमेशा के लिए हटा देगा। वापस नहीं होगा — कॉपी चाहिए तो पहले एक्सपोर्ट करें।",
+    en: "This permanently deletes your account and all your expenses, income, plan, goals and notifications. It can't be undone, so export first if you want a copy.",
+    hi: "यह आपका खाता और सारे खर्चे, आमदनी, प्लान, लक्ष्य और सूचनाएँ हमेशा के लिए हटा देगा। वापस नहीं होगा, इसलिए कॉपी चाहिए तो पहले एक्सपोर्ट करें।",
   },
-  exportFailed: { en: "Couldn't export — try again.", hi: "एक्सपोर्ट नहीं हुआ — फिर कोशिश करें।" },
-  deleteFailed: { en: "Couldn't delete — try again.", hi: "हटाया नहीं जा सका — फिर कोशिश करें।" },
+  exportFailed: { en: "Couldn't export. Try again.", hi: "एक्सपोर्ट नहीं हुआ। फिर कोशिश करें।" },
+  deleteFailed: { en: "Couldn't delete. Try again.", hi: "हटाया नहीं जा सका। फिर कोशिश करें।" },
   // goals (v17)
   goals: { en: "Goals", hi: "लक्ष्य" },
   addGoal: { en: "Add a goal", hi: "लक्ष्य जोड़ें" },
   goalsHint: {
-    en: "Saving for a trip, a phone, an emergency fund? Set a goal — its monthly share comes off the top, and it's credited automatically each month.",
-    hi: "ट्रिप, फ़ोन, इमरजेंसी फ़ंड के लिए बचत? लक्ष्य बनाइए — हर महीने का हिस्सा पहले अलग होता है और अपने-आप जुड़ता है।",
+    en: "Saving for a trip, a phone, an emergency fund? Set a goal. Its monthly share is set aside first and added to the goal automatically each month.",
+    hi: "ट्रिप, फ़ोन, इमरजेंसी फ़ंड के लिए बचत? लक्ष्य बनाइए। हर महीने का हिस्सा पहले अलग होता है और अपने-आप जुड़ता है।",
   },
   goalName: { en: "What for? e.g. Goa trip", hi: "किसके लिए? जैसे गोवा ट्रिप" },
   goalTarget: { en: "How much", hi: "कितना" },
@@ -371,8 +371,8 @@ const STRINGS = {
   },
   fixedCosts: { en: "Fixed monthly costs", hi: "हर महीने के तय खर्चे" },
   fixedHint: {
-    en: "Rent, EMI, SIP, subscriptions — kept out of the daily number.",
-    hi: "किराया, EMI, SIP, सब्सक्रिप्शन — रोज़ के बजट में नहीं गिने जाते।",
+    en: "Rent, EMI, SIP and subscriptions stay out of the daily number.",
+    hi: "किराया, EMI, SIP और सब्सक्रिप्शन रोज़ के बजट में नहीं गिने जाते।",
   },
   suggestedFixed: { en: "Looks like a fixed cost", hi: "तय खर्चा लगता है" },
   costName: { en: "Name, e.g. Rent", hi: "नाम, जैसे किराया" },

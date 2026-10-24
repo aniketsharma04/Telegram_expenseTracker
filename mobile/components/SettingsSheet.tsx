@@ -142,7 +142,7 @@ export default function SettingsSheet({
     if (!res) {
       // An expired consent fails here too, so refresh either way: /api/data
       // comes back with needs_reauth and this card turns into "Reconnect".
-      setNote("Scan failed — try again.");
+      setNote("Scan failed. Try again.");
       onChanged?.();
       return;
     }

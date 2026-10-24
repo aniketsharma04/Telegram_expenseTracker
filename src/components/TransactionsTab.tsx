@@ -76,7 +76,7 @@ export default function TransactionsTab({
 
       {groups.length === 0 && (
         <div className="card">
-          <div className="empty-state">Nothing in this period — text the bot an expense and it shows up here.</div>
+          <div className="empty-state">Nothing in this period yet. Payments appear here as soon as they're captured.</div>
         </div>
       )}
 

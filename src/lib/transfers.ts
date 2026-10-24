@@ -105,7 +105,7 @@ export function detectTransferIntent(
       kind: "card_payment",
       fromAccountId: source?.id ?? null,
       toAccountId: target.id,
-      reason: `"${phrase}" — settling a card, not new spending`,
+      reason: `"${phrase}": settling a card, not new spending`,
     };
   }
 
@@ -116,7 +116,7 @@ export function detectTransferIntent(
       kind: "transfer",
       fromAccountId: source?.id ?? null,
       toAccountId: cash.id,
-      reason: `"${phrase}" — cash out of an account, still your money`,
+      reason: `"${phrase}": cash out of an account, still your money`,
     };
   }
 

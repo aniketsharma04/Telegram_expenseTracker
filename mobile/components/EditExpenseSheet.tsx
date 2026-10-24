@@ -93,16 +93,16 @@ export default function EditExpenseSheet({
       } else {
         const result = await patchExpense(token, expense.id, patch);
         if (result === "unauthorized") {
-          setError("Session expired — get a fresh /app code from the bot.");
+          setError("Session expired. Get a fresh /app code from the bot.");
         } else if (!result) {
-          setError("Couldn't save the changes — try again.");
+          setError("Couldn't save the changes. Try again.");
         } else {
           onChanged();
           onClose();
         }
       }
     } catch {
-      setError("Couldn't reach the server — check your connection.");
+      setError("Couldn't reach the server. Check your connection.");
     }
     setBusy(false);
   };
@@ -120,7 +120,7 @@ export default function EditExpenseSheet({
         setError("Couldn't delete that entry.");
       }
     } catch {
-      setError("Couldn't reach the server — check your connection.");
+      setError("Couldn't reach the server. Check your connection.");
     }
     setBusy(false);
   };

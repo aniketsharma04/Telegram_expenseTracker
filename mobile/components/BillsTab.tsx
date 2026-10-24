@@ -110,7 +110,7 @@ export default function BillsTab({
         await Linking.openURL(bill.upiLink);
         setPending(bill);
       } catch {
-        setError("No UPI app could open that link — is a UPI app installed?");
+        setError("No UPI app could open that link. Is a UPI app installed?");
       }
       return;
     }
@@ -136,7 +136,7 @@ export default function BillsTab({
     setError(null);
     const r = await refreshBillFetch(token, bill.id).catch(() => null);
     setBusyId(null);
-    if (!r) setError(`${t("fetchFailed")} — try again in a minute.`);
+    if (!r) setError(`${t("fetchFailed")}. Try again in a minute.`);
     else if (!r.fetch.ok && r.fetch.code !== "no_dues")
       setError(`${t("fetchFailed")}: ${r.fetch.error}`);
     onChanged();
@@ -205,7 +205,7 @@ export default function BillsTab({
       {pending && !pending.paidThisMonth && (
         <Card p={p} style={{ borderColor: p.accent }}>
           <Text style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}>
-            {KIND_ICON[pending.kind]} {pending.name} — {t("didYouPay")}
+            {KIND_ICON[pending.kind]} {pending.name}: {t("didYouPay")}
           </Text>
           <View style={[styles.row, { marginTop: 10 }]}>
             <Pressable
@@ -542,7 +542,7 @@ function MarkPaidSheet({
     const result = await payBill(token, bill.id, amt, today).catch(() => null);
     setBusy(false);
     if (result === "unauthorized")
-      setError("Session expired — get a fresh /app code from the bot.");
+      setError("Session expired. Get a fresh /app code from the bot.");
     else if (!result) setError("Couldn't record that payment.");
     else {
       onChanged();
@@ -566,7 +566,7 @@ function MarkPaidSheet({
         >
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
           <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
-            {KIND_ICON[bill.kind]} {bill.name} — {t("markPaid")}
+            {KIND_ICON[bill.kind]} {bill.name}: {t("markPaid")}
           </Text>
           {alerts.length > 0 ? (
             <>

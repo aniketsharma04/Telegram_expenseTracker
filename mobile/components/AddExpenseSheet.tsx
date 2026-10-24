@@ -122,14 +122,14 @@ export default function AddExpenseSheet({
   ) => {
     if (result === "unauthorized") {
       setError(
-        "Session expired — log in again with a fresh /app code from the bot.",
+        "Session expired. Log in again with a fresh /app code from the bot.",
       );
       return;
     }
     if (result.status === "need_amount") {
       setError(
         result.question ??
-          'I couldn\'t find an amount in that — include a number, like "250 groceries".',
+          'I couldn\'t find an amount in that. Include a number, like "250 groceries".',
       );
       return;
     }
@@ -173,7 +173,7 @@ export default function AddExpenseSheet({
       await fn();
     } catch {
       setError(
-        "Couldn't reach the server — check your connection and try again.",
+        "Couldn't reach the server. Check your connection and try again.",
       );
     }
     setBusy(false);
@@ -203,11 +203,11 @@ export default function AddExpenseSheet({
         });
         if (result === "unauthorized") {
           setError(
-            "Session expired — log in again with a fresh /app code from the bot.",
+            "Session expired. Log in again with a fresh /app code from the bot.",
           );
         } else if (!result) {
           setError(
-            "Couldn't save that — income tracking may not be enabled yet.",
+            "Couldn't save that. Income tracking may not be enabled yet.",
           );
         } else {
           setSuccess({
@@ -254,7 +254,7 @@ export default function AddExpenseSheet({
       await recorder.stop();
       const uri = recorder.uri;
       if (!uri) {
-        setError("Recording failed — try again.");
+        setError("Recording failed. Try again.");
         return;
       }
       const result = await uploadMedia(token, "voice", {
@@ -306,7 +306,7 @@ export default function AddExpenseSheet({
         setUndone(true);
         onLogged();
       } else {
-        setError("Couldn't undo — you can remove it from Telegram with /undo.");
+        setError("Couldn't undo. You can remove it from Telegram with /undo.");
       }
     });
 
@@ -372,7 +372,7 @@ export default function AddExpenseSheet({
                     },
                   ]}
                 >
-                  🤔 Not fully sure about the category — tap the entry in
+                  🤔 Not fully sure about the category. Tap the entry in
                   Transactions to fix it.
                 </Text>
               )}

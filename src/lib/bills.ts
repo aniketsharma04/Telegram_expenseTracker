@@ -569,7 +569,7 @@ export function reminderText(s: BillStatus): string | null {
   if (s.daysUntil === 0)
     return `🧾 ${s.name}${amt} is due today. Open the app → Bills → Pay now.`;
   if (s.daysUntil === -2)
-    return `⏰ ${s.name}${amt} is 2 days overdue — pay it to avoid late fees.`;
+    return `⏰ ${s.name}${amt} is 2 days overdue. Pay it to avoid late fees.`;
   return null;
 }
 

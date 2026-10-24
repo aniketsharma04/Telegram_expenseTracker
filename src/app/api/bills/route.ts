@@ -43,7 +43,7 @@ async function parseBill(
   if (body.due_day !== undefined || (!partial && !body.biller_id)) {
     const d = Number(body.due_day);
     if (!Number.isInteger(d) || d < 1 || d > 31)
-      return { error: "due_day must be 1–31" };
+      return { error: "due_day must be between 1 and 31" };
     input.due_day = d;
   } else if (!partial) input.due_day = 1; // overwritten by the fetched due date
   if (body.amount !== undefined) {

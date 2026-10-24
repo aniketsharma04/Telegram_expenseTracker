@@ -85,7 +85,7 @@ export async function exchangeCode(code: string): Promise<{
   });
   if (!tok.refresh_token)
     throw new Error(
-      "Google didn't return a refresh token — revoke the app at myaccount.google.com/permissions and connect again",
+      "Google didn't return a refresh token. Revoke the app at myaccount.google.com/permissions and connect again",
     );
   const profile = await gmailGet<{ emailAddress?: string }>(
     tok.access_token!,

@@ -207,7 +207,7 @@ function PlanSheet({
   const load = async () => {
     const res = await fetchPlan(token).catch(() => null);
     if (!res) {
-      setError("Couldn't load your plan — check your connection.");
+      setError("Couldn't load your plan. Check your connection.");
     } else {
       setPlan(res.plan);
       setDaily(res.daily);
@@ -230,7 +230,7 @@ function PlanSheet({
     setBusy(true);
     setError(null);
     const ok = await work().catch(() => false);
-    if (!ok) setError("Couldn't save — try again.");
+    if (!ok) setError("Couldn't save. Try again.");
     await load();
     onChanged();
     setBusy(false);

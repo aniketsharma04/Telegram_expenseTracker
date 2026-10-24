@@ -170,7 +170,7 @@ export default function App() {
             </button>
           ))}
         </nav>
-        <a className="icon-btn" href="/api/auth/logout" title={`Signed in as ${data.user.name} — log out`}>
+        <a className="icon-btn" href="/api/auth/logout" title={`Signed in as ${data.user.name}. Log out`}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 4h4v16h-4" />
             <path d="M10 8l-4 4 4 4M6 12h9" />

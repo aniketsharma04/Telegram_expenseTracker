@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         status: "need_amount",
         question:
-          "Couldn't make out that recording — try again closer to the mic, or type it.",
+          "Couldn't make out that recording. Try again closer to the mic, or type it.",
         alerts: [],
       });
     }
@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
       status: "need_amount",
       question:
         parsed?.clarifying_question ??
-        "Couldn't read a total from that photo — try a clearer shot, or type the amount.",
+        "Couldn't read a total from that photo. Try a clearer shot, or type the amount.",
       alerts: [],
     });
   }

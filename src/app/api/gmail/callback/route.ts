@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
     );
     return page(
       "Gmail connected",
-      `${email} is linked. Bills found in your inbox will show up under Bills — you confirm each one before it's added.`,
+      `${email} is linked. Bills found in your inbox will show up under Bills, and you confirm each one before it's added.`,
       true,
     );
   } catch (err) {

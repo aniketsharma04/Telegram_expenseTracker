@@ -254,7 +254,7 @@ export async function redeemLinkCode(
     if (Date.parse(row.expires_at) < Date.now())
       return {
         ok: false,
-        reason: "That code has expired — generate a new one in the app.",
+        reason: "That code has expired. Generate a new one in the app.",
       };
 
     // A chat can only belong to one account.
@@ -273,7 +273,7 @@ export async function redeemLinkCode(
     return { ok: true, userId: row.user_id };
   } catch (err) {
     console.error("redeemLinkCode failed", err);
-    return { ok: false, reason: "Couldn't link right now — try again." };
+    return { ok: false, reason: "Couldn't link right now. Try again." };
   }
 }
 

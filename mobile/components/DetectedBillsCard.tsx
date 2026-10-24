@@ -81,7 +81,7 @@ export default function DetectedBillsCard({
     );
     setBusyId(null);
     if (!res) {
-      setError("Couldn't add that — try again.");
+      setError("Couldn't add that. Try again.");
       return;
     }
     onChanged();
@@ -93,7 +93,7 @@ export default function DetectedBillsCard({
     const ok = await dismissDetected(token, d.id);
     setBusyId(null);
     if (!ok) {
-      setError("Couldn't dismiss that — try again.");
+      setError("Couldn't dismiss that. Try again.");
       return;
     }
     onChanged();

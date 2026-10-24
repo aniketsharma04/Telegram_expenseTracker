@@ -130,9 +130,9 @@ export async function POST(req: NextRequest) {
 function verdictMessage(reason: string): string {
   switch (reason) {
     case "expired":
-      return "That code has expired — ask for a new one.";
+      return "That code has expired. Ask for a new one.";
     case "used":
-      return "That code has already been used — ask for a new one.";
+      return "That code has already been used. Ask for a new one.";
     case "too_many_attempts":
       return "Too many wrong tries. Ask for a new code.";
     default:
