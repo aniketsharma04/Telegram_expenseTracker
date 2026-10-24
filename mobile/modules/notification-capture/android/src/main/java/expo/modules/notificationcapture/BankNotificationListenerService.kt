@@ -15,9 +15,9 @@ import org.json.JSONObject
  *   2. its text must look like money moving
  *   3. ongoing and group-summary notifications are skipped
  *
- * Anything that survives is queued locally. The service never touches the
- * network — JavaScript drains the queue and uploads it with the user's own
- * session token.
+ * Anything that survives is queued locally, then CaptureUploadWorker sends it
+ * to the app's own API with the user's session token (v15). The listener
+ * itself never touches the network.
  */
 class BankNotificationListenerService : NotificationListenerService() {
 
@@ -61,6 +61,18 @@ class BankNotificationListenerService : NotificationListenerService() {
     }
     CaptureStore.enqueue(applicationContext, item)
     NotificationCaptureModule.notifyCaptured(CaptureStore.pendingCount(applicationContext))
+    // Send it now, not when the app is next opened — the live daily budget depends on it.
+    CaptureUploadWorker.schedule(applicationContext)
+  }
+
+  /** Android (re)bound the listener — flush anything captured before it went away. */
+  override fun onListenerConnected() {
+    super.onListenerConnected()
+    try {
+      if (CaptureStore.pendingCount(applicationContext) > 0) CaptureUploadWorker.schedule(applicationContext)
+    } catch (e: Exception) {
+      android.util.Log.w(TAG, "flush on connect failed", e)
+    }
   }
 
   companion object {

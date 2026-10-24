@@ -43,8 +43,6 @@ export interface BankTxn {
  * far worse than missing one.
  */
 const NOT_A_TRANSACTION = [
-  /\botp\b/i,
-  /one[- ]time password/i,
   /\bwill be debited\b/i,
   /\bwill be deducted\b/i,
   /\bdue\b.{0,20}\bon\b/i,
@@ -101,6 +99,25 @@ const REFERENCE_PATTERNS = [
 ];
 
 const num = (raw: string): number => Number(raw.replace(/,/g, ""));
+
+const CODE_WORD = /\b(?:otp|one[- ]time password|verification code|passcode)\b/i;
+
+/**
+ * An OTP message, not a payment: a code word *and* a 4–8 digit code. Many
+ * real debit alerts end "never share your OTP" — those must still count, so
+ * the word alone isn't enough. Amounts, dates, masked accounts and long
+ * reference numbers are removed before looking for the code.
+ * Mirrors CaptureStore.carriesCode on the phone, which drops these unsent.
+ */
+export function carriesCode(text: string): boolean {
+  if (!CODE_WORD.test(text)) return false;
+  const rest = text
+    .replace(/(?:rs\.?|inr|₹)\s*[\d,]+(?:\.\d+)?/gi, " ")
+    .replace(/\b\d{1,4}[-/.]\d{1,2}[-/.]\d{2,4}\b/g, " ")
+    .replace(/(?:a\/c|acct|account|ac|card)\s*(?:no\.?)?\s*[xX*•]*\d{3,6}\b/gi, " ")
+    .replace(/\b\d{9,}\b/g, " ");
+  return /\b\d{4,8}\b/.test(rest);
+}
 
 /** Everything after the counterparty that is noise rather than a name. */
 // Noise must start a word (or follow punctuation) — otherwise "AMAZON" loses its "ON".
@@ -171,6 +188,7 @@ export function parseBankMessage(text: string): BankTxn | null {
   const body = text.replace(/\s+/g, " ").trim();
 
   for (const pattern of NOT_A_TRANSACTION) if (pattern.test(body)) return null;
+  if (carriesCode(body)) return null;
 
   const debit = DEBIT_WORDS.test(body) || PAYMENT_DONE.test(body);
   const credit = CREDIT_WORDS.test(body);

@@ -33,8 +33,9 @@ import { Avatar } from "./components/ui";
 import { Account, ApiData, Expense, fetchData } from "./lib/api";
 import { DailyBudgetCard } from "./components/DailyBudgetCard";
 import { InboxBell, InboxSheet, PushPromptCard } from "./components/Inbox";
+import { CaptureSetupCard } from "./components/CaptureSetupCard";
 import { PushState, registerForPush, unregisterPush } from "./lib/push";
-import { syncCaptures } from "./lib/capture";
+import { connectCapture, syncCaptures } from "./lib/capture";
 import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
 import { memberColor, usePalette } from "./lib/theme";
 
@@ -119,6 +120,8 @@ function AppInner() {
   // tokens rotate). Never prompts here; the prompt card asks with a reason.
   useEffect(() => {
     if (!token) return;
+    // Captures upload in the background as this user from now on.
+    connectCapture(token);
     registerForPush(token, { ask: false }).then(setPushState);
     AsyncStorage.getItem(PUSH_PROMPT_DISMISSED_KEY).then((v) =>
       setPushPromptDismissed(v === "1"),
@@ -183,6 +186,7 @@ function AppInner() {
   const logout = useCallback(async () => {
     // This phone must stop getting the old account's notices.
     if (token) await unregisterPush(token);
+    connectCapture(null);
     await AsyncStorage.removeItem(TOKEN_KEY);
     setToken(null);
     setData(null);
@@ -463,6 +467,7 @@ function AppInner() {
               topCard={
                 scope === "personal" ? (
                   <>
+                    <CaptureSetupCard p={p} token={token} />
                     {!pushPromptDismissed && (
                       <PushPromptCard
                         p={p}

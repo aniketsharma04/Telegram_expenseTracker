@@ -231,3 +231,18 @@ describe("parseBankMessage — merchant extraction (v15 capture hardening)", () 
     expect(parseBankMessage("Payment of Rs 600.00 to swiggy.stores@axisbank has failed")).toBeNull();
   });
 });
+
+describe("parseBankMessage — OTP handling", () => {
+  it("drops a message that carries a code", () => {
+    expect(parseBankMessage("Your OTP for transaction of Rs.1500 at AMAZON is 482913. Do not share")).toBeNull();
+    expect(parseBankMessage("482913 is your one-time password for Rs.2,000 debit at FLIPKART")).toBeNull();
+  });
+
+  it("keeps a real payment whose footer merely mentions OTPs", () => {
+    const txn = parseBankMessage(
+      "Rs.1500.00 debited from a/c XX1234 on 24-10-26 to VPA zepto@ybl. Never share your OTP or PIN with anyone. Call 18002586161",
+    );
+    expect(txn?.amount).toBe(1500);
+    expect(txn?.counterparty).toBe("zepto@ybl");
+  });
+});

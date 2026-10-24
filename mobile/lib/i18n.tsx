@@ -275,9 +275,29 @@ const STRINGS = {
     hi: "बैंक के SMS अपने-आप पढ़े जाएँगे, जिससे खर्चे खुद दर्ज हों और बैलेंस सही रहे।",
   },
   captureOn: {
-    en: "On. Bank alerts are captured and uploaded when you open the app.",
-    hi: "चालू है। ऐप खोलने पर बैंक अलर्ट दर्ज हो जाते हैं।",
+    en: "On. Payments are captured and counted as they happen.",
+    hi: "चालू है। पेमेंट होते ही दर्ज और गिने जाते हैं।",
   },
+  // capture setup card (v15) — doubles as the Play "prominent disclosure"
+  setupTitle: { en: "Track spending automatically", hi: "खर्चे अपने-आप ट्रैक करें" },
+  setupDisclosure: {
+    en: "To log payments for you, this app reads notifications from your SMS app, bank apps and UPI apps — only ones that mention money being debited or credited. The amount, merchant and balance are sent securely to your account to update your budget. Messages containing OTPs or codes are skipped on your phone and never sent. Other notifications (chats, email) are ignored.",
+    hi: "आपके पेमेंट दर्ज करने के लिए यह ऐप SMS, बैंक और UPI ऐप्स की सूचनाएँ पढ़ता है — सिर्फ़ वे जिनमें पैसे कटने या आने की बात हो। रकम, दुकान और बैलेंस आपके खाते में सुरक्षित भेजे जाते हैं। OTP या कोड वाले मैसेज फ़ोन पर ही छोड़ दिए जाते हैं, कभी भेजे नहीं जाते। बाकी सूचनाएँ (चैट, ईमेल) अनदेखी की जाती हैं।",
+  },
+  setupStep1: { en: "Allow notification access", hi: "सूचना पढ़ने की अनुमति दें" },
+  setupStep2: { en: "Let it run in the background", hi: "बैकग्राउंड में चलने दें" },
+  setupStep2Hint: {
+    en: "Choose “All apps”, find Expense Tracker, set it to “Don't optimise”.",
+    hi: "“सभी ऐप्स” चुनें, Expense Tracker ढूँढें, “Don't optimise” चुनें।",
+  },
+  setupStep3: { en: "Turn on Autostart", hi: "ऑटोस्टार्ट चालू करें" },
+  setupStep3Hint: {
+    en: "Your phone stops apps it thinks are idle. In app info, turn on Autostart (or allow background activity).",
+    hi: "आपका फ़ोन बंद पड़े ऐप रोक देता है। ऐप इंफ़ो में ऑटोस्टार्ट (या बैकग्राउंड गतिविधि) चालू करें।",
+  },
+  agreeTurnOn: { en: "Agree & turn on", hi: "सहमत हूँ, चालू करें" },
+  open: { en: "Open", hi: "खोलें" },
+  setupDone: { en: "Done", hi: "हो गया" },
   grantAccess: { en: "Grant access", hi: "अनुमति दें" },
   grantHint: {
     en: 'Find "Expense Tracker" in the list and turn it on, then come back.',

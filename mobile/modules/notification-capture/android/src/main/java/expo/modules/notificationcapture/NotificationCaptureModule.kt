@@ -1,8 +1,12 @@
 package expo.modules.notificationcapture
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.PowerManager
 import android.provider.Settings
+import android.service.notification.NotificationListenerService
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import org.json.JSONArray
@@ -70,6 +74,53 @@ class NotificationCaptureModule : Module() {
 
     Function("setWatchedPackages") { packages: List<String> ->
       CaptureStore.setWatchedPackages(context, packages)
+    }
+
+    /**
+     * Lets the background uploader post as the signed-in user (v15). Called on
+     * every app start with the current session, and with null on logout so a
+     * signed-out phone uploads nothing.
+     */
+    Function("setUploadConfig") { apiBase: String, session: String? ->
+      CaptureStore.setUploadConfig(context, apiBase, session)
+      if (!session.isNullOrBlank() && CaptureStore.pendingCount(context) > 0) {
+        CaptureUploadWorker.schedule(context)
+      }
+    }
+
+    /**
+     * Android sometimes leaves a granted listener unbound — notably after an
+     * app update — and it then hears nothing. Asking for a rebind is cheap.
+     */
+    Function("ensureListening") {
+      try {
+        NotificationListenerService.requestRebind(
+          ComponentName(context, BankNotificationListenerService::class.java)
+        )
+        true
+      } catch (e: Exception) {
+        false
+      }
+    }
+
+    /** True when Android may stop the app in the background to save battery. */
+    Function("isBatteryOptimized") {
+      val power = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+      !power.isIgnoringBatteryOptimizations(context.packageName)
+    }
+
+    /** The system list where the user can exempt this app (no special permission needed). */
+    Function("openBatterySettings") {
+      val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      context.startActivity(intent)
+    }
+
+    /** This app's own settings page — where Xiaomi, Oppo and Vivo put "Autostart". */
+    Function("openAppSettings") {
+      val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      context.startActivity(intent)
     }
   }
 

@@ -4,10 +4,10 @@ import { Platform } from "react-native";
 /**
  * Notification capture — the Android half of auto-logging.
  *
- * The native listener queues bank alerts locally; this module is how the app
- * checks permission, sends the user to grant it, and drains what's waiting.
- * Nothing leaves the device from native code — the upload happens in
- * lib/capture.ts with the user's session token.
+ * The native listener queues bank alerts locally and uploads them in the
+ * background to the app's own API with the user's session token (v15); this
+ * module checks permission, sends the user to grant it, hands the uploader
+ * the session, and drains whatever is still waiting when the app opens.
  */
 
 export interface Capture {
@@ -32,6 +32,12 @@ declare class NotificationCaptureModule extends NativeModule<CaptureEvents> {
   drain(): Capture[];
   getWatchedPackages(): string[];
   setWatchedPackages(packages: string[]): void;
+  // v15 — absent in builds made before; every wrapper below copes with that.
+  setUploadConfig?(apiBase: string, session: string | null): void;
+  ensureListening?(): boolean;
+  isBatteryOptimized?(): boolean;
+  openBatterySettings?(): void;
+  openAppSettings?(): void;
 }
 
 /**
@@ -92,6 +98,52 @@ export function watchedPackages(): string[] {
 
 export function setWatchedPackages(packages: string[]): void {
   native?.setWatchedPackages(packages);
+}
+
+/**
+ * Let the native uploader send captures in the background as this user (v15);
+ * null on logout. Without this, captures wait for the app to be opened.
+ */
+export function setUploadConfig(apiBase: string, session: string | null): void {
+  try {
+    native?.setUploadConfig?.(apiBase, session);
+  } catch {
+    // Older build — the foreground drain still uploads.
+  }
+}
+
+/** Ask Android to re-bind a listener it may have dropped (e.g. after an update). */
+export function ensureListening(): void {
+  try {
+    native?.ensureListening?.();
+  } catch {
+    // Best effort.
+  }
+}
+
+/** True when Android may stop capture in the background to save battery. */
+export function isBatteryOptimized(): boolean {
+  try {
+    return native?.isBatteryOptimized?.() ?? false;
+  } catch {
+    return false;
+  }
+}
+
+export function openBatterySettings(): void {
+  try {
+    native?.openBatterySettings?.();
+  } catch {
+    native?.openAppSettings?.();
+  }
+}
+
+export function openAppSettings(): void {
+  try {
+    native?.openAppSettings?.();
+  } catch {
+    // Nothing better to offer.
+  }
 }
 
 /** Fires when a capture lands while the app is open. Returns an unsubscribe. */

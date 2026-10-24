@@ -15,3 +15,9 @@ android {
     versionName '1.0.0'
   }
 }
+
+dependencies {
+  // Background upload of captures (CaptureUploadWorker): runs when there's a
+  // network, retries with backoff, survives the app being killed.
+  implementation "androidx.work:work-runtime:2.10.0"
+}
