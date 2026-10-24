@@ -4,11 +4,16 @@ import {
   Linking,
   Modal,
   Pressable,
+  ScrollView,
+  Share,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import {
+  API_BASE,
+  deleteMyAccount,
+  exportMyData,
   GmailStatus,
   gmailConnectUrl,
   gmailDisconnect,
@@ -27,6 +32,7 @@ export default function SettingsSheet({
   token,
   gmail,
   onChanged,
+  onAccountDeleted,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -34,6 +40,8 @@ export default function SettingsSheet({
   token?: string;
   gmail?: GmailStatus;
   onChanged?: () => void;
+  /** Called once the account is gone — the app signs out. */
+  onAccountDeleted?: () => void;
 }) {
   const { t, fs, lang, scale, setLang, setLarge } = useSettings();
   const [busy, setBusy] = useState(false);
@@ -47,7 +55,43 @@ export default function SettingsSheet({
 
   useEffect(() => {
     if (visible) setCapture(captureStatus());
+    if (!visible) setConfirmDelete(false);
   }, [visible]);
+
+  // Your data: export, privacy policy, delete (Play requires in-app deletion).
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [dataBusy, setDataBusy] = useState(false);
+  const [dataNote, setDataNote] = useState<string | null>(null);
+
+  const exportData = async () => {
+    if (!token || dataBusy) return;
+    setDataBusy(true);
+    setDataNote(null);
+    const data = await exportMyData(token);
+    setDataBusy(false);
+    if (!data) {
+      setDataNote(t("exportFailed"));
+      return;
+    }
+    await Share.share({ title: "expense-tracker-export.json", message: JSON.stringify(data, null, 2) }).catch(() => {});
+  };
+
+  const deleteAccount = async () => {
+    if (!token || dataBusy) return;
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      return;
+    }
+    setDataBusy(true);
+    const ok = await deleteMyAccount(token);
+    setDataBusy(false);
+    if (!ok) {
+      setDataNote(t("deleteFailed"));
+      return;
+    }
+    onClose();
+    onAccountDeleted?.();
+  };
 
   const grantCapture = () => {
     openCaptureSettings();
@@ -161,6 +205,7 @@ export default function SettingsSheet({
           ]}
         >
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
+          <ScrollView contentContainerStyle={{ gap: 16 }} keyboardShouldPersistTaps="handled">
           <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
             ⚙️ {t("settings")}
           </Text>
@@ -378,6 +423,49 @@ export default function SettingsSheet({
             </View>
           )}
 
+          {token && (
+            <View style={[styles.block, { borderColor: p.grid, gap: 10 }]}>
+              <Text style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}>
+                🔒 {t("yourData")}
+              </Text>
+              <View style={styles.row}>
+                <Pressable
+                  style={[styles.smallBtn, { borderWidth: 1, borderColor: p.border, flex: 1 }]}
+                  onPress={exportData}
+                >
+                  <Text style={{ color: p.ink, fontWeight: "600", fontSize: fs(13) }}>{t("exportData")}</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.smallBtn, { borderWidth: 1, borderColor: p.border, flex: 1 }]}
+                  onPress={() => Linking.openURL(`${API_BASE}/privacy`)}
+                >
+                  <Text style={{ color: p.ink, fontWeight: "600", fontSize: fs(13) }}>{t("privacyPolicy")}</Text>
+                </Pressable>
+              </View>
+              {confirmDelete && (
+                <Text style={{ fontSize: fs(12.5), color: "#d03b3b", lineHeight: 18 }}>
+                  {t("deleteWarning")}
+                </Text>
+              )}
+              <Pressable
+                style={[
+                  styles.smallBtn,
+                  { borderWidth: 1, borderColor: "#d03b3b", backgroundColor: confirmDelete ? "#d03b3b" : "transparent" },
+                ]}
+                onPress={deleteAccount}
+              >
+                {dataBusy ? (
+                  <ActivityIndicator color={confirmDelete ? "#fff" : "#d03b3b"} />
+                ) : (
+                  <Text style={{ color: confirmDelete ? "#fff" : "#d03b3b", fontWeight: "700", fontSize: fs(13) }}>
+                    {confirmDelete ? t("deleteConfirm") : t("deleteAccount")}
+                  </Text>
+                )}
+              </Pressable>
+              {dataNote && <Text style={{ fontSize: fs(12.5), color: p.ink2 }}>{dataNote}</Text>}
+            </View>
+          )}
+
           <Pressable
             style={[styles.btn, { backgroundColor: p.accent }]}
             onPress={onClose}
@@ -388,6 +476,7 @@ export default function SettingsSheet({
               {t("done")}
             </Text>
           </Pressable>
+          </ScrollView>
         </View>
       </View>
     </Modal>
@@ -408,6 +497,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 28,
     gap: 16,
+    maxHeight: "90%",
   },
   grab: {
     alignSelf: "center",

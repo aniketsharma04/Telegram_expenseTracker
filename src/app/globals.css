@@ -873,3 +873,71 @@ h2 {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Public pages: privacy policy, account deletion ───────────────────── */
+.legal {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 16px 64px;
+  line-height: 1.6;
+  font-size: 15px;
+}
+.legal h1 {
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+.legal h2 {
+  font-size: 17px;
+  margin: 28px 0 8px;
+}
+.legal ul {
+  padding-left: 20px;
+}
+.legal li {
+  margin-bottom: 8px;
+}
+.legal a {
+  color: var(--accent);
+}
+.legal-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+.legal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+  max-width: 380px;
+}
+.legal-form label {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.legal-form input {
+  font: inherit;
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--grid);
+  background: var(--surface);
+  color: var(--ink);
+}
+.legal-form button:disabled {
+  opacity: 0.6;
+}
+.btn-danger {
+  background: #d03b3b;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 12px;
+  padding: 12px 20px;
+}
+.legal-error {
+  color: #d03b3b;
+}
+.legal-ok {
+  color: var(--good);
+  font-weight: 600;
+}

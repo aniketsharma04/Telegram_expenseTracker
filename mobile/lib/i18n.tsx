@@ -336,6 +336,18 @@ const STRINGS = {
   monthlyIncome: { en: "Monthly income", hi: "महीने की आमदनी" },
   savingsGoal: { en: "Savings goal / month", hi: "महीने की बचत का लक्ष्य" },
   payday: { en: "Salary day", hi: "तनख्वाह का दिन" },
+  // your data (Play: export, privacy, in-app deletion)
+  yourData: { en: "Your data", hi: "आपका डेटा" },
+  exportData: { en: "Export", hi: "एक्सपोर्ट" },
+  privacyPolicy: { en: "Privacy policy", hi: "प्राइवेसी नीति" },
+  deleteAccount: { en: "Delete account", hi: "खाता हटाएँ" },
+  deleteConfirm: { en: "Yes, delete everything", hi: "हाँ, सब हटा दें" },
+  deleteWarning: {
+    en: "This permanently deletes your account and all your expenses, income, plan, goals and notifications. It can't be undone — export first if you want a copy.",
+    hi: "यह आपका खाता और सारे खर्चे, आमदनी, प्लान, लक्ष्य और सूचनाएँ हमेशा के लिए हटा देगा। वापस नहीं होगा — कॉपी चाहिए तो पहले एक्सपोर्ट करें।",
+  },
+  exportFailed: { en: "Couldn't export — try again.", hi: "एक्सपोर्ट नहीं हुआ — फिर कोशिश करें।" },
+  deleteFailed: { en: "Couldn't delete — try again.", hi: "हटाया नहीं जा सका — फिर कोशिश करें।" },
   // goals (v17)
   goals: { en: "Goals", hi: "लक्ष्य" },
   addGoal: { en: "Add a goal", hi: "लक्ष्य जोड़ें" },

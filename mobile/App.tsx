@@ -633,6 +633,7 @@ function AppInner() {
         token={token}
         gmail={data.gmail}
         onChanged={refresh}
+        onAccountDeleted={logout}
       />
 
       <View
