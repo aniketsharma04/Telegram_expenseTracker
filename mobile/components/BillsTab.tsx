@@ -28,18 +28,10 @@ import { formatINR, Palette } from "../lib/theme";
 import { Card, SectionTitle } from "./ui";
 import BillSheet from "./BillSheet";
 import DetectedBillsCard from "./DetectedBillsCard";
+import { BILL_KIND_ICON } from "../lib/categories";
+import { IconBubble, type IconName } from "./ui";
 
-const KIND_ICON: Record<BillKind, string> = {
-  electricity: "⚡",
-  water: "💧",
-  gas: "🔥",
-  credit_card: "💳",
-  rent: "🏠",
-  internet: "🌐",
-  mobile: "📱",
-  insurance: "🛡️",
-  other: "🧾",
-};
+const KIND_ICON = BILL_KIND_ICON as Record<BillKind, IconName>;
 const KINDS = Object.keys(KIND_ICON) as BillKind[];
 const KIND_CATEGORY: Record<BillKind, string> = {
   electricity: "Utilities & bills",
@@ -161,20 +153,20 @@ export default function BillsTab({
   const statusLine = (b: BillStatus) => {
     if (b.paidThisMonth)
       return {
-        text: `✅ ${t("paid")} ${formatINR(b.paidThisMonth.amount)} · ${b.paidThisMonth.paid_on.slice(5)}`,
+        text: `${t("paid")} ${formatINR(b.paidThisMonth.amount)} · ${b.paidThisMonth.paid_on.slice(5)}`,
         color: p.good,
       };
     if (b.daysUntil < 0)
       return {
-        text: `⏰ ${-b.daysUntil}${t("daysShort")} ${t("overdue")}`,
-        color: "#d03b3b",
+        text: `${-b.daysUntil}${t("daysShort")} ${t("overdue")}`,
+        color: p.danger,
       };
     if (b.daysUntil === 0)
-      return { text: `🔴 ${t("dueToday")}`, color: "#d03b3b" };
+      return { text: `${t("dueToday")}`, color: p.danger };
     if (b.daysUntil <= 3)
       return {
-        text: `🟠 ${t("dueIn")} ${b.daysUntil}${t("daysShort")}`,
-        color: "#c98500",
+        text: `${t("dueIn")} ${b.daysUntil}${t("daysShort")}`,
+        color: p.warn,
       };
     return {
       text: `${t("dueIn")} ${b.daysUntil}${t("daysShort")} · ${Number(b.dueDate.slice(8))}th`,
@@ -186,7 +178,7 @@ export default function BillsTab({
     <View style={{ gap: 12 }}>
       <View style={styles.headRow}>
         <Text style={{ fontSize: fs(16), fontWeight: "700", color: p.ink }}>
-          🧾 {t("bills")}
+          {t("bills")}
         </Text>
         <Pressable
           style={[styles.addBtn, { backgroundColor: p.accent }]}
@@ -205,7 +197,7 @@ export default function BillsTab({
       {pending && !pending.paidThisMonth && (
         <Card p={p} style={{ borderColor: p.accent }}>
           <Text style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}>
-            {KIND_ICON[pending.kind]} {pending.name}: {t("didYouPay")}
+            {pending.name}: {t("didYouPay")}
           </Text>
           <View style={[styles.row, { marginTop: 10 }]}>
             <Pressable
@@ -260,7 +252,7 @@ export default function BillsTab({
               onPress={() => setEditing({ bill: b })}
               style={styles.billHead}
             >
-              <Text style={{ fontSize: 22 }}>{KIND_ICON[b.kind]}</Text>
+              <IconBubble name={KIND_ICON[b.kind]} color={p.accent} bg={p.accentSoft} />
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text
                   style={{ fontSize: fs(15), fontWeight: "600", color: p.ink }}
@@ -292,12 +284,12 @@ export default function BillsTab({
                   style={{ flex: 1, fontSize: fs(12), color: p.muted }}
                   numberOfLines={1}
                 >
-                  🔗 {t("linkedVia")}
+                  {t("linkedVia")}
                   {b.biller_name ? ` · ${b.biller_name}` : ""}
                   {b.fetched_at
                     ? ` · ${t("lastFetched")} ${ago(b.fetched_at)}`
                     : ""}
-                  {b.fetch_error ? ` · ⚠️ ${t("fetchFailed")}` : ""}
+                  {b.fetch_error ? ` · ${t("fetchFailed")}` : ""}
                   {b.linked && b.amount === null && !b.fetch_error
                     ? ` · ${t("noDues")}`
                     : ""}
@@ -341,7 +333,7 @@ export default function BillsTab({
                         fontSize: fs(13),
                       }}
                     >
-                      ↩ {t("undoPaid")}
+                      {t("undoPaid")}
                     </Text>
                   )}
                 </Pressable>
@@ -359,7 +351,7 @@ export default function BillsTab({
                       fontSize: fs(14),
                     }}
                   >
-                    {b.upiLink ? "⚡ " : "↗ "}
+                    {b.upiLink ? "" : "↗ "}
                     {t("payNow")}
                   </Text>
                 </Pressable>
@@ -385,7 +377,7 @@ export default function BillsTab({
 
       {suggestions.length > 0 && (
         <Card p={p}>
-          <SectionTitle p={p}>💡 {t("suggested")}</SectionTitle>
+          <SectionTitle p={p}>{t("suggested")}</SectionTitle>
           <View style={{ gap: 10 }}>
             {suggestions.slice(0, 4).map((r) => (
               <View key={`${r.merchant}|${r.category}`} style={styles.row}>
@@ -566,7 +558,7 @@ function MarkPaidSheet({
         >
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
           <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
-            {KIND_ICON[bill.kind]} {bill.name}: {t("markPaid")}
+            {bill.name}: {t("markPaid")}
           </Text>
           {alerts.length > 0 ? (
             <>
@@ -747,5 +739,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     overflow: "hidden",
   },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

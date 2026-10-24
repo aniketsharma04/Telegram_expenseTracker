@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   error: {
-    color: "#d03b3b",
+    color: "#b91c1c",
     fontSize: 13,
     marginBottom: 6,
     alignSelf: "flex-start",

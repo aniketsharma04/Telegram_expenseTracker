@@ -33,6 +33,7 @@ export default function SettingsSheet({
   gmail,
   onChanged,
   onAccountDeleted,
+  onLogout,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -42,6 +43,8 @@ export default function SettingsSheet({
   onChanged?: () => void;
   /** Called once the account is gone — the app signs out. */
   onAccountDeleted?: () => void;
+  /** Sign out of this phone (v18: lives here, not in the header). */
+  onLogout?: () => void;
 }) {
   const { t, fs, lang, scale, setLang, setLarge } = useSettings();
   const [busy, setBusy] = useState(false);
@@ -207,7 +210,7 @@ export default function SettingsSheet({
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
           <ScrollView contentContainerStyle={{ gap: 16 }} keyboardShouldPersistTaps="handled">
           <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
-            ⚙️ {t("settings")}
+            {t("settings")}
           </Text>
 
           <View style={styles.row}>
@@ -253,7 +256,7 @@ export default function SettingsSheet({
               <Text
                 style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}
               >
-                📧{" "}
+                {" "}
                 {gmail?.needs_reauth
                   ? t("reconnectGmail")
                   : gmail?.connected
@@ -263,7 +266,7 @@ export default function SettingsSheet({
               <Text
                 style={{
                   fontSize: fs(12),
-                  color: gmail?.needs_reauth ? "#c98500" : p.muted,
+                  color: gmail?.needs_reauth ? p.warn : p.muted,
                   marginTop: 3,
                   lineHeight: 17,
                 }}
@@ -351,7 +354,7 @@ export default function SettingsSheet({
               <Text
                 style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}
               >
-                🔔 {t("autoCapture")}
+                {t("autoCapture")}
               </Text>
               <Text
                 style={{
@@ -426,7 +429,7 @@ export default function SettingsSheet({
           {token && (
             <View style={[styles.block, { borderColor: p.grid, gap: 10 }]}>
               <Text style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}>
-                🔒 {t("yourData")}
+                {t("yourData")}
               </Text>
               <View style={styles.row}>
                 <Pressable
@@ -443,27 +446,40 @@ export default function SettingsSheet({
                 </Pressable>
               </View>
               {confirmDelete && (
-                <Text style={{ fontSize: fs(12.5), color: "#d03b3b", lineHeight: 18 }}>
+                <Text style={{ fontSize: fs(12.5), color: p.danger, lineHeight: 18 }}>
                   {t("deleteWarning")}
                 </Text>
               )}
               <Pressable
                 style={[
                   styles.smallBtn,
-                  { borderWidth: 1, borderColor: "#d03b3b", backgroundColor: confirmDelete ? "#d03b3b" : "transparent" },
+                  { borderWidth: 1, borderColor: p.danger, backgroundColor: confirmDelete ? p.danger : "transparent" },
                 ]}
                 onPress={deleteAccount}
               >
                 {dataBusy ? (
-                  <ActivityIndicator color={confirmDelete ? "#fff" : "#d03b3b"} />
+                  <ActivityIndicator color={confirmDelete ? "#fff" : p.danger} />
                 ) : (
-                  <Text style={{ color: confirmDelete ? "#fff" : "#d03b3b", fontWeight: "700", fontSize: fs(13) }}>
+                  <Text style={{ color: confirmDelete ? "#fff" : p.danger, fontWeight: "700", fontSize: fs(13) }}>
                     {confirmDelete ? t("deleteConfirm") : t("deleteAccount")}
                   </Text>
                 )}
               </Pressable>
               {dataNote && <Text style={{ fontSize: fs(12.5), color: p.ink2 }}>{dataNote}</Text>}
             </View>
+          )}
+
+          {onLogout && (
+            <Pressable
+              style={[styles.smallBtn, { borderWidth: 1, borderColor: p.border }]}
+              onPress={() => {
+                onClose();
+                onLogout();
+              }}
+              accessibilityRole="button"
+            >
+              <Text style={{ color: p.ink, fontWeight: "600", fontSize: fs(14) }}>{t("logout")}</Text>
+            </Pressable>
           )}
 
           <Pressable

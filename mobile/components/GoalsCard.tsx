@@ -27,7 +27,7 @@ export function GoalsCard({
   return (
     <Card p={p}>
       <View style={styles.head}>
-        <SectionTitle p={p}>🎯 {t("goals")}</SectionTitle>
+        <SectionTitle p={p}>{t("goals")}</SectionTitle>
         <Pressable onPress={() => setEditing("new")} hitSlop={8}>
           <Text style={{ color: p.accent, fontSize: fs(13), fontWeight: "600" }}>+ {t("addGoal")}</Text>
         </Pressable>
@@ -39,7 +39,7 @@ export function GoalsCard({
         <View style={{ gap: 14 }}>
           {goals.map((g) => {
             const done = g.saved >= g.target_amount;
-            const color = done ? p.good : g.onTrack === false ? "#c98500" : p.accent;
+            const color = done ? p.good : g.onTrack === false ? p.warn : p.accent;
             return (
               <Pressable key={g.id} onPress={() => setEditing(g)} style={{ gap: 5 }}>
                 <View style={styles.row}>
@@ -57,7 +57,7 @@ export function GoalsCard({
                     : [
                         `${formatINR(g.monthly)}${t("perMonth")}`,
                         g.monthsLeft !== null ? `${g.monthsLeft} ${t("monthsToGo")}` : null,
-                        g.onTrack === null ? null : g.onTrack ? `✓ ${t("onTrack")}` : `⚠ ${t("behind")}`,
+                        g.onTrack === null ? null : g.onTrack ? `✓ ${t("onTrack")}` : `${t("behind")}`,
                       ]
                         .filter(Boolean)
                         .join(" · ")}
@@ -160,7 +160,7 @@ function GoalSheet({
         <View style={[styles.sheet, { backgroundColor: p.surface, borderColor: p.border }]}>
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
           <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 12 }}>
-            <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>🎯 {goal ? goal.name : t("addGoal")}</Text>
+            <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>{goal ? goal.name : t("addGoal")}</Text>
             <TextInput style={box} value={name} onChangeText={setName} placeholder={t("goalName")} placeholderTextColor={p.muted} />
             <TextInput
               style={box}
@@ -194,13 +194,13 @@ function GoalSheet({
                 placeholderTextColor={p.muted}
               />
             </View>
-            {error && <Text style={{ color: "#d03b3b", fontSize: fs(13) }}>{error}</Text>}
+            {error && <Text style={{ color: p.danger, fontSize: fs(13) }}>{error}</Text>}
             <Pressable style={[styles.btn, { backgroundColor: p.accent, opacity: busy ? 0.6 : 1 }]} onPress={save}>
               <Text style={{ color: "#fff", fontWeight: "700", fontSize: fs(14) }}>{t("save")}</Text>
             </Pressable>
             {goal && (
               <Pressable style={[styles.ghost, { borderColor: p.border }]} onPress={stop}>
-                <Text style={{ color: "#d03b3b", fontWeight: "600", fontSize: fs(14) }}>{t("stopGoal")}</Text>
+                <Text style={{ color: p.danger, fontWeight: "600", fontSize: fs(14) }}>{t("stopGoal")}</Text>
               </Pressable>
             )}
           </ScrollView>

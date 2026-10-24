@@ -159,7 +159,7 @@ export default function EditExpenseSheet({
                   },
                 ]}
               >
-                🤝 {t("partOfSplit")}
+                {t("partOfSplit")}
               </Text>
             )}
 
@@ -258,7 +258,7 @@ export default function EditExpenseSheet({
             <View style={styles.savingsRow}>
               <View style={{ flex: 1, gap: 2 }}>
                 <Text style={{ color: p.ink, fontSize: fs(14), fontWeight: "500" }}>
-                  💰 {t("fromSavings")}
+                  {t("fromSavings")}
                 </Text>
                 <Text style={{ color: p.ink2, fontSize: fs(12) }}>
                   {t("fromSavingsHint")}
@@ -283,12 +283,12 @@ export default function EditExpenseSheet({
               >
                 <Text
                   style={{
-                    color: "#d03b3b",
+                    color: p.danger,
                     fontWeight: "600",
                     fontSize: fs(14),
                   }}
                 >
-                  🗑️ {t("delete")}
+                  {t("delete")}
                 </Text>
               </Pressable>
               <Pressable
@@ -397,5 +397,5 @@ const styles = StyleSheet.create({
   actionRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   btn: { borderRadius: 14, paddingVertical: 14, alignItems: "center" },
   btnDanger: { paddingVertical: 14, paddingHorizontal: 14 },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

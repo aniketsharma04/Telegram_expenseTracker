@@ -64,7 +64,7 @@ export default function ReceiptLines({ expenseId, token, p }: Props) {
       style={[styles.wrap, { borderColor: p.border, backgroundColor: p.page }]}
     >
       <Text style={{ color: p.ink2, fontSize: fs(12), fontWeight: "600" }}>
-        🧾 {t("billItems")}
+        {t("billItems")}
         {receipt.items.length ? ` · ${receipt.items.length}` : ""}
       </Text>
 

@@ -13,14 +13,10 @@ import { fetchInbox, InboxItem, markInboxRead, patchExpense } from "../lib/api";
 import { PushState, registerForPush } from "../lib/push";
 import { Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
-import { Card } from "./ui";
+import { Card, Icon } from "./ui";
+import { NOTICE_KIND_ICON } from "../lib/categories";
 
-const ICON: Record<string, string> = {
-  daily: "📅",
-  spend: "💸",
-  alerts: "⚠️",
-  digest: "📊",
-};
+
 
 /** Header bell with the unread count. */
 export function InboxBell({
@@ -39,9 +35,9 @@ export function InboxBell({
       accessibilityLabel={`${t("inbox")}${unread ? `, ${unread} unread` : ""}`}
       style={[styles.bell, { borderColor: p.border, backgroundColor: p.surface }]}
     >
-      <Text style={{ fontSize: fs(12) }}>🔔</Text>
+      <Icon name="bell" size={20} color={p.ink} />
       {unread > 0 && (
-        <View style={[styles.badge, { backgroundColor: "#d03b3b" }]}>
+        <View style={[styles.badge, { backgroundColor: p.danger }]}>
           <Text style={styles.badgeText}>{unread > 9 ? "9+" : unread}</Text>
         </View>
       )}
@@ -114,7 +110,7 @@ export function InboxSheet({
         <View style={[styles.sheet, { backgroundColor: p.surface, borderColor: p.border }]}>
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
           <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink, marginBottom: 12 }}>
-            🔔 {t("inbox")}
+            {t("inbox")}
           </Text>
           {items === null ? (
             <ActivityIndicator style={{ marginVertical: 30 }} />
@@ -133,9 +129,8 @@ export function InboxSheet({
                     style={[styles.item, { borderColor: p.border, backgroundColor: n.read_at ? p.surface : p.accentSoft }]}
                   >
                     <View style={styles.itemHead}>
-                      <Text style={{ fontSize: fs(14), fontWeight: "600", color: p.ink, flex: 1 }}>
-                        {ICON[n.kind] ?? "•"} {n.title}
-                      </Text>
+                      <Icon name={NOTICE_KIND_ICON[n.kind] ?? "bell"} size={16} color={n.kind === "alerts" ? p.warn : p.accent} />
+                      <Text style={{ fontSize: fs(14), fontWeight: "600", color: p.ink, flex: 1 }}>{n.title}</Text>
                       <Text style={{ fontSize: fs(11.5), color: p.muted }}>{ago(n.created_at, t("justNow"))}</Text>
                     </View>
                     <Text style={{ fontSize: fs(13), color: p.ink2, lineHeight: 19 }}>{n.body}</Text>
@@ -148,7 +143,7 @@ export function InboxSheet({
                           style={[styles.action, { borderColor: p.accent }]}
                         >
                           <Text style={{ color: p.accent, fontSize: fs(13), fontWeight: "600" }}>
-                            {busy === expenseId ? "…" : `💰 ${t("fromSavings")}`}
+                            {busy === expenseId ? "…" : `${t("fromSavings")}`}
                           </Text>
                         </Pressable>
                       ))}
@@ -190,7 +185,7 @@ export function PushPromptCard({
 
   return (
     <Card p={p} style={{ gap: 10 }}>
-      <Text style={{ fontSize: fs(15), fontWeight: "700", color: p.ink }}>🔔 {t("pushTitle")}</Text>
+      <Text style={{ fontSize: fs(15), fontWeight: "700", color: p.ink }}>{t("pushTitle")}</Text>
       <Text style={{ fontSize: fs(13.5), color: p.ink2, lineHeight: 20 }}>
         {blocked ? t("pushBlocked") : t("pushHint")}
       </Text>
@@ -220,11 +215,11 @@ export function PushPromptCard({
 }
 
 const styles = StyleSheet.create({
-  bell: { borderWidth: 1, borderRadius: 999, paddingVertical: 6, paddingHorizontal: 10 },
+  bell: { width: 44, height: 44, borderWidth: 1, borderRadius: 22, alignItems: "center", justifyContent: "center" },
   badge: {
     position: "absolute",
-    top: -5,
-    right: -5,
+    top: 6,
+    right: 6,
     minWidth: 17,
     height: 17,
     borderRadius: 9,

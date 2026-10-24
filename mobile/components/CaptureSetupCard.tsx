@@ -56,7 +56,7 @@ export function CaptureSetupCard({ p, token }: { p: Palette; token: string }) {
 
   return (
     <Card p={p} style={{ gap: 12 }}>
-      <Text style={{ fontSize: fs(15), fontWeight: "700", color: p.ink }}>⚡ {t("setupTitle")}</Text>
+      <Text style={{ fontSize: fs(15), fontWeight: "700", color: p.ink }}>{t("setupTitle")}</Text>
 
       {!status.granted ? (
         <>

@@ -4,16 +4,9 @@ import { Expense } from "../lib/api";
 import { FALLBACK_COLOR, formatINR, memberColor, Palette, seriesColor } from "../lib/theme";
 import { Avatar, Card } from "./ui";
 
+
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const SOURCE_ICON: Record<string, string> = {
-  telegram_text: "💬",
-  telegram_voice: "🎤",
-  telegram_photo: "📷",
-  app_form: "📱",
-  app_text: "📱",
-  app_voice: "🎤",
-  app_photo: "📷",
-};
+
 
 interface Props {
   p: Palette;
@@ -126,8 +119,8 @@ export default function TransactionsTab({
                     </Text>
                     <Text style={{ fontSize: 12, color: p.muted, marginTop: 1 }}>
                       {showMember ? `${mName} · ` : ""}
-                      {e.category} · {SOURCE_ICON[e.source] ?? "💬"}
-                      {e.split_id ? " · 🤝" : ""}
+                      {e.category}
+                      {e.split_id ? " · split" : ""}
                     </Text>
                   </View>
                   <Text

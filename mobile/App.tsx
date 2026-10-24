@@ -7,7 +7,6 @@ import {
   AppState,
   Pressable,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -29,9 +28,11 @@ import AccountsCard from "./components/AccountsCard";
 import AccountSheet from "./components/AccountSheet";
 import TransferSheet from "./components/TransferSheet";
 import TransactionsTab from "./components/TransactionsTab";
-import { Avatar } from "./components/ui";
+import { Avatar, Icon, IconName } from "./components/ui";
+import TodayTab from "./components/TodayTab";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Account, ApiData, Expense, fetchData } from "./lib/api";
-import { DailyBudgetCard } from "./components/DailyBudgetCard";
+import { PlanSummaryCard } from "./components/DailyBudgetCard";
 import { InboxBell, InboxSheet, PushPromptCard } from "./components/Inbox";
 import { CaptureSetupCard } from "./components/CaptureSetupCard";
 import { GoalsCard } from "./components/GoalsCard";
@@ -40,16 +41,16 @@ import { connectCapture, syncCaptures } from "./lib/capture";
 import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
 import { memberColor, usePalette } from "./lib/theme";
 
-type Tab = "home" | "transactions" | "bills" | "family";
+type Tab = "today" | "activity" | "plan" | "insights";
 type Scope = "personal" | "family";
 
 const TOKEN_KEY = "et_token";
 const PUSH_PROMPT_DISMISSED_KEY = "et_push_prompt_dismissed";
-const TABS: Array<{ key: Tab; label: StringKey; icon: string }> = [
-  { key: "home", label: "home", icon: "⌂" },
-  { key: "transactions", label: "transactions", icon: "≡" },
-  { key: "bills", label: "bills", icon: "▤" },
-  { key: "family", label: "family", icon: "⚭" },
+const TABS: Array<{ key: Tab; label: StringKey; icon: IconName }> = [
+  { key: "today", label: "today", icon: "sun" },
+  { key: "activity", label: "activity", icon: "list" },
+  { key: "plan", label: "plan", icon: "target" },
+  { key: "insights", label: "insights", icon: "bar-chart-2" },
 ];
 
 function shiftDate(iso: string, days: number): string {
@@ -60,19 +61,22 @@ function shiftDate(iso: string, days: number): string {
 
 export default function App() {
   return (
-    <SettingsProvider>
-      <AppInner />
-    </SettingsProvider>
+    <SafeAreaProvider>
+      <SettingsProvider>
+        <AppInner />
+      </SettingsProvider>
+    </SafeAreaProvider>
   );
 }
 
 function AppInner() {
   const { p, dark } = usePalette();
   const { t, fs } = useSettings();
+  const insets = useSafeAreaInsets();
   const [token, setToken] = useState<string | null | undefined>(undefined);
   const [data, setData] = useState<ApiData | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [tab, setTab] = useState<Tab>("home");
+  const [tab, setTab] = useState<Tab>("today");
   const [scope, setScope] = useState<Scope>("personal");
   const [member, setMember] = useState<number | "all">("all");
   const [range, setRange] = useState<RangeKey>("month");
@@ -274,9 +278,9 @@ function AppInner() {
 
   if (token === undefined) {
     return (
-      <SafeAreaView style={[styles.center, { backgroundColor: p.page }]}>
+      <View style={[styles.center, { backgroundColor: p.page }]}>
         <ActivityIndicator color={p.accent} />
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -291,10 +295,10 @@ function AppInner() {
 
   if (!data || !derived) {
     return (
-      <SafeAreaView style={[styles.center, { backgroundColor: p.page }]}>
+      <View style={[styles.center, { backgroundColor: p.page }]}>
         <ActivityIndicator color={p.accent} />
         <Text style={{ color: p.muted, marginTop: 12 }}>Loading…</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -306,47 +310,96 @@ function AppInner() {
         ? data.family!.name
         : (derived.memberName.get(member as number) ?? "")
       : "Personal";
+  const firstName = (data.user.name || "").split(" ")[0];
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? t("goodMorning") : hour < 17 ? t("goodAfternoon") : t("goodEvening");
+
+  // Personal / family switch and member chips — on Activity and Insights only.
+  const scopePicker = hasFamily ? (
+    <View style={{ gap: 10 }}>
+      <View style={[styles.seg, { backgroundColor: p.surface, borderColor: p.border }]}>
+        {(["personal", "family"] as Scope[]).map((s) => (
+          <Pressable
+            key={s}
+            style={[styles.segBtn, scope === s && { backgroundColor: p.accent }]}
+            onPress={() => {
+              setScope(s);
+              setMember("all");
+            }}
+            accessibilityRole="button"
+            accessibilityState={{ selected: scope === s }}
+          >
+            <Text style={{ fontSize: fs(13.5), fontWeight: "600", color: scope === s ? p.onAccent : p.ink2 }}>
+              {s === "personal" ? t("personal") : t("family")}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+      {showChips && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+          <Pressable
+            onPress={() => setMember("all")}
+            style={[
+              styles.chip,
+              {
+                borderColor: member === "all" ? p.accent : p.border,
+                backgroundColor: member === "all" ? p.accentSoft : p.surface,
+              },
+            ]}
+          >
+            <Icon name="users" size={16} color={p.ink2} />
+            <Text style={{ fontSize: fs(13), color: p.ink }}>{data.family!.name}</Text>
+          </Pressable>
+          {derived.members.map((m, i) => {
+            const active = member === m.id;
+            return (
+              <Pressable
+                key={m.id}
+                onPress={() => setMember(m.id)}
+                style={[
+                  styles.chip,
+                  {
+                    borderColor: active ? p.accent : p.border,
+                    backgroundColor: active ? p.accentSoft : p.surface,
+                  },
+                ]}
+              >
+                <Avatar color={memberColor(i, dark)} label={m.name.slice(0, 1).toUpperCase()} size={22} />
+                <Text style={{ fontSize: fs(13), color: active ? p.ink : p.ink2, fontWeight: active ? "600" : "400" }}>
+                  {m.id === data.user.id ? "You" : m.name}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      )}
+    </View>
+  ) : null;
+
+  const goals = data.goals ?? [];
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: p.page }]}>
+    <View style={[styles.root, { backgroundColor: p.page, paddingTop: insets.top }]}>
       <StatusBar style={dark ? "light" : "dark"} />
 
       <View style={styles.header}>
-        <View style={styles.brand}>
-          <View style={[styles.mark, { backgroundColor: p.accent }]}>
-            <Text style={styles.markText}>₹</Text>
-          </View>
-          <Text style={{ fontSize: fs(16), fontWeight: "700", color: p.ink }}>
-            {t("appName")}
+        <View style={{ flex: 1, gap: 2 }}>
+          <Text style={{ fontSize: fs(13), color: p.muted }}>{longDate(data.today)}</Text>
+          <Text style={{ fontSize: fs(22), fontWeight: "600", color: p.ink, letterSpacing: -0.4 }} numberOfLines={1}>
+            {tab === "today" ? `${greeting}${firstName ? `, ${firstName}` : ""}` : t(TABS.find((x) => x.key === tab)!.label)}
           </Text>
         </View>
-        <View style={{ flexDirection: "row", gap: 8 }}>
-          <InboxBell
-            p={p}
-            unread={data.inbox_unread ?? 0}
-            onPress={() => setInboxOpen(true)}
-          />
-          <Pressable
-            onPress={() => setSettingsOpen(true)}
-            style={[
-              styles.logout,
-              { borderColor: p.border, backgroundColor: p.surface },
-            ]}
-          >
-            <Text style={{ fontSize: fs(12), color: p.ink2 }}>⚙️</Text>
-          </Pressable>
-          <Pressable
-            onPress={logout}
-            style={[
-              styles.logout,
-              { borderColor: p.border, backgroundColor: p.surface },
-            ]}
-          >
-            <Text style={{ fontSize: fs(12), color: p.ink2 }}>
-              {t("logout")}
-            </Text>
-          </Pressable>
-        </View>
+        <InboxBell p={p} unread={data.inbox_unread ?? 0} onPress={() => setInboxOpen(true)} />
+        <Pressable
+          onPress={() => setSettingsOpen(true)}
+          style={[styles.avatarBtn, { backgroundColor: p.accent }]}
+          accessibilityRole="button"
+          accessibilityLabel={t("profile")}
+        >
+          <Text style={{ color: p.onAccent, fontWeight: "700", fontSize: fs(16) }}>
+            {(firstName || "?").slice(0, 1).toUpperCase()}
+          </Text>
+        </Pressable>
       </View>
 
       <ScrollView
@@ -360,100 +413,111 @@ function AppInner() {
               setRefreshing(false);
             }}
             tintColor={p.accent}
+            colors={[p.accent]}
           />
         }
       >
-        {hasFamily && (
-          <View style={styles.scopeRow}>
-            <View
-              style={[
-                styles.seg,
-                { backgroundColor: p.surface, borderColor: p.border },
-              ]}
-            >
-              {(["personal", "family"] as Scope[]).map((s) => (
-                <Pressable
-                  key={s}
-                  style={[
-                    styles.segBtn,
-                    scope === s && { backgroundColor: p.accent },
-                  ]}
-                  onPress={() => {
-                    setScope(s);
-                    setMember("all");
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: fs(13.5),
-                      fontWeight: scope === s ? "600" : "400",
-                      color: scope === s ? "#fff" : p.ink2,
+        {tab === "today" && (
+          <TodayTab
+            p={p}
+            dark={dark}
+            data={data}
+            token={token}
+            colorByCategory={derived.colorByCategory}
+            onChanged={refresh}
+            onSeeAll={() => setTab("activity")}
+            onEdit={(e) => {
+              if (e.user_id === data.user.id) setEditTarget(e);
+            }}
+            top={
+              <>
+                <CaptureSetupCard p={p} token={token} />
+                {!pushPromptDismissed && (
+                  <PushPromptCard
+                    p={p}
+                    state={pushState}
+                    token={token}
+                    onResult={setPushState}
+                    onDismiss={() => {
+                      setPushPromptDismissed(true);
+                      AsyncStorage.setItem(PUSH_PROMPT_DISMISSED_KEY, "1");
                     }}
-                  >
-                    {s === "personal" ? t("personal") : t("family")}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {showChips && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chips}
-          >
-            <Pressable
-              onPress={() => setMember("all")}
-              style={[
-                styles.chip,
-                {
-                  borderColor: member === "all" ? p.accent : p.border,
-                  backgroundColor: member === "all" ? p.accentSoft : p.surface,
-                },
-              ]}
-            >
-              <Text style={{ fontSize: 13, color: p.ink }}>
-                👨‍👩‍👧 {data.family!.name}
-              </Text>
-            </Pressable>
-            {derived.members.map((m, i) => {
-              const active = member === m.id;
-              return (
-                <Pressable
-                  key={m.id}
-                  onPress={() => setMember(m.id)}
-                  style={[
-                    styles.chip,
-                    {
-                      borderColor: active ? p.accent : p.border,
-                      backgroundColor: active ? p.accentSoft : p.surface,
-                    },
-                  ]}
-                >
-                  <Avatar
-                    color={memberColor(i, dark)}
-                    label={m.name.slice(0, 1).toUpperCase()}
-                    size={22}
                   />
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      color: active ? p.ink : p.ink2,
-                      fontWeight: active ? "600" : "400",
-                    }}
-                  >
-                    {m.id === data.user.id ? "You" : m.name}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+                )}
+              </>
+            }
+            bottom={goals.length > 0 ? <GoalsCard p={p} goals={goals} token={token} onChanged={refresh} /> : null}
+          />
         )}
 
-        {tab === "home" && (
+        {tab === "activity" && (
           <>
+            {scopePicker}
+            <View style={styles.sectionRow}>
+              <Text style={{ flex: 1, fontSize: fs(13), color: p.muted }}>
+                {scopeLabel} · {RANGE_LABELS[range].toLowerCase()}
+              </Text>
+              <Pressable
+                onPress={() => setAddOpen(true)}
+                style={[styles.addBtn, { borderColor: p.border, backgroundColor: p.surface }]}
+                accessibilityRole="button"
+                accessibilityLabel={t("addExpense")}
+              >
+                <Icon name="plus" size={16} color={p.accent} />
+                <Text style={{ color: p.accent, fontWeight: "600", fontSize: fs(13.5) }}>{t("addManually")}</Text>
+              </Pressable>
+            </View>
+            <TransactionsTab
+              p={p}
+              dark={dark}
+              expenses={derived.inRange}
+              colorByCategory={derived.colorByCategory}
+              showMember={scope === "family" && member === "all"}
+              memberName={derived.memberName}
+              memberIndex={derived.memberIndex}
+              today={data.today}
+              onEdit={(e) => {
+                if (e.user_id === data.user.id) setEditTarget(e);
+              }}
+            />
+          </>
+        )}
+
+        {tab === "plan" && (
+          <>
+            <PlanSummaryCard p={p} daily={data.daily} token={token} onChanged={refresh} />
+            <GoalsCard p={p} goals={goals} token={token} onChanged={refresh} />
+            <BudgetsCard
+              p={p}
+              budgets={data.budgets ?? []}
+              categories={data.categories}
+              token={token}
+              onChanged={refresh}
+            />
+            <BillsTab
+              p={p}
+              token={token}
+              bills={data.bills ?? []}
+              detected={data.detected_bills ?? []}
+              recurring={data.insights?.recurring ?? []}
+              categories={data.categories}
+              today={data.today}
+              onChanged={refresh}
+            />
+            <AccountsCard
+              p={p}
+              accounts={data.accounts ?? []}
+              position={data.position}
+              onAdd={() => setAccountTarget("new")}
+              onEdit={(a) => setAccountTarget(a)}
+              onTransfer={() => setTransferOpen(true)}
+            />
+          </>
+        )}
+
+        {tab === "insights" && (
+          <>
+            {scopePicker}
             <HomeTab
               p={p}
               dark={dark}
@@ -465,61 +529,15 @@ function AppInner() {
               today={data.today}
               colorByCategory={derived.colorByCategory}
               scopeLabel={scopeLabel}
-              topCard={
-                scope === "personal" ? (
-                  <>
-                    <CaptureSetupCard p={p} token={token} />
-                    {!pushPromptDismissed && (
-                      <PushPromptCard
-                        p={p}
-                        state={pushState}
-                        token={token}
-                        onResult={setPushState}
-                        onDismiss={() => {
-                          setPushPromptDismissed(true);
-                          AsyncStorage.setItem(PUSH_PROMPT_DISMISSED_KEY, "1");
-                        }}
-                      />
-                    )}
-                    <DailyBudgetCard
-                      p={p}
-                      daily={data.daily}
-                      token={token}
-                      onChanged={refresh}
-                    />
-                    <GoalsCard
-                      p={p}
-                      goals={data.goals ?? []}
-                      token={token}
-                      onChanged={refresh}
-                    />
-                  </>
-                ) : null
-              }
               extraCards={
                 scope === "personal" ? (
                   <>
-                    <AccountsCard
-                      p={p}
-                      accounts={data.accounts ?? []}
-                      position={data.position}
-                      onAdd={() => setAccountTarget("new")}
-                      onEdit={(a) => setAccountTarget(a)}
-                      onTransfer={() => setTransferOpen(true)}
-                    />
                     <SavingsCard
                       p={p}
                       incomes={data.incomes ?? []}
                       spent={derived.monthSpent}
                       invested={derived.monthInvested}
                       monthPrefix={data.today.slice(0, 7)}
-                    />
-                    <BudgetsCard
-                      p={p}
-                      budgets={data.budgets ?? []}
-                      categories={data.categories}
-                      token={token}
-                      onChanged={refresh}
                     />
                     <InsightsCards
                       p={p}
@@ -530,51 +548,10 @@ function AppInner() {
                 ) : null
               }
             />
+            {scope === "family" && <FamilyTab p={p} dark={dark} data={data} memberName={derived.memberName} />}
           </>
         )}
-        {tab === "transactions" && (
-          <TransactionsTab
-            p={p}
-            dark={dark}
-            expenses={derived.inRange}
-            colorByCategory={derived.colorByCategory}
-            showMember={scope === "family" && member === "all"}
-            memberName={derived.memberName}
-            memberIndex={derived.memberIndex}
-            today={data.today}
-            onEdit={(e) => {
-              if (e.user_id === data.user.id) setEditTarget(e);
-            }}
-          />
-        )}
-        {tab === "bills" && (
-          <BillsTab
-            p={p}
-            token={token}
-            bills={data.bills ?? []}
-            detected={data.detected_bills ?? []}
-            recurring={data.insights?.recurring ?? []}
-            categories={data.categories}
-            today={data.today}
-            onChanged={refresh}
-          />
-        )}
-        {tab === "family" && (
-          <FamilyTab
-            p={p}
-            dark={dark}
-            data={data}
-            memberName={derived.memberName}
-          />
-        )}
       </ScrollView>
-
-      <Pressable
-        style={[styles.fab, { backgroundColor: p.accent }]}
-        onPress={() => setAddOpen(true)}
-      >
-        <Text style={styles.fabText}>＋</Text>
-      </Pressable>
 
       <AddExpenseSheet
         accounts={data.accounts ?? []}
@@ -600,13 +577,7 @@ function AppInner() {
         onChanged={refresh}
       />
 
-      <AccountSheet
-        account={accountTarget}
-        onClose={() => setAccountTarget(null)}
-        onChanged={refresh}
-        token={token}
-        p={p}
-      />
+      <AccountSheet account={accountTarget} onClose={() => setAccountTarget(null)} onChanged={refresh} token={token} p={p} />
 
       <TransferSheet
         visible={transferOpen}
@@ -618,14 +589,7 @@ function AppInner() {
         p={p}
       />
 
-      {inboxOpen && (
-        <InboxSheet
-          p={p}
-          token={token}
-          onClose={() => setInboxOpen(false)}
-          onChanged={refresh}
-        />
-      )}
+      {inboxOpen && <InboxSheet p={p} token={token} onClose={() => setInboxOpen(false)} onChanged={refresh} />}
       <SettingsSheet
         visible={settingsOpen}
         onClose={() => setSettingsOpen(false)}
@@ -634,42 +598,48 @@ function AppInner() {
         gmail={data.gmail}
         onChanged={refresh}
         onAccountDeleted={logout}
+        onLogout={logout}
       />
 
       <View
         style={[
           styles.tabbar,
-          { backgroundColor: p.surface, borderTopColor: p.border },
+          { backgroundColor: p.surface, borderTopColor: p.border, paddingBottom: Math.max(insets.bottom, 10) },
         ]}
+        accessibilityRole="tablist"
       >
-        {TABS.map((tb) => (
-          <Pressable
-            key={tb.key}
-            style={styles.tabItem}
-            onPress={() => setTab(tb.key)}
-          >
-            <Text
-              style={{
-                fontSize: fs(18),
-                color: tab === tb.key ? p.accent : p.muted,
-              }}
+        {TABS.map((tb) => {
+          const active = tab === tb.key;
+          return (
+            <Pressable
+              key={tb.key}
+              style={styles.tabItem}
+              onPress={() => setTab(tb.key)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
             >
-              {tb.icon}
-            </Text>
-            <Text
-              style={{
-                fontSize: fs(11),
-                color: tab === tb.key ? p.accent : p.muted,
-                fontWeight: tab === tb.key ? "600" : "400",
-              }}
-            >
-              {t(tb.label)}
-            </Text>
-          </Pressable>
-        ))}
+              <Icon name={tb.icon} size={22} color={active ? p.accent : p.muted} />
+              <Text style={{ fontSize: fs(11), color: active ? p.accent : p.muted, fontWeight: active ? "600" : "500" }}>
+                {t(tb.label)}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
-    </SafeAreaView>
+    </View>
   );
+}
+
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+/** "Saturday, 24 October" from the server's YYYY-MM-DD. */
+function longDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return `${WEEKDAYS[d.getUTCDay()]}, ${d.getUTCDate()} ${MONTH_NAMES[d.getUTCMonth()]}`;
 }
 
 const styles = StyleSheet.create({
@@ -678,68 +648,37 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingTop: 40,
-    paddingBottom: 12,
+    gap: 8,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 14,
   },
-  brand: { flexDirection: "row", alignItems: "center", gap: 10 },
-  mark: {
-    width: 30,
-    height: 30,
-    borderRadius: 9,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  markText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  logout: {
-    borderWidth: 1,
-    borderRadius: 9,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-  },
-  scroll: { paddingHorizontal: 16, paddingBottom: 24, gap: 12 },
-  scopeRow: { alignItems: "center", paddingBottom: 4 },
-  seg: {
-    flexDirection: "row",
-    borderRadius: 999,
-    borderWidth: 1,
-    padding: 4,
-    gap: 4,
-  },
-  segBtn: { paddingVertical: 7, paddingHorizontal: 24, borderRadius: 999 },
-  chips: { gap: 8, paddingBottom: 6 },
+  avatarBtn: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
+  scroll: { paddingHorizontal: 16, paddingBottom: 28, gap: 14 },
+  seg: { flexDirection: "row", alignSelf: "flex-start", borderRadius: 999, borderWidth: 1, padding: 4, gap: 4 },
+  segBtn: { paddingVertical: 8, paddingHorizontal: 22, borderRadius: 999 },
+  chips: { gap: 8, paddingBottom: 2 },
   chip: {
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
     borderWidth: 1,
     borderRadius: 999,
-    paddingVertical: 5,
-    paddingLeft: 6,
+    paddingVertical: 6,
+    paddingLeft: 8,
     paddingRight: 14,
   },
-  tabbar: {
+  sectionRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  addBtn: {
     flexDirection: "row",
-    borderTopWidth: 1,
-    paddingBottom: 20,
-    paddingTop: 8,
-  },
-  tabItem: { flex: 1, alignItems: "center", gap: 2 },
-  fab: {
-    position: "absolute",
-    right: 18,
-    bottom: 92,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
     alignItems: "center",
-    justifyContent: "center",
-    elevation: 6,
-    shadowColor: "#000",
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    gap: 6,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    minHeight: 40,
   },
-  fabText: { color: "#fff", fontSize: 26, fontWeight: "600", lineHeight: 30 },
+  tabbar: { flexDirection: "row", borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 8 },
+  tabItem: { flex: 1, alignItems: "center", gap: 3, paddingVertical: 4, minHeight: 48 },
 });

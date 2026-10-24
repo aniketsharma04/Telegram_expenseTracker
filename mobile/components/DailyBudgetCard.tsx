@@ -22,16 +22,16 @@ import {
 } from "../lib/api";
 import { formatINR, Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
-import { Card, SectionTitle, TrackBar } from "./ui";
+import { Card, CardHeader } from "./ui";
 
-const RED = "#d03b3b";
-const AMBER = "#c98500";
+const RED = "#b91c1c";
 
 /**
- * The daily budget (v14): one number for today, what's eaten into it, and
- * the last two weeks of budget vs spend. The plan editor sits behind "Plan".
+ * The plan behind the daily number (Plan tab): income minus fixed costs,
+ * savings and goals, the budget month, and the last two weeks of budget vs
+ * spend. Editing opens PlanSheet.
  */
-export function DailyBudgetCard({
+export function PlanSummaryCard({
   p,
   daily,
   token,
@@ -48,99 +48,51 @@ export function DailyBudgetCard({
 
   return (
     <Card p={p}>
-      <View style={styles.headRow}>
-        <SectionTitle p={p}>📅 {t("dailyBudget")}</SectionTitle>
-        <Pressable onPress={() => setEditing(true)} hitSlop={8}>
-          <Text style={{ color: p.accent, fontSize: fs(13), fontWeight: "600" }}>
-            {ready ? t("editPlan") : t("setUpDaily")}
-          </Text>
-        </Pressable>
-      </View>
-
+      <CardHeader
+        p={p}
+        title={t("dailyBudget")}
+        action={ready ? t("editPlan") : t("setUpDaily")}
+        onAction={() => setEditing(true)}
+      />
       {!ready || !daily ? (
-        <Text style={{ color: p.ink2, fontSize: fs(13.5), lineHeight: 20 }}>
-          {t("dailyHint")}
-        </Text>
+        <View style={{ gap: 14 }}>
+          <Text style={{ color: p.ink2, fontSize: fs(14), lineHeight: 21 }}>{t("dailyHint")}</Text>
+          <Pressable style={[styles.btn, { backgroundColor: p.accent }]} onPress={() => setEditing(true)}>
+            <Text style={{ color: p.onAccent, fontWeight: "700", fontSize: fs(14) }}>{t("setUpDaily")}</Text>
+          </Pressable>
+        </View>
       ) : (
-        <TodayView p={p} d={daily} />
+        <View style={{ gap: 10 }}>
+          <Line p={p} label={t("monthlyIncome")} value={formatINR(daily.income)} />
+          <Line p={p} label={t("fixedCosts")} value={`− ${formatINR(daily.fixed)}`} />
+          <Line p={p} label={t("savingsGoal")} value={`− ${formatINR(daily.savingsGoal)}`} />
+          {!!daily.goals && <Line p={p} label={t("goals")} value={`− ${formatINR(daily.goals)}`} />}
+          <View style={[styles.rule, { backgroundColor: p.border }]} />
+          <Line p={p} label={t("everydayMoney")} value={formatINR(daily.pool)} strong />
+          <Text style={{ color: p.muted, fontSize: fs(12.5) }}>
+            ≈ {formatINR(daily.baseDaily)}
+            {t("perDay")}
+            {daily.cycleStart && daily.cycleEnd ? ` · ${shortDate(daily.cycleStart)} – ${shortDate(daily.cycleEnd)}` : ""}
+          </Text>
+          <History p={p} history={daily.history.slice(-14)} />
+        </View>
       )}
-
-      {editing && (
-        <PlanSheet
-          p={p}
-          token={token}
-          onClose={() => setEditing(false)}
-          onChanged={onChanged}
-        />
-      )}
+      {editing && <PlanSheet p={p} token={token} onClose={() => setEditing(false)} onChanged={onChanged} />}
     </Card>
   );
 }
 
-function TodayView({ p, d }: { p: Palette; d: DailyStatus }) {
-  const { t, fs } = useSettings();
-  const over = d.todayLeft < 0;
-  const fraction = d.todayBudget > 0 ? d.todaySpent / d.todayBudget : over ? 1 : 0;
-  const barColor = over ? RED : fraction >= 0.8 ? AMBER : p.good;
-  const everyday = d.today.filter((e) => e.dailyAmount > 0);
-  const aside = d.today.filter((e) => e.dailyAmount === 0);
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const shortDate = (iso: string) => `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`;
 
-  return (
-    <View style={{ gap: 12 }}>
-      <View>
-        <Text style={[styles.hero, { color: over ? RED : p.ink, fontSize: fs(34) }]}>
-          {formatINR(Math.abs(d.todayLeft))}
-        </Text>
-        <Text style={{ color: p.ink2, fontSize: fs(13) }}>
-          {over ? t("overToday") : t("leftToday")} · {formatINR(d.todaySpent)} {t("ofToday")}{" "}
-          {formatINR(d.todayBudget)}
-        </Text>
-      </View>
-      <TrackBar p={p} fraction={Math.min(1, fraction)} color={barColor} />
-
-      {everyday.length > 0 && (
-        <View style={{ gap: 6 }}>
-          {everyday.map((e, i) => (
-            <View key={e.id ?? i} style={styles.spendRow}>
-              <Text style={{ color: p.ink, fontSize: fs(13.5), flex: 1 }} numberOfLines={1}>
-                {e.merchant?.trim() || e.category}
-              </Text>
-              <Text style={{ color: p.ink, fontSize: fs(13.5), fontWeight: "600" }}>
-                −{formatINR(e.dailyAmount)}
-              </Text>
-            </View>
-          ))}
-        </View>
-      )}
-      {aside.length > 0 && (
-        <Text style={{ color: p.muted, fontSize: fs(12.5) }}>
-          {t("notCounted")}:{" "}
-          {aside.map((e) => `${e.merchant?.trim() || e.category} ${formatINR(e.amount)}`).join(", ")}
-        </Text>
-      )}
-
-      <History p={p} history={d.history.slice(-14)} />
-
-      <View style={styles.footer}>
-        <Stat p={p} label={t("everydayMoney")} value={formatINR(d.poolLeft)} sub={`${d.daysLeft} ${t("daysToGo")}`} />
-        {d.tomorrowBudget !== null && (
-          <Stat p={p} label={t("tomorrow")} value={formatINR(d.tomorrowBudget)} />
-        )}
-        {d.streak >= 2 && (
-          <Stat p={p} label={`🔥 ${t("streakDays")}`} value={String(d.streak)} />
-        )}
-      </View>
-    </View>
-  );
-}
-
-function Stat({ p, label, value, sub }: { p: Palette; label: string; value: string; sub?: string }) {
+function Line({ p, label, value, strong }: { p: Palette; label: string; value: string; strong?: boolean }) {
   const { fs } = useSettings();
   return (
-    <View style={{ gap: 2 }}>
-      <Text style={{ color: p.muted, fontSize: fs(11.5) }}>{label}</Text>
-      <Text style={{ color: p.ink, fontSize: fs(15), fontWeight: "700" }}>{value}</Text>
-      {sub && <Text style={{ color: p.ink2, fontSize: fs(11.5) }}>{sub}</Text>}
+    <View style={styles.line}>
+      <Text style={{ flex: 1, color: strong ? p.ink : p.ink2, fontSize: fs(14), fontWeight: strong ? "600" : "400" }}>
+        {label}
+      </Text>
+      <Text style={{ color: p.ink, fontSize: fs(strong ? 16 : 14), fontWeight: strong ? "700" : "500" }}>{value}</Text>
     </View>
   );
 }
@@ -151,7 +103,7 @@ function History({ p, history }: { p: Palette; history: DailyStatus["history"] }
   const max = Math.max(1, ...history.map((h) => Math.max(h.budget, h.spent)));
   const H = 56;
   return (
-    <View style={[styles.chart, { height: H }]}>
+    <View style={[styles.chart, { height: H, marginTop: 8 }]} accessibilityLabel="Spend per day against that day's budget, last 14 days">
       {history.map((h) => {
         const over = h.spent > h.budget;
         return (
@@ -159,17 +111,11 @@ function History({ p, history }: { p: Palette; history: DailyStatus["history"] }
             <View
               style={{
                 height: Math.max(2, (h.spent / max) * H),
-                backgroundColor: over ? RED : p.accent,
-                opacity: over ? 0.85 : 0.7,
+                backgroundColor: over ? p.warn : p.accent,
                 borderRadius: 3,
               }}
             />
-            <View
-              style={[
-                styles.tick,
-                { bottom: (h.budget / max) * H, backgroundColor: p.ink2 },
-              ]}
-            />
+            <View style={[styles.tick, { bottom: (h.budget / max) * H, backgroundColor: p.ink2 }]} />
           </View>
         );
       })}
@@ -179,7 +125,7 @@ function History({ p, history }: { p: Palette; history: DailyStatus["history"] }
 
 // ── Plan editor ─────────────────────────────────────────────────────────────
 
-function PlanSheet({
+export function PlanSheet({
   p,
   token,
   onClose,
@@ -282,7 +228,7 @@ function PlanSheet({
           ) : (
             <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 14 }}>
               <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
-                📅 {t("dailyBudget")}
+                {t("dailyBudget")}
               </Text>
 
               <Field p={p} label={t("monthlyIncome")}>
@@ -458,6 +404,8 @@ function ToggleRow({
 }
 
 const styles = StyleSheet.create({
+  line: { flexDirection: "row", alignItems: "center", gap: 12 },
+  rule: { height: 1, marginVertical: 2 },
   headRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   hero: { fontWeight: "800", letterSpacing: -0.5 },
   spendRow: { flexDirection: "row", alignItems: "center", gap: 12 },

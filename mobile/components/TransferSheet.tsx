@@ -190,7 +190,7 @@ export default function TransferSheet({
                   },
                 ]}
               >
-                💳 {t("cardPayment")}
+                {t("cardPayment")}
               </Text>
             )}
 
@@ -283,5 +283,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 4,
   },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

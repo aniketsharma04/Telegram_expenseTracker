@@ -62,7 +62,7 @@ export default function FamilyTab({ p, dark, data, memberName }: Props) {
     <View style={{ gap: 14 }}>
       {hasSplits && (
         <Card p={p}>
-          <SectionTitle p={p}>🤝 {t("settleUp")}</SectionTitle>
+          <SectionTitle p={p}>{t("settleUp")}</SectionTitle>
           {balances.length === 0 ? (
             <Text style={{ fontSize: fs(14), color: p.ink2 }}>{t("allSettled")}</Text>
           ) : (
@@ -86,7 +86,7 @@ export default function FamilyTab({ p, dark, data, memberName }: Props) {
         </Card>
       )}
       <Card p={p}>
-        <Text style={{ fontSize: 13, color: p.ink2 }}>👨‍👩‍👧 {data.family.name} · this month</Text>
+        <Text style={{ fontSize: 13, color: p.ink2 }}>{data.family.name} · this month</Text>
         <Text style={[styles.hero, { color: p.ink }]}>{formatINR(totals.spent)}</Text>
         <View style={styles.heroSub}>
           <Text style={{ fontSize: 13, color: p.ink2 }}>Invested: {formatINR(totals.invested)}</Text>

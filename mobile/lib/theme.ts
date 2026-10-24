@@ -1,30 +1,42 @@
 import { useColorScheme } from "react-native";
 
-/** Same validated design tokens as the web dashboard — one design system, two skins. */
+/**
+ * "Calm" design (v18): warm off-white ground, white cards, one deep-teal
+ * accent; orange only for "over". Muted text is dark enough for 4.5:1 on
+ * both the ground and cards — small grey labels must still be readable.
+ */
 export const palettes = {
   light: {
-    page: "#f4f4f1",
+    page: "#f6f5f2",
     surface: "#ffffff",
-    ink: "#0b0b0b",
-    ink2: "#52514e",
-    muted: "#898781",
-    grid: "#e1e0d9",
-    border: "rgba(11,11,11,0.08)",
-    accent: "#2a78d6",
-    accentSoft: "rgba(42,120,214,0.12)",
-    good: "#006300",
+    ink: "#141414",
+    ink2: "#55544f",
+    muted: "#6b6a65",
+    grid: "#ece9e2",
+    border: "#e4e2dc",
+    accent: "#0f766e",
+    accentSoft: "#e7f3ef",
+    good: "#0f766e",
+    warn: "#c2410c",
+    warnSoft: "#fdf0e6",
+    danger: "#b91c1c",
+    onAccent: "#ffffff",
   },
   dark: {
-    page: "#0d0d0d",
-    surface: "#1a1a19",
-    ink: "#ffffff",
-    ink2: "#c3c2b7",
-    muted: "#898781",
-    grid: "#2c2c2a",
-    border: "rgba(255,255,255,0.09)",
-    accent: "#3987e5",
-    accentSoft: "rgba(57,135,229,0.18)",
-    good: "#0ca30c",
+    page: "#0f0f0e",
+    surface: "#1b1b19",
+    ink: "#f4f4f1",
+    ink2: "#c4c3bc",
+    muted: "#a09f98",
+    grid: "#2c2c29",
+    border: "#2a2a27",
+    accent: "#2bb3a3",
+    accentSoft: "rgba(43,179,163,0.16)",
+    good: "#34c3a0",
+    warn: "#f0884d",
+    warnSoft: "rgba(240,136,77,0.16)",
+    danger: "#f16b6b",
+    onAccent: "#0b1f1d",
   },
 };
 

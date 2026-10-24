@@ -262,7 +262,7 @@ export default function AccountSheet({
                 >
                   <Text
                     style={{
-                      color: "#d03b3b",
+                      color: p.danger,
                       fontWeight: "600",
                       fontSize: fs(14),
                     }}
@@ -370,5 +370,5 @@ const styles = StyleSheet.create({
   },
   btn: { borderRadius: 14, paddingVertical: 14, alignItems: "center" },
   btnDanger: { paddingVertical: 14, paddingHorizontal: 14 },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

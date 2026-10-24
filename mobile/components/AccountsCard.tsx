@@ -3,6 +3,8 @@ import { Account, Position } from "../lib/api";
 import { formatINR, Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
 import { Card, SectionTitle } from "./ui";
+import { ACCOUNT_KIND_ICON } from "../lib/categories";
+import { IconBubble } from "./ui";
 
 /**
  * The first screen in the app that answers "where do I stand?" rather than
@@ -19,12 +21,7 @@ interface Props {
   onTransfer: () => void;
 }
 
-const KIND_ICON: Record<Account["kind"], string> = {
-  bank: "🏦",
-  cash: "👛",
-  wallet: "📱",
-  credit_card: "💳",
-};
+
 
 export default function AccountsCard({
   p,
@@ -85,7 +82,7 @@ export default function AccountsCard({
       <Text style={{ color: p.muted, fontSize: fs(12) }}>{t("netWorth")}</Text>
       <Text
         style={{
-          color: net < 0 ? "#d03b3b" : p.ink,
+          color: net < 0 ? p.danger : p.ink,
           fontSize: fs(30),
           fontWeight: "700",
           marginTop: 2,
@@ -110,7 +107,7 @@ export default function AccountsCard({
           </Text>
           <Text
             style={{
-              color: (position?.liabilities ?? 0) > 0 ? "#d03b3b" : p.ink,
+              color: (position?.liabilities ?? 0) > 0 ? p.danger : p.ink,
               fontSize: fs(15),
               fontWeight: "600",
             }}
@@ -126,7 +123,7 @@ export default function AccountsCard({
           const shown = owed ? (a.outstanding ?? 0) : a.balance;
           return (
             <Pressable key={a.id} onPress={() => onEdit(a)} style={styles.row}>
-              <Text style={{ fontSize: fs(17) }}>{KIND_ICON[a.kind]}</Text>
+              <IconBubble name={ACCOUNT_KIND_ICON[a.kind] ?? "briefcase"} color={p.accent} bg={p.accentSoft} size={36} />
               <View style={styles.rowMain}>
                 <View style={styles.rowTitle}>
                   <Text
@@ -167,9 +164,9 @@ export default function AccountsCard({
                   style={{
                     color:
                       owed && shown > 0
-                        ? "#d03b3b"
+                        ? p.danger
                         : shown < 0
-                          ? "#d03b3b"
+                          ? p.danger
                           : p.ink,
                     fontSize: fs(14.5),
                     fontWeight: "600",

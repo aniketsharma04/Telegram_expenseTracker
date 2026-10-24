@@ -15,18 +15,10 @@ import {
 import { useSettings } from "../lib/i18n";
 import { formatINR, Palette } from "../lib/theme";
 import { Card } from "./ui";
+import { BILL_KIND_ICON } from "../lib/categories";
+import { IconBubble } from "./ui";
 
-const KIND_ICON: Record<string, string> = {
-  electricity: "⚡",
-  water: "💧",
-  gas: "🔥",
-  credit_card: "💳",
-  rent: "🏠",
-  internet: "🌐",
-  mobile: "📱",
-  insurance: "🛡️",
-  other: "🧾",
-};
+
 
 interface Props {
   p: Palette;
@@ -102,14 +94,14 @@ export default function DetectedBillsCard({
   return (
     <Card p={p} style={{ borderColor: p.accent }}>
       <Text style={{ fontSize: fs(14), fontWeight: "700", color: p.ink }}>
-        📧 {t("foundInEmail")}
+        {t("foundInEmail")}
       </Text>
       <Text style={{ fontSize: fs(12), color: p.muted, marginTop: 2 }}>
         {t("detectedNote")}
       </Text>
 
       {error && (
-        <Text style={{ fontSize: fs(12.5), color: "#d03b3b", marginTop: 8 }}>
+        <Text style={{ fontSize: fs(12.5), color: p.danger, marginTop: 8 }}>
           {error}
         </Text>
       )}
@@ -131,7 +123,7 @@ export default function DetectedBillsCard({
         return (
           <View key={d.id} style={[styles.item, { borderTopColor: p.border }]}>
             <View style={styles.head}>
-              <Text style={{ fontSize: 20 }}>{KIND_ICON[d.kind] ?? "🧾"}</Text>
+              <IconBubble name={BILL_KIND_ICON[d.kind] ?? "file-text"} color={p.accent} bg={p.accentSoft} size={36} />
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text
                   style={{
