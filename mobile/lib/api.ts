@@ -16,7 +16,11 @@ export interface Expense {
   source: string;
   paid_by?: number | null;
   split_id?: string | null;
+  /** v14: daily / fixed / savings — null lets the app decide. */
+  budget_scope?: BudgetScope | null;
 }
+
+export type BudgetScope = "daily" | "fixed" | "savings";
 
 export interface BudgetProgress {
   id: string;
@@ -234,6 +238,120 @@ export interface ApiData {
   accounts?: Account[];
   position?: Position;
   transfers?: Transfer[];
+  daily?: DailyStatus | null;
+}
+
+// ── Daily budget (v14) ──────────────────────────────────────────────────────
+
+export interface DailyPlan {
+  monthly_income: number | null;
+  savings_goal: number;
+  morning_brief: boolean;
+  evening_report: boolean;
+  live_updates: boolean;
+}
+
+export interface Commitment {
+  id: string;
+  name: string;
+  amount: number;
+  category: string | null;
+  match: string | null;
+}
+
+export interface CommitmentSuggestion {
+  name: string;
+  amount: number;
+  category: string | null;
+  match: string | null;
+  from: "recurring" | "bill";
+}
+
+export interface DailySpend {
+  id?: string;
+  amount: number;
+  category: string;
+  merchant: string | null;
+  scope: BudgetScope;
+  dailyAmount: number;
+}
+
+export interface DailyStatus {
+  ready: boolean;
+  reason: "no_income" | null;
+  income: number;
+  incomeSource: "plan" | "last_month" | null;
+  fixed: number;
+  savingsGoal: number;
+  pool: number;
+  baseDaily: number;
+  daysInMonth: number;
+  dayOfMonth: number;
+  daysLeft: number;
+  todayBudget: number;
+  todaySpent: number;
+  todayLeft: number;
+  poolSpent: number;
+  poolLeft: number;
+  tomorrowBudget: number | null;
+  projectedLeftover: number;
+  streak: number;
+  savedFromSavings: number;
+  commitments: Array<{ id: string; name: string; amount: number; paid: number }>;
+  history: Array<{ date: string; budget: number; spent: number }>;
+  today: DailySpend[];
+  plan: DailyPlan | null;
+  commitment_list: Commitment[];
+}
+
+export async function fetchPlan(token: string): Promise<{
+  daily: DailyStatus;
+  plan: DailyPlan | null;
+  commitments: Commitment[];
+  suggestions: CommitmentSuggestion[];
+} | null> {
+  const res = await fetch(`${API_BASE}/api/plan`, {
+    headers: { Authorization: `Bearer ${token.trim()}` },
+  });
+  return res.ok ? res.json() : null;
+}
+
+export async function savePlan(
+  token: string,
+  patch: Partial<DailyPlan>,
+): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/plan`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(patch),
+  });
+  return res.ok;
+}
+
+export async function addCommitment(
+  token: string,
+  c: { name: string; amount: number; category?: string | null; match?: string | null },
+): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/commitments`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(c),
+  });
+  return res.ok;
+}
+
+export async function removeCommitment(token: string, id: string): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/commitments?id=${encodeURIComponent(id)}`,
+    { method: "DELETE", headers: { Authorization: `Bearer ${token.trim()}` } },
+  );
+  return res.ok;
 }
 
 export async function fetchData(
@@ -334,6 +452,7 @@ export async function patchExpense(
     category?: string;
     merchant?: string | null;
     expense_date?: string;
+    budget_scope?: BudgetScope | null;
   },
 ): Promise<
   | { status: "updated"; expense: LoggedExpense; alerts?: string[] }

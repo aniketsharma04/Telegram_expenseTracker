@@ -203,6 +203,17 @@ export async function PATCH(req: NextRequest) {
     patch.expense_date = body.expense_date;
   }
 
+  // v14: daily / fixed / savings, or null to let the app decide.
+  if (body.budget_scope !== undefined) {
+    if (
+      body.budget_scope !== null &&
+      !["daily", "fixed", "savings"].includes(body.budget_scope as string)
+    ) {
+      return NextResponse.json({ error: "invalid budget_scope" }, { status: 400 });
+    }
+    patch.budget_scope = body.budget_scope;
+  }
+
   if (Object.keys(patch).length === 0) {
     return NextResponse.json({ error: "nothing to update" }, { status: 400 });
   }

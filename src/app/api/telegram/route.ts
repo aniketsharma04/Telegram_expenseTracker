@@ -48,6 +48,17 @@ import { notify } from "@/lib/notify";
 import { saveParsedReceipt } from "@/lib/receipts";
 import { geminiConfigured, userGeminiKey } from "@/lib/ai-keys";
 import type { Expense } from "@/lib/types";
+import {
+  addCommitment,
+  getPlan,
+  loadDailyStatus,
+  removeCommitment,
+  savePlan,
+  setBudgetScope,
+  suggestCommitments,
+} from "@/lib/plan";
+import { spendMessage } from "@/lib/briefs";
+import { eveningReport, inr, SETUP_HINT } from "@/lib/daily-budget";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // LLM + transcription calls need more than the default
@@ -83,6 +94,14 @@ const HELP_TEXT = [
   "• <code>/budget groceries 3000</code> — cap one category",
   "• <code>/budget</code> — see how the month is tracking",
   "• <code>/income 50000 salary</code> — log income; <code>/income</code> shows savings",
+  "",
+  "Daily budget:",
+  "• <code>/plan 100000</code> — monthly income; <code>/plan save 15000</code> — savings goal",
+  "• <code>/fixed rent 25000</code> — a fixed monthly cost (kept out of the daily number)",
+  "• <code>/fixed</code> — list them; <code>/fixed remove rent</code>",
+  "• <code>/today</code> — what's left today",
+  "• <code>/fromsavings</code> — last spend came from savings, not today's budget",
+  "• <code>/plan morning off</code> · <code>evening off</code> · <code>live off</code> — mute a message",
 ].join("\n");
 
 /**
@@ -451,7 +470,9 @@ Bank says balance: <b>₹${result.balance.toLocaleString("en-IN")}</b>`
   await reply(
     userId,
     `${icon} <b>${money}</b>${where}
-${escapeHtml(result.note)}${balance}${drift}` + suffix,
+${escapeHtml(result.note)}${balance}${drift}` +
+      suffix +
+      (result.expenseId ? await dailySuffix(supabase, userId, result.expenseId) : ""),
   );
   return true;
 }
@@ -503,7 +524,8 @@ async function handleExpenseText(
     userId,
     confirmText(result.expense) +
       suffix +
-      (await monthlySummary(supabase, userId)) +
+      ((await dailySuffix(supabase, userId, result.expense.id)) ||
+        (await monthlySummary(supabase, userId))) +
       nudge +
       (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),
   );
@@ -603,6 +625,21 @@ async function handleCommand(text: string, userId: number) {
       return;
     case "/paid":
       await handlePaid(userId, arg);
+      return;
+    case "/plan":
+      await handlePlan(userId, arg);
+      return;
+    case "/fixed":
+      await handleFixed(userId, arg);
+      return;
+    case "/today":
+      await sendToday(userId);
+      return;
+    case "/fromsavings":
+      await rescopeLast(userId, "savings");
+      return;
+    case "/countdaily":
+      await rescopeLast(userId, "daily");
       return;
     default:
       await reply(userId, `Unknown command. ${"\n"}${HELP_TEXT}`);
@@ -1319,4 +1356,182 @@ async function handlePaid(userId: number, arg: string) {
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// ── Daily budget (v14) ──────────────────────────────────────────────────────
+
+/** "Today: ₹1,467 left of ₹1,667" under a confirmation — empty without a plan. */
+async function dailySuffix(
+  supabase: SupabaseClient,
+  userId: number,
+  expenseId: string,
+): Promise<string> {
+  try {
+    const { status, plan } = await loadDailyStatus(supabase, userId);
+    if (!plan || !status.ready) return "";
+    const text = spendMessage(status, [expenseId]);
+    if (!text) return "";
+    // The confirmation already names the spend; keep the line about the day.
+    const [first, ...rest] = text.split("\n");
+    return `\n\n${first.startsWith("💸") ? rest.join("\n") : text}`;
+  } catch (err) {
+    console.error("daily suffix failed", err);
+    return "";
+  }
+}
+
+const parseMoney = (raw: string): number | null => {
+  // "1 lakh" / "1.5L" — only here: in an expense, "1l milk" is a litre.
+  const lakh = raw.match(/(\d+(?:\.\d+)?)\s*(?:lakhs?|lacs?|l)\b/i);
+  if (lakh) return Math.round(Number(lakh[1]) * 100000);
+  const { amount } = extractAmount(raw);
+  return amount && amount > 0 ? Math.round(amount) : null;
+};
+
+async function handlePlan(userId: number, arg: string) {
+  const supabase = createServiceClient();
+  const words = arg.toLowerCase().split(/\s+/).filter(Boolean);
+
+  if (words.length) {
+    const toggle = ["morning", "evening", "live"].indexOf(words[0]);
+    if (toggle >= 0 && (words[1] === "on" || words[1] === "off")) {
+      const key = (["morning_brief", "evening_report", "live_updates"] as const)[toggle];
+      await savePlan(supabase, userId, { [key]: words[1] === "on" });
+    } else if (words[0] === "save" || words[0] === "savings") {
+      const rest = words.slice(1).join(" ");
+      const n = rest === "0" ? 0 : parseMoney(rest);
+      if (n === null) {
+        await reply(userId, "How much a month? e.g. <code>/plan save 15000</code>");
+        return;
+      }
+      await savePlan(supabase, userId, { savings_goal: n });
+    } else {
+      const n = parseMoney(words.join(" ").replace(/^income\s*/, ""));
+      if (n === null) {
+        await reply(userId, "Tell me your monthly income, e.g. <code>/plan 100000</code>");
+        return;
+      }
+      await savePlan(supabase, userId, { monthly_income: n });
+    }
+  }
+
+  const { status, plan, commitments } = await loadDailyStatus(supabase, userId);
+  if (!plan) {
+    await reply(userId, SETUP_HINT);
+    return;
+  }
+  const lines = [
+    "🧮 <b>Your plan</b>",
+    "",
+    `Income: ${status.income ? inr(status.income) : "not set"}${status.incomeSource === "last_month" ? " (last month's)" : ""}`,
+    `− Fixed costs: ${inr(status.fixed)}${commitments.length ? "" : " — add with <code>/fixed rent 25000</code>"}`,
+    `− Savings goal: ${inr(status.savingsGoal)}`,
+    `= Everyday money: <b>${inr(status.pool)}</b> (≈${inr(status.baseDaily)}/day)`,
+  ];
+  if (status.ready)
+    lines.push("", `Today: <b>${inr(status.todayLeft)}</b> left of ${inr(status.todayBudget)}`);
+  lines.push(
+    "",
+    `Morning ${plan.morning_brief ? "on" : "off"} · Evening ${plan.evening_report ? "on" : "off"} · Live ${plan.live_updates ? "on" : "off"}`,
+  );
+  if (!commitments.length) {
+    const ideas = await suggestCommitments(supabase, userId, commitments);
+    if (ideas.length)
+      lines.push(
+        "",
+        "Looks like fixed costs — tap to copy:",
+        ...ideas.slice(0, 5).map((i) => `• <code>/fixed ${escapeHtml(i.name)} ${i.amount}</code>`),
+      );
+  }
+  await reply(userId, lines.join("\n"));
+}
+
+async function handleFixed(userId: number, arg: string) {
+  const supabase = createServiceClient();
+  const removeMatch = arg.match(/^(?:remove|delete|rm)\s+(.+)$/i);
+  if (removeMatch) {
+    const removed = await removeCommitment(supabase, userId, removeMatch[1]);
+    await reply(
+      userId,
+      removed
+        ? `🗑️ Removed <b>${escapeHtml(removed)}</b> from fixed costs.`
+        : `No fixed cost called "${escapeHtml(removeMatch[1])}". Send <code>/fixed</code> to see the list.`,
+    );
+    return;
+  }
+
+  if (arg) {
+    const amount = parseMoney(arg);
+    const name = arg
+      .replace(/(?:₹|rs\.?|inr)?\s*\d[\d,]*(?:\.\d+)?\s*k?\b/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!amount || !name) {
+      await reply(userId, "Like this: <code>/fixed rent 25000</code>");
+      return;
+    }
+    const categories = await loadCategories(supabase);
+    const guessed = parseExpense(`${amount} ${name}`, categories as CategoryRule[]).category;
+    await addCommitment(supabase, userId, {
+      name: name.replace(/^\w/, (c) => c.toUpperCase()),
+      amount,
+      category: guessed && guessed !== "Uncategorized" ? guessed : null,
+    });
+    // Listing a fixed cost means they're using the daily budget — make sure a plan row exists.
+    if (!(await getPlan(supabase, userId))) await savePlan(supabase, userId, {});
+  }
+
+  const { status, commitments } = await loadDailyStatus(supabase, userId);
+  if (!commitments.length) {
+    await reply(userId, "No fixed costs yet. Add one: <code>/fixed rent 25000</code>");
+    return;
+  }
+  await reply(
+    userId,
+    [
+      "📌 <b>Fixed monthly costs</b>",
+      ...status.commitments.map(
+        (c) => `• ${escapeHtml(c.name)} ${inr(c.amount)}${c.paid >= c.amount * 0.7 ? " ✅ paid" : ""}`,
+      ),
+      `Total: <b>${inr(status.fixed)}</b> — kept out of your daily budget.`,
+      "",
+      status.ready
+        ? `Everyday money: ${inr(status.pool)} · today ${inr(status.todayBudget)}`
+        : SETUP_HINT,
+    ].join("\n"),
+  );
+}
+
+async function sendToday(userId: number) {
+  const supabase = createServiceClient();
+  const { status } = await loadDailyStatus(supabase, userId);
+  await reply(
+    userId,
+    eveningReport(status, localDate()).replace("Today's report", "Today so far"),
+  );
+}
+
+async function rescopeLast(userId: number, scope: "savings" | "daily") {
+  const supabase = createServiceClient();
+  const last = await latestExpense(supabase, userId);
+  if (!last) {
+    await reply(userId, "No expenses logged yet.");
+    return;
+  }
+  try {
+    await setBudgetScope(supabase, userId, last.id, scope);
+  } catch {
+    await reply(userId, "Couldn't change that — is the v14 migration applied?");
+    return;
+  }
+  const { status } = await loadDailyStatus(supabase, userId);
+  await reply(
+    userId,
+    (scope === "savings"
+      ? `💰 ${fmtINR(last.amount)}${last.merchant ? ` (${escapeHtml(last.merchant)})` : ""} now comes from savings.`
+      : `💸 ${fmtINR(last.amount)} now counts against your daily budget.`) +
+      (status.ready
+        ? `\nToday: <b>${inr(status.todayLeft)}</b> left of ${inr(status.todayBudget)}`
+        : ""),
+  );
 }

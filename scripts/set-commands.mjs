@@ -10,6 +10,10 @@ if (!token) {
 }
 
 const commands = [
+  { command: "today", description: "What's left to spend today" },
+  { command: "plan", description: "Daily budget plan — /plan 100000, /plan save 15000" },
+  { command: "fixed", description: "Fixed monthly costs — /fixed rent 25000" },
+  { command: "fromsavings", description: "Last spend came from savings, not today's budget" },
   { command: "expense", description: "Spent this month" },
   { command: "budget", description: "Budgets — /budget 15000 or /budget groceries 3000" },
   { command: "income", description: "Log income / see savings — /income 50000 salary" },

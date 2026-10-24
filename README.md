@@ -65,6 +65,23 @@ The dashboard works locally against the real Supabase project. The webhook needs
 - **Correction commands** — `/undo`, `/category <name>`, `/amount <n>`, `/last` act on the most recent entry.
 - **Dashboard analysis** — date-range presets (this month / 30 / 90 days), category filter with chart emphasis, top-merchants view, and period-over-period comparison. Realtime now reflects updates and deletes too.
 
+## Daily budget (v14)
+
+A monthly income is too big a number to feel, so the app turns it into one number to spend each day:
+
+```
+everyday money = income − fixed costs − savings goal
+today's budget = (everyday money − everyday spending so far) ÷ days left, today included
+```
+
+It's recalculated every morning, so a big day trims the days after it a little and a quiet day gives them more. Fixed costs you list (rent, EMI, SIP, subscriptions), Loans & EMI, Investments, and anything marked **from savings** never touch the daily number. If a fixed cost comes in above its planned amount, only the extra counts as everyday spending.
+
+- **Messages (Telegram):** a morning brief (~7:00 IST), a ping with "₹X left today" on every auto-captured spend, and a night report (~21:30 IST). Only users who set up a plan get them; each can be turned off.
+- **Bot:** `/plan 100000` (or `/plan 1 lakh`), `/plan save 15000`, `/fixed rent 25000`, `/fixed remove rent`, `/today`, `/fromsavings`, `/countdaily`, `/plan morning off`.
+- **App:** a daily-budget card at the top of Home with the plan editor, and a *Paid from savings* switch on each expense. The web dashboard shows the same card, read-only.
+- **Setup:** run `supabase/migrations/v14-daily-budget.sql`, deploy (adds the `/api/cron/morning` and `/api/cron/evening` crons in `vercel.json`), then `npm run set-commands`.
+- Logic: `src/lib/daily-budget.ts` (pure, tested), `src/lib/plan.ts` (DB), `src/lib/briefs.ts` (messages).
+
 ## Roadmap
 
 - **v3** — receipt OCR, budgets and proactive alerts, monthly auto-summary, dashboard access lock.

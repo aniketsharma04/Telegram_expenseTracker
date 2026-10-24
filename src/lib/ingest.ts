@@ -76,7 +76,8 @@ export async function ingestBankMessage(
     return fail("ignored", "Not a completed transaction — nothing logged.");
 
   const receivedAt = input.receivedAt ?? new Date().toISOString();
-  const onDate = receivedAt.slice(0, 10);
+  // The IST day, not the UTC one — a 1 a.m. coffee belongs to today's budget.
+  const onDate = localDate(0, new Date(receivedAt));
 
   // 1. Same notification delivered twice.
   if (input.externalId) {

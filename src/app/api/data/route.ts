@@ -14,6 +14,7 @@ import { loadBillStatuses } from "@/lib/bills";
 import { getGmailAccount, listDetected, needsReauth } from "@/lib/detected";
 import { loadBalanceSheet } from "@/lib/accounts";
 import { listTransfers } from "@/lib/transfers";
+import { loadDailyStatus } from "@/lib/plan";
 
 export const dynamic = "force-dynamic";
 
@@ -48,17 +49,24 @@ export async function GET(req: NextRequest) {
   const memberIds = family ? members.map((m) => m.id) : [userId];
 
   const since = localDate(LOOKBACK_DAYS);
-  let [expRes, catRes] = await Promise.all([
+  const expensesWith = <C extends string>(columns: C) =>
     supabase
       .from("expenses")
-      .select(
-        "id, user_id, amount, category, merchant, expense_date, logged_at, source, paid_by, split_id",
-      )
+      .select(columns)
       .in("user_id", memberIds)
       .gte("expense_date", since)
-      .order("logged_at", { ascending: false }),
+      .order("logged_at", { ascending: false });
+  let [expRes, catRes] = await Promise.all([
+    // v14 adds budget_scope (daily / fixed / savings).
+    expensesWith(
+      "id, user_id, amount, category, merchant, expense_date, logged_at, source, paid_by, split_id, budget_scope",
+    ),
     supabase.from("categories").select("name, color"),
   ]);
+  if (expRes.error)
+    expRes = (await expensesWith(
+      "id, user_id, amount, category, merchant, expense_date, logged_at, source, paid_by, split_id",
+    )) as unknown as typeof expRes;
   if (expRes.error) {
     // Pre-migration schema without split columns — retry with the old shape.
     expRes = (await supabase
@@ -85,7 +93,7 @@ export async function GET(req: NextRequest) {
     y -= 1;
   }
   const incomeSince = `${y}-${String(m).padStart(2, "0")}-01`; // last month + this month
-  const [budgets, incomes, bills, detectedBills, gmail, balances, transfers] =
+  const [budgets, incomes, bills, detectedBills, gmail, balances, transfers, daily] =
     await Promise.all([
       getBudgets(supabase, userId),
       getIncomes(supabase, userId, incomeSince),
@@ -95,6 +103,11 @@ export async function GET(req: NextRequest) {
       // v8: accounts with live balances, and the movements between them.
       loadBalanceSheet(supabase, userId),
       listTransfers(supabase, userId, since),
+      // v14: today's spendable number and the plan behind it.
+      loadDailyStatus(supabase, userId, today).catch((err) => {
+        console.error("daily status failed", err);
+        return null;
+      }),
     ]);
 
   return NextResponse.json({
@@ -136,6 +149,9 @@ export async function GET(req: NextRequest) {
       unassigned: balances.unassigned,
     },
     transfers,
+    daily: daily
+      ? { ...daily.status, plan: daily.plan, commitment_list: daily.commitments }
+      : null,
     // v7: bills spotted in email / notifications, awaiting confirm or dismiss.
     detected_bills: detectedBills,
     gmail: gmail

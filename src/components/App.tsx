@@ -222,6 +222,7 @@ export default function App() {
           today={data.today}
           rangeStart={derived.rangeStart}
           colorByCategory={derived.colorByCategory}
+          daily={scope === "family" ? undefined : (data.daily ?? null)}
           scopeLabel={
             scope === "family"
               ? member === "all"

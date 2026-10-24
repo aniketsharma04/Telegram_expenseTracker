@@ -297,6 +297,45 @@ const STRINGS = {
     en: "off from what's logged — some spending wasn't captured",
     hi: "दर्ज रकम से अंतर — कुछ खर्चे दर्ज नहीं हुए",
   },
+  // daily budget (v14)
+  dailyBudget: { en: "Daily budget", hi: "रोज़ का बजट" },
+  leftToday: { en: "left to spend today", hi: "आज खर्च के लिए बचे" },
+  overToday: { en: "over today's budget", hi: "आज के बजट से ज़्यादा" },
+  ofToday: { en: "of", hi: "में से" },
+  setUpDaily: { en: "Set up", hi: "सेट करें" },
+  editPlan: { en: "Plan", hi: "प्लान" },
+  dailyHint: {
+    en: "Tell the app your monthly income and fixed costs, and it turns them into one number to spend each day.",
+    hi: "अपनी महीने की आमदनी और तय खर्चे बताइए — ऐप उन्हें रोज़ खर्च करने लायक एक रकम में बदल देगा।",
+  },
+  everydayMoney: { en: "Everyday money left", hi: "रोज़मर्रा के लिए बचे" },
+  daysToGo: { en: "days to go", hi: "दिन बाकी" },
+  tomorrow: { en: "Tomorrow", hi: "कल" },
+  streakDays: { en: "day streak under budget", hi: "दिन से बजट के अंदर" },
+  notCounted: { en: "Not counted", hi: "गिना नहीं गया" },
+  monthlyIncome: { en: "Monthly income", hi: "महीने की आमदनी" },
+  savingsGoal: { en: "Savings goal / month", hi: "महीने की बचत का लक्ष्य" },
+  fixedCosts: { en: "Fixed monthly costs", hi: "हर महीने के तय खर्चे" },
+  fixedHint: {
+    en: "Rent, EMI, SIP, subscriptions — kept out of the daily number.",
+    hi: "किराया, EMI, SIP, सब्सक्रिप्शन — रोज़ के बजट में नहीं गिने जाते।",
+  },
+  suggestedFixed: { en: "Looks like a fixed cost", hi: "तय खर्चा लगता है" },
+  costName: { en: "Name, e.g. Rent", hi: "नाम, जैसे किराया" },
+  add: { en: "Add", hi: "जोड़ें" },
+  morningMsg: { en: "Morning message", hi: "सुबह का मैसेज" },
+  eveningMsg: { en: "Night report", hi: "रात की रिपोर्ट" },
+  liveMsg: { en: "Ping on every spend", hi: "हर खर्चे पर मैसेज" },
+  messagesVia: {
+    en: "Messages arrive on Telegram (link it in Settings).",
+    hi: "मैसेज टेलीग्राम पर आते हैं (सेटिंग्स में जोड़ें)।",
+  },
+  fromSavings: { en: "Paid from savings", hi: "बचत से दिया" },
+  fromSavingsHint: {
+    en: "Won't touch your daily budget.",
+    hi: "रोज़ के बजट पर असर नहीं होगा।",
+  },
+  perDay: { en: "/day", hi: "/दिन" },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;

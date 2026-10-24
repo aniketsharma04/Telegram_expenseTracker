@@ -7,6 +7,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
@@ -50,6 +51,7 @@ export default function EditExpenseSheet({
   const [category, setCategory] = useState<string>("");
   const [merchant, setMerchant] = useState("");
   const [day, setDay] = useState<DayPick>("keep");
+  const [fromSavings, setFromSavings] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,6 +61,7 @@ export default function EditExpenseSheet({
       setCategory(expense.category);
       setMerchant(expense.merchant ?? "");
       setDay("keep");
+      setFromSavings(expense.budget_scope === "savings");
       setError(null);
     }
   }, [expense]);
@@ -82,6 +85,8 @@ export default function EditExpenseSheet({
         patch.merchant = merchant.trim() || null;
       if (day !== "keep")
         patch.expense_date = day === "today" ? today : yesterdayOf(today);
+      if (fromSavings !== (expense.budget_scope === "savings"))
+        patch.budget_scope = fromSavings ? "savings" : null;
 
       if (Object.keys(patch).length === 0) {
         onClose();
@@ -250,6 +255,22 @@ export default function EditExpenseSheet({
               ))}
             </View>
 
+            <View style={styles.savingsRow}>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={{ color: p.ink, fontSize: fs(14), fontWeight: "500" }}>
+                  💰 {t("fromSavings")}
+                </Text>
+                <Text style={{ color: p.ink2, fontSize: fs(12) }}>
+                  {t("fromSavingsHint")}
+                </Text>
+              </View>
+              <Switch
+                value={fromSavings}
+                onValueChange={setFromSavings}
+                trackColor={{ true: p.accent }}
+              />
+            </View>
+
             {error && (
               <Text style={[styles.error, { fontSize: fs(13) }]}>{error}</Text>
             )}
@@ -305,6 +326,7 @@ export default function EditExpenseSheet({
 }
 
 const styles = StyleSheet.create({
+  savingsRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   backdrop: {
     flex: 1,
     justifyContent: "flex-end",

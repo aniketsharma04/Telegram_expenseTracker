@@ -30,6 +30,7 @@ import TransferSheet from "./components/TransferSheet";
 import TransactionsTab from "./components/TransactionsTab";
 import { Avatar } from "./components/ui";
 import { Account, ApiData, Expense, fetchData } from "./lib/api";
+import { DailyBudgetCard } from "./components/DailyBudgetCard";
 import { syncCaptures } from "./lib/capture";
 import { SettingsProvider, StringKey, useSettings } from "./lib/i18n";
 import { memberColor, usePalette } from "./lib/theme";
@@ -414,6 +415,16 @@ function AppInner() {
               today={data.today}
               colorByCategory={derived.colorByCategory}
               scopeLabel={scopeLabel}
+              topCard={
+                scope === "personal" ? (
+                  <DailyBudgetCard
+                    p={p}
+                    daily={data.daily}
+                    token={token}
+                    onChanged={refresh}
+                  />
+                ) : null
+              }
               extraCards={
                 scope === "personal" ? (
                   <>
