@@ -202,6 +202,37 @@ function AppInner() {
     return () => sub.remove();
   }, [token, refresh]);
 
+  // v15: register this phone for pushes on every launch (a cheap upsert —
+  // tokens rotate). Never prompts here; the prompt card asks with a reason.
+  useEffect(() => {
+    if (!token) return;
+    // Captures upload in the background as this user from now on.
+    connectCapture(token);
+    registerForPush(token, { ask: false }).then(setPushState);
+    AsyncStorage.getItem(PUSH_PROMPT_DISMISSED_KEY).then((v) =>
+      setPushPromptDismissed(v === "1"),
+    );
+  }, [token]);
+
+  // Tapping a push opens the inbox — also when the tap launched the app.
+  useEffect(() => {
+    if (!token) return;
+    const open = () => {
+      setInboxOpen(true);
+      refresh();
+    };
+    if (!handledColdStart.current) {
+      handledColdStart.current = true;
+      Notifications.getLastNotificationResponseAsync()
+        .then((r) => {
+          if (r) open();
+        })
+        .catch(() => {});
+    }
+    const sub = Notifications.addNotificationResponseReceivedListener(open);
+    return () => sub.remove();
+  }, [token, refresh]);
+
   // v9: the notification listener queues bank alerts while the app is closed.
   // Drain and upload them on open and on every return to the foreground —
   // with an empty queue this touches no network at all.
@@ -778,13 +809,7 @@ function AppInner() {
         onChanged={refresh}
       />
 
-      <AccountSheet
-        account={accountTarget}
-        onClose={() => setAccountTarget(null)}
-        onChanged={refresh}
-        token={token}
-        p={p}
-      />
+      <AccountSheet account={accountTarget} onClose={() => setAccountTarget(null)} onChanged={refresh} token={token} p={p} />
 
       <TransferSheet
         visible={transferOpen}

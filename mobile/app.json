@@ -52,6 +52,14 @@
           "color": "#0f766e",
           "defaultChannel": "daily"
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#2a78d6",
+          "defaultChannel": "daily"
+        }
       ]
     ],
     "extra": {
