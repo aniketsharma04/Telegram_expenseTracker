@@ -20,6 +20,7 @@ import {
   setBudget,
   removeBudget,
   collectBudgetAlerts,
+  deliverBudgetAlerts,
 } from "@/lib/budgets";
 import { budgetProgress, NON_SPEND_CATEGORIES } from "@/lib/insights";
 import { logIncome, getIncomes } from "@/lib/income";
@@ -44,10 +45,21 @@ import {
 import { looksLikeBankMessage } from "@/lib/bank-message";
 import { ingestBankMessage } from "@/lib/ingest";
 import { redeemLinkCode, resolveTelegramUserId } from "@/lib/identity";
-import { notify } from "@/lib/notify";
+import { notify, notifyTelegram } from "@/lib/notify";
 import { saveParsedReceipt } from "@/lib/receipts";
 import { geminiConfigured, userGeminiKey } from "@/lib/ai-keys";
 import type { Expense } from "@/lib/types";
+import {
+  addCommitment,
+  getPlan,
+  loadDailyStatus,
+  removeCommitment,
+  savePlan,
+  setBudgetScope,
+  suggestCommitments,
+} from "@/lib/plan";
+import { spendMessage } from "@/lib/briefs";
+import { eveningReport, inr, SETUP_HINT } from "@/lib/daily-budget";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // LLM + transcription calls need more than the default
@@ -60,38 +72,46 @@ const HELP_TEXT = [
   "• 🎤 a voice note works too",
   "",
   "Fixing mistakes (applies to the last entry):",
-  "• <code>/undo</code> — delete it",
-  "• <code>/category food</code> — change its category",
-  "• <code>/amount 350</code> — change its amount",
-  "• <code>/last</code> — show it",
+  "• <code>/undo</code>: delete it",
+  "• <code>/category food</code>: change its category",
+  "• <code>/amount 350</code>: change its amount",
+  "• <code>/last</code>: show it",
   "",
   "Reports:",
-  "• <code>/expense</code> — spent this month",
-  "• <code>/invest</code> — invested this month",
-  "• <code>/emi</code> — loans &amp; EMI this month",
-  "• <code>/dashboard</code> — web dashboard link",
-  "• <code>/status</code> — check bot configuration",
+  "• <code>/expense</code>: spent this month",
+  "• <code>/invest</code>: invested this month",
+  "• <code>/emi</code>: loans &amp; EMI this month",
+  "• <code>/dashboard</code>: web dashboard link",
+  "• <code>/status</code>: check bot configuration",
   "",
   "Family:",
-  "• <code>/family create Sharma Family</code> — start a family",
-  "• <code>/invite</code> — get a link to add members",
-  "• <code>/family</code> — this month's family report",
-  "• <code>/split 1200 dinner</code> — split a bill equally with your family",
+  "• <code>/family create Sharma Family</code>: start a family",
+  "• <code>/invite</code>: get a link to add members",
+  "• <code>/family</code>: this month's family report",
+  "• <code>/split 1200 dinner</code>: split a bill equally with your family",
   "",
   "Money habits:",
-  "• <code>/budget 15000</code> — overall monthly cap (alerts at 80% and 100%)",
-  "• <code>/budget groceries 3000</code> — cap one category",
-  "• <code>/budget</code> — see how the month is tracking",
-  "• <code>/income 50000 salary</code> — log income; <code>/income</code> shows savings",
+  "• <code>/budget 15000</code>: overall monthly cap (alerts at 80% and 100%)",
+  "• <code>/budget groceries 3000</code>: cap one category",
+  "• <code>/budget</code>: see how the month is tracking",
+  "• <code>/income 50000 salary</code>: log income · <code>/income</code>: see savings",
+  "",
+  "Daily budget:",
+  "• <code>/plan 100000</code>: monthly income · <code>/plan save 15000</code>: savings goal",
+  "• <code>/plan payday 30</code>: budget months run salary to salary",
+  "• <code>/fixed rent 25000</code>: a fixed monthly cost (kept out of the daily number)",
+  "• <code>/fixed</code>: list them · <code>/fixed remove rent</code>: remove one",
+  "• <code>/today</code>: what's left today",
+  "• <code>/fromsavings</code>: last spend came from savings, not today's budget",
+  "• <code>/plan morning off</code> · <code>evening off</code> · <code>live off</code>: mute a message",
 ].join("\n");
 
 /**
- * Reply to whoever this account belongs to. Goes through notify() rather
- * than sendMessage() because the account id is no longer necessarily a chat
- * id — an email account has whatever chat it linked, or none at all.
+ * Reply in the Telegram chat. Chat only — replies don't belong in the app
+ * inbox or on the phone's lock screen; real notices go through notify().
  */
 async function reply(userId: number, text: string): Promise<void> {
-  await notify(createServiceClient(), userId, text);
+  await notifyTelegram(createServiceClient(), userId, text);
 }
 
 function ok() {
@@ -233,7 +253,7 @@ export async function POST(req: Request) {
     try {
       await sendMessage(
         chatId,
-        "⚠️ Something went wrong — that message was NOT logged. Try again in a minute.",
+        "⚠️ Something went wrong, so that message was NOT logged. Try again in a minute.",
       );
     } catch {
       // nothing more we can do
@@ -263,7 +283,7 @@ async function handleMessage(message: TelegramMessage, userId: number) {
     if (!transcript) {
       await reply(
         userId,
-        "🎤 I couldn't make out that voice note — try again or type it.",
+        "🎤 I couldn't make out that voice note. Try again or type it.",
       );
       return;
     }
@@ -334,7 +354,7 @@ async function handleReceiptPhoto(message: TelegramMessage, userId: number) {
   if (!image) {
     await reply(
       userId,
-      "📷 I couldn't download that photo — try sending it again.",
+      "📷 I couldn't download that photo. Try sending it again.",
     );
     return;
   }
@@ -356,7 +376,7 @@ async function handleReceiptPhoto(message: TelegramMessage, userId: number) {
     await reply(
       userId,
       parsed?.clarifying_question ??
-        "📷 I couldn't read a total from that receipt — try a clearer photo, or just type it like <code>300 zomato</code>.",
+        "📷 I couldn't read a total from that receipt. Try a clearer photo, or just type it like <code>300 zomato</code>.",
     );
     return;
   }
@@ -389,14 +409,16 @@ async function handleReceiptPhoto(message: TelegramMessage, userId: number) {
   );
   const itemLine = receipt.items
     ? `
-🧾 ${receipt.items} item${receipt.items === 1 ? "" : "s"} saved${receipt.reconciled ? "" : " (partial — check the total)"}`
+🧾 ${receipt.items} item${receipt.items === 1 ? "" : "s"} saved${receipt.reconciled ? "" : " (partial, check the total)"}`
     : "";
 
   const nudge =
     parsed.confidence === "low" || !parsed.category
-      ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
+      ? "\n🤔 Not sure about the category. Reply <code>/category &lt;name&gt;</code> to fix it."
       : "";
   const alerts = await collectBudgetAlerts(supabase, userId);
+  // The chat reply carries them; the inbox and phone get them too.
+  await deliverBudgetAlerts(supabase, userId, alerts, { telegram: false });
   await reply(
     userId,
     `📷 ${confirmText(row)}` +
@@ -451,7 +473,11 @@ Bank says balance: <b>₹${result.balance.toLocaleString("en-IN")}</b>`
   await reply(
     userId,
     `${icon} <b>${money}</b>${where}
-${escapeHtml(result.note)}${balance}${drift}` + suffix,
+${escapeHtml(result.note)}${balance}${drift}` +
+      suffix +
+      (result.expenseId
+        ? await dailySuffix(supabase, userId, result.expenseId)
+        : ""),
   );
   return true;
 }
@@ -496,14 +522,17 @@ async function handleExpenseText(
   }
 
   const nudge = result.nudge
-    ? "\n🤔 Not sure about the category — reply <code>/category &lt;name&gt;</code> to fix it."
+    ? "\n🤔 Not sure about the category. Reply <code>/category &lt;name&gt;</code> to fix it."
     : "";
   const alerts = await collectBudgetAlerts(supabase, userId);
+  // The chat reply carries them; the inbox and phone get them too.
+  await deliverBudgetAlerts(supabase, userId, alerts, { telegram: false });
   await reply(
     userId,
     confirmText(result.expense) +
       suffix +
-      (await monthlySummary(supabase, userId)) +
+      ((await dailySuffix(supabase, userId, result.expense.id)) ||
+        (await monthlySummary(supabase, userId))) +
       nudge +
       (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),
   );
@@ -572,7 +601,7 @@ async function handleCommand(text: string, userId: number) {
       const appToken = signToken(userId, 60 * 60 * 24 * 30);
       await reply(
         userId,
-        `📱 Your app login code (valid 30 days — tap to copy):\n\n<code>${appToken}</code>\n\nOpen the Expense Tracker app → paste the code → done.`,
+        `📱 Your app login code (valid 30 days, tap to copy):\n\n<code>${appToken}</code>\n\nOpen the Aaj app → paste the code → done.`,
       );
       return;
     }
@@ -604,6 +633,21 @@ async function handleCommand(text: string, userId: number) {
     case "/paid":
       await handlePaid(userId, arg);
       return;
+    case "/plan":
+      await handlePlan(userId, arg);
+      return;
+    case "/fixed":
+      await handleFixed(userId, arg);
+      return;
+    case "/today":
+      await sendToday(userId);
+      return;
+    case "/fromsavings":
+      await rescopeLast(userId, "savings");
+      return;
+    case "/countdaily":
+      await rescopeLast(userId, "daily");
+      return;
     default:
       await reply(userId, `Unknown command. ${"\n"}${HELP_TEXT}`);
   }
@@ -617,7 +661,7 @@ async function handleFamilyCreate(userId: number, name: string) {
   if (existing) {
     await reply(
       userId,
-      `You're already in <b>${existing.name}</b> — one family per person for now. Use <code>/invite</code> to add members.`,
+      `You're already in <b>${existing.name}</b>. It's one family per person for now. Use <code>/invite</code> to add members.`,
     );
     return;
   }
@@ -631,7 +675,7 @@ async function handleFamilyCreate(userId: number, name: string) {
   const family = await createFamily(supabase, userId, name.slice(0, 60));
   await reply(
     userId,
-    `👨‍👩‍👧 <b>${family.name}</b> created!\n\nForward this link to your family members — one tap and they're in:\n${inviteLink(family.invite_code)}\n\nEveryone who joins logs their own expenses, and <code>/family</code> shows the combined picture.`,
+    `👨‍👩‍👧 <b>${family.name}</b> created!\n\nForward this link to your family members. One tap and they're in:\n${inviteLink(family.invite_code)}\n\nEveryone who joins logs their own expenses, and <code>/family</code> shows the combined picture.`,
   );
 }
 
@@ -641,7 +685,7 @@ async function sendInvite(userId: number) {
   if (!family) {
     await reply(
       userId,
-      "You're not in a family yet — start one with <code>/family create Sharma Family</code>",
+      "You're not in a family yet. Start one with <code>/family create Sharma Family</code>",
     );
     return;
   }
@@ -657,7 +701,7 @@ async function sendFamilyReport(userId: number) {
   if (!family) {
     await reply(
       userId,
-      "You're not in a family yet.\n\nStart one with <code>/family create Sharma Family</code>, then <code>/invite</code> to add members — everyone's expenses roll up into one family view.",
+      "You're not in a family yet.\n\nStart one with <code>/family create Sharma Family</code>, then <code>/invite</code> to add members. Everyone's expenses roll up into one family view.",
     );
     return;
   }
@@ -704,7 +748,7 @@ async function sendFamilyReport(userId: number) {
 
   await reply(
     userId,
-    `👨‍👩‍👧 <b>${family.name} — since ${monthLabel}</b>\nSpent: ${fmtINR(spent)} · Invested: ${fmtINR(invested)}\n\n${memberLines}\n\nMembers: ${members.length} · <code>/invite</code> to add more`,
+    `👨‍👩‍👧 <b>${family.name}, since ${monthLabel}</b>\nSpent: ${fmtINR(spent)} · Invested: ${fmtINR(invested)}\n\n${memberLines}\n\nMembers: ${members.length} · <code>/invite</code> to add more`,
   );
 }
 
@@ -758,7 +802,7 @@ async function sendMonthReport(userId: number, categoryName: string | null) {
       .slice(0, 5)
       .map(
         (r) =>
-          `• ${fmtINR(r.amount)}${r.merchant ? ` — ${r.merchant}` : ""} (${Number(r.expense_date.slice(8))} ${MONTH_NAMES[Number(r.expense_date.slice(5, 7)) - 1]})`,
+          `• ${fmtINR(r.amount)}${r.merchant ? ` at ${r.merchant}` : ""} (${Number(r.expense_date.slice(8))} ${MONTH_NAMES[Number(r.expense_date.slice(5, 7)) - 1]})`,
       )
       .join("\n");
     await reply(
@@ -801,10 +845,10 @@ async function sendStatus(userId: number) {
     ? `Gemini (${process.env.LLM_MODEL || "gemini-2.5-flash"})`
     : process.env.ANTHROPIC_API_KEY
       ? `Claude (${process.env.LLM_MODEL || "claude-opus-5"})`
-      : "❌ not configured — messy messages fall back to Uncategorized";
+      : "❌ not configured, so messy messages fall back to Uncategorized";
   const voice = voiceConfigured()
     ? "✅ configured (Groq Whisper)"
-    : "❌ not configured — add GROQ_API_KEY in Vercel and redeploy";
+    : "❌ not configured. Add GROQ_API_KEY in Vercel and redeploy";
   let db = "✅ connected";
   try {
     const supabase = createServiceClient();
@@ -837,11 +881,11 @@ async function undoLast(userId: number) {
   const supabase = createServiceClient();
   const last = await latestExpense(supabase, userId);
   if (!last) {
-    await reply(userId, "Nothing to undo — no expenses logged yet.");
+    await reply(userId, "Nothing to undo. No expenses logged yet.");
     return;
   }
   const removed = await deleteExpenseScoped(supabase, userId, last.id);
-  const splitNote = removed > 1 ? ` (whole split — ${removed} shares)` : "";
+  const splitNote = removed > 1 ? ` (whole split, ${removed} shares)` : "";
   await reply(
     userId,
     `🗑️ Deleted ${fmtINR(last.amount)} · ${last.category}${last.merchant ? ` (${last.merchant})` : ""}${splitNote}` +
@@ -963,7 +1007,7 @@ async function handleBudget(userId: number, arg: string) {
       if (budgets.length === 0) {
         await reply(
           userId,
-          "No budgets set yet.\n\n• <code>/budget 15000</code> — overall monthly cap\n• <code>/budget groceries 3000</code> — cap one category\n\nI'll warn you at 80% and 100%.",
+          "No budgets set yet.\n\n• <code>/budget 15000</code>: overall monthly cap\n• <code>/budget groceries 3000</code>: cap one category\n\nI'll warn you at 80% and 100%.",
         );
         return;
       }
@@ -1057,7 +1101,7 @@ async function handleBudget(userId: number, arg: string) {
     console.error("/budget failed", err);
     await reply(
       userId,
-      "⚠️ Budgets aren't available yet — the v4 database migration hasn't been applied.",
+      "⚠️ Budgets aren't available yet. The v4 database migration hasn't been applied.",
     );
   }
 }
@@ -1128,7 +1172,7 @@ async function handleIncome(userId: number, arg: string) {
     console.error("/income failed", err);
     await reply(
       userId,
-      "⚠️ Income tracking isn't available yet — the v4 database migration hasn't been applied.",
+      "⚠️ Income tracking isn't available yet. The v4 database migration hasn't been applied.",
     );
   }
 }
@@ -1138,7 +1182,7 @@ async function handleSplit(userId: number, arg: string) {
   if (!arg) {
     await reply(
       userId,
-      "Split a bill equally with your family, e.g. <code>/split 1200 dinner</code> — you pay, everyone's share gets logged.",
+      "Split a bill equally with your family, e.g. <code>/split 1200 dinner</code>. You pay, and everyone's share gets logged.",
     );
     return;
   }
@@ -1147,7 +1191,7 @@ async function handleSplit(userId: number, arg: string) {
   if (!family) {
     await reply(
       userId,
-      "You're not in a family yet — <code>/family create</code> first, then invite members to split with.",
+      "You're not in a family yet. Use <code>/family create</code> first, then invite members to split with.",
     );
     return;
   }
@@ -1155,7 +1199,7 @@ async function handleSplit(userId: number, arg: string) {
   if (members.length < 2) {
     await reply(
       userId,
-      "Your family has no other members yet — <code>/invite</code> someone first.",
+      "Your family has no other members yet. <code>/invite</code> someone first.",
     );
     return;
   }
@@ -1165,7 +1209,7 @@ async function handleSplit(userId: number, arg: string) {
   if (!parsed.ok || !parsed.amount) {
     await reply(
       userId,
-      "I couldn't find an amount — try <code>/split 1200 dinner</code>",
+      "I couldn't find an amount. Try <code>/split 1200 dinner</code>",
     );
     return;
   }
@@ -1190,9 +1234,11 @@ async function handleSplit(userId: number, arg: string) {
       .map((m) => m.name)
       .join(", ");
     const alerts = await collectBudgetAlerts(supabase, userId);
+    // The chat reply carries them; the inbox and phone get them too.
+    await deliverBudgetAlerts(supabase, userId, alerts, { telegram: false });
     await reply(
       userId,
-      `🤝 Split ${fmtINR(parsed.amount)} · ${parsed.category ?? "Uncategorized"}${parsed.merchant ? ` (${escapeHtml(parsed.merchant)})` : ""} across ${split.count} people — ${fmtINR(split.perHead)} each (${escapeHtml(names)}).\nYou paid, so <code>/undo</code> removes the whole split.` +
+      `🤝 Split ${fmtINR(parsed.amount)} · ${parsed.category ?? "Uncategorized"}${parsed.merchant ? ` (${escapeHtml(parsed.merchant)})` : ""} across ${split.count} people: ${fmtINR(split.perHead)} each (${escapeHtml(names)}).\nYou paid, so <code>/undo</code> removes the whole split.` +
         (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),
     );
     // Tell the other members their share was logged.
@@ -1202,7 +1248,7 @@ async function handleSplit(userId: number, arg: string) {
         await notify(
           supabase,
           m.id,
-          `🤝 ${escapeHtml(members.find((x) => x.id === userId)?.name ?? "A family member")} split ${fmtINR(parsed.amount)}${parsed.merchant ? ` (${escapeHtml(parsed.merchant)})` : ""} — your share ${fmtINR(split.perHead)} was logged for you.`,
+          `🤝 ${escapeHtml(members.find((x) => x.id === userId)?.name ?? "A family member")} split ${fmtINR(parsed.amount)}${parsed.merchant ? ` (${escapeHtml(parsed.merchant)})` : ""}. Your share of ${fmtINR(split.perHead)} was logged for you.`,
         );
       } catch (err) {
         console.error("split notify failed", err);
@@ -1212,7 +1258,7 @@ async function handleSplit(userId: number, arg: string) {
     console.error("/split failed", err);
     await reply(
       userId,
-      "⚠️ Splits aren't available yet — the v4 database migration hasn't been applied.",
+      "⚠️ Splits aren't available yet. The v4 database migration hasn't been applied.",
     );
   }
 }
@@ -1225,7 +1271,7 @@ async function sendBills(userId: number) {
   if (bills.length === 0) {
     await reply(
       userId,
-      "No bills registered yet. Add them in the app (Bills tab → +) — electricity, water, credit card, rent… I'll remind you before they're due, and <b>Pay now</b> opens your UPI app with the amount filled in.",
+      "No bills registered yet. Add them in the app (Bills tab → +): electricity, water, credit card, rent… I'll remind you before they're due, and <b>Pay now</b> opens your UPI app with the amount filled in.",
     );
     return;
   }
@@ -1240,7 +1286,7 @@ async function sendBills(userId: number) {
             ? `🟠 in ${b.daysUntil}d`
             : `🟢 in ${b.daysUntil}d (${Number(b.dueDate.slice(8))}th)`;
     const paid = b.paidThisMonth ? " ✅ paid this month" : "";
-    return `• <b>${escapeHtml(b.name)}</b>${amt} — ${when}${paid}`;
+    return `• <b>${escapeHtml(b.name)}</b>${amt}: ${when}${paid}`;
   });
   await reply(
     userId,
@@ -1252,7 +1298,7 @@ async function handlePaid(userId: number, arg: string) {
   if (!arg) {
     await reply(
       userId,
-      "Which bill? e.g. <code>/paid electricity 1234</code> — see <code>/bills</code> for names.",
+      "Which bill? e.g. <code>/paid electricity 1234</code>. See <code>/bills</code> for names.",
     );
     return;
   }
@@ -1261,7 +1307,7 @@ async function handlePaid(userId: number, arg: string) {
   if (bills.length === 0) {
     await reply(
       userId,
-      "No bills registered yet — add them in the app's Bills tab first.",
+      "No bills registered yet. Add them in the app's Bills tab first.",
     );
     return;
   }
@@ -1305,18 +1351,236 @@ async function handlePaid(userId: number, arg: string) {
       "telegram_bill",
     );
     const alerts = await collectBudgetAlerts(supabase, userId);
+    // The chat reply carries them; the inbox and phone get them too.
+    await deliverBudgetAlerts(supabase, userId, alerts, { telegram: false });
     await reply(
       userId,
-      `✅ ${escapeHtml(bill.name)} marked paid — ${fmtINR(finalAmount)} logged under ${bill.category}.` +
+      `✅ ${escapeHtml(bill.name)} marked paid. ${fmtINR(finalAmount)} logged under ${bill.category}.` +
         (await monthlySummary(supabase, userId)) +
         (alerts.length ? `\n\n${alerts.map(escapeHtml).join("\n")}` : ""),
     );
   } catch (err) {
     console.error("/paid failed", err);
-    await reply(userId, "⚠️ Couldn't mark that paid — try again in a minute.");
+    await reply(userId, "⚠️ Couldn't mark that paid. Try again in a minute.");
   }
 }
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// ── Daily budget (v14) ──────────────────────────────────────────────────────
+
+/** "Today: ₹1,467 left of ₹1,667" under a confirmation — empty without a plan. */
+async function dailySuffix(
+  supabase: SupabaseClient,
+  userId: number,
+  expenseId: string,
+): Promise<string> {
+  try {
+    const { status, plan } = await loadDailyStatus(supabase, userId);
+    if (!plan || !status.ready) return "";
+    const text = spendMessage(status, [expenseId]);
+    if (!text) return "";
+    // The confirmation already names the spend; keep the line about the day.
+    const [first, ...rest] = text.split("\n");
+    return `\n\n${first.startsWith("💸") ? rest.join("\n") : text}`;
+  } catch (err) {
+    console.error("daily suffix failed", err);
+    return "";
+  }
+}
+
+const parseMoney = (raw: string): number | null => {
+  // "1 lakh" / "1.5L" — only here: in an expense, "1l milk" is a litre.
+  const lakh = raw.match(/(\d+(?:\.\d+)?)\s*(?:lakhs?|lacs?|l)\b/i);
+  if (lakh) return Math.round(Number(lakh[1]) * 100000);
+  const { amount } = extractAmount(raw);
+  return amount && amount > 0 ? Math.round(amount) : null;
+};
+
+async function handlePlan(userId: number, arg: string) {
+  const supabase = createServiceClient();
+  const words = arg.toLowerCase().split(/\s+/).filter(Boolean);
+
+  if (words.length) {
+    const toggle = ["morning", "evening", "live"].indexOf(words[0]);
+    if (toggle >= 0 && (words[1] === "on" || words[1] === "off")) {
+      const key = (
+        ["morning_brief", "evening_report", "live_updates"] as const
+      )[toggle];
+      await savePlan(supabase, userId, { [key]: words[1] === "on" });
+    } else if (words[0] === "payday" || words[0] === "salary") {
+      const day = words[1] === "off" ? null : Number(words[1]);
+      if (day !== null && !(Number.isInteger(day) && day >= 1 && day <= 31)) {
+        await reply(
+          userId,
+          "Which day does salary arrive? e.g. <code>/plan payday 30</code> (or <code>/plan payday off</code>)",
+        );
+        return;
+      }
+      await savePlan(supabase, userId, { payday: day });
+    } else if (words[0] === "save" || words[0] === "savings") {
+      const rest = words.slice(1).join(" ");
+      const n = rest === "0" ? 0 : parseMoney(rest);
+      if (n === null) {
+        await reply(
+          userId,
+          "How much a month? e.g. <code>/plan save 15000</code>",
+        );
+        return;
+      }
+      await savePlan(supabase, userId, { savings_goal: n });
+    } else {
+      const n = parseMoney(words.join(" ").replace(/^income\s*/, ""));
+      if (n === null) {
+        await reply(
+          userId,
+          "Tell me your monthly income, e.g. <code>/plan 100000</code>",
+        );
+        return;
+      }
+      await savePlan(supabase, userId, { monthly_income: n });
+    }
+  }
+
+  const { status, plan, commitments } = await loadDailyStatus(supabase, userId);
+  if (!plan) {
+    await reply(userId, SETUP_HINT);
+    return;
+  }
+  const lines = [
+    "🧮 <b>Your plan</b>",
+    "",
+    `Income: ${status.income ? inr(status.income) : "not set"}${status.incomeSource === "last_month" ? " (last month's)" : ""}`,
+    `− Fixed costs: ${inr(status.fixed)}${commitments.length ? "" : " (add with <code>/fixed rent 25000</code>)"}`,
+    `− Savings goal: ${inr(status.savingsGoal)}`,
+    ...(status.goals ? [`− Goals: ${inr(status.goals)}`] : []),
+    `= Everyday money: <b>${inr(status.pool)}</b> (≈${inr(status.baseDaily)}/day)`,
+    `Budget month: ${status.cycleStart.slice(8)}/${status.cycleStart.slice(5, 7)} → ${status.cycleEnd.slice(8)}/${status.cycleEnd.slice(5, 7)}${plan.payday ? ` (salary on the ${plan.payday})` : " (set salary day with <code>/plan payday 30</code>)"}`,
+  ];
+  if (status.ready)
+    lines.push(
+      "",
+      `Today: <b>${inr(status.todayLeft)}</b> left of ${inr(status.todayBudget)}`,
+    );
+  lines.push(
+    "",
+    `Morning ${plan.morning_brief ? "on" : "off"} · Evening ${plan.evening_report ? "on" : "off"} · Live ${plan.live_updates ? "on" : "off"}`,
+  );
+  if (!commitments.length) {
+    const ideas = await suggestCommitments(supabase, userId, commitments);
+    if (ideas.length)
+      lines.push(
+        "",
+        "Looks like fixed costs (tap to copy):",
+        ...ideas
+          .slice(0, 5)
+          .map(
+            (i) => `• <code>/fixed ${escapeHtml(i.name)} ${i.amount}</code>`,
+          ),
+      );
+  }
+  await reply(userId, lines.join("\n"));
+}
+
+async function handleFixed(userId: number, arg: string) {
+  const supabase = createServiceClient();
+  const removeMatch = arg.match(/^(?:remove|delete|rm)\s+(.+)$/i);
+  if (removeMatch) {
+    const removed = await removeCommitment(supabase, userId, removeMatch[1]);
+    await reply(
+      userId,
+      removed
+        ? `🗑️ Removed <b>${escapeHtml(removed)}</b> from fixed costs.`
+        : `No fixed cost called "${escapeHtml(removeMatch[1])}". Send <code>/fixed</code> to see the list.`,
+    );
+    return;
+  }
+
+  if (arg) {
+    const amount = parseMoney(arg);
+    const name = arg
+      .replace(/(?:₹|rs\.?|inr)?\s*\d[\d,]*(?:\.\d+)?\s*k?\b/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!amount || !name) {
+      await reply(userId, "Like this: <code>/fixed rent 25000</code>");
+      return;
+    }
+    const categories = await loadCategories(supabase);
+    const guessed = parseExpense(
+      `${amount} ${name}`,
+      categories as CategoryRule[],
+    ).category;
+    await addCommitment(supabase, userId, {
+      name: name.replace(/^\w/, (c) => c.toUpperCase()),
+      amount,
+      category: guessed && guessed !== "Uncategorized" ? guessed : null,
+    });
+    // Listing a fixed cost means they're using the daily budget — make sure a plan row exists.
+    if (!(await getPlan(supabase, userId)))
+      await savePlan(supabase, userId, {});
+  }
+
+  const { status, commitments } = await loadDailyStatus(supabase, userId);
+  if (!commitments.length) {
+    await reply(
+      userId,
+      "No fixed costs yet. Add one: <code>/fixed rent 25000</code>",
+    );
+    return;
+  }
+  await reply(
+    userId,
+    [
+      "📌 <b>Fixed monthly costs</b>",
+      ...status.commitments.map(
+        (c) =>
+          `• ${escapeHtml(c.name)} ${inr(c.amount)}${c.paid >= c.amount * 0.7 ? " ✅ paid" : ""}`,
+      ),
+      `Total: <b>${inr(status.fixed)}</b>, kept out of your daily budget.`,
+      "",
+      status.ready
+        ? `Everyday money: ${inr(status.pool)} · today ${inr(status.todayBudget)}`
+        : SETUP_HINT,
+    ].join("\n"),
+  );
+}
+
+async function sendToday(userId: number) {
+  const supabase = createServiceClient();
+  const { status } = await loadDailyStatus(supabase, userId);
+  await reply(
+    userId,
+    eveningReport(status, localDate()).replace(
+      "Today's report",
+      "Today so far",
+    ),
+  );
+}
+
+async function rescopeLast(userId: number, scope: "savings" | "daily") {
+  const supabase = createServiceClient();
+  const last = await latestExpense(supabase, userId);
+  if (!last) {
+    await reply(userId, "No expenses logged yet.");
+    return;
+  }
+  try {
+    await setBudgetScope(supabase, userId, last.id, scope);
+  } catch {
+    await reply(userId, "Couldn't change that. Is the v14 migration applied?");
+    return;
+  }
+  const { status } = await loadDailyStatus(supabase, userId);
+  await reply(
+    userId,
+    (scope === "savings"
+      ? `💰 ${fmtINR(last.amount)}${last.merchant ? ` (${escapeHtml(last.merchant)})` : ""} now comes from savings.`
+      : `💸 ${fmtINR(last.amount)} now counts against your daily budget.`) +
+      (status.ready
+        ? `\nToday: <b>${inr(status.todayLeft)}</b> left of ${inr(status.todayBudget)}`
+        : ""),
+  );
 }

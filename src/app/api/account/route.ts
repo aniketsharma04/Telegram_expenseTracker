@@ -27,6 +27,12 @@ export const maxDuration = 60;
 
 /** Tables that hang off a user, in a safe deletion order. */
 const OWNED_TABLES = [
+  // v15 first: a deleted account must stop getting pushes immediately.
+  "push_tokens",
+  "notifications",
+  "commitments",
+  "budget_plans",
+  "goals", // goal_credits cascade with their goal
   "receipt_items",
   "receipts",
   "bank_messages",
@@ -58,6 +64,10 @@ const EXPORT_TABLES = [
   "receipt_items",
   "detected_bills",
   "bank_messages",
+  "budget_plans",
+  "commitments",
+  "notifications",
+  "goals",
 ] as const;
 
 export async function GET(req: NextRequest) {

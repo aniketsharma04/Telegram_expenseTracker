@@ -100,3 +100,18 @@ describe("normaliseMerchant", () => {
     expect(normaliseMerchant("   ", rules)).toBeNull();
   });
 });
+
+describe("cleanMerchant — UPI handles (v15)", () => {
+  it("names QR-code and number handles honestly instead of showing the id", () => {
+    expect(cleanMerchant("paytmqr281005050101@paytm")).toBe("UPI merchant");
+    expect(cleanMerchant("BHARATPE.9Y0V2E0A4B21234@fbpe")).toBe("UPI merchant");
+    expect(cleanMerchant("q123456789@ybl")).toBe("UPI merchant");
+    expect(cleanMerchant("9876543210@ybl")).toBe("UPI transfer");
+  });
+
+  it("turns a merchant handle into a readable name", () => {
+    expect(cleanMerchant("swiggy.stores@axisbank")).toBe("Swiggy");
+    expect(cleanMerchant("chaiwala@ybl")).toBe("Chaiwala");
+    expect(cleanMerchant("blue-tokai.rzp@icici")).toBe("Blue Tokai");
+  });
+});

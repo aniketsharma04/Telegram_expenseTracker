@@ -305,11 +305,15 @@ export function fetchPatch(result: FetchResult): Record<string, unknown> {
       fetch_error: null,
     };
   }
-  // No dues: clear the amount so the card shows "nothing due" rather than a stale bill.
-  return result.code === "no_dues"
+  // No dues / no bill available: clear the amount (and the name) so the card
+  // shows "no bill" rather than a stale or someone else's bill.
+  return result.code === "no_dues" || result.code === "unavailable"
     ? {
         fetched_amount: null,
         fetched_due_date: null,
+        fetched_bill_number: null,
+        fetched_customer_name: null,
+        fetched_ref_id: null,
         fetched_at: now,
         fetch_error: null,
       }
@@ -569,7 +573,7 @@ export function reminderText(s: BillStatus): string | null {
   if (s.daysUntil === 0)
     return `🧾 ${s.name}${amt} is due today. Open the app → Bills → Pay now.`;
   if (s.daysUntil === -2)
-    return `⏰ ${s.name}${amt} is 2 days overdue — pay it to avoid late fees.`;
+    return `⏰ ${s.name}${amt} is 2 days overdue. Pay it to avoid late fees.`;
   return null;
 }
 

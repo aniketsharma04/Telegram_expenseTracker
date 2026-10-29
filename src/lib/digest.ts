@@ -6,8 +6,18 @@ import { getFamily, familyMembers } from "./family";
 /** Compose the month-in-review digest sent to each user on the 1st (Telegram HTML). */
 
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 function fmtINR(n: number): string {
@@ -17,8 +27,14 @@ function fmtINR(n: number): string {
 function monthAdd(month: string, delta: number): string {
   let [y, m] = month.split("-").map(Number);
   m += delta;
-  while (m < 1) { m += 12; y -= 1; }
-  while (m > 12) { m -= 12; y += 1; }
+  while (m < 1) {
+    m += 12;
+    y -= 1;
+  }
+  while (m > 12) {
+    m -= 12;
+    y += 1;
+  }
   return `${y}-${String(m).padStart(2, "0")}`;
 }
 
@@ -49,11 +65,14 @@ export async function composeMonthlyDigest(
   const inMonth = (r: { expense_date: string }, m: string) =>
     r.expense_date.startsWith(m);
 
-  const spendable = (r: { category: string }) => !NON_SPEND_CATEGORIES.has(r.category);
+  const spendable = (r: { category: string }) =>
+    !NON_SPEND_CATEGORIES.has(r.category);
   const lastRows = mine.filter((r) => inMonth(r, lastMonth));
   if (lastRows.length === 0) return null; // nothing to report — skip the ping
 
-  const spent = lastRows.filter(spendable).reduce((s, r) => s + Number(r.amount), 0);
+  const spent = lastRows
+    .filter(spendable)
+    .reduce((s, r) => s + Number(r.amount), 0);
   const prevSpent = mine
     .filter((r) => inMonth(r, monthBefore))
     .filter(spendable)
@@ -64,7 +83,10 @@ export async function composeMonthlyDigest(
 
   const byCategory = new Map<string, number>();
   for (const r of lastRows.filter(spendable))
-    byCategory.set(r.category, (byCategory.get(r.category) ?? 0) + Number(r.amount));
+    byCategory.set(
+      r.category,
+      (byCategory.get(r.category) ?? 0) + Number(r.amount),
+    );
   const top = [...byCategory.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
@@ -105,9 +127,13 @@ export async function composeMonthlyDigest(
       const memberIds = new Set(members.map((m) => m.id));
       const famRows = rows.filter(
         (r) =>
-          r.user_id !== null && memberIds.has(r.user_id) && inMonth(r, lastMonth),
+          r.user_id !== null &&
+          memberIds.has(r.user_id) &&
+          inMonth(r, lastMonth),
       );
-      const famSpent = famRows.filter(spendable).reduce((s, r) => s + Number(r.amount), 0);
+      const famSpent = famRows
+        .filter(spendable)
+        .reduce((s, r) => s + Number(r.amount), 0);
       const perMember = members
         .map((m) => ({
           name: m.name,
@@ -129,7 +155,7 @@ export async function composeMonthlyDigest(
     `Spent: ${fmtINR(spent)}${trend}\n` +
     (top ? `${top}\n` : "") +
     (biggest
-      ? `💸 Biggest: ${fmtINR(biggest.amount)}${biggest.merchant ? ` — ${biggest.merchant}` : ""} (${biggest.expense_date.slice(8)}‑${MONTH_NAMES[Number(biggest.expense_date.slice(5, 7)) - 1].slice(0, 3)})\n`
+      ? `💸 Biggest: ${fmtINR(biggest.amount)}${biggest.merchant ? ` at ${biggest.merchant}` : ""} (${biggest.expense_date.slice(8)}‑${MONTH_NAMES[Number(biggest.expense_date.slice(5, 7)) - 1].slice(0, 3)})\n`
       : "") +
     `📈 Invested: ${fmtINR(invested)}` +
     incomeLine +

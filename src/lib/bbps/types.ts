@@ -30,7 +30,7 @@ export type FetchResult =
   | {
       ok: false;
       error: string;
-      code: "not_found" | "no_dues" | "provider" | "invalid";
+      code: "not_found" | "no_dues" | "unavailable" | "provider" | "invalid";
     };
 
 export interface BbpsProvider {

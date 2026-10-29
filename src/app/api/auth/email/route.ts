@@ -8,6 +8,7 @@ import {
   normaliseEmail,
 } from "@/lib/identity";
 import { mailerConfigured, sendSignInCode } from "@/lib/mailer";
+import { isReviewEmail, reviewCodeMatches } from "@/lib/review";
 import {
   checkCode,
   consume,
@@ -60,6 +61,23 @@ export async function POST(req: NextRequest) {
 
   const supabase = createServiceClient();
   const code = typeof body.code === "string" ? body.code.trim() : null;
+
+  // ── Store review: a fixed code for one configured address ──────────────
+  if (isReviewEmail(email)) {
+    if (!code) return NextResponse.json({ status: "code_sent" });
+    if (!reviewCodeMatches(email, code))
+      return NextResponse.json(
+        { error: verdictMessage("mismatch") },
+        { status: 400 },
+      );
+    const { user, created } = await findOrCreateEmailUser(supabase, email);
+    return NextResponse.json({
+      status: "signed_in",
+      token: signToken(user.id, SESSION_DAYS * 24 * 3600),
+      created,
+      user: { id: user.id, name: displayNameOf(user), email: user.email },
+    });
+  }
 
   // ── Step 2: verify ────────────────────────────────────────────────────
   if (code) {
@@ -130,9 +148,9 @@ export async function POST(req: NextRequest) {
 function verdictMessage(reason: string): string {
   switch (reason) {
     case "expired":
-      return "That code has expired — ask for a new one.";
+      return "That code has expired. Ask for a new one.";
     case "used":
-      return "That code has already been used — ask for a new one.";
+      return "That code has already been used. Ask for a new one.";
     case "too_many_attempts":
       return "Too many wrong tries. Ask for a new code.";
     default:

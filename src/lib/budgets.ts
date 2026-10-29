@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { notifyAll } from "./notify";
+import { notifyAll, type NotifyOptions } from "./notify";
 import { localDate } from "./parser";
 import { budgetProgress, BudgetLike, NON_SPEND_CATEGORIES } from "./insights";
 import { sendMessage } from "./telegram";
@@ -133,16 +133,26 @@ export async function collectBudgetAlerts(
 }
 
 /**
- * Deliver alerts over Telegram, when the user has linked it (v12).
- * Silently does nothing for email-only accounts — they see the same alerts
- * in the app's API response.
+ * Deliver alerts to the inbox and the user's phones (v15), and Telegram
+ * unless the caller's chat reply already carries them.
  */
-export async function pushAlertsToTelegram(
+export async function deliverBudgetAlerts(
   supabase: SupabaseClient,
   userId: number,
   alerts: string[],
+  options: NotifyOptions = {},
 ): Promise<void> {
-  await notifyAll(supabase, userId, alerts);
+  await notifyAll(
+    supabase,
+    userId,
+    alerts.map((line) => ({
+      kind: "alerts" as const,
+      title: line.startsWith("🚨") ? "🚨 Budget blown" : "⚠️ Budget heads-up",
+      body: line.replace(/^(🚨|⚠️)\s*(Budget blown|Heads up):\s*/u, ""),
+      data: { screen: "home" },
+    })),
+    options,
+  );
 }
 
 export { NON_SPEND_CATEGORIES };

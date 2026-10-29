@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
   if (body.due_day !== undefined) {
     const d = Number(body.due_day);
     if (!Number.isInteger(d) || d < 1 || d > 31)
-      return fail("due_day must be 1–31");
+      return fail("due_day must be between 1 and 31");
     overrides.due_day = d;
   }
 

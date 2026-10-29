@@ -23,6 +23,8 @@ export interface ApiData {
   categories: Array<{ name: string; color: string | null }>;
   expenses: Expense[];
   today: string;
+  /** v14: today's spendable number (personal); null until set up. */
+  daily?: import("./daily-budget").DailyStatus | null;
 }
 
 export interface Expense {

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { MOCK_BILLERS, MockBbpsProvider } from "./mock";
 import { validateParams } from "./index";
 
-const mock = new MockBbpsProvider();
+const mock = new MockBbpsProvider({ demoBills: true });
 
 describe("mock BBPS provider", () => {
   it("searches billers by name and category", async () => {
@@ -41,8 +41,17 @@ describe("mock BBPS provider", () => {
     if (a.ok) {
       expect(a.bill.amount).toBeGreaterThan(0);
       expect(a.bill.dueDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      expect(a.bill.customerName).toBeTruthy();
+      // Never invent a person: the account holder must come from the biller.
+      expect(a.bill.customerName).toBeNull();
     }
+  });
+
+  it("reports no bill available unless demo bills are on", async () => {
+    const live = new MockBbpsProvider({ demoBills: false });
+    const r = await live.fetchBill("IGLC00000DEL01", {
+      "BP Number": "1234567890",
+    });
+    expect(!r.ok && r.code === "unavailable").toBe(true);
   });
 
   it("simulates no-dues and not-found accounts", async () => {

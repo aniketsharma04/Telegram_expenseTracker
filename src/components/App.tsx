@@ -33,7 +33,16 @@ const TAB_META: Array<{ key: Tab; label: string; icon: React.ReactNode }> = [
     key: "home",
     label: "Home",
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M3 10.5 12 3l9 7.5" />
         <path d="M5 9.5V21h14V9.5" />
       </svg>
@@ -43,7 +52,15 @@ const TAB_META: Array<{ key: Tab; label: string; icon: React.ReactNode }> = [
     key: "transactions",
     label: "Transactions",
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      >
         <path d="M4 6h16M4 12h16M4 18h10" />
       </svg>
     ),
@@ -52,7 +69,16 @@ const TAB_META: Array<{ key: Tab; label: string; icon: React.ReactNode }> = [
     key: "family",
     label: "Family",
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <circle cx="9" cy="8" r="3.2" />
         <path d="M2.8 19c.8-3 3.2-4.6 6.2-4.6s5.4 1.6 6.2 4.6" />
         <circle cx="17" cy="9" r="2.4" />
@@ -99,8 +125,12 @@ export default function App() {
   const derived = useMemo(() => {
     if (!data) return null;
     const members = data.family?.members ?? [];
-    const memberName = new Map<number, string>(members.map((m) => [m.id, m.name]));
-    const memberIndex = new Map<number, number>(members.map((m, i) => [m.id, i]));
+    const memberName = new Map<number, string>(
+      members.map((m) => [m.id, m.name]),
+    );
+    const memberIndex = new Map<number, number>(
+      members.map((m, i) => [m.id, i]),
+    );
     if (!memberName.has(data.user.id)) {
       memberName.set(data.user.id, data.user.name);
       memberIndex.set(data.user.id, 0);
@@ -113,31 +143,47 @@ export default function App() {
           : [member]
         : [data.user.id];
     const idSet = new Set(activeIds);
-    const scoped = data.expenses.filter((e) => e.user_id !== null && idSet.has(e.user_id));
+    const scoped = data.expenses.filter(
+      (e) => e.user_id !== null && idSet.has(e.user_id),
+    );
 
     const rangeStart = rangeStartOf(range, data.today);
     const inRange = scoped.filter(
-      (e) => e.expense_date >= rangeStart && e.expense_date <= data.today
+      (e) => e.expense_date >= rangeStart && e.expense_date <= data.today,
     );
 
     let prev: Expense[];
     let prevLabel: string;
     if (range === "month") {
       const [y, m] = data.today.slice(0, 7).split("-").map(Number);
-      const prevPrefix = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
+      const prevPrefix =
+        m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
       prev = scoped.filter((e) => e.expense_date.startsWith(prevPrefix));
       prevLabel = "last month";
     } else {
       const days = range === "30d" ? 30 : 90;
       const prevStart = shiftDate(data.today, days * 2 - 1);
-      prev = scoped.filter((e) => e.expense_date >= prevStart && e.expense_date < rangeStart);
+      prev = scoped.filter(
+        (e) => e.expense_date >= prevStart && e.expense_date < rangeStart,
+      );
       prevLabel = `previous ${days} days`;
     }
 
     const colorByCategory: Record<string, string> = {};
-    for (const c of data.categories) colorByCategory[c.name] = c.color ?? "#898781";
+    for (const c of data.categories)
+      colorByCategory[c.name] = c.color ?? "#898781";
 
-    return { members, memberName, memberIndex, scoped, inRange, prev, prevLabel, rangeStart, colorByCategory };
+    return {
+      members,
+      memberName,
+      memberIndex,
+      scoped,
+      inRange,
+      prev,
+      prevLabel,
+      rangeStart,
+      colorByCategory,
+    };
   }, [data, scope, member, range]);
 
   if (auth === "unauth") return <LoginScreen />;
@@ -161,17 +207,34 @@ export default function App() {
       <header className="app-header">
         <div className="brand">
           <div className="brand-mark">₹</div>
-          <span>Expense Tracker</span>
+          <span>Aaj</span>
         </div>
         <nav className="top-tabs">
           {TAB_META.map((t) => (
-            <button key={t.key} className={`top-tab${tab === t.key ? " active" : ""}`} onClick={() => setTab(t.key)}>
+            <button
+              key={t.key}
+              className={`top-tab${tab === t.key ? " active" : ""}`}
+              onClick={() => setTab(t.key)}
+            >
               {t.label}
             </button>
           ))}
         </nav>
-        <a className="icon-btn" href="/api/auth/logout" title={`Signed in as ${data.user.name} — log out`}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <a
+          className="icon-btn"
+          href="/api/auth/logout"
+          title={`Signed in as ${data.user.name}. Log out`}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M15 4h4v16h-4" />
             <path d="M10 8l-4 4 4 4M6 12h9" />
           </svg>
@@ -190,7 +253,10 @@ export default function App() {
             >
               Personal
             </button>
-            <button className={`seg-btn${scope === "family" ? " active" : ""}`} onClick={() => setScope("family")}>
+            <button
+              className={`seg-btn${scope === "family" ? " active" : ""}`}
+              onClick={() => setScope("family")}
+            >
               Family
             </button>
           </div>
@@ -199,13 +265,22 @@ export default function App() {
 
       {showMemberChips && (
         <div className="chips-row">
-          <button className={`chip${member === "all" ? " active" : ""}`} onClick={() => setMember("all")}>
+          <button
+            className={`chip${member === "all" ? " active" : ""}`}
+            onClick={() => setMember("all")}
+          >
             <span className="chip-avatar all">👨‍👩‍👧</span>
             {data.family!.name}
           </button>
           {derived.members.map((m, i) => (
-            <button key={m.id} className={`chip${member === m.id ? " active" : ""}`} onClick={() => setMember(m.id)}>
-              <span className={`chip-avatar m${i % 8}`}>{m.name.slice(0, 1).toUpperCase()}</span>
+            <button
+              key={m.id}
+              className={`chip${member === m.id ? " active" : ""}`}
+              onClick={() => setMember(m.id)}
+            >
+              <span className={`chip-avatar m${i % 8}`}>
+                {m.name.slice(0, 1).toUpperCase()}
+              </span>
               {m.id === data.user.id ? "You" : m.name}
             </button>
           ))}
@@ -222,11 +297,12 @@ export default function App() {
           today={data.today}
           rangeStart={derived.rangeStart}
           colorByCategory={derived.colorByCategory}
+          daily={scope === "family" ? undefined : (data.daily ?? null)}
           scopeLabel={
             scope === "family"
               ? member === "all"
                 ? data.family!.name
-                : derived.memberName.get(member as number) ?? ""
+                : (derived.memberName.get(member as number) ?? "")
               : "Personal"
           }
         />
@@ -246,7 +322,11 @@ export default function App() {
 
       <nav className="tabbar">
         {TAB_META.map((t) => (
-          <button key={t.key} className={`tab-item${tab === t.key ? " active" : ""}`} onClick={() => setTab(t.key)}>
+          <button
+            key={t.key}
+            className={`tab-item${tab === t.key ? " active" : ""}`}
+            onClick={() => setTab(t.key)}
+          >
             {t.icon}
             <span>{t.label}</span>
           </button>

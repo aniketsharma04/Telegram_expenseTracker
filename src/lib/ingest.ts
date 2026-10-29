@@ -73,10 +73,14 @@ export async function ingestBankMessage(
 ): Promise<IngestResult> {
   const txn = parseBankMessage(input.body);
   if (!txn)
-    return fail("ignored", "Not a completed transaction — nothing logged.");
+    return fail(
+      "ignored",
+      "Not a completed transaction, so nothing was logged.",
+    );
 
   const receivedAt = input.receivedAt ?? new Date().toISOString();
-  const onDate = receivedAt.slice(0, 10);
+  // The IST day, not the UTC one — a 1 a.m. coffee belongs to today's budget.
+  const onDate = localDate(0, new Date(receivedAt));
 
   // 1. Same notification delivered twice.
   if (input.externalId) {
@@ -162,7 +166,7 @@ export async function ingestBankMessage(
     return {
       ...base,
       status: "duplicate",
-      note: "You already logged this one — balance updated, no new entry.",
+      note: "You already logged this one. Balance updated, no new entry.",
       expenseId: null,
       incomeId: null,
     };
@@ -212,7 +216,7 @@ export async function ingestBankMessage(
       status: txn.confidence === "low" ? "needs_review" : "logged",
       note:
         txn.confidence === "low"
-          ? "Logged, but worth a check — the message was vague."
+          ? "Logged, but worth a check: the message was vague."
           : "Expense captured.",
       expenseId: expense.id,
       incomeId: null,

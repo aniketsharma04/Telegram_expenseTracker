@@ -43,8 +43,6 @@ export interface BankTxn {
  * far worse than missing one.
  */
 const NOT_A_TRANSACTION = [
-  /\botp\b/i,
-  /one[- ]time password/i,
   /\bwill be debited\b/i,
   /\bwill be deducted\b/i,
   /\bdue\b.{0,20}\bon\b/i,
@@ -71,6 +69,9 @@ const DEBIT_WORDS =
   /\b(debited|debit|spent|paid|sent|withdrawn|withdrawal|purchase|deducted|charged|transferred to)\b/i;
 const CREDIT_WORDS =
   /\b(credited|credit|received|deposited|refund(?:ed)?|added to)\b/i;
+/** "Payment of Rs 600 to X is successful" — a debit with no debit word in it. */
+const PAYMENT_DONE =
+  /\bpayment of\b.*\b(?:successful(?:ly)?|completed|done)\b/i;
 
 /** "Rs.20.00", "INR 1,250", "₹ 20", "20.0" after a direction word. */
 const AMOUNT_PATTERNS = [
@@ -93,14 +94,39 @@ const ACCOUNT_PATTERNS = [
 ];
 
 const REFERENCE_PATTERNS = [
+  /\bUPI\/P2[AM]\/(\d{6,20})\b/i, // Axis: UPI/P2M/<ref>/<name>
   /\b(?:upi|ref(?:no)?|rrn|txn(?:\s*id)?)\s*[:.# ]\s*(\w{6,20})\b/i,
 ];
 
 const num = (raw: string): number => Number(raw.replace(/,/g, ""));
 
+const CODE_WORD =
+  /\b(?:otp|one[- ]time password|verification code|passcode)\b/i;
+
+/**
+ * An OTP message, not a payment: a code word *and* a 4–8 digit code. Many
+ * real debit alerts end "never share your OTP" — those must still count, so
+ * the word alone isn't enough. Amounts, dates, masked accounts and long
+ * reference numbers are removed before looking for the code.
+ * Mirrors CaptureStore.carriesCode on the phone, which drops these unsent.
+ */
+export function carriesCode(text: string): boolean {
+  if (!CODE_WORD.test(text)) return false;
+  const rest = text
+    .replace(/(?:rs\.?|inr|₹)\s*[\d,]+(?:\.\d+)?/gi, " ")
+    .replace(/\b\d{1,4}[-/.]\d{1,2}[-/.]\d{2,4}\b/g, " ")
+    .replace(
+      /(?:a\/c|acct|account|ac|card)\s*(?:no\.?)?\s*[xX*•]*\d{3,6}\b/gi,
+      " ",
+    )
+    .replace(/\b\d{9,}\b/g, " ");
+  return /\b\d{4,8}\b/.test(rest);
+}
+
 /** Everything after the counterparty that is noise rather than a name. */
+// Noise must start a word (or follow punctuation) — otherwise "AMAZON" loses its "ON".
 const TAIL_NOISE =
-  /\s*(?:on|ref|refno|upi|rrn|txn|avl|avbl|available|bal|balance|not you|if not|call|sms|dial|to block|-\s*\w+\s*bank)\b.*$/i;
+  /(?:\s+|(?<=[.,;:]))(?:on|ref|refno|upi|rrn|txn|avl|avbl|available|bal|balance|not you|if not|call|sms|dial|to block|-\s*\w+\s*bank)\b.*$/i;
 
 function cleanCounterparty(raw: string | undefined): string | null {
   if (!raw) return null;
@@ -115,9 +141,23 @@ function extractCounterparty(text: string): {
   name: string | null;
   channel: TxnChannel;
 } {
+  // Axis puts the payee in the UPI path: "UPI/P2M/<ref>/BLINKIT".
+  const upiPath = text.match(
+    /\bUPI\/P2[AM]\/\d{6,20}\/([^/]+?)(?=\/|\s+not you|\s+\w+ bank\b|$)/i,
+  );
+  if (upiPath) return { name: cleanCounterparty(upiPath[1]), channel: "upi" };
+
   // A VPA is unambiguous, so it wins.
   const vpa = text.match(/\b([\w.\-]{2,}@[a-z]{2,})\b/i);
   if (vpa) return { name: vpa[1], channel: "upi" };
+
+  // ICICI: "debited for Rs 250.00 on 24-Oct-26; SWIGGY credited."
+  const credited = text.match(/;\s*([^;.]+?)\s+credited\b/i);
+  if (credited && DEBIT_WORDS.test(text))
+    return {
+      name: cleanCounterparty(credited[1]),
+      channel: /\bupi\b/i.test(text) ? "upi" : "unknown",
+    };
 
   const trf = text.match(/\b(?:trf|transfer(?:red)?)\s+to\s+(.+)$/im);
   if (trf) return { name: cleanCounterparty(trf[1]), channel: "netbanking" };
@@ -128,8 +168,14 @@ function extractCounterparty(text: string): {
 
   if (/\batm\b|cash\s*(?:wdl|withdrawal)/i.test(text))
     return { name: cleanCounterparty(at?.[1]), channel: "atm" };
-  if (/\bcard\b|\bpos\b|\bspent\b/i.test(text))
-    return { name: cleanCounterparty(at?.[1] ?? to?.[1]), channel: "card" };
+  if (/\bcard\b|\bpos\b|\bspent\b/i.test(text)) {
+    // ICICI cards: "spent using ICICI Bank Card XX1234 on 24-Oct-26 on NETFLIX."
+    const onMerchant = text.match(/\bon\s+\d[\w-]*\s+on\s+([^.]+)/i);
+    return {
+      name: cleanCounterparty(at?.[1] ?? to?.[1] ?? onMerchant?.[1]),
+      channel: "card",
+    };
+  }
 
   const name = cleanCounterparty(to?.[1] ?? at?.[1] ?? from?.[1]);
   return { name, channel: /\bupi\b/i.test(text) ? "upi" : "unknown" };
@@ -146,8 +192,9 @@ export function parseBankMessage(text: string): BankTxn | null {
   const body = text.replace(/\s+/g, " ").trim();
 
   for (const pattern of NOT_A_TRANSACTION) if (pattern.test(body)) return null;
+  if (carriesCode(body)) return null;
 
-  const debit = DEBIT_WORDS.test(body);
+  const debit = DEBIT_WORDS.test(body) || PAYMENT_DONE.test(body);
   const credit = CREDIT_WORDS.test(body);
   if (!debit && !credit) return null;
 

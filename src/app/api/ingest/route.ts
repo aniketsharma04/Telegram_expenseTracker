@@ -3,6 +3,8 @@ import { authedUser } from "@/lib/api-auth";
 import { createServiceClient } from "@/lib/supabase-server";
 import { loadBalanceSheet } from "@/lib/accounts";
 import { ingestBankMessage, listBankMessages } from "@/lib/ingest";
+import { pingSpends } from "@/lib/briefs";
+import { collectBudgetAlerts, deliverBudgetAlerts } from "@/lib/budgets";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -64,6 +66,16 @@ export async function POST(req: NextRequest) {
         receivedAt: readTimestamp(item.received_at),
       }),
     );
+  }
+
+  // "Starbucks −₹200 · ₹1,467 left today" — a push per spend, or one summary
+  // for a big offline batch. Telegram-forwarded messages get the bot's reply.
+  const expenseIds = results.flatMap((r) => (r.expenseId ? [r.expenseId] : []));
+  if (source !== "telegram") await pingSpends(supabase, userId, expenseIds);
+  // Auto-captured spends cross budget thresholds too.
+  if (expenseIds.length) {
+    const alerts = await collectBudgetAlerts(supabase, userId);
+    await deliverBudgetAlerts(supabase, userId, alerts);
   }
 
   return NextResponse.json({

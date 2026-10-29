@@ -156,7 +156,7 @@ export async function joinFamilyByCode(
     return {
       joined: false,
       message:
-        "That invite link doesn't match any family — ask for a fresh one.",
+        "That invite link doesn't match any family. Ask for a fresh one.",
     };
   }
 
@@ -170,7 +170,7 @@ export async function joinFamilyByCode(
     }
     return {
       joined: false,
-      message: `You're already in <b>${existing.name}</b> — one family per person for now.`,
+      message: `You're already in <b>${existing.name}</b>. It's one family per person for now.`,
     };
   }
 

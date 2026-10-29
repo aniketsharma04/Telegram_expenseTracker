@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authedUser } from "@/lib/api-auth";
+import { respondWithEtag } from "@/lib/etag";
 import { createServiceClient } from "@/lib/supabase-server";
 import { getFamily, familyMembers } from "@/lib/family";
 import { localDate } from "@/lib/parser";
@@ -14,6 +15,9 @@ import { loadBillStatuses } from "@/lib/bills";
 import { getGmailAccount, listDetected, needsReauth } from "@/lib/detected";
 import { loadBalanceSheet } from "@/lib/accounts";
 import { listTransfers } from "@/lib/transfers";
+import { loadDailyStatus } from "@/lib/plan";
+import { unreadCount } from "@/lib/inbox";
+import { goalOutlook } from "@/lib/goals";
 
 export const dynamic = "force-dynamic";
 
@@ -48,17 +52,24 @@ export async function GET(req: NextRequest) {
   const memberIds = family ? members.map((m) => m.id) : [userId];
 
   const since = localDate(LOOKBACK_DAYS);
-  let [expRes, catRes] = await Promise.all([
+  const expensesWith = <C extends string>(columns: C) =>
     supabase
       .from("expenses")
-      .select(
-        "id, user_id, amount, category, merchant, expense_date, logged_at, source, paid_by, split_id",
-      )
+      .select(columns)
       .in("user_id", memberIds)
       .gte("expense_date", since)
-      .order("logged_at", { ascending: false }),
+      .order("logged_at", { ascending: false });
+  let [expRes, catRes] = await Promise.all([
+    // v14 adds budget_scope (daily / fixed / savings).
+    expensesWith(
+      "id, user_id, amount, category, merchant, expense_date, logged_at, source, paid_by, split_id, budget_scope",
+    ),
     supabase.from("categories").select("name, color"),
   ]);
+  if (expRes.error)
+    expRes = (await expensesWith(
+      "id, user_id, amount, category, merchant, expense_date, logged_at, source, paid_by, split_id",
+    )) as unknown as typeof expRes;
   if (expRes.error) {
     // Pre-migration schema without split columns — retry with the old shape.
     expRes = (await supabase
@@ -85,19 +96,34 @@ export async function GET(req: NextRequest) {
     y -= 1;
   }
   const incomeSince = `${y}-${String(m).padStart(2, "0")}-01`; // last month + this month
-  const [budgets, incomes, bills, detectedBills, gmail, balances, transfers] =
-    await Promise.all([
-      getBudgets(supabase, userId),
-      getIncomes(supabase, userId, incomeSince),
-      loadBillStatuses(supabase, userId, today),
-      listDetected(supabase, userId),
-      getGmailAccount(supabase, userId),
-      // v8: accounts with live balances, and the movements between them.
-      loadBalanceSheet(supabase, userId),
-      listTransfers(supabase, userId, since),
-    ]);
+  const [
+    budgets,
+    incomes,
+    bills,
+    detectedBills,
+    gmail,
+    balances,
+    transfers,
+    daily,
+    inboxUnread,
+  ] = await Promise.all([
+    getBudgets(supabase, userId),
+    getIncomes(supabase, userId, incomeSince),
+    loadBillStatuses(supabase, userId, today),
+    listDetected(supabase, userId),
+    getGmailAccount(supabase, userId),
+    // v8: accounts with live balances, and the movements between them.
+    loadBalanceSheet(supabase, userId),
+    listTransfers(supabase, userId, since),
+    // v14: today's spendable number and the plan behind it.
+    loadDailyStatus(supabase, userId, today).catch((err) => {
+      console.error("daily status failed", err);
+      return null;
+    }),
+    unreadCount(supabase, userId),
+  ]);
 
-  return NextResponse.json({
+  const body = {
     user: { id: user.id, name: user.first_name || user.username || "You" },
     family: family
       ? {
@@ -136,6 +162,19 @@ export async function GET(req: NextRequest) {
       unassigned: balances.unassigned,
     },
     transfers,
+    inbox_unread: inboxUnread,
+    daily: daily
+      ? {
+          ...daily.status,
+          plan: daily.plan,
+          commitment_list: daily.commitments,
+        }
+      : null,
+    // v17: goals with progress and when each will be reached.
+    goals: (daily?.goals ?? []).map((g) => ({
+      ...g,
+      ...goalOutlook(g, today),
+    })),
     // v7: bills spotted in email / notifications, awaiting confirm or dismiss.
     detected_bills: detectedBills,
     gmail: gmail
@@ -159,5 +198,6 @@ export async function GET(req: NextRequest) {
       recurring: detectRecurring(mine, today),
       anomalies: detectAnomalies(mine, today),
     },
-  });
+  };
+  return respondWithEtag(req, body);
 }

@@ -52,14 +52,26 @@ export type LogResult =
       reason: string;
     };
 
+/**
+ * Categories change rarely (a learned keyword now and then) but are read on
+ * every captured payment, so a warm server instance keeps them for a few
+ * minutes. learnKeyword drops the copy, so a new keyword is used at once.
+ */
+const CATEGORY_TTL_MS = 5 * 60_000;
+let categoryCache: { at: number; rows: CategoryRule[] } | null = null;
+
 export async function loadCategories(
   supabase: SupabaseClient,
 ): Promise<CategoryRule[]> {
+  if (categoryCache && Date.now() - categoryCache.at < CATEGORY_TTL_MS)
+    return categoryCache.rows;
   const { data, error } = await supabase
     .from("categories")
     .select("name, keywords");
   if (error) throw error;
-  return (data ?? []) as CategoryRule[];
+  const rows = (data ?? []) as CategoryRule[];
+  categoryCache = { at: Date.now(), rows };
+  return rows;
 }
 
 export async function insertExpense(
@@ -214,7 +226,10 @@ export async function learnKeyword(
     .update({ keywords: [...category.keywords, keyword] })
     .eq("name", categoryName);
   if (error) console.error("keyword learn failed", error);
-  else console.log(`learned keyword "${keyword}" → ${categoryName}`);
+  else {
+    categoryCache = null;
+    console.log(`learned keyword "${keyword}" → ${categoryName}`);
+  }
 }
 
 /** Free-text pipeline: rules fast path → LLM fallback → ask for the amount. */

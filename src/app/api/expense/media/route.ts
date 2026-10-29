@@ -10,7 +10,7 @@ import {
   loadCategories,
   learnKeyword,
 } from "@/lib/log-expense";
-import { collectBudgetAlerts, pushAlertsToTelegram } from "@/lib/budgets";
+import { collectBudgetAlerts, deliverBudgetAlerts } from "@/lib/budgets";
 import { saveParsedReceipt } from "@/lib/receipts";
 import { consumeQuota } from "@/lib/quota";
 import { geminiConfigured, userGeminiKey } from "@/lib/ai-keys";
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         status: "need_amount",
         question:
-          "Couldn't make out that recording — try again closer to the mic, or type it.",
+          "Couldn't make out that recording. Try again closer to the mic, or type it.",
         alerts: [],
       });
     }
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
       result.status === "logged"
         ? await collectBudgetAlerts(supabase, userId)
         : [];
-    if (alerts.length > 0) await pushAlertsToTelegram(supabase, userId, alerts);
+    if (alerts.length > 0) await deliverBudgetAlerts(supabase, userId, alerts);
     return NextResponse.json({ ...result, transcript, alerts });
   }
 
@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
       status: "need_amount",
       question:
         parsed?.clarifying_question ??
-        "Couldn't read a total from that photo — try a clearer shot, or type the amount.",
+        "Couldn't read a total from that photo. Try a clearer shot, or type the amount.",
       alerts: [],
     });
   }
@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
   );
 
   const alerts = await collectBudgetAlerts(supabase, userId);
-  if (alerts.length > 0) await pushAlertsToTelegram(supabase, userId, alerts);
+  if (alerts.length > 0) await deliverBudgetAlerts(supabase, userId, alerts);
   return NextResponse.json({
     status: "logged",
     expense,

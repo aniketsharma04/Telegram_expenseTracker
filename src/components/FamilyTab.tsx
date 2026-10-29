@@ -6,7 +6,13 @@ import { formatINR, memberColor, useIsDark } from "./theme";
 
 const BOT_URL = "https://t.me/Aniket_financial_expense_bot";
 
-export default function FamilyTab({ data, onChanged }: { data: ApiData; onChanged: () => void }) {
+export default function FamilyTab({
+  data,
+  onChanged,
+}: {
+  data: ApiData;
+  onChanged: () => void;
+}) {
   const dark = useIsDark();
   const [copied, setCopied] = useState(false);
 
@@ -16,12 +22,16 @@ export default function FamilyTab({ data, onChanged }: { data: ApiData; onChange
     let familySpent = 0;
     let familyInvested = 0;
     for (const e of data.expenses) {
-      if (!e.expense_date.startsWith(monthPrefix) || e.user_id === null) continue;
+      if (!e.expense_date.startsWith(monthPrefix) || e.user_id === null)
+        continue;
       if (e.category === "Investments") {
         familyInvested += Number(e.amount);
       } else {
         familySpent += Number(e.amount);
-        byMember.set(e.user_id, (byMember.get(e.user_id) ?? 0) + Number(e.amount));
+        byMember.set(
+          e.user_id,
+          (byMember.get(e.user_id) ?? 0) + Number(e.amount),
+        );
       }
     }
     return { byMember, familySpent, familyInvested };
@@ -33,17 +43,23 @@ export default function FamilyTab({ data, onChanged }: { data: ApiData; onChange
         <section className="card">
           <h2>Start a family</h2>
           <p className="prose">
-            Track everyone&apos;s spending together — each member logs their own expenses with the
-            bot, and the family view rolls it all up while keeping individual trackers intact.
+            Track everyone&apos;s spending together. Each member logs their own
+            expenses with the bot, and the family view rolls it all up while
+            keeping individual trackers intact.
           </p>
           <ol className="login-steps">
             <li>
               Open the bot and send <code>/family create Sharma Family</code>
             </li>
             <li>Forward the invite link it gives you to your family group</li>
-            <li>One tap and they&apos;re in — their expenses appear here</li>
+            <li>One tap and they&apos;re in, and their expenses appear here</li>
           </ol>
-          <a className="btn-primary" href={BOT_URL} target="_blank" rel="noreferrer">
+          <a
+            className="btn-primary"
+            href={BOT_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
             Open the Telegram bot
           </a>
         </section>
@@ -52,7 +68,10 @@ export default function FamilyTab({ data, onChanged }: { data: ApiData; onChange
   }
 
   const inviteUrl = `https://t.me/Aniket_financial_expense_bot?start=fam_${data.family.invite_code}`;
-  const maxMember = Math.max(1, ...data.family.members.map((m) => totals.byMember.get(m.id) ?? 0));
+  const maxMember = Math.max(
+    1,
+    ...data.family.members.map((m) => totals.byMember.get(m.id) ?? 0),
+  );
 
   return (
     <div className="tab-content">
@@ -72,7 +91,10 @@ export default function FamilyTab({ data, onChanged }: { data: ApiData; onChange
             const spent = totals.byMember.get(m.id) ?? 0;
             return (
               <div className="member-row" key={m.id}>
-                <span className="tx-avatar" style={{ background: memberColor(i, dark) }}>
+                <span
+                  className="tx-avatar"
+                  style={{ background: memberColor(i, dark) }}
+                >
                   {m.name.slice(0, 1).toUpperCase()}
                 </span>
                 <span className="member-meta">
@@ -83,7 +105,10 @@ export default function FamilyTab({ data, onChanged }: { data: ApiData; onChange
                   <span className="member-track">
                     <span
                       className="member-bar"
-                      style={{ width: `${Math.max(3, (spent / maxMember) * 100)}%`, background: memberColor(i, dark) }}
+                      style={{
+                        width: `${Math.max(3, (spent / maxMember) * 100)}%`,
+                        background: memberColor(i, dark),
+                      }}
                     />
                   </span>
                 </span>
@@ -97,8 +122,8 @@ export default function FamilyTab({ data, onChanged }: { data: ApiData; onChange
       <section className="card">
         <h2>Add a member</h2>
         <p className="prose">
-          Anyone who opens this link joins <b>{data.family.name}</b> and starts logging with the
-          bot right away.
+          Anyone who opens this link joins <b>{data.family.name}</b> and starts
+          logging with the bot right away.
         </p>
         <div className="invite-row">
           <code className="invite-code">{inviteUrl}</code>

@@ -360,7 +360,7 @@ export function detectedNotice(rows: DetectedBill[]): string | null {
         ? `₹${Number(r.amount).toLocaleString("en-IN")}`
         : "amount unclear";
     const due = r.due_date ? `, due ${r.due_date}` : "";
-    return `• <b>${r.biller_name}</b> — ${amount}${due}`;
+    return `• <b>${r.biller_name}</b>: ${amount}${due}`;
   });
   const more = rows.length > 5 ? `\n…and ${rows.length - 5} more` : "";
   return [
@@ -384,7 +384,7 @@ export function reauthNotice(appUrl?: string): string {
   return [
     "📧 <b>Gmail needs reconnecting</b>",
     "",
-    "Google drops the connection every 7 days while the app is unpublished — nothing is wrong with your account.",
+    "Google drops the connection every 7 days while the app is unpublished. Nothing is wrong with your account.",
     `${where} → Settings → Reconnect Gmail to keep finding bills in your email.`,
   ].join("\n");
 }

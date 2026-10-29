@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase-server";
-import { notify } from "@/lib/notify";
+import { notify, noticeFromHtml } from "@/lib/notify";
 import { localDate } from "@/lib/parser";
 import { detectRecurring } from "@/lib/insights";
 import { composeMonthlyDigest } from "@/lib/digest";
@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
         await notify(
           supabase,
           userId,
-          `🔁 Heads up: <b>${charge.merchant}</b> (~₹${charge.amount.toLocaleString("en-IN")}, ${charge.category}) usually hits around the ${Number(charge.nextDate.slice(8))}th — that's in ${REMIND_DAYS_AHEAD} days.`,
+          `🔁 Heads up: <b>${charge.merchant}</b> (~₹${charge.amount.toLocaleString("en-IN")}, ${charge.category}) usually hits around the ${Number(charge.nextDate.slice(8))}th, which is in ${REMIND_DAYS_AHEAD} days.`,
         );
         reminders++;
       }
@@ -134,7 +134,7 @@ export async function GET(req: NextRequest) {
       if (isFirstOfMonth) {
         const digest = await composeMonthlyDigest(supabase, userId, today);
         if (digest) {
-          await notify(supabase, userId, digest);
+          await notify(supabase, userId, noticeFromHtml(digest, "digest"));
           digests++;
         }
       }

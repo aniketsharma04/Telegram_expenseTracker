@@ -57,7 +57,7 @@ export interface MailResult {
 export async function sendSignInCode(
   email: string,
   code: string,
-  appName = "Expense Tracker",
+  appName = "Aaj",
 ): Promise<MailResult> {
   const provider = mailProvider();
   if (!provider) {
@@ -72,7 +72,7 @@ export async function sendSignInCode(
     `Your ${appName} sign-in code is ${code}`,
     "",
     "It works once and expires in 10 minutes.",
-    "If you didn't ask for it, you can ignore this email — nobody can get in without the code.",
+    "If you didn't ask for it, you can ignore this email. Nobody can get in without the code.",
   ].join("\n");
 
   try {
@@ -215,6 +215,6 @@ function htmlBody(code: string, appName: string): string {
   <p style="font-size:15px;margin:0 0 18px">Your ${appName} sign-in code:</p>
   <p style="font-size:34px;font-weight:700;letter-spacing:6px;margin:0 0 18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">${code}</p>
   <p style="font-size:13px;color:#555;margin:0 0 8px">It works once and expires in 10 minutes.</p>
-  <p style="font-size:13px;color:#555;margin:0">If you didn't ask for it, ignore this email — nobody can sign in without the code.</p>
+  <p style="font-size:13px;color:#555;margin:0">If you didn't ask for it, ignore this email. Nobody can sign in without the code.</p>
 </div>`;
 }

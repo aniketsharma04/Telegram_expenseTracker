@@ -9,10 +9,15 @@ import {
 } from "../billers";
 
 /**
- * Built-in mock BBPS provider: realistic billers and deterministic fake
- * bills derived from the consumer number, so the whole flow (search →
- * identifiers → fetched amount → pay → mark paid) works before Setu
- * onboarding. Same consumer number always returns the same bill.
+ * Built-in mock BBPS provider: the real biller directory, but no real bills.
+ *
+ * Without a live Bharat Connect connection we can't know anyone's bill, so a
+ * fetch answers "bill not available" and the card shows ₹0 instead of a
+ * made-up amount on a made-up name. Set BBPS_MOCK_BILLS=1 (dev/tests) for
+ * deterministic demo bills derived from the consumer number, so the flow
+ * (identifiers → amount → pay → mark paid) can still be exercised. Demo bills
+ * never carry a customer name: a fake person on a real account number reads
+ * as "this is someone else's bill".
  */
 
 const NUM = (
@@ -197,17 +202,13 @@ function hash(s: string): number {
   return h;
 }
 
-const NAMES = [
-  "Aniket Sharma",
-  "Mridul Sharma",
-  "Sunita Sharma",
-  "Rajesh Kumar",
-  "Priya Verma",
-  "Amit Gupta",
-];
-
 export class MockBbpsProvider implements BbpsProvider {
   readonly name = "mock" as const;
+  private demoBills: boolean;
+
+  constructor(opts: { demoBills?: boolean } = {}) {
+    this.demoBills = opts.demoBills ?? process.env.BBPS_MOCK_BILLS === "1";
+  }
 
   async categories(): Promise<string[]> {
     return [...new Set(MOCK_BILLERS.map((b) => b.category))];
@@ -249,6 +250,13 @@ export class MockBbpsProvider implements BbpsProvider {
           error: `${p.name} doesn't look right`,
         };
     }
+    if (!this.demoBills)
+      return {
+        ok: false,
+        code: "unavailable",
+        error: "Bill not available. Live bill fetch isn't connected yet",
+      };
+
     const key = `${billerId}|${Object.values(params).join("|")}`;
     const h = hash(key);
     // Numbers ending in 00 → "no dues"; ending in 99 → "not found" — handy for testing.
@@ -285,7 +293,7 @@ export class MockBbpsProvider implements BbpsProvider {
         dueDate,
         billDate,
         billNumber: `B${(h % 1_000_000).toString().padStart(6, "0")}`,
-        customerName: NAMES[h % NAMES.length],
+        customerName: null,
       },
     };
   }

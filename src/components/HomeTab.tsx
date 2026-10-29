@@ -6,6 +6,8 @@ import { RANGE_LABELS, RangeKey } from "./App";
 import CategoryChart from "./CategoryChart";
 import TrendChart from "./TrendChart";
 import TopMerchants from "./TopMerchants";
+import DailyCard from "./DailyCard";
+import type { DailyStatus } from "@/lib/daily-budget";
 
 interface Props {
   inRange: Expense[];
@@ -17,10 +19,14 @@ interface Props {
   rangeStart: string;
   colorByCategory: Record<string, string>;
   scopeLabel: string;
+  /** Personal scope only — undefined hides the card. */
+  daily?: DailyStatus | null;
 }
 
 function spentOf(list: Expense[]): number {
-  return list.filter((e) => e.category !== "Investments").reduce((s, e) => s + Number(e.amount), 0);
+  return list
+    .filter((e) => e.category !== "Investments")
+    .reduce((s, e) => s + Number(e.amount), 0);
 }
 
 export default function HomeTab({
@@ -33,6 +39,7 @@ export default function HomeTab({
   rangeStart,
   colorByCategory,
   scopeLabel,
+  daily,
 }: Props) {
   const spent = spentOf(inRange);
   const invested = inRange
@@ -52,9 +59,14 @@ export default function HomeTab({
 
   return (
     <div className="tab-content">
+      {daily !== undefined && <DailyCard daily={daily} />}
       <div className="range-row">
         {(Object.keys(RANGE_LABELS) as RangeKey[]).map((key) => (
-          <button key={key} className={`range-btn${range === key ? " active" : ""}`} onClick={() => setRange(key)}>
+          <button
+            key={key}
+            className={`range-btn${range === key ? " active" : ""}`}
+            onClick={() => setRange(key)}
+          >
             {RANGE_LABELS[key]}
           </button>
         ))}
@@ -76,7 +88,11 @@ export default function HomeTab({
       <div className="grid-2">
         <section className="card">
           <h2>By category</h2>
-          <CategoryChart expenses={inRange} selected="all" colorByCategory={colorByCategory} />
+          <CategoryChart
+            expenses={inRange}
+            selected="all"
+            colorByCategory={colorByCategory}
+          />
         </section>
         <section className="card">
           <h2>Daily spend</h2>
