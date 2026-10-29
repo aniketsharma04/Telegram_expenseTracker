@@ -65,6 +65,38 @@ The dashboard works locally against the real Supabase project. The webhook needs
 - **Correction commands** — `/undo`, `/category <name>`, `/amount <n>`, `/last` act on the most recent entry.
 - **Dashboard analysis** — date-range presets (this month / 30 / 90 days), category filter with chart emphasis, top-merchants view, and period-over-period comparison. Realtime now reflects updates and deletes too.
 
+## Daily budget (v14)
+
+A monthly income is too big a number to feel, so the app turns it into one number to spend each day:
+
+```
+everyday money = income − fixed costs − savings goal
+today's budget = (everyday money − everyday spending so far) ÷ days left, today included
+```
+
+It's recalculated every morning, so a big day trims the days after it a little and a quiet day gives them more. Fixed costs you list (rent, EMI, SIP, subscriptions), Loans & EMI, Investments, and anything marked **from savings** never touch the daily number. If a fixed cost comes in above its planned amount, only the extra counts as everyday spending.
+
+- **Messages (Telegram):** a morning brief (~7:00 IST), a ping with "₹X left today" on every auto-captured spend, and a night report (~21:30 IST). Only users who set up a plan get them; each can be turned off.
+- **Bot:** `/plan 100000` (or `/plan 1 lakh`), `/plan save 15000`, `/fixed rent 25000`, `/fixed remove rent`, `/today`, `/fromsavings`, `/countdaily`, `/plan morning off`.
+- **App:** a daily-budget card at the top of Home with the plan editor, and a _Paid from savings_ switch on each expense. The web dashboard shows the same card, read-only.
+- **Setup:** run `supabase/migrations/v14-daily-budget.sql`, deploy (adds the `/api/cron/morning` and `/api/cron/evening` crons in `vercel.json`), then `npm run set-commands`.
+- Logic: `src/lib/daily-budget.ts` (pure, tested), `src/lib/plan.ts` (DB), `src/lib/briefs.ts` (messages).
+
+## App-first: push, background capture, planning (v15–v17)
+
+The app is becoming the product and the Telegram bot is being retired (plan: [`docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md`](./docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md)).
+
+- **Push + inbox (v15):** every notice is stored in an in-app inbox, then pushed to the user's phones through Expo's push service (Firebase on Android, APNs on iOS). Telegram keeps a copy while the bot exists. `src/lib/notify.ts`, `src/lib/push.ts`, `/api/push`, `/api/notifications`.
+- **Background capture:** captured bank/UPI/SMS notifications upload from native code via WorkManager as they happen, not when the app is next opened. OTP messages with a code are dropped on the phone. A setup card on Home walks through notification access, the battery exemption and Autostart (Xiaomi/Oppo/Vivo/OnePlus), and is also the Play "prominent disclosure".
+- **Salary-cycle months (v16):** with a payday set, the budget month runs salary to salary.
+- **Goals (v17):** each goal's monthly share comes off the top; on the first morning of a budget month goals are credited automatically, minus any overspend.
+
+### One-time setup for push
+
+1. Firebase console → new project → add an Android app with package `com.aniketsharma.expensetracker` → download `google-services.json` into `mobile/` (picked up by `mobile/app.config.js`).
+2. Firebase → Project settings → Service accounts → generate a key, then `cd mobile && eas credentials` → Android → _FCM V1 service account key_ → upload it.
+3. Rebuild the app with EAS. Migrations v14–v17 must be applied (`supabase db query --linked -f supabase/migrations/<file>`).
+
 ## Roadmap
 
 - **v3** — receipt OCR, budgets and proactive alerts, monthly auto-summary, dashboard access lock.
