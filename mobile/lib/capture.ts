@@ -3,8 +3,11 @@ import { API_BASE } from "./api";
 import {
   captureSupported,
   drainCaptures,
+  ensureListening,
   hasCapturePermission,
+  isBatteryOptimized,
   pendingCaptures,
+  setUploadConfig,
   type Capture,
 } from "../modules/notification-capture";
 
@@ -42,13 +45,27 @@ export function captureStatus(): {
   supported: boolean;
   granted: boolean;
   pending: number;
+  /** Android may stop background capture to save battery (v15). */
+  batteryOptimized: boolean;
 } {
   const supported = captureSupported;
   return {
     supported,
     granted: supported ? hasCapturePermission() : false,
     pending: supported ? pendingCaptures() : 0,
+    batteryOptimized: supported ? isBatteryOptimized() : false,
   };
+}
+
+/**
+ * Wire background capture to the signed-in user (v15): the native uploader
+ * posts as them, and a listener Android quietly unbound gets re-bound.
+ * Call with null on logout — a signed-out phone uploads nothing.
+ */
+export function connectCapture(token: string | null): void {
+  if (!captureSupported) return;
+  setUploadConfig(API_BASE, token ? token.trim() : null);
+  if (token && hasCapturePermission()) ensureListening();
 }
 
 export async function lastCaptureSync(): Promise<string | null> {

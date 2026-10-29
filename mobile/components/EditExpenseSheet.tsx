@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
+  Switch,
   View,
 } from "react-native";
+import { Text, TextInput } from "./Text";
 import { deleteExpense, Expense, patchExpense } from "../lib/api";
 import { formatINR, Palette, seriesColor } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
 import ReceiptLines from "./ReceiptLines";
+import { KeyboardAware } from "./ui";
 
 interface Props {
   expense: Expense | null; // null = closed
@@ -50,6 +49,7 @@ export default function EditExpenseSheet({
   const [category, setCategory] = useState<string>("");
   const [merchant, setMerchant] = useState("");
   const [day, setDay] = useState<DayPick>("keep");
+  const [fromSavings, setFromSavings] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,6 +59,7 @@ export default function EditExpenseSheet({
       setCategory(expense.category);
       setMerchant(expense.merchant ?? "");
       setDay("keep");
+      setFromSavings(expense.budget_scope === "savings");
       setError(null);
     }
   }, [expense]);
@@ -82,22 +83,24 @@ export default function EditExpenseSheet({
         patch.merchant = merchant.trim() || null;
       if (day !== "keep")
         patch.expense_date = day === "today" ? today : yesterdayOf(today);
+      if (fromSavings !== (expense.budget_scope === "savings"))
+        patch.budget_scope = fromSavings ? "savings" : null;
 
       if (Object.keys(patch).length === 0) {
         onClose();
       } else {
         const result = await patchExpense(token, expense.id, patch);
         if (result === "unauthorized") {
-          setError("Session expired — get a fresh /app code from the bot.");
+          setError("Session expired. Get a fresh /app code from the bot.");
         } else if (!result) {
-          setError("Couldn't save the changes — try again.");
+          setError("Couldn't save the changes. Try again.");
         } else {
           onChanged();
           onClose();
         }
       }
     } catch {
-      setError("Couldn't reach the server — check your connection.");
+      setError("Couldn't reach the server. Check your connection.");
     }
     setBusy(false);
   };
@@ -115,7 +118,7 @@ export default function EditExpenseSheet({
         setError("Couldn't delete that entry.");
       }
     } catch {
-      setError("Couldn't reach the server — check your connection.");
+      setError("Couldn't reach the server. Check your connection.");
     }
     setBusy(false);
   };
@@ -124,10 +127,7 @@ export default function EditExpenseSheet({
 
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        style={styles.backdrop}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAware style={styles.backdrop}>
         <Pressable style={styles.backdropTouch} onPress={onClose} />
         <View
           style={[
@@ -154,7 +154,7 @@ export default function EditExpenseSheet({
                   },
                 ]}
               >
-                🤝 {t("partOfSplit")}
+                {t("partOfSplit")}
               </Text>
             )}
 
@@ -250,6 +250,24 @@ export default function EditExpenseSheet({
               ))}
             </View>
 
+            <View style={styles.savingsRow}>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text
+                  style={{ color: p.ink, fontSize: fs(14), fontWeight: "500" }}
+                >
+                  {t("fromSavings")}
+                </Text>
+                <Text style={{ color: p.ink2, fontSize: fs(12) }}>
+                  {t("fromSavingsHint")}
+                </Text>
+              </View>
+              <Switch
+                value={fromSavings}
+                onValueChange={setFromSavings}
+                trackColor={{ true: p.accent }}
+              />
+            </View>
+
             {error && (
               <Text style={[styles.error, { fontSize: fs(13) }]}>{error}</Text>
             )}
@@ -262,12 +280,12 @@ export default function EditExpenseSheet({
               >
                 <Text
                   style={{
-                    color: "#d03b3b",
+                    color: p.danger,
                     fontWeight: "600",
                     fontSize: fs(14),
                   }}
                 >
-                  🗑️ {t("delete")}
+                  {t("delete")}
                 </Text>
               </Pressable>
               <Pressable
@@ -299,12 +317,13 @@ export default function EditExpenseSheet({
             </View>
           </ScrollView>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAware>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  savingsRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   backdrop: {
     flex: 1,
     justifyContent: "flex-end",
@@ -375,5 +394,5 @@ const styles = StyleSheet.create({
   actionRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   btn: { borderRadius: 14, paddingVertical: 14, alignItems: "center" },
   btnDanger: { paddingVertical: 14, paddingHorizontal: 14 },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

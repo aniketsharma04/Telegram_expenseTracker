@@ -8,7 +8,7 @@
     -->
     <service
       android:name="expo.modules.notificationcapture.BankNotificationListenerService"
-      android:label="Expense Tracker capture"
+      android:label="Aaj"
       android:exported="true"
       android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
       <intent-filter>

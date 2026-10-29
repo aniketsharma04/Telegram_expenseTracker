@@ -1,19 +1,31 @@
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Text } from "./Text";
 import { Expense } from "../lib/api";
-import { FALLBACK_COLOR, formatINR, memberColor, Palette, seriesColor } from "../lib/theme";
-import { Avatar, Card } from "./ui";
+import {
+  FALLBACK_COLOR,
+  formatINR,
+  memberColor,
+  Palette,
+  seriesColor,
+} from "../lib/theme";
+import { Avatar, Card, IconBubble } from "./ui";
+import { categoryIcon, clockTime, tint } from "../lib/categories";
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const SOURCE_ICON: Record<string, string> = {
-  telegram_text: "💬",
-  telegram_voice: "🎤",
-  telegram_photo: "📷",
-  app_form: "📱",
-  app_text: "📱",
-  app_voice: "🎤",
-  app_photo: "📷",
-};
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 interface Props {
   p: Palette;
@@ -49,11 +61,14 @@ export default function TransactionsTab({
 
   const presentCategories = useMemo(
     () => [...new Set(expenses.map((e) => e.category))].sort(),
-    [expenses]
+    [expenses],
   );
   const filtered = useMemo(
-    () => (catFilter === "all" ? expenses : expenses.filter((e) => e.category === catFilter)),
-    [expenses, catFilter]
+    () =>
+      catFilter === "all"
+        ? expenses
+        : expenses.filter((e) => e.category === catFilter),
+    [expenses, catFilter],
   );
 
   const groups = useMemo(() => {
@@ -68,7 +83,11 @@ export default function TransactionsTab({
 
   return (
     <View style={{ gap: 12 }}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: 8 }}
+      >
         {["all", ...presentCategories].map((name) => {
           const active = catFilter === name;
           return (
@@ -77,10 +96,19 @@ export default function TransactionsTab({
               onPress={() => setCatFilter(name)}
               style={[
                 styles.chip,
-                { borderColor: active ? p.accent : p.border, backgroundColor: active ? p.accentSoft : p.surface },
+                {
+                  borderColor: active ? p.accent : p.border,
+                  backgroundColor: active ? p.accentSoft : p.surface,
+                },
               ]}
             >
-              <Text style={{ fontSize: 13, color: active ? p.ink : p.ink2, fontWeight: active ? "600" : "400" }}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: active ? p.ink : p.ink2,
+                  fontWeight: active ? "600" : "400",
+                }}
+              >
                 {name === "all" ? "All" : name}
               </Text>
             </Pressable>
@@ -90,8 +118,15 @@ export default function TransactionsTab({
 
       {groups.length === 0 && (
         <Card p={p}>
-          <Text style={{ color: p.ink2, fontSize: 14, textAlign: "center", padding: 12 }}>
-            Nothing here yet — text the bot an expense.
+          <Text
+            style={{
+              color: p.ink2,
+              fontSize: 14,
+              textAlign: "center",
+              padding: 12,
+            }}
+          >
+            Nothing here yet. Payments appear here as soon as they're captured.
           </Text>
         </Card>
       )}
@@ -99,41 +134,76 @@ export default function TransactionsTab({
       {groups.map(([date, rows]) => (
         <View key={date} style={{ gap: 6 }}>
           <View style={styles.groupLabel}>
-            <Text style={[styles.groupText, { color: p.muted }]}>{prettyDate(date, today).toUpperCase()}</Text>
             <Text style={[styles.groupText, { color: p.muted }]}>
-              {formatINR(rows.filter((e) => e.category !== "Investments").reduce((s, e) => s + Number(e.amount), 0))}
+              {prettyDate(date, today).toUpperCase()}
+            </Text>
+            <Text style={[styles.groupText, { color: p.muted }]}>
+              {formatINR(
+                rows
+                  .filter((e) => e.category !== "Investments")
+                  .reduce((s, e) => s + Number(e.amount), 0),
+              )}
             </Text>
           </View>
           <Card p={p} style={{ paddingVertical: 4, paddingHorizontal: 14 }}>
             {rows.map((e, i) => {
-              const catColor = seriesColor(colorByCategory[e.category] ?? FALLBACK_COLOR, dark);
-              const mIdx = e.user_id !== null ? (memberIndex.get(e.user_id) ?? 0) : 0;
-              const mName = e.user_id !== null ? (memberName.get(e.user_id) ?? "—") : "—";
+              const catColor = seriesColor(
+                colorByCategory[e.category] ?? FALLBACK_COLOR,
+                dark,
+              );
+              const mIdx =
+                e.user_id !== null ? (memberIndex.get(e.user_id) ?? 0) : 0;
+              const mName =
+                e.user_id !== null ? (memberName.get(e.user_id) ?? "—") : "—";
               return (
                 <Pressable
                   key={e.id}
                   onPress={() => onEdit(e)}
-                  style={[styles.row, i < rows.length - 1 && { borderBottomWidth: 1, borderBottomColor: p.grid }]}
+                  style={[
+                    styles.row,
+                    i < rows.length - 1 && {
+                      borderBottomWidth: 1,
+                      borderBottomColor: p.grid,
+                    },
+                  ]}
                 >
                   {showMember ? (
-                    <Avatar color={memberColor(mIdx, dark)} label={mName.slice(0, 1).toUpperCase()} />
+                    <Avatar
+                      color={memberColor(mIdx, dark)}
+                      label={mName.slice(0, 1).toUpperCase()}
+                    />
                   ) : (
-                    <View style={[styles.catDot, { backgroundColor: catColor }]} />
+                    <IconBubble
+                      name={categoryIcon(e.category)}
+                      color={catColor}
+                      bg={tint(catColor, dark)}
+                    />
                   )}
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={{ fontSize: 14.5, fontWeight: "500", color: p.ink }} numberOfLines={1}>
+                    <Text
+                      style={{ fontSize: 15, fontWeight: "500", color: p.ink }}
+                      numberOfLines={1}
+                    >
                       {e.merchant ?? e.category}
                     </Text>
-                    <Text style={{ fontSize: 12, color: p.muted, marginTop: 1 }}>
-                      {showMember ? `${mName} · ` : ""}
-                      {e.category} · {SOURCE_ICON[e.source] ?? "💬"}
-                      {e.split_id ? " · 🤝" : ""}
+                    <Text
+                      style={{ fontSize: 12.5, color: p.muted, marginTop: 2 }}
+                      numberOfLines={1}
+                    >
+                      {[
+                        showMember ? mName : null,
+                        clockTime(e.logged_at),
+                        e.category,
+                        e.split_id ? "split" : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </Text>
                   </View>
                   <Text
                     style={{
-                      fontSize: 14.5,
-                      fontWeight: "700",
+                      fontSize: 15,
+                      fontWeight: "600",
                       color: e.category === "Investments" ? p.good : p.ink,
                     }}
                   >
@@ -151,9 +221,23 @@ export default function TransactionsTab({
 }
 
 const styles = StyleSheet.create({
-  chip: { borderWidth: 1, borderRadius: 999, paddingVertical: 7, paddingHorizontal: 14 },
-  groupLabel: { flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 6 },
+  chip: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+  },
+  groupLabel: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 6,
+  },
   groupText: { fontSize: 11.5, fontWeight: "600", letterSpacing: 0.5 },
-  row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 11 },
-  catDot: { width: 12, height: 12, borderRadius: 4, marginHorizontal: 11 },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 12,
+    minHeight: 56,
+  },
 });

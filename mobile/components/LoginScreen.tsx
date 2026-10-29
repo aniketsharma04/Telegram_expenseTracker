@@ -1,18 +1,16 @@
 import { useState } from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
   Linking,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from "react-native";
+import { Text, TextInput } from "./Text";
 import { BOT_URL, emailSignIn } from "../lib/api";
 import { usePalette } from "../lib/theme";
+import { KeyboardAware } from "./ui";
 
 /**
  * Signing in (v12).
@@ -88,10 +86,7 @@ export default function LoginScreen({ onLogin }: Props) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.wrap, { backgroundColor: p.page }]}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+    <KeyboardAware style={[styles.wrap, { backgroundColor: p.page }]}>
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -105,7 +100,7 @@ export default function LoginScreen({ onLogin }: Props) {
           <View style={[styles.mark, { backgroundColor: p.accent }]}>
             <Text style={styles.markText}>₹</Text>
           </View>
-          <Text style={[styles.title, { color: p.ink }]}>Expense Tracker</Text>
+          <Text style={[styles.title, { color: p.ink }]}>Aaj</Text>
           <Text style={[styles.tagline, { color: p.ink2 }]}>
             Know where your money actually goes.
           </Text>
@@ -210,7 +205,7 @@ export default function LoginScreen({ onLogin }: Props) {
                   1. Open the Telegram bot
                 </Text>
                 <Text style={[styles.step, { color: p.ink2 }]}>
-                  2. Send <Text style={{ fontWeight: "700" }}>/app</Text> — it
+                  2. Send <Text style={{ fontWeight: "700" }}>/app</Text> and it
                   replies with a login code
                 </Text>
                 <Text style={[styles.step, { color: p.ink2 }]}>
@@ -260,7 +255,7 @@ export default function LoginScreen({ onLogin }: Props) {
           </Text>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAware>
   );
 }
 
@@ -333,7 +328,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   error: {
-    color: "#d03b3b",
+    color: "#b91c1c",
     fontSize: 13,
     marginBottom: 6,
     alignSelf: "flex-start",

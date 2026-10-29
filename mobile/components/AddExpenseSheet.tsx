@@ -1,16 +1,13 @@
 import { useState } from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from "react-native";
+import { Text, TextInput } from "./Text";
 import * as ImagePicker from "expo-image-picker";
 import {
   AudioModule,
@@ -32,6 +29,7 @@ import {
 } from "../lib/api";
 import { formatINR, Palette, seriesColor } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
+import { KeyboardAware, Icon } from "./ui";
 
 interface Props {
   visible: boolean;
@@ -122,14 +120,14 @@ export default function AddExpenseSheet({
   ) => {
     if (result === "unauthorized") {
       setError(
-        "Session expired — log in again with a fresh /app code from the bot.",
+        "Session expired. Log in again with a fresh /app code from the bot.",
       );
       return;
     }
     if (result.status === "need_amount") {
       setError(
         result.question ??
-          'I couldn\'t find an amount in that — include a number, like "250 groceries".',
+          'I couldn\'t find an amount in that. Include a number, like "250 groceries".',
       );
       return;
     }
@@ -173,7 +171,7 @@ export default function AddExpenseSheet({
       await fn();
     } catch {
       setError(
-        "Couldn't reach the server — check your connection and try again.",
+        "Couldn't reach the server. Check your connection and try again.",
       );
     }
     setBusy(false);
@@ -203,11 +201,11 @@ export default function AddExpenseSheet({
         });
         if (result === "unauthorized") {
           setError(
-            "Session expired — log in again with a fresh /app code from the bot.",
+            "Session expired. Log in again with a fresh /app code from the bot.",
           );
         } else if (!result) {
           setError(
-            "Couldn't save that — income tracking may not be enabled yet.",
+            "Couldn't save that. Income tracking may not be enabled yet.",
           );
         } else {
           setSuccess({
@@ -254,7 +252,7 @@ export default function AddExpenseSheet({
       await recorder.stop();
       const uri = recorder.uri;
       if (!uri) {
-        setError("Recording failed — try again.");
+        setError("Recording failed. Try again.");
         return;
       }
       const result = await uploadMedia(token, "voice", {
@@ -306,7 +304,7 @@ export default function AddExpenseSheet({
         setUndone(true);
         onLogged();
       } else {
-        setError("Couldn't undo — you can remove it from Telegram with /undo.");
+        setError("Couldn't undo. You can remove it from Telegram with /undo.");
       }
     });
 
@@ -319,10 +317,7 @@ export default function AddExpenseSheet({
       animationType="slide"
       onRequestClose={close}
     >
-      <KeyboardAvoidingView
-        style={styles.backdrop}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAware style={styles.backdrop}>
         <Pressable style={styles.backdropTouch} onPress={close} />
         <View
           style={[
@@ -334,7 +329,18 @@ export default function AddExpenseSheet({
 
           {success ? (
             <View style={styles.done}>
-              <Text style={{ fontSize: 40 }}>{undone ? "↩️" : "✅"}</Text>
+              <View
+                style={[
+                  styles.doneIcon,
+                  { backgroundColor: undone ? p.page : p.accentSoft },
+                ]}
+              >
+                <Icon
+                  name={undone ? "rotate-ccw" : "check"}
+                  size={30}
+                  color={undone ? p.ink2 : p.accent}
+                />
+              </View>
               <Text
                 style={{
                   fontSize: fs(18),
@@ -358,7 +364,7 @@ export default function AddExpenseSheet({
                     fontStyle: "italic",
                   }}
                 >
-                  🎤 “{success.transcript}”
+                  “{success.transcript}”
                 </Text>
               )}
               {!undone && success.nudge && (
@@ -372,7 +378,7 @@ export default function AddExpenseSheet({
                     },
                   ]}
                 >
-                  🤔 Not fully sure about the category — tap the entry in
+                  Not fully sure about the category. Tap the entry in
                   Transactions to fix it.
                 </Text>
               )}
@@ -521,8 +527,8 @@ export default function AddExpenseSheet({
                         styles.mediaBtn,
                         recording
                           ? {
-                              backgroundColor: "#d03b3b",
-                              borderColor: "#d03b3b",
+                              backgroundColor: p.danger,
+                              borderColor: p.danger,
                               flex: 2.2,
                             }
                           : [inputBg, { borderColor: p.border }],
@@ -539,7 +545,7 @@ export default function AddExpenseSheet({
                       >
                         {recording
                           ? `⏺ ${t("recording")}`
-                          : `🎤 ${t("holdToRecord")}`}
+                          : `${t("holdToRecord")}`}
                       </Text>
                     </Pressable>
                     {!recording && (
@@ -560,7 +566,7 @@ export default function AddExpenseSheet({
                               fontWeight: "600",
                             }}
                           >
-                            📷 {t("receipt")}
+                            {t("receipt")}
                           </Text>
                         </Pressable>
                         <Pressable
@@ -579,7 +585,7 @@ export default function AddExpenseSheet({
                               fontWeight: "600",
                             }}
                           >
-                            🖼️ {t("gallery")}
+                            {t("gallery")}
                           </Text>
                         </Pressable>
                       </>
@@ -693,7 +699,6 @@ export default function AddExpenseSheet({
                             fontWeight: active ? "600" : "400",
                           }}
                         >
-                          {a.kind === "credit_card" ? "💳 " : ""}
                           {a.name}
                         </Text>
                       </Pressable>
@@ -755,7 +760,7 @@ export default function AddExpenseSheet({
                     )}
                   </View>
                   <Text style={{ fontSize: fs(13.5), color: p.ink2 }}>
-                    🤝 {t("splitWithFamily")}
+                    {t("splitWithFamily")}
                   </Text>
                 </Pressable>
               )}
@@ -790,12 +795,19 @@ export default function AddExpenseSheet({
             </ScrollView>
           )}
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAware>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  doneIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   backdrop: {
     flex: 1,
     justifyContent: "flex-end",
@@ -933,5 +945,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     overflow: "hidden",
   },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

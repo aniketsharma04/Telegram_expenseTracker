@@ -5,10 +5,9 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from "react-native";
+import { Text, TextInput } from "./Text";
 import {
   Anomaly,
   BudgetProgress,
@@ -19,7 +18,7 @@ import {
 } from "../lib/api";
 import { formatINR, Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
-import { Card, SectionTitle, TrackBar } from "./ui";
+import { KeyboardAware, Card, SectionTitle, TrackBar } from "./ui";
 
 /** Budgets with progress bars + an inline editor sheet. */
 export function BudgetsCard({
@@ -41,7 +40,7 @@ export function BudgetsCard({
   return (
     <Card p={p}>
       <View style={styles.headRow}>
-        <SectionTitle p={p}>🎯 {t("budgets")}</SectionTitle>
+        <SectionTitle p={p}>{t("budgets")}</SectionTitle>
         <Pressable onPress={() => setEditing(true)}>
           <Text
             style={{ color: p.accent, fontSize: fs(13), fontWeight: "600" }}
@@ -68,7 +67,7 @@ export function BudgetsCard({
             .map((b) => {
               const pct = Math.min(1, b.pct);
               const color =
-                b.pct >= 1 ? "#d03b3b" : b.pct >= 0.8 ? "#c98500" : p.good;
+                b.pct >= 1 ? p.danger : b.pct >= 0.8 ? p.warn : p.good;
               return (
                 <View key={b.id} style={{ gap: 5 }}>
                   <View style={styles.budgetMeta}>
@@ -161,7 +160,7 @@ function BudgetEditor({
 
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <View style={styles.backdrop}>
+      <KeyboardAware style={styles.backdrop}>
         <Pressable style={{ flex: 1 }} onPress={onClose} />
         <View
           style={[
@@ -175,7 +174,7 @@ function BudgetEditor({
             contentContainerStyle={{ gap: 13 }}
           >
             <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
-              🎯 {t("budgets")}
+              {t("budgets")}
             </Text>
 
             <ScrollView
@@ -237,7 +236,7 @@ function BudgetEditor({
                 <Pressable onPress={() => removeOne(target)}>
                   <Text
                     style={{
-                      color: "#d03b3b",
+                      color: p.danger,
                       fontSize: fs(13),
                       fontWeight: "600",
                     }}
@@ -288,7 +287,7 @@ function BudgetEditor({
             </View>
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAware>
     </Modal>
   );
 }
@@ -317,7 +316,7 @@ export function SavingsCard({
 
   return (
     <Card p={p}>
-      <SectionTitle p={p}>💵 {t("savedThisMonth")}</SectionTitle>
+      <SectionTitle p={p}>{t("savedThisMonth")}</SectionTitle>
       <View style={styles.savingsRow}>
         <View style={styles.savingsCol}>
           <Text style={{ fontSize: fs(12), color: p.muted }}>
@@ -341,7 +340,7 @@ export function SavingsCard({
             style={{
               fontSize: fs(16),
               fontWeight: "800",
-              color: kept >= 0 ? p.good : "#d03b3b",
+              color: kept >= 0 ? p.good : p.danger,
             }}
           >
             {formatINR(kept)}{" "}
@@ -371,7 +370,7 @@ export function InsightsCards({
     <>
       {recurring.length > 0 && (
         <Card p={p}>
-          <SectionTitle p={p}>🔁 {t("upcoming")}</SectionTitle>
+          <SectionTitle p={p}>{t("upcoming")}</SectionTitle>
           <View style={{ gap: 10 }}>
             {recurring.slice(0, 4).map((r) => (
               <View
@@ -407,7 +406,7 @@ export function InsightsCards({
       )}
       {anomalies.length > 0 && (
         <Card p={p}>
-          <SectionTitle p={p}>⚡ {t("headsUp")}</SectionTitle>
+          <SectionTitle p={p}>{t("headsUp")}</SectionTitle>
           <View style={{ gap: 10 }}>
             {anomalies.slice(0, 3).map((a) => (
               <View key={a.category} style={styles.insightRow}>
@@ -429,7 +428,7 @@ export function InsightsCards({
                   style={{
                     fontSize: fs(14),
                     fontWeight: "700",
-                    color: "#c98500",
+                    color: p.warn,
                   }}
                 >
                   {formatINR(a.mtd)}

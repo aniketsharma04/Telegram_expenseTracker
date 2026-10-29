@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Switch,
-  Text,
-  TextInput,
   View,
 } from "react-native";
+import { Text, TextInput } from "./Text";
 import {
   Account,
   AccountKind,
@@ -21,6 +18,7 @@ import {
 } from "../lib/api";
 import { Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
+import { KeyboardAware } from "./ui";
 
 /**
  * Add or edit one account. "Balance today" is the opening balance — the app
@@ -136,10 +134,7 @@ export default function AccountSheet({
 
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.backdrop}
-      >
+      <KeyboardAware style={styles.backdrop}>
         <Pressable style={styles.backdropTouch} onPress={onClose} />
         <View
           style={[
@@ -262,7 +257,7 @@ export default function AccountSheet({
                 >
                   <Text
                     style={{
-                      color: "#d03b3b",
+                      color: p.danger,
                       fontWeight: "600",
                       fontSize: fs(14),
                     }}
@@ -300,7 +295,7 @@ export default function AccountSheet({
             </View>
           </ScrollView>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAware>
     </Modal>
   );
 }
@@ -370,5 +365,5 @@ const styles = StyleSheet.create({
   },
   btn: { borderRadius: 14, paddingVertical: 14, alignItems: "center" },
   btnDanger: { paddingVertical: 14, paddingHorizontal: 14 },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

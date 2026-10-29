@@ -11,7 +11,7 @@ export type Lang = "en" | "hi";
 
 const STRINGS = {
   // chrome
-  appName: { en: "Expense Tracker", hi: "खर्चा ट्रैकर" },
+  appName: { en: "Aaj", hi: "आज" },
   logout: { en: "Log out", hi: "लॉग आउट" },
   home: { en: "Home", hi: "होम" },
   transactions: { en: "Transactions", hi: "लेन-देन" },
@@ -29,8 +29,8 @@ const STRINGS = {
   expense: { en: "Expense", hi: "खर्चा" },
   income: { en: "Income", hi: "आमदनी" },
   smartPlaceholder: {
-    en: 'Type it like a text — "250 groceries at More"',
-    hi: 'जैसे मैसेज करते हैं — "250 सब्ज़ी" लिखें',
+    en: 'Type it like a text: "250 groceries at More"',
+    hi: 'जैसे मैसेज करते हैं, वैसे "250 सब्ज़ी" लिखें',
   },
   orFillIn: { en: "or fill it in", hi: "या नीचे भरें" },
   wherePlaceholder: {
@@ -73,8 +73,8 @@ const STRINGS = {
   editBudgets: { en: "Edit", hi: "बदलें" },
   overall: { en: "Overall", hi: "कुल" },
   budgetHint: {
-    en: "Cap a category (or everything) per month — the bot warns you at 80% and 100%.",
-    hi: "महीने की सीमा तय करें — 80% और 100% पर बॉट आगाह करेगा।",
+    en: "Cap a category (or everything) per month. You'll get a heads-up at 80% and 100%.",
+    hi: "महीने की सीमा तय करें। 80% और 100% पर आपको बताया जाएगा।",
   },
   monthlyCap: { en: "Monthly cap", hi: "मासिक सीमा" },
   remove: { en: "Remove", hi: "हटाएँ" },
@@ -97,8 +97,8 @@ const STRINGS = {
   addBill: { en: "Add bill", hi: "बिल जोड़ें" },
   editBill: { en: "Edit bill", hi: "बिल बदलें" },
   noBills: {
-    en: "Register your monthly bills once — electricity, water, credit card, rent. I'll remind you before they're due, and Pay now opens your UPI app with the amount filled in.",
-    hi: "अपने मासिक बिल एक बार जोड़ें — बिजली, पानी, क्रेडिट कार्ड, किराया। समय से पहले याद दिलाऊँगा, और 'अभी चुकाएँ' से UPI ऐप में रकम भरी मिलेगी।",
+    en: "Add your monthly bills once: electricity, water, credit card, rent. I'll remind you before they're due, and Pay now opens your UPI app with the amount filled in.",
+    hi: "अपने मासिक बिल एक बार जोड़ें: बिजली, पानी, क्रेडिट कार्ड, किराया। समय से पहले याद दिलाऊँगा, और 'अभी चुकाएँ' से UPI ऐप में रकम भरी मिलेगी।",
   },
   payNow: { en: "Pay now", hi: "अभी चुकाएँ" },
   markPaid: { en: "Mark paid", hi: "चुका दिया" },
@@ -128,8 +128,8 @@ const STRINGS = {
   didYouPay: { en: "Did the payment go through?", hi: "क्या भुगतान हो गया?" },
   notYet: { en: "Not yet", hi: "अभी नहीं" },
   openUpiApp: {
-    en: "No UPI ID saved — open your app to pay:",
-    hi: "UPI ID नहीं है — ऐप खोलकर चुकाएँ:",
+    en: "No UPI ID saved. Open your app to pay:",
+    hi: "UPI ID नहीं है। ऐप खोलकर चुकाएँ:",
   },
   suggested: { en: "Looks like a monthly bill", hi: "मासिक बिल लगता है" },
   addAsBill: { en: "Add as bill", hi: "बिल बनाएँ" },
@@ -148,8 +148,8 @@ const STRINGS = {
   autoFetch: { en: "Auto-fetch", hi: "अपने आप लाएँ" },
   manual: { en: "Manual", hi: "खुद भरें" },
   searchBiller: {
-    en: "Search biller — BSES, HDFC card, Airtel…",
-    hi: "बिलर खोजें — BSES, HDFC कार्ड, Airtel…",
+    en: "Search billers: BSES, HDFC card, Airtel…",
+    hi: "बिलर खोजें: BSES, HDFC कार्ड, Airtel…",
   },
   allCategories: { en: "All", hi: "सभी" },
   noBillers: { en: "No billers match that.", hi: "कोई बिलर नहीं मिला।" },
@@ -157,6 +157,12 @@ const STRINGS = {
   fetching: { en: "Fetching from biller…", hi: "बिलर से ला रहे हैं…" },
   fetchedBill: { en: "Bill found", hi: "बिल मिला" },
   noDues: { en: "No outstanding bill right now", hi: "अभी कोई बकाया नहीं" },
+  billUnavailable: {
+    en: "Bill not available for this account yet",
+    hi: "इस खाते का बिल अभी उपलब्ध नहीं",
+  },
+  noBillAvailable: { en: "no bill available", hi: "कोई बिल उपलब्ध नहीं" },
+  accountHolder: { en: "Account holder", hi: "खाताधारक" },
   dueOn: { en: "Due", hi: "देय" },
   changeBiller: { en: "Change", hi: "बदलें" },
   saveBill: { en: "Save bill", hi: "बिल सहेजें" },
@@ -169,8 +175,8 @@ const STRINGS = {
   fetchFailed: { en: "Couldn't fetch", hi: "ला नहीं सके" },
   identifiers: { en: "Your identifiers", hi: "आपकी पहचान संख्या" },
   mockNote: {
-    en: "Demo billers until Bharat Connect onboarding completes — numbers ending 00 = no dues, 99 = not found.",
-    hi: "Bharat Connect जुड़ने तक डेमो बिलर — 00 पर खत्म = बकाया नहीं, 99 = नहीं मिला।",
+    en: "Live bill fetch isn't connected yet, so a new bill shows as not available (₹0). You can still save it and refresh later.",
+    hi: "लाइव बिल फ़ेच अभी जुड़ा नहीं है, इसलिए नया बिल उपलब्ध नहीं (₹0) दिखेगा। आप इसे सहेजकर बाद में ताज़ा कर सकते हैं।",
   },
   // v7: bills detected from email / notifications
   foundInEmail: { en: "Found in your email", hi: "आपके ईमेल में मिला" },
@@ -191,7 +197,7 @@ const STRINGS = {
   gmailConnected: { en: "Gmail connected", hi: "Gmail जुड़ा है" },
   gmailBlurb: {
     en: "Read-only. The app looks for bill emails and never sends, labels or deletes anything.",
-    hi: "सिर्फ़ पढ़ने के लिए। ऐप बिल वाले ईमेल ढूँढता है — कुछ भेजता या मिटाता नहीं।",
+    hi: "सिर्फ़ पढ़ने के लिए। ऐप बिल वाले ईमेल ढूँढता है, कुछ भेजता या मिटाता नहीं।",
   },
   scanNow: { en: "Scan now", hi: "अभी देखें" },
   scanning: { en: "Scanning your inbox…", hi: "इनबॉक्स देख रहे हैं…" },
@@ -233,7 +239,7 @@ const STRINGS = {
   archiveAccount: { en: "Archive", hi: "हटाएँ" },
   noAccountsYet: {
     en: "Add your bank, cash and cards to see what you're actually worth.",
-    hi: "बैंक, नकद और कार्ड जोड़ें — तभी असली स्थिति दिखेगी।",
+    hi: "बैंक, नकद और कार्ड जोड़ें, तभी असली स्थिति दिखेगी।",
   },
   unassignedNote: {
     en: "not linked to an account yet",
@@ -244,8 +250,8 @@ const STRINGS = {
   fromAccount: { en: "From", hi: "से" },
   toAccount: { en: "To", hi: "तक" },
   transferNote: {
-    en: "Moving your own money isn't spending — it won't touch your totals.",
-    hi: "अपना पैसा इधर-उधर करना खर्चा नहीं है — कुल में नहीं जुड़ेगा।",
+    en: "Moving your own money isn't spending, so it won't touch your totals.",
+    hi: "अपना पैसा इधर-उधर करना खर्चा नहीं है, कुल में नहीं जुड़ेगा।",
   },
   cardPayment: { en: "Card payment", hi: "कार्ड भुगतान" },
   recordTransfer: { en: "Record transfer", hi: "ट्रांसफ़र दर्ज करें" },
@@ -262,8 +268,8 @@ const STRINGS = {
   billTip: { en: "Tip", hi: "टिप" },
   billTotal: { en: "Total", hi: "कुल" },
   billPartial: {
-    en: "The lines don't add up to the total — some may have been missed.",
-    hi: "लाइनें कुल से मेल नहीं खातीं — कुछ छूट गई होंगी।",
+    en: "The lines don't add up to the total. Some may have been missed.",
+    hi: "लाइनें कुल से मेल नहीं खातीं। कुछ छूट गई होंगी।",
   },
   // auto-capture (v9)
   autoCapture: {
@@ -275,13 +281,52 @@ const STRINGS = {
     hi: "बैंक के SMS अपने-आप पढ़े जाएँगे, जिससे खर्चे खुद दर्ज हों और बैलेंस सही रहे।",
   },
   captureOn: {
-    en: "On. Bank alerts are captured and uploaded when you open the app.",
-    hi: "चालू है। ऐप खोलने पर बैंक अलर्ट दर्ज हो जाते हैं।",
+    en: "On. Payments are captured and counted as they happen.",
+    hi: "चालू है। पेमेंट होते ही दर्ज और गिने जाते हैं।",
   },
+  // capture setup card (v15) — doubles as the Play "prominent disclosure"
+  setupTitle: {
+    en: "Track spending automatically",
+    hi: "खर्चे अपने-आप ट्रैक करें",
+  },
+  setupDisclosure: {
+    en: "To log payments for you, this app reads notifications from your SMS app, bank apps and UPI apps, and only the ones that mention money being debited or credited. The amount, merchant and balance are sent securely to your account to update your budget. Messages containing OTPs or codes are skipped on your phone and never sent. Other notifications (chats, email) are ignored.",
+    hi: "आपके पेमेंट दर्ज करने के लिए यह ऐप SMS, बैंक और UPI ऐप्स की सूचनाएँ पढ़ता है, सिर्फ़ वे जिनमें पैसे कटने या आने की बात हो। रकम, दुकान और बैलेंस आपके खाते में सुरक्षित भेजे जाते हैं। OTP या कोड वाले मैसेज फ़ोन पर ही छोड़ दिए जाते हैं, कभी भेजे नहीं जाते। बाकी सूचनाएँ (चैट, ईमेल) अनदेखी की जाती हैं।",
+  },
+  restrictedTitle: {
+    en: 'Switch greyed out? "Controlled by restricted setting"',
+    hi: 'स्विच धुंधला है? "प्रतिबंधित सेटिंग" लिखा है',
+  },
+  restrictedSteps: {
+    en: "Android blocks this for apps not installed from the Play Store. To allow it:\n1. Tap Open app info below.\n2. Tap ⋮ (top right) → Allow restricted settings, then confirm with your PIN or fingerprint.\n3. Come back here and tap Agree & turn on again.",
+    hi: "Play Store के बाहर से इंस्टॉल ऐप्स के लिए Android इसे रोकता है। अनुमति देने के लिए:\n1. नीचे App info खोलें दबाएँ।\n2. ऊपर दाईं ओर ⋮ → Allow restricted settings दबाएँ, फिर PIN या फ़िंगरप्रिंट से पुष्टि करें।\n3. यहाँ लौटकर फिर से चालू करें दबाएँ।",
+  },
+  openAppInfo: { en: "Open app info", hi: "App info खोलें" },
+  setupStep1: {
+    en: "Allow notification access",
+    hi: "सूचना पढ़ने की अनुमति दें",
+  },
+  setupStep2: {
+    en: "Let it run in the background",
+    hi: "बैकग्राउंड में चलने दें",
+  },
+  setupStep2Hint: {
+    en: "Make sure “Allow background usage” is on for Aaj (on older phones: All apps → Aaj → “Don't optimise”). Already on? Tap “It's on”.",
+    hi: "Aaj के लिए “Allow background usage” चालू रखें (पुराने फ़ोन पर: सभी ऐप्स → Aaj → “Don't optimise”)। पहले से चालू है? “चालू है” दबाएँ।",
+  },
+  alreadyOn: { en: "It's on", hi: "चालू है" },
+  setupStep3: { en: "Turn on Autostart", hi: "ऑटोस्टार्ट चालू करें" },
+  setupStep3Hint: {
+    en: "Your phone stops apps it thinks are idle. In app info, turn on Autostart (or allow background activity).",
+    hi: "आपका फ़ोन बंद पड़े ऐप रोक देता है। ऐप इंफ़ो में ऑटोस्टार्ट (या बैकग्राउंड गतिविधि) चालू करें।",
+  },
+  agreeTurnOn: { en: "Agree & turn on", hi: "सहमत हूँ, चालू करें" },
+  open: { en: "Open", hi: "खोलें" },
+  setupDone: { en: "Done", hi: "हो गया" },
   grantAccess: { en: "Grant access", hi: "अनुमति दें" },
   grantHint: {
-    en: 'Find "Expense Tracker" in the list and turn it on, then come back.',
-    hi: 'सूची में "Expense Tracker" चुनकर चालू करें, फिर वापस आएँ।',
+    en: 'Find "Aaj" in the list and turn it on, then come back.',
+    hi: 'सूची में "Aaj" चुनकर चालू करें, फिर वापस आएँ।',
   },
   syncNow: { en: "Sync now", hi: "अभी सिंक करें" },
   capturePending: { en: "waiting to upload", hi: "अपलोड बाकी" },
@@ -289,14 +334,333 @@ const STRINGS = {
   captureSkipped: { en: "already known", hi: "पहले से दर्ज" },
   captureNothing: { en: "Nothing new to capture.", hi: "कुछ नया नहीं मिला।" },
   captureFailed: {
-    en: "Couldn't upload — kept for the next try.",
-    hi: "अपलोड नहीं हुआ — अगली बार फिर कोशिश होगी।",
+    en: "Couldn't upload. Kept for the next try.",
+    hi: "अपलोड नहीं हुआ। अगली बार फिर कोशिश होगी।",
   },
   bankSays: { en: "Bank says", hi: "बैंक के अनुसार" },
   checkDrift: {
-    en: "off from what's logged — some spending wasn't captured",
-    hi: "दर्ज रकम से अंतर — कुछ खर्चे दर्ज नहीं हुए",
+    en: "off from what's logged, so some spending wasn't captured",
+    hi: "दर्ज रकम से अंतर, कुछ खर्चे दर्ज नहीं हुए",
   },
+  // daily budget (v14)
+  dailyBudget: { en: "Daily budget", hi: "रोज़ का बजट" },
+  leftToday: { en: "left to spend today", hi: "आज खर्च के लिए बचे" },
+  overToday: { en: "over today's budget", hi: "आज के बजट से ज़्यादा" },
+  ofToday: { en: "of", hi: "में से" },
+  setUpDaily: { en: "Set up", hi: "सेट करें" },
+  editPlan: { en: "Edit", hi: "बदलें" },
+  dailyHint: {
+    en: "Tell the app your monthly income and fixed costs, and it turns them into one number to spend each day.",
+    hi: "अपनी महीने की आमदनी और तय खर्चे बताइए। ऐप उन्हें रोज़ खर्च करने लायक एक रकम में बदल देगा।",
+  },
+  everydayMoney: { en: "Everyday money", hi: "रोज़मर्रा का पैसा" },
+  last14: {
+    en: "Last 14 days: bars are what you spent, the line is that day's budget.",
+    hi: "पिछले 14 दिन: बार आपका खर्च, रेखा उस दिन का बजट।",
+  },
+  daysToGo: { en: "days to go", hi: "दिन बाकी" },
+  tomorrow: { en: "Tomorrow", hi: "कल" },
+  streakDays: {
+    en: "days in a row under budget",
+    hi: "दिन लगातार बजट के अंदर",
+  },
+  notCounted: { en: "Not counted", hi: "गिना नहीं गया" },
+  monthlyIncome: { en: "Monthly income", hi: "महीने की आमदनी" },
+  savingsGoal: { en: "Savings goal / month", hi: "महीने की बचत का लक्ष्य" },
+  payday: { en: "Salary day", hi: "तनख्वाह का दिन" },
+  // your data (Play: export, privacy, in-app deletion)
+  yourData: { en: "Your data", hi: "आपका डेटा" },
+  exportData: { en: "Export", hi: "एक्सपोर्ट" },
+  privacyPolicy: { en: "Privacy policy", hi: "प्राइवेसी नीति" },
+  deleteAccount: { en: "Delete account", hi: "खाता हटाएँ" },
+  deleteConfirm: { en: "Yes, delete everything", hi: "हाँ, सब हटा दें" },
+  deleteWarning: {
+    en: "This permanently deletes your account and all your expenses, income, plan, goals and notifications. It can't be undone, so export first if you want a copy.",
+    hi: "यह आपका खाता और सारे खर्चे, आमदनी, प्लान, लक्ष्य और सूचनाएँ हमेशा के लिए हटा देगा। वापस नहीं होगा, इसलिए कॉपी चाहिए तो पहले एक्सपोर्ट करें।",
+  },
+  exportFailed: {
+    en: "Couldn't export. Try again.",
+    hi: "एक्सपोर्ट नहीं हुआ। फिर कोशिश करें।",
+  },
+  deleteFailed: {
+    en: "Couldn't delete. Try again.",
+    hi: "हटाया नहीं जा सका। फिर कोशिश करें।",
+  },
+  // Calm redesign (v18)
+  goodMorning: { en: "Good morning", hi: "सुप्रभात" },
+  goodAfternoon: { en: "Good afternoon", hi: "नमस्कार" },
+  goodEvening: { en: "Good evening", hi: "शुभ संध्या" },
+  activity: { en: "Activity", hi: "लेन-देन" },
+  plan: { en: "Plan", hi: "प्लान" },
+  insights: { en: "Insights", hi: "विश्लेषण" },
+  seeAll: { en: "See all", hi: "सब देखें" },
+  leftTodayShort: { en: "left today", hi: "आज बचे" },
+  spentOf: { en: "spent of", hi: "खर्च, कुल" },
+  leftThisMonth: { en: "Left this month", hi: "इस महीने बचे" },
+  daysWord: { en: "days", hi: "दिन" },
+  newMonth: { en: "New month", hi: "नया महीना" },
+  nothingToday: {
+    en: "Nothing spent yet today.",
+    hi: "आज अभी तक कोई खर्च नहीं।",
+  },
+  notCountedOne: {
+    en: "was a fixed cost or from savings, so it isn't counted here.",
+    hi: "तय खर्चा या बचत से था, इसलिए यहाँ नहीं गिना गया।",
+  },
+  notCountedMany: {
+    en: "were fixed costs or from savings, so they aren't counted here.",
+    hi: "तय खर्चे या बचत से थे, इसलिए यहाँ नहीं गिने गए।",
+  },
+  setUpTitle: { en: "Get your daily number", hi: "अपना रोज़ का बजट पाएँ" },
+  profile: { en: "Profile", hi: "प्रोफ़ाइल" },
+  addManually: { en: "Add", hi: "जोड़ें" },
+  offlineNote: {
+    en: "Offline · showing data from",
+    hi: "ऑफ़लाइन · डेटा इस समय का",
+  },
+  savePlan: { en: "Save plan", hi: "प्लान सहेजें" },
+  saveFailed: {
+    en: "Couldn't save. Check your connection and try again.",
+    hi: "सहेजा नहीं जा सका। कनेक्शन देखकर फिर कोशिश करें।",
+  },
+  incomeNeeded: {
+    en: "Add your monthly income, like 1,00,000 or 1 lakh.",
+    hi: "अपनी महीने की आमदनी लिखें, जैसे 1,00,000 या 1 लाख।",
+  },
+  savingsInvalid: {
+    en: "Savings should be a number below your income.",
+    hi: "बचत आमदनी से कम एक रकम होनी चाहिए।",
+  },
+  paydayInvalid: {
+    en: "Salary day is a date from 1 to 31.",
+    hi: "तनख्वाह का दिन 1 से 31 के बीच होना चाहिए।",
+  },
+  fixedNeeded: {
+    en: "Give the fixed cost a name and an amount.",
+    hi: "तय खर्चे का नाम और रकम लिखें।",
+  },
+  // guided setup (v19)
+  setupIncomeTitle: {
+    en: "How much lands in your account each month?",
+    hi: "हर महीने आपके खाते में कितना आता है?",
+  },
+  setupIncomeHint: {
+    en: "Your take-home salary, after tax. You can change it any time.",
+    hi: "टैक्स के बाद हाथ में आने वाली तनख्वाह। कभी भी बदल सकते हैं।",
+  },
+  setupFixedTitle: {
+    en: "What goes out every month, no matter what?",
+    hi: "हर महीने क्या तय रूप से जाता है?",
+  },
+  setupFixedHint: {
+    en: "These come off the top, so they never eat into your daily number.",
+    hi: "ये पहले ही अलग हो जाते हैं, रोज़ के बजट में नहीं गिने जाते।",
+  },
+  setupSaveTitle: {
+    en: "How much do you want to save each month?",
+    hi: "हर महीने कितना बचाना चाहते हैं?",
+  },
+  setupSaveHint: {
+    en: "Set it aside before you spend. Slide to see your daily number change.",
+    hi: "खर्च से पहले अलग रखें। स्लाइड करके रोज़ का बजट बदलते देखें।",
+  },
+  salaryArrives: { en: "Salary arrives on", hi: "तनख्वाह आती है" },
+  other: { en: "Other", hi: "अन्य" },
+  amountPerMonth: { en: "Amount per month", hi: "हर महीने की रकम" },
+  somethingElse: { en: "Something else", hi: "कुछ और" },
+  fixedEachMonth: { en: "Fixed each month", hi: "हर महीने तय" },
+  ofIncome: { en: "of income", hi: "आमदनी का" },
+  thatLeaves: { en: "That leaves you", hi: "आपके पास बचता है" },
+  aDay: { en: "a day", hi: "रोज़" },
+  continue: { en: "Continue", hi: "आगे बढ़ें" },
+  startBudget: { en: "Start my daily budget", hi: "रोज़ का बजट शुरू करें" },
+  back: { en: "Back", hi: "पीछे" },
+  close: { en: "Close", hi: "बंद करें" },
+  setupCta: { en: "Set up in a minute", hi: "एक मिनट में सेट करें" },
+  leftTodayCap: { en: "Left today", hi: "आज बचे" },
+  paceOnTrack: { en: "On track", hi: "सही राह पर" },
+  offPace: { en: "Off pace", hi: "रफ़्तार ज़्यादा" },
+  aheadAtPace: {
+    en: "ahead of plan at this pace",
+    hi: "इस रफ़्तार से प्लान से आगे",
+  },
+  shortAtPace: {
+    en: "short by month-end at this pace",
+    hi: "इस रफ़्तार से महीने के अंत में कम",
+  },
+  last7: { en: "Spending over the last 7 days", hi: "पिछले 7 दिन का खर्च" },
+  // goals (v17)
+  goals: { en: "Goals", hi: "लक्ष्य" },
+  addGoal: { en: "Add a goal", hi: "लक्ष्य जोड़ें" },
+  goalsHint: {
+    en: "Saving for a trip, a phone, an emergency fund? Set a goal. Its monthly share is set aside first and added to the goal automatically each month.",
+    hi: "ट्रिप, फ़ोन, इमरजेंसी फ़ंड के लिए बचत? लक्ष्य बनाइए। हर महीने का हिस्सा पहले अलग होता है और अपने-आप जुड़ता है।",
+  },
+  goalName: { en: "What for? e.g. Goa trip", hi: "किसके लिए? जैसे गोवा ट्रिप" },
+  goalTarget: { en: "How much", hi: "कितना" },
+  goalBy: { en: "By when (YYYY-MM)", hi: "कब तक (YYYY-MM)" },
+  goalMonthly: { en: "or ₹ per month", hi: "या ₹ हर महीने" },
+  perMonth: { en: "/month", hi: "/महीना" },
+  onTrack: { en: "on track", hi: "समय पर" },
+  behind: { en: "behind", hi: "पीछे" },
+  monthsToGo: { en: "months to go", hi: "महीने बाकी" },
+  reached: { en: "Reached 🎉", hi: "पूरा हुआ 🎉" },
+  stopGoal: { en: "Stop goal", hi: "लक्ष्य बंद करें" },
+  paydayHint: {
+    en: "Your budget month runs from this day to the day before the next one. Leave empty for calendar months.",
+    hi: "आपका बजट महीना इस दिन से अगली तनख्वाह से एक दिन पहले तक चलता है। खाली छोड़ें तो कैलेंडर महीना।",
+  },
+  fixedCosts: { en: "Fixed monthly costs", hi: "हर महीने के तय खर्चे" },
+  fixedHint: {
+    en: "Rent, EMI, SIP and subscriptions stay out of the daily number.",
+    hi: "किराया, EMI, SIP और सब्सक्रिप्शन रोज़ के बजट में नहीं गिने जाते।",
+  },
+  suggestedFixed: { en: "Looks like a fixed cost", hi: "तय खर्चा लगता है" },
+  costName: { en: "Name, e.g. Rent", hi: "नाम, जैसे किराया" },
+  add: { en: "Add", hi: "जोड़ें" },
+  morningMsg: { en: "Morning message", hi: "सुबह का मैसेज" },
+  eveningMsg: { en: "Night report", hi: "रात की रिपोर्ट" },
+  liveMsg: { en: "Ping on every spend", hi: "हर खर्चे पर मैसेज" },
+  messagesVia: {
+    en: "These arrive as notifications on this phone.",
+    hi: "ये इस फ़ोन पर नोटिफ़िकेशन की तरह आते हैं।",
+  },
+  // inbox + push (v15)
+  inbox: { en: "Notifications", hi: "सूचनाएँ" },
+  inboxEmpty: {
+    en: "Nothing yet. Your morning number, spends and alerts will show up here.",
+    hi: "अभी कुछ नहीं। सुबह का बजट, खर्चे और अलर्ट यहाँ दिखेंगे।",
+  },
+  movedToSavings: { en: "Moved to savings ✓", hi: "बचत में डाला ✓" },
+  pushTitle: { en: "Turn on notifications", hi: "सूचनाएँ चालू करें" },
+  pushHint: {
+    en: "A morning brief, a ping when money leaves your account, and a short report at night.",
+    hi: "सुबह का बजट, पैसा कटने पर सूचना, और रात को छोटी रिपोर्ट।",
+  },
+  pushTurnOn: { en: "Turn on notifications", hi: "सूचनाएँ चालू करें" },
+  pushBlocked: {
+    en: "Notifications are off for this app. Turn them on in Settings to get your daily number.",
+    hi: "इस ऐप की सूचनाएँ बंद हैं। रोज़ का बजट पाने के लिए सेटिंग्स में चालू करें।",
+  },
+  openSettings: { en: "Open settings", hi: "सेटिंग्स खोलें" },
+  notNow: { en: "Not now", hi: "अभी नहीं" },
+  fromSavings: { en: "Paid from savings", hi: "बचत से दिया" },
+  fromSavingsHint: {
+    en: "Won't touch your daily budget.",
+    hi: "रोज़ के बजट पर असर नहीं होगा।",
+  },
+  perDay: { en: "/day", hi: "/दिन" },
+
+  // v18: money rules — the salary split and goal rules of thumb
+  moneySplit: { en: "Your money split", hi: "आपका पैसा कैसे बँटा" },
+  splitNeeds: { en: "Needs", hi: "ज़रूरतें" },
+  splitNeedsHint: { en: "fixed costs", hi: "तय खर्च" },
+  splitWants: { en: "Wants", hi: "इच्छाएँ" },
+  splitWantsHint: { en: "everyday money", hi: "रोज़ का पैसा" },
+  splitSave: { en: "Save & invest", hi: "बचत और निवेश" },
+  splitSaveHint: { en: "savings + goals", hi: "बचत + लक्ष्य" },
+  splitRuleTarget: { en: "rule: {n}%", hi: "नियम: {n}%" },
+  rule503020: {
+    en: "The 50/30/20 rule: half your take-home for needs, 30% for wants, and at least 20% saved or invested.",
+    hi: "50/30/20 नियम: हाथ में आई सैलरी का आधा ज़रूरतों पर, 30% इच्छाओं पर, और कम से कम 20% बचत या निवेश में।",
+  },
+  rule602020: {
+    en: "Your fixed costs are over half your income, common with city rents, so the 60/20/20 rule fits: 60% needs, 20% wants, 20% still saved.",
+    hi: "आपके तय खर्च आमदनी के आधे से ज़्यादा हैं, बड़े शहरों में किराए से ऐसा होता है, तो 60/20/20 नियम सही है: 60% ज़रूरतें, 20% इच्छाएँ, 20% फिर भी बचत।",
+  },
+  splitGood: {
+    en: "You're saving {n}%. That's on track.",
+    hi: "आप {n}% बचा रहे हैं। सही रास्ते पर हैं।",
+  },
+  splitLow: {
+    en: "You're saving {n}% of your income. Aim for 20%.",
+    hi: "आप आमदनी का {n}% बचा रहे हैं। 20% का लक्ष्य रखें।",
+  },
+  splitHighNeeds: {
+    en: "Fixed costs take {n}% of your income. Above 60% leaves little room; a cheaper rent or ending an EMI frees the most.",
+    hi: "तय खर्च आमदनी का {n}% ले रहे हैं। 60% से ऊपर गुंजाइश कम रहती है; सस्ता किराया या कोई EMI खत्म करने से सबसे ज़्यादा राहत मिलती है।",
+  },
+  splitApply: {
+    en: "Save {amount} a month",
+    hi: "हर महीने {amount} बचाएँ",
+  },
+  rulesNote: {
+    en: "Rules of thumb from Indian personal-finance guides, not advice for your exact situation.",
+    hi: "भारतीय पर्सनल फ़ाइनेंस गाइड के आम नियम, आपकी स्थिति की सटीक सलाह नहीं।",
+  },
+  kind_goal_car: { en: "Car", hi: "कार" },
+  kind_goal_bike: { en: "Bike", hi: "बाइक" },
+  kind_goal_home: { en: "Home", hi: "घर" },
+  kind_goal_gadget: { en: "Gadget", hi: "गैजेट" },
+  kind_goal_trip: { en: "Trip", hi: "यात्रा" },
+  kind_goal_emergency: { en: "Emergency fund", hi: "इमरजेंसी फ़ंड" },
+  kind_goal_other: { en: "Other", hi: "अन्य" },
+  ruleVehicleTitle: { en: "The 20/4/10 rule", hi: "20/4/10 नियम" },
+  ruleVehicleBody: {
+    en: "Pay 20% down ({down}), take a loan of 4 years or less, and keep the EMI under 10% of your income ({cap}).",
+    hi: "20% डाउन पेमेंट ({down}) दें, लोन 4 साल या कम का लें, और EMI आमदनी के 10% ({cap}) से कम रखें।",
+  },
+  ruleEmiLine: {
+    en: "At about {rate}% for {years} years, the EMI is {emi}.",
+    hi: "लगभग {rate}% पर {years} साल के लिए EMI {emi} बनेगी।",
+  },
+  ruleFits: { en: "✓ This fits.", hi: "✓ यह फ़िट बैठता है।" },
+  ruleVehicleOver: {
+    en: "That's over the limit. A price up to {max} fits your income.",
+    hi: "यह सीमा से ज़्यादा है। {max} तक की कीमत आपकी आमदनी में फ़िट बैठती है।",
+  },
+  ruleRunningCosts: {
+    en: "Fuel, insurance and service come on top, so keep them in mind.",
+    hi: "पेट्रोल, बीमा और सर्विस का खर्च अलग से आएगा, उसे भी ध्यान में रखें।",
+  },
+  ruleBikeCash: {
+    en: "It costs about {n} months of your income. Save and pay in full; skip the loan and its interest.",
+    hi: "यह आपकी लगभग {n} महीने की आमदनी है। बचाकर पूरा भुगतान करें; लोन और ब्याज से बचें।",
+  },
+  ruleHomeTitle: { en: "The 20/30/40 rule", hi: "20/30/40 नियम" },
+  ruleHomeBody: {
+    en: "Pay 20% down ({down}), keep the home-loan EMI under 30% of your income ({cap}), and all your EMIs together under 40%.",
+    hi: "20% डाउन पेमेंट ({down}) दें, होम लोन EMI आमदनी के 30% ({cap}) से कम रखें, और सारी EMI मिलाकर 40% से कम।",
+  },
+  ruleHomeOver: {
+    en: "That's over the limit. A home up to {max} fits your income.",
+    hi: "यह सीमा से ज़्यादा है। {max} तक का घर आपकी आमदनी में फ़िट बैठता है।",
+  },
+  ruleHomeYears: {
+    en: "The price is {n} years of your income; guides suggest staying near 5 or under.",
+    hi: "कीमत आपकी {n} साल की आमदनी है; गाइड 5 साल या उससे कम के आसपास रहने की सलाह देते हैं।",
+  },
+  ruleSaveDown: {
+    en: "Save for the {amount} down payment",
+    hi: "{amount} डाउन पेमेंट के लिए बचाएँ",
+  },
+  ruleEmergencyTitle: { en: "6 months of expenses", hi: "6 महीने का खर्च" },
+  ruleEmergencyBody: {
+    en: "An emergency fund should cover about 6 months of spending ({monthly} a month here), kept in a savings account or liquid fund. Build it before other goals.",
+    hi: "इमरजेंसी फ़ंड लगभग 6 महीने का खर्च ({monthly} हर महीने) होना चाहिए, सेविंग्स अकाउंट या लिक्विड फ़ंड में। बाकी लक्ष्यों से पहले इसे बनाएँ।",
+  },
+  ruleUseAmount: { en: "Use {amount}", hi: "{amount} रखें" },
+  ruleSaveFirstTitle: {
+    en: "Save first, then buy",
+    hi: "पहले बचाएँ, फिर खरीदें",
+  },
+  ruleGadgetBody: {
+    en: 'This is {n} months of your income. Save for it rather than taking an EMI; "no-cost" EMIs often hide the interest in the price or a processing fee.',
+    hi: 'यह आपकी {n} महीने की आमदनी है। EMI की जगह बचाकर खरीदें; "नो-कॉस्ट" EMI में ब्याज अक्सर कीमत या प्रोसेसिंग फ़ीस में छिपा होता है।',
+  },
+  ruleTripBody: {
+    en: "This is {n} months of your income. Set a monthly amount and pay for the trip from savings, not a card or loan.",
+    hi: "यह आपकी {n} महीने की आमदनी है। हर महीने थोड़ा बचाएँ और यात्रा बचत से करें, कार्ड या लोन से नहीं।",
+  },
+  ruleNeedIncome: {
+    en: "Set up your monthly income in Daily budget to check this goal against the rules.",
+    hi: "इस लक्ष्य को नियमों से जाँचने के लिए डेली बजट में अपनी मासिक आमदनी भरें।",
+  },
+  emergencyNudge: {
+    en: "Start with an emergency fund: 6 months of spending, about {amount}.",
+    hi: "शुरुआत इमरजेंसी फ़ंड से करें: 6 महीने का खर्च, लगभग {amount}।",
+  },
+  emergencyFundName: { en: "Emergency fund", hi: "इमरजेंसी फ़ंड" },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;

@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from "react-native";
+import { Text, TextInput } from "./Text";
 import {
   Biller,
   BillInput,
@@ -24,6 +21,8 @@ import {
 } from "../lib/api";
 import { StringKey, useSettings } from "../lib/i18n";
 import { formatINR, Palette } from "../lib/theme";
+import { BILL_KIND_ICON } from "../lib/categories";
+import { KeyboardAware, Icon, type IconName } from "./ui";
 
 /**
  * Add / edit a bill. Two modes:
@@ -32,17 +31,7 @@ import { formatINR, Palette } from "../lib/theme";
  *  - Manual: the classic form (name, due day, usual amount, UPI id).
  */
 
-const KIND_ICON: Record<BillKind, string> = {
-  electricity: "⚡",
-  water: "💧",
-  gas: "🔥",
-  credit_card: "💳",
-  rent: "🏠",
-  internet: "🌐",
-  mobile: "📱",
-  insurance: "🛡️",
-  other: "🧾",
-};
+const KIND_ICON = BILL_KIND_ICON as Record<BillKind, IconName>;
 const KINDS = Object.keys(KIND_ICON) as BillKind[];
 const KIND_CATEGORY: Record<BillKind, string> = {
   electricity: "Utilities & bills",
@@ -201,9 +190,10 @@ export default function BillSheet({
     setError(null);
     const r = await previewFetch(token, biller.id, params).catch(() => null);
     setFetching(false);
-    if (!r) setError(`${t("fetchFailed")} — check your connection.`);
+    if (!r) setError(`${t("fetchFailed")}. Check your connection.`);
     else if (r.ok) setPreview(r.bill);
     else if (r.code === "no_dues") setPreviewMsg(t("noDues"));
+    else if (r.code === "unavailable") setPreviewMsg(t("billUnavailable"));
     else setError(r.error);
   };
 
@@ -256,9 +246,9 @@ export default function BillSheet({
     const result = await saveBill(token, input, bill?.id).catch(() => null);
     setBusy(false);
     if (result === "unauthorized")
-      setError("Session expired — get a fresh /app code from the bot.");
+      setError("Session expired. Get a fresh /app code from the bot.");
     else if (!result)
-      setError("Couldn't save — check the fields and try again.");
+      setError("Couldn't save. Check the fields and try again.");
     else {
       onChanged();
       onClose();
@@ -301,10 +291,7 @@ export default function BillSheet({
 
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        style={styles.backdropCol}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAware style={styles.backdropCol}>
         <Pressable style={{ flex: 1 }} onPress={onClose} />
         <View
           style={[
@@ -346,9 +333,7 @@ export default function BillSheet({
                           color: mode === m ? "#fff" : p.ink2,
                         }}
                       >
-                        {m === "auto"
-                          ? `🔎 ${t("autoFetch")}`
-                          : `✍️ ${t("manual")}`}
+                        {m === "auto" ? `${t("autoFetch")}` : `${t("manual")}`}
                       </Text>
                     </Pressable>
                   ))}
@@ -419,9 +404,11 @@ export default function BillSheet({
                         { borderColor: p.border, backgroundColor: p.page },
                       ]}
                     >
-                      <Text style={{ fontSize: 18 }}>
-                        {KIND_ICON[kindForCategory(b.category)]}
-                      </Text>
+                      <Icon
+                        name={KIND_ICON[kindForCategory(b.category)]}
+                        size={18}
+                        color={p.ink2}
+                      />
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text
                           style={{
@@ -454,7 +441,7 @@ export default function BillSheet({
                     { borderColor: p.accent, backgroundColor: p.accentSoft },
                   ]}
                 >
-                  <Text style={{ fontSize: 20 }}>{KIND_ICON[kind]}</Text>
+                  <Icon name={KIND_ICON[kind]} size={20} color={p.accent} />
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text
                       style={{
@@ -562,7 +549,7 @@ export default function BillSheet({
                           fontSize: fs(15),
                         }}
                       >
-                        🔎 {t("fetchBill")}
+                        {t("fetchBill")}
                       </Text>
                     )}
                   </Pressable>
@@ -577,7 +564,7 @@ export default function BillSheet({
                         fontWeight: "700",
                       }}
                     >
-                      ✅ {t("fetchedBill")}
+                      {t("fetchedBill")}
                     </Text>
                     <Text
                       style={{
@@ -589,18 +576,31 @@ export default function BillSheet({
                       {formatINR(preview.amount)}
                     </Text>
                     <Text style={{ fontSize: fs(13), color: p.ink2 }}>
-                      {preview.customerName ? `${preview.customerName} · ` : ""}
                       {preview.dueDate
                         ? `${t("dueOn")} ${preview.dueDate}`
                         : ""}
                       {preview.billNumber ? ` · #${preview.billNumber}` : ""}
                     </Text>
+                    {!!preview.customerName && (
+                      <Text style={{ fontSize: fs(13), color: p.ink }}>
+                        {t("accountHolder")}: {preview.customerName}
+                      </Text>
+                    )}
                   </View>
                 )}
                 {previewMsg && (
                   <View style={[styles.previewCard, { borderColor: p.border }]}>
+                    <Text
+                      style={{
+                        fontSize: fs(26),
+                        fontWeight: "800",
+                        color: p.ink,
+                      }}
+                    >
+                      {formatINR(0)}
+                    </Text>
                     <Text style={{ fontSize: fs(14), color: p.ink2 }}>
-                      ✅ {previewMsg}
+                      {previewMsg}
                     </Text>
                   </View>
                 )}
@@ -631,7 +631,7 @@ export default function BillSheet({
                       style={chipStyle(kind === k)}
                     >
                       <Text style={chipText(kind === k)}>
-                        {KIND_ICON[k]} {t(`kind_${k}` as StringKey)}
+                        {t(`kind_${k}` as StringKey)}
                       </Text>
                     </Pressable>
                   ))}
@@ -729,12 +729,12 @@ export default function BillSheet({
                   >
                     <Text
                       style={{
-                        color: "#d03b3b",
+                        color: p.danger,
                         fontWeight: "600",
                         fontSize: fs(14),
                       }}
                     >
-                      🗑️ {t("delete")}
+                      {t("delete")}
                     </Text>
                   </Pressable>
                 )}
@@ -768,7 +768,7 @@ export default function BillSheet({
             )}
           </ScrollView>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAware>
     </Modal>
   );
 }
@@ -846,5 +846,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   btnDanger: { paddingVertical: 12, paddingHorizontal: 10 },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

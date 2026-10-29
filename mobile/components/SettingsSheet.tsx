@@ -4,11 +4,16 @@ import {
   Linking,
   Modal,
   Pressable,
+  ScrollView,
+  Share,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
+import { Text } from "./Text";
 import {
+  API_BASE,
+  deleteMyAccount,
+  exportMyData,
   GmailStatus,
   gmailConnectUrl,
   gmailDisconnect,
@@ -18,6 +23,14 @@ import { captureStatus, syncCaptures } from "../lib/capture";
 import { openCaptureSettings } from "../modules/notification-capture";
 import { Palette } from "../lib/theme";
 import { Lang, useSettings } from "../lib/i18n";
+import * as Updates from "expo-updates";
+
+/**
+ * Gmail reading uses a restricted Google scope: public users can only connect
+ * once the app passes Google's verification (CASA). Until then the Play Store
+ * build (update channel "production") hides it; test builds keep it.
+ */
+const gmailAvailable = Updates.channel !== "production";
 
 /** Language + text-size settings — the "parent mode" knobs — plus Gmail linking. */
 export default function SettingsSheet({
@@ -27,6 +40,8 @@ export default function SettingsSheet({
   token,
   gmail,
   onChanged,
+  onAccountDeleted,
+  onLogout,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -34,6 +49,10 @@ export default function SettingsSheet({
   token?: string;
   gmail?: GmailStatus;
   onChanged?: () => void;
+  /** Called once the account is gone — the app signs out. */
+  onAccountDeleted?: () => void;
+  /** Sign out of this phone (v18: lives here, not in the header). */
+  onLogout?: () => void;
 }) {
   const { t, fs, lang, scale, setLang, setLarge } = useSettings();
   const [busy, setBusy] = useState(false);
@@ -47,7 +66,46 @@ export default function SettingsSheet({
 
   useEffect(() => {
     if (visible) setCapture(captureStatus());
+    if (!visible) setConfirmDelete(false);
   }, [visible]);
+
+  // Your data: export, privacy policy, delete (Play requires in-app deletion).
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [dataBusy, setDataBusy] = useState(false);
+  const [dataNote, setDataNote] = useState<string | null>(null);
+
+  const exportData = async () => {
+    if (!token || dataBusy) return;
+    setDataBusy(true);
+    setDataNote(null);
+    const data = await exportMyData(token);
+    setDataBusy(false);
+    if (!data) {
+      setDataNote(t("exportFailed"));
+      return;
+    }
+    await Share.share({
+      title: "expense-tracker-export.json",
+      message: JSON.stringify(data, null, 2),
+    }).catch(() => {});
+  };
+
+  const deleteAccount = async () => {
+    if (!token || dataBusy) return;
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      return;
+    }
+    setDataBusy(true);
+    const ok = await deleteMyAccount(token);
+    setDataBusy(false);
+    if (!ok) {
+      setDataNote(t("deleteFailed"));
+      return;
+    }
+    onClose();
+    onAccountDeleted?.();
+  };
 
   const grantCapture = () => {
     openCaptureSettings();
@@ -98,7 +156,7 @@ export default function SettingsSheet({
     if (!res) {
       // An expired consent fails here too, so refresh either way: /api/data
       // comes back with needs_reauth and this card turns into "Reconnect".
-      setNote("Scan failed — try again.");
+      setNote("Scan failed. Try again.");
       onChanged?.();
       return;
     }
@@ -161,93 +219,133 @@ export default function SettingsSheet({
           ]}
         >
           <View style={[styles.grab, { backgroundColor: p.grid }]} />
-          <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
-            ⚙️ {t("settings")}
-          </Text>
-
-          <View style={styles.row}>
-            <Text style={{ fontSize: fs(14), color: p.ink2, flex: 1 }}>
-              {t("language")}
+          <ScrollView
+            contentContainerStyle={{ gap: 16 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={{ fontSize: fs(18), fontWeight: "700", color: p.ink }}>
+              {t("settings")}
             </Text>
-            {seg(
-              (
-                [
-                  { key: "en", label: "English" },
-                  { key: "hi", label: "हिंदी" },
-                ] as Array<{ key: Lang; label: string }>
-              ).map((o) => ({
-                ...o,
-                active: lang === o.key,
-                onPress: () => setLang(o.key),
-              })),
-            )}
-          </View>
 
-          <View style={styles.row}>
-            <Text style={{ fontSize: fs(14), color: p.ink2, flex: 1 }}>
-              {t("textSize")}
-            </Text>
-            {seg([
-              {
-                key: "normal",
-                label: t("normal"),
-                active: scale === 1,
-                onPress: () => setLarge(false),
-              },
-              {
-                key: "large",
-                label: t("large"),
-                active: scale > 1,
-                onPress: () => setLarge(true),
-              },
-            ])}
-          </View>
-
-          {token && (
-            <View style={[styles.block, { borderTopColor: p.border }]}>
-              <Text
-                style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}
-              >
-                📧{" "}
-                {gmail?.needs_reauth
-                  ? t("reconnectGmail")
-                  : gmail?.connected
-                    ? t("gmailConnected")
-                    : t("connectGmail")}
+            <View style={styles.row}>
+              <Text style={{ fontSize: fs(14), color: p.ink2, flex: 1 }}>
+                {t("language")}
               </Text>
-              <Text
-                style={{
-                  fontSize: fs(12),
-                  color: gmail?.needs_reauth ? "#c98500" : p.muted,
-                  marginTop: 3,
-                  lineHeight: 17,
-                }}
-              >
-                {gmail?.needs_reauth
-                  ? t("reauthNeeded")
-                  : gmail?.connected
-                    ? gmail.email
-                    : t("gmailBlurb")}
-              </Text>
-              {note && (
-                <Text
-                  style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}
-                >
-                  {note}
-                </Text>
+              {seg(
+                (
+                  [
+                    { key: "en", label: "English" },
+                    { key: "hi", label: "हिंदी" },
+                  ] as Array<{ key: Lang; label: string }>
+                ).map((o) => ({
+                  ...o,
+                  active: lang === o.key,
+                  onPress: () => setLang(o.key),
+                })),
               )}
-              {busy ? (
-                <ActivityIndicator color={p.accent} style={{ marginTop: 10 }} />
-              ) : (
-                <View style={[styles.row, { marginTop: 10 }]}>
-                  {gmail?.connected && !gmail.needs_reauth ? (
-                    <>
+            </View>
+
+            <View style={styles.row}>
+              <Text style={{ fontSize: fs(14), color: p.ink2, flex: 1 }}>
+                {t("textSize")}
+              </Text>
+              {seg([
+                {
+                  key: "normal",
+                  label: t("normal"),
+                  active: scale === 1,
+                  onPress: () => setLarge(false),
+                },
+                {
+                  key: "large",
+                  label: t("large"),
+                  active: scale > 1,
+                  onPress: () => setLarge(true),
+                },
+              ])}
+            </View>
+
+            {token && gmailAvailable && (
+              <View style={[styles.block, { borderTopColor: p.border }]}>
+                <Text
+                  style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}
+                >
+                  {" "}
+                  {gmail?.needs_reauth
+                    ? t("reconnectGmail")
+                    : gmail?.connected
+                      ? t("gmailConnected")
+                      : t("connectGmail")}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: fs(12),
+                    color: gmail?.needs_reauth ? p.warn : p.muted,
+                    marginTop: 3,
+                    lineHeight: 17,
+                  }}
+                >
+                  {gmail?.needs_reauth
+                    ? t("reauthNeeded")
+                    : gmail?.connected
+                      ? gmail.email
+                      : t("gmailBlurb")}
+                </Text>
+                {note && (
+                  <Text
+                    style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}
+                  >
+                    {note}
+                  </Text>
+                )}
+                {busy ? (
+                  <ActivityIndicator
+                    color={p.accent}
+                    style={{ marginTop: 10 }}
+                  />
+                ) : (
+                  <View style={[styles.row, { marginTop: 10 }]}>
+                    {gmail?.connected && !gmail.needs_reauth ? (
+                      <>
+                        <Pressable
+                          style={[
+                            styles.smallBtn,
+                            { backgroundColor: p.accent, flex: 1 },
+                          ]}
+                          onPress={scan}
+                        >
+                          <Text
+                            style={{
+                              color: "#fff",
+                              fontWeight: "700",
+                              fontSize: fs(13),
+                            }}
+                          >
+                            {t("scanNow")}
+                          </Text>
+                        </Pressable>
+                        <Pressable
+                          style={[styles.smallGhost, { borderColor: p.border }]}
+                          onPress={disconnect}
+                        >
+                          <Text
+                            style={{
+                              color: p.ink2,
+                              fontWeight: "600",
+                              fontSize: fs(13),
+                            }}
+                          >
+                            {t("disconnectGmail")}
+                          </Text>
+                        </Pressable>
+                      </>
+                    ) : (
                       <Pressable
                         style={[
                           styles.smallBtn,
                           { backgroundColor: p.accent, flex: 1 },
                         ]}
-                        onPress={scan}
+                        onPress={connect}
                       >
                         <Text
                           style={{
@@ -256,138 +354,218 @@ export default function SettingsSheet({
                             fontSize: fs(13),
                           }}
                         >
-                          {t("scanNow")}
+                          {gmail?.needs_reauth
+                            ? t("reconnectGmail")
+                            : t("connectGmail")}
                         </Text>
                       </Pressable>
+                    )}
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* v9: auto-capture from bank notifications (Android only). */}
+            {token && capture.supported && (
+              <View style={[styles.block, { borderTopColor: p.border }]}>
+                <Text
+                  style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}
+                >
+                  {t("autoCapture")}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: fs(12),
+                    color: p.muted,
+                    marginTop: 3,
+                    lineHeight: 17,
+                  }}
+                >
+                  {capture.granted ? t("captureOn") : t("captureBlurb")}
+                </Text>
+                {capture.granted && capture.pending > 0 && (
+                  <Text
+                    style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}
+                  >
+                    {capture.pending} {t("capturePending")}
+                  </Text>
+                )}
+                {captureNote && (
+                  <Text
+                    style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}
+                  >
+                    {captureNote}
+                  </Text>
+                )}
+                {capturing ? (
+                  <ActivityIndicator
+                    color={p.accent}
+                    style={{ marginTop: 10 }}
+                  />
+                ) : (
+                  <View style={[styles.row, { marginTop: 10 }]}>
+                    {capture.granted ? (
                       <Pressable
-                        style={[styles.smallGhost, { borderColor: p.border }]}
-                        onPress={disconnect}
+                        style={[
+                          styles.smallBtn,
+                          { backgroundColor: p.accent, flex: 1 },
+                        ]}
+                        onPress={syncNow}
                       >
                         <Text
                           style={{
-                            color: p.ink2,
-                            fontWeight: "600",
+                            color: "#fff",
+                            fontWeight: "700",
                             fontSize: fs(13),
                           }}
                         >
-                          {t("disconnectGmail")}
+                          {t("syncNow")}
                         </Text>
                       </Pressable>
-                    </>
-                  ) : (
-                    <Pressable
-                      style={[
-                        styles.smallBtn,
-                        { backgroundColor: p.accent, flex: 1 },
-                      ]}
-                      onPress={connect}
-                    >
-                      <Text
-                        style={{
-                          color: "#fff",
-                          fontWeight: "700",
-                          fontSize: fs(13),
-                        }}
+                    ) : (
+                      <Pressable
+                        style={[
+                          styles.smallBtn,
+                          { backgroundColor: p.accent, flex: 1 },
+                        ]}
+                        onPress={grantCapture}
                       >
-                        {gmail?.needs_reauth
-                          ? t("reconnectGmail")
-                          : t("connectGmail")}
-                      </Text>
-                    </Pressable>
-                  )}
-                </View>
-              )}
-            </View>
-          )}
+                        <Text
+                          style={{
+                            color: "#fff",
+                            fontWeight: "700",
+                            fontSize: fs(13),
+                          }}
+                        >
+                          {t("grantAccess")}
+                        </Text>
+                      </Pressable>
+                    )}
+                  </View>
+                )}
+              </View>
+            )}
 
-          {/* v9: auto-capture from bank notifications (Android only). */}
-          {token && capture.supported && (
-            <View style={[styles.block, { borderTopColor: p.border }]}>
-              <Text
-                style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}
-              >
-                🔔 {t("autoCapture")}
-              </Text>
-              <Text
-                style={{
-                  fontSize: fs(12),
-                  color: p.muted,
-                  marginTop: 3,
-                  lineHeight: 17,
+            {token && (
+              <View style={[styles.block, { borderColor: p.grid, gap: 10 }]}>
+                <Text
+                  style={{ fontSize: fs(14), fontWeight: "600", color: p.ink }}
+                >
+                  {t("yourData")}
+                </Text>
+                <View style={styles.row}>
+                  <Pressable
+                    style={[
+                      styles.smallBtn,
+                      { borderWidth: 1, borderColor: p.border, flex: 1 },
+                    ]}
+                    onPress={exportData}
+                  >
+                    <Text
+                      style={{
+                        color: p.ink,
+                        fontWeight: "600",
+                        fontSize: fs(13),
+                      }}
+                    >
+                      {t("exportData")}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={[
+                      styles.smallBtn,
+                      { borderWidth: 1, borderColor: p.border, flex: 1 },
+                    ]}
+                    onPress={() => Linking.openURL(`${API_BASE}/privacy`)}
+                  >
+                    <Text
+                      style={{
+                        color: p.ink,
+                        fontWeight: "600",
+                        fontSize: fs(13),
+                      }}
+                    >
+                      {t("privacyPolicy")}
+                    </Text>
+                  </Pressable>
+                </View>
+                {confirmDelete && (
+                  <Text
+                    style={{
+                      fontSize: fs(12.5),
+                      color: p.danger,
+                      lineHeight: 18,
+                    }}
+                  >
+                    {t("deleteWarning")}
+                  </Text>
+                )}
+                <Pressable
+                  style={[
+                    styles.smallBtn,
+                    {
+                      borderWidth: 1,
+                      borderColor: p.danger,
+                      backgroundColor: confirmDelete ? p.danger : "transparent",
+                    },
+                  ]}
+                  onPress={deleteAccount}
+                >
+                  {dataBusy ? (
+                    <ActivityIndicator
+                      color={confirmDelete ? "#fff" : p.danger}
+                    />
+                  ) : (
+                    <Text
+                      style={{
+                        color: confirmDelete ? "#fff" : p.danger,
+                        fontWeight: "700",
+                        fontSize: fs(13),
+                      }}
+                    >
+                      {confirmDelete ? t("deleteConfirm") : t("deleteAccount")}
+                    </Text>
+                  )}
+                </Pressable>
+                {dataNote && (
+                  <Text style={{ fontSize: fs(12.5), color: p.ink2 }}>
+                    {dataNote}
+                  </Text>
+                )}
+              </View>
+            )}
+
+            {onLogout && (
+              <Pressable
+                style={[
+                  styles.smallBtn,
+                  { borderWidth: 1, borderColor: p.border },
+                ]}
+                onPress={() => {
+                  onClose();
+                  onLogout();
                 }}
+                accessibilityRole="button"
               >
-                {capture.granted ? t("captureOn") : t("captureBlurb")}
-              </Text>
-              {capture.granted && capture.pending > 0 && (
                 <Text
-                  style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}
+                  style={{ color: p.ink, fontWeight: "600", fontSize: fs(14) }}
                 >
-                  {capture.pending} {t("capturePending")}
+                  {t("logout")}
                 </Text>
-              )}
-              {captureNote && (
-                <Text
-                  style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}
-                >
-                  {captureNote}
-                </Text>
-              )}
-              {capturing ? (
-                <ActivityIndicator color={p.accent} style={{ marginTop: 10 }} />
-              ) : (
-                <View style={[styles.row, { marginTop: 10 }]}>
-                  {capture.granted ? (
-                    <Pressable
-                      style={[
-                        styles.smallBtn,
-                        { backgroundColor: p.accent, flex: 1 },
-                      ]}
-                      onPress={syncNow}
-                    >
-                      <Text
-                        style={{
-                          color: "#fff",
-                          fontWeight: "700",
-                          fontSize: fs(13),
-                        }}
-                      >
-                        {t("syncNow")}
-                      </Text>
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      style={[
-                        styles.smallBtn,
-                        { backgroundColor: p.accent, flex: 1 },
-                      ]}
-                      onPress={grantCapture}
-                    >
-                      <Text
-                        style={{
-                          color: "#fff",
-                          fontWeight: "700",
-                          fontSize: fs(13),
-                        }}
-                      >
-                        {t("grantAccess")}
-                      </Text>
-                    </Pressable>
-                  )}
-                </View>
-              )}
-            </View>
-          )}
+              </Pressable>
+            )}
 
-          <Pressable
-            style={[styles.btn, { backgroundColor: p.accent }]}
-            onPress={onClose}
-          >
-            <Text
-              style={{ color: "#fff", fontWeight: "700", fontSize: fs(15) }}
+            <Pressable
+              style={[styles.btn, { backgroundColor: p.accent }]}
+              onPress={onClose}
             >
-              {t("done")}
-            </Text>
-          </Pressable>
+              <Text
+                style={{ color: "#fff", fontWeight: "700", fontSize: fs(15) }}
+              >
+                {t("done")}
+              </Text>
+            </Pressable>
+          </ScrollView>
         </View>
       </View>
     </Modal>
@@ -408,6 +586,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 28,
     gap: 16,
+    maxHeight: "90%",
   },
   grab: {
     alignSelf: "center",

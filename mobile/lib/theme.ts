@@ -1,34 +1,73 @@
 import { useColorScheme } from "react-native";
 
-/** Same validated design tokens as the web dashboard — one design system, two skins. */
+/**
+ * "Calm" design (v18): warm off-white ground, white cards, one deep-teal
+ * accent; orange only for "over". Muted text is dark enough for 4.5:1 on
+ * both the ground and cards — small grey labels must still be readable.
+ */
 export const palettes = {
   light: {
-    page: "#f4f4f1",
+    page: "#f6f5f2",
     surface: "#ffffff",
-    ink: "#0b0b0b",
-    ink2: "#52514e",
-    muted: "#898781",
-    grid: "#e1e0d9",
-    border: "rgba(11,11,11,0.08)",
-    accent: "#2a78d6",
-    accentSoft: "rgba(42,120,214,0.12)",
-    good: "#006300",
+    ink: "#141414",
+    ink2: "#55544f",
+    muted: "#6b6a65",
+    grid: "#ece9e2",
+    border: "#e4e2dc",
+    accent: "#0f766e",
+    accentSoft: "#e7f3ef",
+    good: "#0f766e",
+    warn: "#c2410c",
+    warnSoft: "#fdf0e6",
+    danger: "#b91c1c",
+    onAccent: "#ffffff",
+    heroFrom: "#0a3430",
+    heroTo: "#0f766e",
+    shadow: "#0a3430",
   },
   dark: {
-    page: "#0d0d0d",
-    surface: "#1a1a19",
-    ink: "#ffffff",
-    ink2: "#c3c2b7",
-    muted: "#898781",
-    grid: "#2c2c2a",
-    border: "rgba(255,255,255,0.09)",
-    accent: "#3987e5",
-    accentSoft: "rgba(57,135,229,0.18)",
-    good: "#0ca30c",
+    page: "#0f0f0e",
+    surface: "#1b1b19",
+    ink: "#f4f4f1",
+    ink2: "#c4c3bc",
+    muted: "#a09f98",
+    grid: "#2c2c29",
+    border: "#2a2a27",
+    accent: "#2bb3a3",
+    accentSoft: "rgba(43,179,163,0.16)",
+    good: "#34c3a0",
+    warn: "#f0884d",
+    warnSoft: "rgba(240,136,77,0.16)",
+    danger: "#f16b6b",
+    onAccent: "#0b1f1d",
+    heroFrom: "#06201d",
+    heroTo: "#0d5f58",
+    shadow: "#000000",
   },
 };
 
 export type Palette = typeof palettes.light;
+
+/** Premium depth: soft lifted cards in light mode; hairline borders do the job in dark. */
+export function elevation(p: Palette, level: 1 | 2 = 1) {
+  const dark = p.page === palettes.dark.page;
+  if (dark) return { borderWidth: 1, borderColor: p.border };
+  return level === 1
+    ? {
+        shadowColor: p.shadow,
+        shadowOpacity: 0.08,
+        shadowRadius: 16,
+        shadowOffset: { width: 0, height: 6 },
+        elevation: 3,
+      }
+    : {
+        shadowColor: p.shadow,
+        shadowOpacity: 0.16,
+        shadowRadius: 24,
+        shadowOffset: { width: 0, height: 10 },
+        elevation: 8,
+      };
+}
 
 export function usePalette(): { p: Palette; dark: boolean } {
   const dark = useColorScheme() === "dark";
@@ -36,8 +75,26 @@ export function usePalette(): { p: Palette; dark: boolean } {
 }
 
 const MEMBER_SLOTS = {
-  light: ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"],
-  dark: ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"],
+  light: [
+    "#2a78d6",
+    "#eb6834",
+    "#1baf7a",
+    "#eda100",
+    "#e87ba4",
+    "#008300",
+    "#4a3aa7",
+    "#e34948",
+  ],
+  dark: [
+    "#3987e5",
+    "#d95926",
+    "#199e70",
+    "#c98500",
+    "#d55181",
+    "#008300",
+    "#9085e9",
+    "#e66767",
+  ],
 };
 
 export function memberColor(index: number, dark: boolean): string {
@@ -66,7 +123,10 @@ const DARK_VARIANT: Record<string, string> = {
 
 export const FALLBACK_COLOR = "#898781";
 
-export function seriesColor(lightHex: string | null | undefined, dark: boolean): string {
+export function seriesColor(
+  lightHex: string | null | undefined,
+  dark: boolean,
+): string {
   const hex = (lightHex ?? FALLBACK_COLOR).toLowerCase();
   return dark ? (DARK_VARIANT[hex] ?? hex) : hex;
 }
@@ -77,6 +137,8 @@ export function formatINR(n: number): string {
   const s = Math.round(Math.abs(n)).toString();
   const last3 = s.slice(-3);
   const rest = s.slice(0, -3);
-  const grouped = rest ? `${rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",")},${last3}` : last3;
+  const grouped = rest
+    ? `${rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",")},${last3}`
+    : last3;
   return `${negative ? "-" : ""}₹${grouped}`;
 }

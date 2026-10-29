@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { Text } from "./Text";
 import { Expense } from "../lib/api";
 import { FALLBACK_COLOR, formatINR, Palette, seriesColor } from "../lib/theme";
 import { Card, SectionTitle, TrackBar } from "./ui";
@@ -24,14 +25,31 @@ interface Props {
   scopeLabel: string;
   /** Budgets / savings / insights cards injected by the shell (personal scope only). */
   extraCards?: React.ReactNode;
+  /** Shown above everything else — the daily budget, in personal scope. */
+  topCard?: React.ReactNode;
 }
 
 function spentOf(list: Expense[]): number {
-  return list.filter((e) => e.category !== "Investments").reduce((s, e) => s + Number(e.amount), 0);
+  return list
+    .filter((e) => e.category !== "Investments")
+    .reduce((s, e) => s + Number(e.amount), 0);
 }
 
 export default function HomeTab(props: Props) {
-  const { p, dark, inRange, prev, prevLabel, range, setRange, today, colorByCategory, scopeLabel, extraCards } = props;
+  const {
+    p,
+    dark,
+    inRange,
+    prev,
+    prevLabel,
+    range,
+    setRange,
+    today,
+    colorByCategory,
+    scopeLabel,
+    extraCards,
+    topCard,
+  } = props;
 
   const spent = spentOf(inRange);
   const invested = inRange
@@ -39,16 +57,27 @@ export default function HomeTab(props: Props) {
     .reduce((s, e) => s + Number(e.amount), 0);
   const todaySpent = spentOf(inRange.filter((e) => e.expense_date === today));
   const prevSpent = spentOf(prev);
-  const pct = prevSpent > 0 ? Math.round(((spent - prevSpent) / prevSpent) * 100) : null;
+  const pct =
+    prevSpent > 0 ? Math.round(((spent - prevSpent) / prevSpent) * 100) : null;
 
   const categories = useMemo(() => {
     const totals = new Map<string, number>();
-    for (const e of inRange) totals.set(e.category, (totals.get(e.category) ?? 0) + Number(e.amount));
+    for (const e of inRange)
+      totals.set(e.category, (totals.get(e.category) ?? 0) + Number(e.amount));
     const sorted = [...totals.entries()].sort((a, b) => b[1] - a[1]);
     const head = sorted.slice(0, 7);
     const tail = sorted.slice(7);
-    const rows = head.map(([name, total]) => ({ name, total, color: seriesColor(colorByCategory[name], dark) }));
-    if (tail.length) rows.push({ name: "Other", total: tail.reduce((s, [, t]) => s + t, 0), color: FALLBACK_COLOR });
+    const rows = head.map(([name, total]) => ({
+      name,
+      total,
+      color: seriesColor(colorByCategory[name], dark),
+    }));
+    if (tail.length)
+      rows.push({
+        name: "Other",
+        total: tail.reduce((s, [, t]) => s + t, 0),
+        color: FALLBACK_COLOR,
+      });
     return rows;
   }, [inRange, colorByCategory, dark]);
   const maxCat = Math.max(1, ...categories.map((c) => c.total));
@@ -72,14 +101,29 @@ export default function HomeTab(props: Props) {
 
   return (
     <View style={styles.col}>
-      <View style={[styles.rangeRow, { backgroundColor: p.surface, borderColor: p.border }]}>
+      {topCard}
+      <View
+        style={[
+          styles.rangeRow,
+          { backgroundColor: p.surface, borderColor: p.border },
+        ]}
+      >
         {(Object.keys(RANGE_LABELS) as RangeKey[]).map((key) => (
           <Pressable
             key={key}
-            style={[styles.rangeBtn, range === key && { backgroundColor: p.page }]}
+            style={[
+              styles.rangeBtn,
+              range === key && { backgroundColor: p.page },
+            ]}
             onPress={() => setRange(key)}
           >
-            <Text style={{ fontSize: 13, color: range === key ? p.ink : p.ink2, fontWeight: range === key ? "600" : "400" }}>
+            <Text
+              style={{
+                fontSize: 13,
+                color: range === key ? p.ink : p.ink2,
+                fontWeight: range === key ? "600" : "400",
+              }}
+            >
               {RANGE_LABELS[key]}
             </Text>
           </Pressable>
@@ -93,13 +137,25 @@ export default function HomeTab(props: Props) {
         <Text style={[styles.hero, { color: p.ink }]}>{formatINR(spent)}</Text>
         <View style={styles.heroSub}>
           {pct !== null && (
-            <Text style={{ fontSize: 13, fontWeight: "600", color: pct <= 0 ? p.good : p.ink2 }}>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: "600",
+                color: pct <= 0 ? p.good : p.ink2,
+              }}
+            >
               {pct <= 0 ? "▼" : "▲"} {Math.abs(pct)}% vs {prevLabel}
             </Text>
           )}
-          <Text style={{ fontSize: 13, color: p.ink2 }}>Today: {formatINR(todaySpent)}</Text>
-          <Text style={{ fontSize: 13, color: p.ink2 }}>Invested: {formatINR(invested)}</Text>
-          <Text style={{ fontSize: 13, color: p.ink2 }}>{inRange.length} transactions</Text>
+          <Text style={{ fontSize: 13, color: p.ink2 }}>
+            Today: {formatINR(todaySpent)}
+          </Text>
+          <Text style={{ fontSize: 13, color: p.ink2 }}>
+            Invested: {formatINR(invested)}
+          </Text>
+          <Text style={{ fontSize: 13, color: p.ink2 }}>
+            {inRange.length} transactions
+          </Text>
         </View>
       </Card>
 
@@ -107,16 +163,25 @@ export default function HomeTab(props: Props) {
 
       <Card p={p}>
         <SectionTitle p={p}>By category</SectionTitle>
-        {categories.length === 0 && <Text style={{ color: p.ink2, fontSize: 14 }}>Nothing in this period yet.</Text>}
+        {categories.length === 0 && (
+          <Text style={{ color: p.ink2, fontSize: 14 }}>
+            Nothing in this period yet.
+          </Text>
+        )}
         <View style={{ gap: 12 }}>
           {categories.map((c) => (
             <View key={c.name} style={styles.barRow}>
               <View style={[styles.dot, { backgroundColor: c.color }]} />
-              <Text style={[styles.barName, { color: p.ink }]} numberOfLines={1}>
+              <Text
+                style={[styles.barName, { color: p.ink }]}
+                numberOfLines={1}
+              >
                 {c.name}
               </Text>
               <TrackBar p={p} fraction={c.total / maxCat} color={c.color} />
-              <Text style={[styles.barAmt, { color: p.ink }]}>{formatINR(c.total)}</Text>
+              <Text style={[styles.barAmt, { color: p.ink }]}>
+                {formatINR(c.total)}
+              </Text>
             </View>
           ))}
         </View>
@@ -124,19 +189,31 @@ export default function HomeTab(props: Props) {
 
       <Card p={p}>
         <SectionTitle p={p}>Top merchants</SectionTitle>
-        {merchants.length === 0 && <Text style={{ color: p.ink2, fontSize: 14 }}>No merchants yet.</Text>}
+        {merchants.length === 0 && (
+          <Text style={{ color: p.ink2, fontSize: 14 }}>No merchants yet.</Text>
+        )}
         <View style={{ gap: 12 }}>
           {merchants.map((m) => (
             <View key={m.name}>
               <View style={styles.merchantMeta}>
-                <Text style={{ fontSize: 13, fontWeight: "500", color: p.ink }} numberOfLines={1}>
+                <Text
+                  style={{ fontSize: 13, fontWeight: "500", color: p.ink }}
+                  numberOfLines={1}
+                >
                   {m.name}
                 </Text>
                 <Text style={{ fontSize: 13, color: p.ink }}>
-                  {formatINR(m.total)} <Text style={{ color: p.muted, fontSize: 12 }}>· {m.count}×</Text>
+                  {formatINR(m.total)}{" "}
+                  <Text style={{ color: p.muted, fontSize: 12 }}>
+                    · {m.count}×
+                  </Text>
                 </Text>
               </View>
-              <TrackBar p={p} fraction={m.total / maxMerchant} color={p.accent} />
+              <TrackBar
+                p={p}
+                fraction={m.total / maxMerchant}
+                color={p.accent}
+              />
             </View>
           ))}
         </View>
@@ -147,13 +224,31 @@ export default function HomeTab(props: Props) {
 
 const styles = StyleSheet.create({
   col: { gap: 14 },
-  rangeRow: { flexDirection: "row", alignSelf: "flex-start", borderRadius: 10, borderWidth: 1, padding: 3, gap: 4 },
+  rangeRow: {
+    flexDirection: "row",
+    alignSelf: "flex-start",
+    borderRadius: 10,
+    borderWidth: 1,
+    padding: 3,
+    gap: 4,
+  },
   rangeBtn: { paddingVertical: 6, paddingHorizontal: 14, borderRadius: 8 },
   hero: { fontSize: 36, fontWeight: "800", letterSpacing: -0.5, marginTop: 4 },
-  heroSub: { flexDirection: "row", flexWrap: "wrap", columnGap: 16, rowGap: 6, marginTop: 10 },
+  heroSub: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: 16,
+    rowGap: 6,
+    marginTop: 10,
+  },
   barRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   dot: { width: 10, height: 10, borderRadius: 3 },
   barName: { width: 104, fontSize: 13 },
   barAmt: { minWidth: 64, textAlign: "right", fontSize: 13, fontWeight: "600" },
-  merchantMeta: { flexDirection: "row", justifyContent: "space-between", marginBottom: 5, gap: 12 },
+  merchantMeta: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 5,
+    gap: 12,
+  },
 });

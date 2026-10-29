@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { Text } from "./Text";
 import { fetchReceipt, Receipt } from "../lib/api";
 import { formatINR, Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
@@ -64,7 +65,7 @@ export default function ReceiptLines({ expenseId, token, p }: Props) {
       style={[styles.wrap, { borderColor: p.border, backgroundColor: p.page }]}
     >
       <Text style={{ color: p.ink2, fontSize: fs(12), fontWeight: "600" }}>
-        🧾 {t("billItems")}
+        {t("billItems")}
         {receipt.items.length ? ` · ${receipt.items.length}` : ""}
       </Text>
 

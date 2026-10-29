@@ -16,7 +16,11 @@ export interface Expense {
   source: string;
   paid_by?: number | null;
   split_id?: string | null;
+  /** v14: daily / fixed / savings — null lets the app decide. */
+  budget_scope?: BudgetScope | null;
 }
+
+export type BudgetScope = "daily" | "fixed" | "savings";
 
 export interface BudgetProgress {
   id: string;
@@ -118,7 +122,7 @@ export type FetchResult =
   | { ok: true; bill: FetchedBill }
   | {
       ok: false;
-      code: "not_found" | "no_dues" | "provider" | "invalid";
+      code: "not_found" | "no_dues" | "unavailable" | "provider" | "invalid";
       error: string;
     };
 
@@ -234,6 +238,229 @@ export interface ApiData {
   accounts?: Account[];
   position?: Position;
   transfers?: Transfer[];
+  daily?: DailyStatus | null;
+  /** v15: unread notices in the in-app inbox. */
+  inbox_unread?: number;
+  /** v17 */
+  goals?: GoalView[];
+}
+
+// ── Goals (v17) ─────────────────────────────────────────────────────────────
+
+export interface GoalView {
+  id: string;
+  name: string;
+  target_amount: number;
+  saved: number;
+  monthly: number;
+  target_date: string | null;
+  achieved_at: string | null;
+  pct: number;
+  monthsLeft: number | null;
+  onTrack: boolean | null;
+}
+
+export async function saveGoal(
+  token: string,
+  goal: {
+    id?: string;
+    name: string;
+    target_amount: number;
+    target_date?: string | null;
+    monthly?: number | null;
+  },
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const res = await fetch(`${API_BASE}/api/goals`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(goal),
+  });
+  if (res.ok) return { ok: true };
+  const body = (await res.json().catch(() => ({}))) as { error?: string };
+  return { ok: false, error: body.error ?? `HTTP ${res.status}` };
+}
+
+export async function deleteGoal(token: string, id: string): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/goals?id=${encodeURIComponent(id)}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token.trim()}` },
+    },
+  );
+  return res.ok;
+}
+
+// ── Inbox (v15) ─────────────────────────────────────────────────────────────
+
+export interface InboxItem {
+  id: string;
+  kind: "daily" | "spend" | "alerts" | "digest" | string;
+  title: string;
+  body: string;
+  data: { expenseId?: string; bigSpend?: boolean } & Record<string, unknown>;
+  created_at: string;
+  read_at: string | null;
+}
+
+export async function fetchInbox(
+  token: string,
+): Promise<{ items: InboxItem[]; unread: number } | null> {
+  const res = await fetch(`${API_BASE}/api/notifications`, {
+    headers: { Authorization: `Bearer ${token.trim()}` },
+  });
+  return res.ok ? res.json() : null;
+}
+
+/** Mark these read — or everything, with no ids. */
+export async function markInboxRead(
+  token: string,
+  ids?: string[],
+): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/notifications`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(ids ? { ids } : {}),
+  });
+  return res.ok;
+}
+
+// ── Daily budget (v14) ──────────────────────────────────────────────────────
+
+export interface DailyPlan {
+  monthly_income: number | null;
+  savings_goal: number;
+  /** v16: day salary arrives; null = calendar months. */
+  payday?: number | null;
+  morning_brief: boolean;
+  evening_report: boolean;
+  live_updates: boolean;
+}
+
+export interface Commitment {
+  id: string;
+  name: string;
+  amount: number;
+  category: string | null;
+  match: string | null;
+}
+
+export interface CommitmentSuggestion {
+  name: string;
+  amount: number;
+  category: string | null;
+  match: string | null;
+  from: "recurring" | "bill";
+}
+
+export interface DailySpend {
+  id?: string;
+  amount: number;
+  category: string;
+  merchant: string | null;
+  scope: BudgetScope;
+  dailyAmount: number;
+}
+
+export interface DailyStatus {
+  ready: boolean;
+  reason: "no_income" | null;
+  income: number;
+  incomeSource: "plan" | "last_month" | null;
+  fixed: number;
+  savingsGoal: number;
+  /** v17: set aside for goals this month. */
+  goals?: number;
+  pool: number;
+  baseDaily: number;
+  cycleStart?: string;
+  cycleEnd?: string;
+  daysInMonth: number;
+  dayOfMonth: number;
+  daysLeft: number;
+  todayBudget: number;
+  todaySpent: number;
+  todayLeft: number;
+  poolSpent: number;
+  poolLeft: number;
+  tomorrowBudget: number | null;
+  projectedLeftover: number;
+  streak: number;
+  savedFromSavings: number;
+  commitments: Array<{
+    id: string;
+    name: string;
+    amount: number;
+    paid: number;
+  }>;
+  history: Array<{ date: string; budget: number; spent: number }>;
+  today: DailySpend[];
+  plan: DailyPlan | null;
+  commitment_list: Commitment[];
+}
+
+export async function fetchPlan(token: string): Promise<{
+  daily: DailyStatus;
+  plan: DailyPlan | null;
+  commitments: Commitment[];
+  suggestions: CommitmentSuggestion[];
+} | null> {
+  const res = await fetch(`${API_BASE}/api/plan`, {
+    headers: { Authorization: `Bearer ${token.trim()}` },
+  });
+  return res.ok ? res.json() : null;
+}
+
+export async function savePlan(
+  token: string,
+  patch: Partial<DailyPlan>,
+): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/plan`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(patch),
+  });
+  return res.ok;
+}
+
+export async function addCommitment(
+  token: string,
+  c: {
+    name: string;
+    amount: number;
+    category?: string | null;
+    match?: string | null;
+  },
+): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/commitments`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(c),
+  });
+  return res.ok;
+}
+
+export async function removeCommitment(
+  token: string,
+  id: string,
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/api/commitments?id=${encodeURIComponent(id)}`,
+    { method: "DELETE", headers: { Authorization: `Bearer ${token.trim()}` } },
+  );
+  return res.ok;
 }
 
 export async function fetchData(
@@ -334,6 +561,7 @@ export async function patchExpense(
     category?: string;
     merchant?: string | null;
     expense_date?: string;
+    budget_scope?: BudgetScope | null;
   },
 ): Promise<
   | { status: "updated"; expense: LoggedExpense; alerts?: string[] }
@@ -846,7 +1074,7 @@ export async function requestLoginCode(
   } catch {
     return {
       ok: false,
-      error: "Couldn't reach the server — check your connection.",
+      error: "Couldn't reach the server. Check your connection.",
     };
   }
 }
@@ -881,7 +1109,7 @@ export async function verifyLoginCode(
   } catch {
     return {
       ok: false,
-      error: "Couldn't reach the server — check your connection.",
+      error: "Couldn't reach the server. Check your connection.",
     };
   }
 }
@@ -910,7 +1138,7 @@ export async function emailSignIn(
     if (!res.ok) return { error: body.error ?? `HTTP ${res.status}` };
     return body;
   } catch {
-    return { error: "Couldn't reach the server — check your connection." };
+    return { error: "Couldn't reach the server. Check your connection." };
   }
 }
 

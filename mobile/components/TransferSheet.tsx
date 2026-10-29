@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from "react-native";
+import { Text, TextInput } from "./Text";
 import { Account, createTransfer } from "../lib/api";
 import { formatINR, Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
+import { KeyboardAware } from "./ui";
 
 /**
  * Record money moving between two of your own pockets — a wallet top-up, an
@@ -136,10 +134,7 @@ export default function TransferSheet({
 
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.backdrop}
-      >
+      <KeyboardAware style={styles.backdrop}>
         <Pressable style={styles.backdropTouch} onPress={onClose} />
         <View
           style={[
@@ -190,7 +185,7 @@ export default function TransferSheet({
                   },
                 ]}
               >
-                💳 {t("cardPayment")}
+                {t("cardPayment")}
               </Text>
             )}
 
@@ -221,7 +216,7 @@ export default function TransferSheet({
             </Pressable>
           </ScrollView>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAware>
     </Modal>
   );
 }
@@ -283,5 +278,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 4,
   },
-  error: { color: "#d03b3b", textAlign: "center" },
+  error: { color: "#b91c1c", textAlign: "center" },
 });

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Expense Tracker",
+    "name": "Aaj",
     "slug": "aniket-sharma",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -14,12 +14,18 @@
     "android": {
       "package": "com.aniketsharma.expensetracker",
       "adaptiveIcon": {
-        "backgroundColor": "#2a78d6",
+        "backgroundColor": "#0f766e",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,7 +40,17 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Record short voice notes to log expenses hands-free."
+          "microphonePermission": "Record short voice notes to log expenses hands-free.",
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#0f766e",
+          "defaultChannel": "daily"
         }
       ]
     ],
@@ -43,6 +59,14 @@
         "projectId": "c9e5fb51-3cb2-42e1-b57b-51900c7704ef"
       }
     },
-    "owner": "aniketsharma054s-team"
+    "owner": "aniketsharma054s-team",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c9e5fb51-3cb2-42e1-b57b-51900c7704ef",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    }
   }
 }
