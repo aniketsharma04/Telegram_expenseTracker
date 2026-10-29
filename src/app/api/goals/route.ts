@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase-server";
 import { localDate } from "@/lib/parser";
 import {
   archiveGoal,
+  GOAL_KINDS,
   getGoals,
   goalOutlook,
   monthlyFor,
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
 }
 
 /**
- * Create or edit: { id?, name, target_amount, target_date?, monthly? }.
+ * Create or edit: { id?, name, target_amount, target_date?, monthly?, kind? }.
  * With a date and no monthly amount, the monthly amount is worked out.
  */
 export async function POST(req: NextRequest) {
@@ -51,6 +52,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "missing name" }, { status: 400 });
   if (!Number.isFinite(target) || target <= 0 || target > 1_000_000_000)
     return NextResponse.json({ error: "invalid target" }, { status: 400 });
+
+  // v18: optional; anything unknown is ignored rather than refused.
+  const kind = GOAL_KINDS.find((k) => k === body.kind) ?? undefined;
 
   const today = localDate();
   if (date && date <= today)
@@ -92,6 +96,7 @@ export async function POST(req: NextRequest) {
       target_amount: Math.round(target),
       monthly: Math.round(monthly),
       target_date: date,
+      kind,
     });
     return NextResponse.json({
       goal: { ...goal, ...goalOutlook(goal, today) },

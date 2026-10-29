@@ -23,7 +23,21 @@ export interface GoalLike {
 export interface Goal extends GoalLike {
   user_id: number;
   achieved_at: string | null;
+  /** v18: which rule of thumb applies; null = guess from the name. */
+  kind?: GoalKind | null;
 }
+
+/** v18: what a goal is for, so the app applies the right rule of thumb. */
+export const GOAL_KINDS = [
+  "car",
+  "bike",
+  "home",
+  "gadget",
+  "trip",
+  "emergency",
+  "other",
+] as const;
+export type GoalKind = (typeof GOAL_KINDS)[number];
 
 /** Whole budget months from `today` to `date`, counting the current one. */
 function monthsUntil(today: string, date: string): number {
@@ -96,6 +110,9 @@ export function goalOutlook(g: GoalLike, today: string): GoalOutlook {
 // ── DB ──────────────────────────────────────────────────────────────────────
 
 const COLUMNS =
+  "id, user_id, name, target_amount, saved, monthly, target_date, created_at, achieved_at, kind";
+/** Pre-v18 shape, for databases without the kind column. */
+const COLUMNS_V17 =
   "id, user_id, name, target_amount, saved, monthly, target_date, created_at, achieved_at";
 
 const toGoal = (r: Record<string, unknown>): Goal =>
@@ -111,14 +128,19 @@ export async function getGoals(
   userId: number,
 ): Promise<Goal[]> {
   try {
-    const { data, error } = await supabase
-      .from("goals")
-      .select(COLUMNS)
-      .eq("user_id", userId)
-      .eq("active", true)
-      .order("created_at");
+    const query = (cols: string) =>
+      supabase
+        .from("goals")
+        .select(cols)
+        .eq("user_id", userId)
+        .eq("active", true)
+        .order("created_at");
+    let { data, error } = await query(COLUMNS);
+    if (error) ({ data, error } = await query(COLUMNS_V17));
     if (error) throw error;
-    return (data ?? []).map(toGoal);
+    return ((data ?? []) as unknown as Array<Record<string, unknown>>).map(
+      toGoal,
+    );
   } catch (err) {
     console.error("getGoals failed (v17 migration applied?)", err);
     return [];
@@ -140,20 +162,30 @@ export async function saveGoal(
     target_amount: number;
     monthly: number;
     target_date: string | null;
+    /** Left out = unchanged. */
+    kind?: GoalKind | null;
   },
 ): Promise<Goal> {
-  const row = {
+  const base = {
     name: g.name.trim().slice(0, 60),
     target_amount: g.target_amount,
     monthly: g.monthly,
     target_date: g.target_date,
   };
-  const q = g.id
-    ? supabase.from("goals").update(row).eq("id", g.id).eq("user_id", userId)
-    : supabase.from("goals").insert({ user_id: userId, ...row });
-  const { data, error } = await q.select(COLUMNS).single();
+  const write = (row: Record<string, unknown>, cols: string) => {
+    const q = g.id
+      ? supabase.from("goals").update(row).eq("id", g.id).eq("user_id", userId)
+      : supabase.from("goals").insert({ user_id: userId, ...row });
+    return q.select(cols).single();
+  };
+  let { data, error } = await write(
+    g.kind === undefined ? base : { ...base, kind: g.kind },
+    COLUMNS,
+  );
+  // v18 migration not applied yet: save without the kind.
+  if (error) ({ data, error } = await write(base, COLUMNS_V17));
   if (error) throw error;
-  return toGoal(data);
+  return toGoal(data as unknown as Record<string, unknown>);
 }
 
 export async function archiveGoal(

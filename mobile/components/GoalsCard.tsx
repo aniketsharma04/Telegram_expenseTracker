@@ -30,6 +30,7 @@ export function GoalsCard({
   token,
   income = 0,
   monthlySpend = 0,
+  existingEmi = 0,
   onChanged,
 }: {
   p: Palette;
@@ -39,6 +40,8 @@ export function GoalsCard({
   income?: number;
   /** Monthly needs + wants, for sizing the emergency fund. */
   monthlySpend?: number;
+  /** EMIs already in fixed costs, for the 40% all-EMI limit. */
+  existingEmi?: number;
   onChanged: () => void;
 }) {
   const { t, fs } = useSettings();
@@ -47,7 +50,7 @@ export function GoalsCard({
   >(null);
   const emergencyTarget =
     monthlySpend > 0 &&
-    !goals.some((g) => guessGoalKind(g.name) === "emergency")
+    !goals.some((g) => (g.kind ?? guessGoalKind(g.name)) === "emergency")
       ? Math.ceil((monthlySpend * 6) / 1000) * 1000
       : null;
 
@@ -161,6 +164,7 @@ export function GoalsCard({
           prefill={editing !== "new" && !("id" in editing) ? editing : null}
           income={income}
           monthlySpend={monthlySpend}
+          existingEmi={existingEmi}
           onClose={() => setEditing(null)}
           onChanged={onChanged}
         />
@@ -176,6 +180,7 @@ function GoalSheet({
   prefill,
   income,
   monthlySpend,
+  existingEmi,
   onClose,
   onChanged,
 }: {
@@ -185,6 +190,7 @@ function GoalSheet({
   prefill: { name: string; target: number } | null;
   income: number;
   monthlySpend: number;
+  existingEmi: number;
   onClose: () => void;
   onChanged: () => void;
 }) {
@@ -194,7 +200,9 @@ function GoalSheet({
     goal ? String(goal.target_amount) : prefill ? String(prefill.target) : "",
   );
   // The kind follows the name until the user picks one.
-  const [pickedKind, setPickedKind] = useState<GoalKind | null>(null);
+  const [pickedKind, setPickedKind] = useState<GoalKind | null>(
+    goal?.kind ?? null,
+  );
   const kind = pickedKind ?? guessGoalKind(name);
   const [by, setBy] = useState(goal?.target_date?.slice(0, 7) ?? "");
   const [monthly, setMonthly] = useState(
@@ -211,8 +219,9 @@ function GoalSheet({
         target: num(target) || 0,
         income,
         monthlySpend,
+        existingEmi,
       }),
-    [kind, target, income, monthlySpend],
+    [kind, target, income, monthlySpend, existingEmi],
   );
 
   const save = async () => {
@@ -247,6 +256,7 @@ function GoalSheet({
       target_amount: Math.round(amount),
       target_date: date,
       monthly: date ? null : Math.round(perMonth ?? 0),
+      kind,
     }).catch(() => ({
       ok: false as const,
       error: "Couldn't reach the server.",
@@ -410,6 +420,17 @@ function GoalSheet({
   );
 }
 
+/** The 40% all-EMI check, once the user already pays other EMIs. */
+function allEmiLine(
+  t: (k: StringKey) => string,
+  a: { existingEmi: number; allEmiPct: number; limitedByOtherEmis: boolean },
+): string {
+  return fill(t(a.allEmiPct > 40 ? "ruleAllEmiOver" : "ruleAllEmiOk"), {
+    existing: formatINR(a.existingEmi),
+    n: a.allEmiPct,
+  });
+}
+
 /** The matching rule of thumb for a goal, with a one-tap fix when there is one. */
 function RuleAdvice({
   p,
@@ -466,6 +487,7 @@ function RuleAdvice({
           : fill(t("ruleVehicleOver"), { max: formatINR(advice.maxPrice) }),
         t("ruleRunningCosts"),
       );
+      if (advice.existingEmi > 0) lines.push(allEmiLine(t, advice));
       good = advice.fits;
       action = {
         label: fill(t("ruleSaveDown"), {
@@ -492,6 +514,7 @@ function RuleAdvice({
     );
     if (advice.incomeYears > 5)
       lines.push(fill(t("ruleHomeYears"), { n: advice.incomeYears }));
+    if (advice.existingEmi > 0) lines.push(allEmiLine(t, advice));
     good = advice.fits;
     action = {
       label: fill(t("ruleSaveDown"), {

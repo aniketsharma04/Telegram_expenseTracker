@@ -42,6 +42,7 @@ import { InboxBell, InboxSheet, PushPromptCard } from "./components/Inbox";
 import { CaptureSetupCard } from "./components/CaptureSetupCard";
 import { GoalsCard } from "./components/GoalsCard";
 import { MoneySplitCard } from "./components/MoneySplitCard";
+import { emiCommitments } from "./lib/money-rules";
 import { PushState, registerForPush, unregisterPush } from "./lib/push";
 import { connectCapture, syncCaptures } from "./lib/capture";
 import {
@@ -484,6 +485,8 @@ function AppInner() {
     monthlySpend: daily
       ? Math.max(0, daily.income - daily.savingsGoal - (daily.goals ?? 0))
       : 0,
+    // Fixed costs named "... EMI" or "... loan", for the 40% all-EMI limit.
+    existingEmi: daily ? emiCommitments(daily.commitments ?? []) : 0,
   };
   const offline =
     offlineSince !== null ? (

@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import { Text } from "./Text";
 import { DailyStatus, savePlan } from "../lib/api";
 import { useSettings } from "../lib/i18n";
-import { fill, salarySplit } from "../lib/money-rules";
+import { emiCommitments, fill, salarySplit } from "../lib/money-rules";
 import { formatINR, Palette } from "../lib/theme";
 import { Card, CardHeader, TrackBar } from "./ui";
 
@@ -36,6 +36,10 @@ export function MoneySplitCard({
     goals: daily.goals ?? 0,
   });
   if (!split) return null;
+  // Loans named in fixed costs: all EMIs together should stay under 40%.
+  const emiPct = Math.round(
+    (emiCommitments(daily.commitments ?? []) / daily.income) * 100,
+  );
 
   const rows = [
     {
@@ -129,6 +133,11 @@ export function MoneySplitCard({
         >
           {verdict}
         </Text>
+        {emiPct > 40 && (
+          <Text style={{ fontSize: fs(13), color: p.warn, lineHeight: 19 }}>
+            {fill(t("splitEmiHigh"), { n: emiPct })}
+          </Text>
+        )}
 
         {split.suggestSavingsGoal !== null && (
           <Pressable

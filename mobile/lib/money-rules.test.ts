@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   emi,
+  emiCommitments,
   fill,
   goalAdvice,
   guessGoalKind,
@@ -177,6 +178,49 @@ describe("goal advice", () => {
         monthlySpend: 0,
       }),
     ).toBeNull();
+  });
+});
+
+describe("all EMIs under 40%", () => {
+  it("picks EMIs out of fixed costs by name", () => {
+    expect(
+      emiCommitments([
+        { name: "Rent", amount: 15000 },
+        { name: "Bike EMI", amount: 3000 },
+        { name: "Home loan", amount: 20000 },
+        { name: "Phone instalment", amount: 1500 },
+        { name: "SIP", amount: 5000 },
+      ]),
+    ).toBe(24500);
+  });
+
+  it("lets other EMIs lower the limit below the rule's own", () => {
+    // ₹1L income: the car rule allows ₹10k, but ₹35k of EMIs leaves only ₹5k.
+    const a = goalAdvice({
+      kind: "car",
+      target: 400000,
+      income: 100000,
+      monthlySpend: 0,
+      existingEmi: 35000,
+    });
+    if (a?.kind !== "car") throw new Error("expected car advice");
+    expect(a.limitedByOtherEmis).toBe(true);
+    expect(a.fits).toBe(false);
+    expect(a.allEmiPct).toBeGreaterThan(40);
+    expect(Math.round(emi(a.maxPrice * 0.8, a.ratePct, a.months))).toBeLessThanOrEqual(5100);
+  });
+
+  it("leaves the rule in charge when other EMIs are small", () => {
+    const a = goalAdvice({
+      kind: "home",
+      target: 5000000,
+      income: 100000,
+      monthlySpend: 0,
+      existingEmi: 5000,
+    });
+    if (a?.kind !== "home") throw new Error("expected home advice");
+    expect(a.limitedByOtherEmis).toBe(false);
+    expect(a.existingEmi).toBe(5000);
   });
 });
 

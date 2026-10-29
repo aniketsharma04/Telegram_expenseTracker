@@ -169,6 +169,15 @@ export interface LoanCheck {
   emi: number;
   /** The rule's EMI ceiling for this income. */
   emiCap: number;
+  /** EMIs already running (from fixed costs). */
+  existingEmi: number;
+  /** All EMIs with this loan, as a whole % of income. */
+  allEmiPct: number;
+  /**
+   * True when the other EMIs, not the rule, set the limit: all EMIs together
+   * should stay under 40% of income.
+   */
+  limitedByOtherEmis: boolean;
   fits: boolean;
   /** Dearest price whose EMI stays within the cap (20% down). */
   maxPrice: number;
@@ -191,6 +200,22 @@ export interface GoalInput {
   income: number;
   /** Monthly spending on needs + wants (for the emergency fund). */
   monthlySpend: number;
+  /** EMIs already being paid; see emiCommitments. */
+  existingEmi?: number;
+}
+
+/** All EMIs together should stay under this share of income (20/30/40, lenders' FOIR). */
+export const ALL_EMI_CAP = 0.4;
+
+const EMI_NAME = /\b(emi|emis|loan|loans|instal+ments?)\b/i;
+
+/** Monthly EMIs already running: the fixed costs whose names say EMI or loan. */
+export function emiCommitments(
+  commitments: Array<{ name: string; amount: number }>,
+): number {
+  return commitments
+    .filter((c) => EMI_NAME.test(c.name))
+    .reduce((s, c) => s + Math.max(0, c.amount), 0);
 }
 
 function loanCheck(
@@ -199,13 +224,18 @@ function loanCheck(
   months: number,
   ratePct: number,
   emiCap: number,
+  income: number,
+  existingEmi: number,
 ): LoanCheck {
   const down = roundUpTo(price * 0.2, 1000);
   const loan = Math.max(0, price - down);
   const monthly = Math.round(emi(loan, ratePct, months));
+  // The loan has to fit the rule's own cap and leave all EMIs under 40%.
+  const room = Math.max(0, income * ALL_EMI_CAP - existingEmi);
+  const cap = Math.min(emiCap, room);
   // Loan is 80% of the price, so the price that fits is maxLoan / 0.8.
-  const maxPrice = roundTo(maxLoanFor(emiCap, ratePct, months) / 0.8, 1000);
-  const fits = monthly <= emiCap;
+  const maxPrice = roundTo(maxLoanFor(cap, ratePct, months) / 0.8, 1000);
+  const fits = monthly <= cap;
   return {
     rule,
     price,
@@ -215,6 +245,9 @@ function loanCheck(
     ratePct,
     emi: monthly,
     emiCap: Math.round(emiCap),
+    existingEmi: Math.round(existingEmi),
+    allEmiPct: Math.round(((existingEmi + monthly) / income) * 100),
+    limitedByOtherEmis: room < emiCap,
     fits,
     maxPrice,
     suggestTarget: fits ? down : roundUpTo(maxPrice * 0.2, 1000),
@@ -223,6 +256,7 @@ function loanCheck(
 
 export function goalAdvice(input: GoalInput): GoalAdvice | null {
   const { kind, target, income, monthlySpend } = input;
+  const existingEmi = Math.max(0, input.existingEmi ?? 0);
 
   if (kind === "emergency") {
     if (!(monthlySpend > 0)) return null;
@@ -241,6 +275,8 @@ export function goalAdvice(input: GoalInput): GoalAdvice | null {
       48,
       LOAN_RATE[kind],
       income * 0.1,
+      income,
+      existingEmi,
     );
     // A bike that costs two months' pay or less is better bought outright.
     return { kind, cashOk: kind === "bike" && target <= income * 2, ...check };
@@ -252,6 +288,8 @@ export function goalAdvice(input: GoalInput): GoalAdvice | null {
       240,
       LOAN_RATE.home,
       income * 0.3,
+      income,
+      existingEmi,
     );
     return {
       kind,

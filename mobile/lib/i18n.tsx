@@ -661,6 +661,18 @@ const STRINGS = {
     hi: "शुरुआत इमरजेंसी फ़ंड से करें: 6 महीने का खर्च, लगभग {amount}।",
   },
   emergencyFundName: { en: "Emergency fund", hi: "इमरजेंसी फ़ंड" },
+  ruleAllEmiOk: {
+    en: "With the EMIs you already pay ({existing}), all your loans would take {n}% of your income, under the 40% limit.",
+    hi: "आप जो EMI पहले से भर रहे हैं ({existing}), उनके साथ सारे लोन आपकी आमदनी का {n}% लेंगे, 40% की सीमा से कम।",
+  },
+  ruleAllEmiOver: {
+    en: "With the EMIs you already pay ({existing}), all your loans would take {n}% of your income. Keep all EMIs under 40%: clear one first or pick a cheaper option.",
+    hi: "आप जो EMI पहले से भर रहे हैं ({existing}), उनके साथ सारे लोन आपकी आमदनी का {n}% लेंगे। सारी EMI 40% से कम रखें: पहले कोई लोन चुकाएँ या सस्ता विकल्प चुनें।",
+  },
+  splitEmiHigh: {
+    en: "Your EMIs take {n}% of your income. Keep all EMIs under 40%, and clear one before taking a new loan.",
+    hi: "आपकी EMI आमदनी का {n}% ले रही हैं। सारी EMI 40% से कम रखें, और नया लोन लेने से पहले कोई एक चुकाएँ।",
+  },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;

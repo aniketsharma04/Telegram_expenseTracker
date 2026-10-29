@@ -1,3 +1,4 @@
+import type { GoalKind } from "./money-rules";
 /** Same API the web dashboard uses — the app is just another skin over it. */
 export const API_BASE =
   process.env.EXPO_PUBLIC_API_URL ??
@@ -258,6 +259,8 @@ export interface GoalView {
   pct: number;
   monthsLeft: number | null;
   onTrack: boolean | null;
+  /** v18: which rule of thumb applies; null/absent = guess from the name. */
+  kind?: GoalKind | null;
 }
 
 export async function saveGoal(
@@ -268,6 +271,7 @@ export async function saveGoal(
     target_amount: number;
     target_date?: string | null;
     monthly?: number | null;
+    kind?: GoalKind;
   },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const res = await fetch(`${API_BASE}/api/goals`, {
