@@ -207,12 +207,17 @@ export async function loadDailyStatus(
   const plan = await getPlan(supabase, userId);
   const cycle = cycleFor(today, plan?.payday);
   const prevStart = cycleFor(addDaysIso(cycle.start, -1), plan?.payday).start;
-  const [commitments, expenses, incomes, goals] = await Promise.all([
+  const [commitments, expenses, incomes, goals, joined] = await Promise.all([
     getCommitments(supabase, userId),
     monthExpenses(supabase, userId, cycle.start, today),
     getIncomes(supabase, userId, prevStart),
     getGoals(supabase, userId),
+    supabase.from("users").select("joined_at").eq("id", userId).limit(1),
   ]);
+  // Streaks start when the account did, not on the 1st of the month.
+  const joinedAt = (joined.data?.[0] as { joined_at?: string } | undefined)
+    ?.joined_at;
+  const trackingSince = joinedAt ? localDate(0, new Date(joinedAt)) : undefined;
   // "Last month" = the previous budget month, for the no-income-set fallback.
   const lastMonthIncome = incomes
     .filter((i) => i.income_date < cycle.start)
@@ -226,6 +231,7 @@ export async function loadDailyStatus(
       today,
       lastMonthIncome,
       goalsMonthly: goalsMonthly(goals),
+      trackingSince,
     }),
     plan,
     commitments,

@@ -68,6 +68,34 @@ describe("computeDailyStatus", () => {
     expect(s.streak).toBe(0);
   });
 
+  it("doesn't count days before tracking started toward the streak", () => {
+    // Joined on the 28th: the empty days before it aren't days "under budget".
+    const fresh = computeDailyStatus({
+      plan,
+      commitments,
+      expenses: [],
+      today: "2026-09-30",
+      trackingSince: "2026-09-28",
+    });
+    expect(fresh.streak).toBe(2); // the 28th and 29th
+    const joinedToday = computeDailyStatus({
+      plan,
+      commitments,
+      expenses: [],
+      today: "2026-09-30",
+      trackingSince: "2026-09-30",
+    });
+    expect(joinedToday.streak).toBe(0);
+    // Without a start date it behaves as before.
+    const legacy = computeDailyStatus({
+      plan,
+      commitments,
+      expenses: [],
+      today: "2026-09-30",
+    });
+    expect(legacy.streak).toBe(29);
+  });
+
   it("spreads a big purchase, and 'from savings' leaves the day alone", () => {
     const base = { plan, commitments, today: "2026-09-10" };
     const spread = computeDailyStatus({

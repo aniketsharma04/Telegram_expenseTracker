@@ -265,6 +265,12 @@ export function computeDailyStatus(input: {
   lastMonthIncome?: number;
   /** Monthly set-asides for active goals (v17) — off the top, like savings. */
   goalsMonthly?: number;
+  /**
+   * First day the user was tracking (YYYY-MM-DD). Days before it had nothing
+   * logged because the account didn't exist, not because the user stayed
+   * under budget, so they don't count toward the streak.
+   */
+  trackingSince?: string;
 }): DailyStatus {
   const { plan, commitments, today } = input;
   const cycle = cycleFor(today, plan?.payday);
@@ -317,6 +323,7 @@ export function computeDailyStatus(input: {
 
   let streak = 0;
   for (let i = history.length - 2; i >= 0; i--) {
+    if (input.trackingSince && history[i].date < input.trackingSince) break;
     if (history[i].spent > history[i].budget) break;
     streak++;
   }
