@@ -7,13 +7,14 @@ import {
   updateBill,
 } from "./bills";
 import {
-  BILL_QUERY,
   DetectedBillDraft,
   DetectSource,
   extractBill,
   looksLikeBill,
 } from "./bill-detect";
 import { accessToken, getMessage, listMessageIds } from "./gmail";
+import { emailTxnText, MAIL_QUERY } from "./email-txn";
+import { ingestBankMessage, recordIgnored } from "./ingest";
 
 /**
  * Detected-bill inbox (v7): rows a source proposed, waiting for the user to
@@ -188,6 +189,23 @@ export async function seenExternalIds(
   return new Set((data ?? []).map((r) => r.external_id as string));
 }
 
+/** Gmail ids the mail scan already put through ingest (logged or not). */
+async function seenEmailIds(
+  supabase: SupabaseClient,
+  userId: number,
+  ids: string[],
+): Promise<Set<string>> {
+  if (!ids.length) return new Set();
+  const { data, error } = await supabase
+    .from("bank_messages")
+    .select("external_id")
+    .eq("user_id", userId)
+    .eq("source", "email")
+    .in("external_id", ids);
+  if (error) return new Set();
+  return new Set((data ?? []).map((r) => r.external_id as string));
+}
+
 export async function dismissDetected(
   supabase: SupabaseClient,
   userId: number,
@@ -280,6 +298,8 @@ export interface SyncResult {
   gated: number; // passed the keyword gate, sent to the LLM
   detected: number; // new rows created
   duplicates: number;
+  /** v18: bank/card alert emails logged as transactions. */
+  transactions?: number;
   error?: string;
   /**
    * This run is the one that found the consent dead. Set only on the first
@@ -307,14 +327,48 @@ export async function syncGmail(
 
   try {
     const token = await accessToken(account.refresh_token);
-    const ids = await listMessageIds(token, BILL_QUERY, 60);
-    const seen = await seenExternalIds(supabase, userId, "gmail", ids);
+    const ids = await listMessageIds(token, MAIL_QUERY, 60);
+    // Read = proposed a bill, or went through ingest (logged or ignored).
+    // Counting only bill rows used to leave every non-bill email unread, so
+    // each sync re-read the same newest 25 and never reached older ones.
+    const seen = new Set([
+      ...(await seenExternalIds(supabase, userId, "gmail", ids)),
+      ...(await seenEmailIds(supabase, userId, ids)),
+    ]);
     const fresh = ids.filter((id) => !seen.has(id)).slice(0, maxMessages);
     out.duplicates = ids.length - fresh.length;
 
     for (const id of fresh) {
       const msg = await getMessage(token, id);
       out.scanned++;
+
+      // v18: a bank or card alert becomes a transaction, through the same
+      // path (and the same cross-channel dedupe) as SMS and notifications.
+      const parsedAt = Date.parse(msg.date);
+      const mail = {
+        source: "email" as const,
+        externalId: id,
+        receivedAt: Number.isFinite(parsedAt)
+          ? new Date(parsedAt).toISOString()
+          : undefined,
+      };
+      const txnText = emailTxnText(msg.subject, msg.body || msg.snippet);
+      if (txnText) {
+        const r = await ingestBankMessage(supabase, userId, {
+          ...mail,
+          body: txnText,
+        });
+        if (r.status === "logged" || r.status === "needs_review")
+          out.transactions = (out.transactions ?? 0) + 1;
+      } else {
+        await recordIgnored(
+          supabase,
+          userId,
+          { ...mail, body: msg.subject },
+          "Email with no transaction in it.",
+        );
+      }
+
       const source: DetectSource = {
         subject: msg.subject,
         from: msg.from,

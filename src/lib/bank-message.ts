@@ -47,6 +47,16 @@ const NOT_A_TRANSACTION = [
   /\bwill be deducted\b/i,
   /\bdue\b.{0,20}\bon\b/i,
   /payment request/i,
+  // "You've received an IPO request … Click to accept": an ask, not money.
+  /\b(?:ipo|mandate|money|autopay|upi)\s+request\b/i,
+  /\bclick to (?:accept|approve|pay)\b/i,
+  /\bapprove to\b/i,
+  // Paying a card bill: the bank's debit is the transaction, not this "credit".
+  /\breceived towards your\b.{0,30}\bcard\b/i,
+  // "Recharge Reminder … expires today. Ignore if already paid."
+  /\breminder\b/i,
+  /\bif already paid\b/i,
+  /\bexpires?\s+(?:today|tomorrow|on|in|soon)\b/i,
   /requesting money/i,
   /has requested/i,
   /collect request/i,
@@ -65,25 +75,25 @@ const NOT_A_TRANSACTION = [
   /\beligible for\b/i,
 ];
 
-const DEBIT_WORDS =
-  /\b(debited|debit|spent|paid|sent|withdrawn|withdrawal|purchase|deducted|charged|transferred to)\b/i;
-const CREDIT_WORDS =
+export const DEBIT_WORDS =
+  /\b(debited|debit|spent|paid|sent|withdrawn|withdrawal|purchase|deducted|charged|transferred(?: to)?)\b/i;
+export const CREDIT_WORDS =
   /\b(credited|credit|received|deposited|refund(?:ed)?|added to)\b/i;
 /** "Payment of Rs 600 to X is successful" — a debit with no debit word in it. */
 const PAYMENT_DONE =
   /\bpayment of\b.*\b(?:successful(?:ly)?|completed|done)\b/i;
 
-/** "Rs.20.00", "INR 1,250", "₹ 20", "20.0" after a direction word. */
+/** "Rs.20.00", "Rs:500", "INR 1,250", "₹ 20", "20.0" after a direction word. */
 const AMOUNT_PATTERNS = [
-  /(?:rs\.?|inr|₹)\s*([\d,]+(?:\.\d{1,2})?)/i,
+  /(?:rs\.?|inr|₹)\s*:?\s*([\d,]+(?:\.\d{1,2})?)/i,
   /\b(?:debited|credited)\s+(?:by|for|with)\s+([\d,]+(?:\.\d{1,2})?)/i,
   /\b(?:debited|credited)\s+([\d,]+(?:\.\d{1,2})?)/i,
 ];
 
 /** "Avl Bal Rs.4980.00", "Available Balance: INR 4,980", "Bal Rs 4980". */
 const BALANCE_PATTERNS = [
-  /(?:avl|available|avbl|a\/c)\s*(?:bal|balance)\s*(?:is)?\s*[:.]?\s*(?:rs\.?|inr|₹)?\s*([\d,]+(?:\.\d{1,2})?)/i,
-  /\bbal(?:ance)?\s*[:.]?\s*(?:rs\.?|inr|₹)\s*([\d,]+(?:\.\d{1,2})?)/i,
+  /(?:avl|available|avbl|a\/c)\s*(?:bal|balance)\s*(?:is)?\s*[:.]?\s*(?:rs\.?|inr|₹)?\s*:?\s*([\d,]+(?:\.\d{1,2})?)/i,
+  /\bbal(?:ance)?\s*[:.]?\s*(?:rs\.?|inr|₹)\s*:?\s*([\d,]+(?:\.\d{1,2})?)/i,
 ];
 
 /** "a/c XX1234", "A/C x1234", "Acct XX123", "Card no. XX1234", "ac 1234". */
@@ -113,7 +123,7 @@ const CODE_WORD =
 export function carriesCode(text: string): boolean {
   if (!CODE_WORD.test(text)) return false;
   const rest = text
-    .replace(/(?:rs\.?|inr|₹)\s*[\d,]+(?:\.\d+)?/gi, " ")
+    .replace(/(?:rs\.?|inr|₹)\s*:?\s*[\d,]+(?:\.\d+)?/gi, " ")
     .replace(/\b\d{1,4}[-/.]\d{1,2}[-/.]\d{2,4}\b/g, " ")
     .replace(
       /(?:a\/c|acct|account|ac|card)\s*(?:no\.?)?\s*[xX*•]*\d{3,6}\b/gi,
@@ -269,7 +279,7 @@ export function parseBankMessage(text: string): BankTxn | null {
 export function looksLikeBankMessage(text: string): boolean {
   if (!text) return false;
   const body = text.replace(/\s+/g, " ");
-  const money = /(?:rs\.?|inr|₹)\s*[\d,]/i.test(body);
+  const money = /(?:rs\.?|inr|₹)\s*:?\s*[\d,]/i.test(body);
   const account = ACCOUNT_PATTERNS.some((p) => p.test(body));
   const moved = DEBIT_WORDS.test(body) || CREDIT_WORDS.test(body);
   return moved && (money || account) && body.length > 25;

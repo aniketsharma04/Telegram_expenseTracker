@@ -66,17 +66,68 @@ export interface IngestInput {
   receivedAt?: string;
 }
 
+/**
+ * Is `m`, already captured, the same purchase as `txn` arriving now from
+ * `source`? With reference numbers on both sides they decide. Without them,
+ * only a message from a *different* channel counts: the same channel
+ * delivering two equal amounts is two purchases (two ₹30 coffees), because a
+ * re-delivered notification was already caught by its external id.
+ */
+export function isSameTransaction(
+  m: {
+    status: string;
+    direction: string | null;
+    reference: string | null;
+    source: string;
+  },
+  txn: Pick<BankTxn, "direction" | "reference">,
+  source: IngestInput["source"],
+): boolean {
+  if (m.status !== "logged" || m.direction !== txn.direction) return false;
+  if (txn.reference && m.reference) return m.reference === txn.reference;
+  return m.source !== source;
+}
+
+/**
+ * Keep a message that logged nothing, with the reason, so "why wasn't this
+ * captured?" has an answer — and so the mail scan knows it has read it. A
+ * re-delivery hits the unique external id and isn't stored twice.
+ */
+export async function recordIgnored(
+  supabase: SupabaseClient,
+  userId: number,
+  input: IngestInput,
+  note: string,
+): Promise<void> {
+  await saveMessage(supabase, {
+    user_id: userId,
+    source: input.source,
+    external_id: input.externalId ?? null,
+    received_at: input.receivedAt ?? new Date().toISOString(),
+    body: input.body.slice(0, 2000),
+    status: "ignored",
+    note,
+  });
+}
+
 export async function ingestBankMessage(
   supabase: SupabaseClient,
   userId: number,
   input: IngestInput,
 ): Promise<IngestResult> {
   const txn = parseBankMessage(input.body);
-  if (!txn)
+  if (!txn) {
+    await recordIgnored(
+      supabase,
+      userId,
+      input,
+      "Not a completed transaction.",
+    );
     return fail(
       "ignored",
       "Not a completed transaction, so nothing was logged.",
     );
+  }
 
   const receivedAt = input.receivedAt ?? new Date().toISOString();
   // The IST day, not the UTC one — a 1 a.m. coffee belongs to today's budget.
@@ -101,17 +152,28 @@ export async function ingestBankMessage(
   ).toISOString();
   const { data: recent } = await supabase
     .from("bank_messages")
-    .select("id, amount, direction, reference, status")
+    .select("id, amount, direction, reference, status, source")
     .eq("user_id", userId)
     .eq("amount", txn.amount)
     .gte("received_at", since);
-  const twin = (recent ?? []).find(
-    (m) =>
-      m.status === "logged" &&
-      m.direction === txn.direction &&
-      (txn.reference ? m.reference === txn.reference : true),
+  const twin = (recent ?? []).find((m) =>
+    isSameTransaction(m, txn, input.source),
   );
-  if (twin) return fail("duplicate", "Same transaction already captured.", txn);
+  if (twin) {
+    await saveMessage(supabase, {
+      user_id: userId,
+      source: input.source,
+      external_id: input.externalId ?? null,
+      received_at: receivedAt,
+      body: input.body.slice(0, 2000),
+      direction: txn.direction,
+      amount: txn.amount,
+      reference: txn.reference,
+      status: "duplicate",
+      note: `Same transaction already captured (${twin.source}).`,
+    });
+    return fail("duplicate", "Same transaction already captured.", txn);
+  }
 
   const accounts = await listAccounts(supabase, userId);
   const account = pickAccount(txn, accounts);

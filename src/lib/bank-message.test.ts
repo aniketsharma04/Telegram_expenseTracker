@@ -35,6 +35,23 @@ describe("parseBankMessage — real templates", () => {
     expect(txn?.reference).toBe("123456789012");
   });
 
+  it("reads 'Rs:' with a colon (Union Bank style)", () => {
+    const txn = parseBankMessage(
+      "A/c *1234 Debited for Rs:500.00 on 28-10-2026 15:20:11 by Mob Bk ref no 612345678901 Avl Bal Rs:2,345.67. Never share your OTP.-Union Bank of India",
+    );
+    expect(txn?.direction).toBe("debit");
+    expect(txn?.amount).toBe(500);
+    expect(txn?.balance).toBe(2345.67);
+  });
+
+  it("reads a 'Money Transferred' alert", () => {
+    const txn = parseBankMessage(
+      "Money Transferred - Rs 1,500.00 from HDFC Bank A/c **1234 on 28-10-26 to RAVI KUMAR UPI: 612345678901 Not you? Call 18002586161",
+    );
+    expect(txn?.direction).toBe("debit");
+    expect(txn?.amount).toBe(1500);
+  });
+
   it("reads an ICICI debit", () => {
     const txn = parseBankMessage(
       "ICICI Bank Acct XX789 debited for Rs 1,250.00 on 02-Sep-26; Swiggy credited. UPI:445566778899. Call 18002662 for dispute.",
@@ -112,6 +129,23 @@ describe("parseBankMessage — what must never become a transaction", () => {
       "Your electricity bill of Rs.1,240 is due on 12-09-26.",
     ],
     ["plain chat", "hey did you pay the rent"],
+    // Real captures that were logged as money (Oct 2026).
+    [
+      "an IPO mandate request",
+      "JD-PHONPE-S. You've received an IPO request from BLS POLYMERS LIMITED for Rs.15000. Click to accept. https://phone.pe/PHONPE/abs96pam",
+    ],
+    [
+      "a recharge reminder",
+      "Recharge Reminder. Your Jio recharge pack of Rs.299 for mobile number 9999999999 expires today. Ignore if already paid. Earn up to ₹10 back* using",
+    ],
+    [
+      "a mandate to approve",
+      "You've received a mandate request of Rs.499 from NETFLIX. Approve to start AutoPay.",
+    ],
+    [
+      "a plan expiry notice",
+      "Your plan of Rs.239 has expired. Recharge now to continue.",
+    ],
   ] as const;
 
   for (const [label, text] of rejected) {
@@ -119,6 +153,22 @@ describe("parseBankMessage — what must never become a transaction", () => {
       expect(parseBankMessage(text)).toBeNull();
     });
   }
+
+  it("still logs a real AutoPay debit", () => {
+    const txn = parseBankMessage(
+      "AutoPay successful!. ₹13428 has been auto-debited towards JIO PLATFORMS LIMITED.",
+    );
+    expect(txn?.direction).toBe("debit");
+    expect(txn?.amount).toBe(13428);
+  });
+
+  it("still logs a real credit that mentions receiving", () => {
+    const txn = parseBankMessage(
+      "You've received Rs.500 from Ravi Kumar in your HDFC Bank A/C XX1234 via UPI.",
+    );
+    expect(txn?.direction).toBe("credit");
+    expect(txn?.amount).toBe(500);
+  });
 
   it("rejects text with no direction word at all", () => {
     expect(parseBankMessage("Rs.500 at Blue Tokai on 02-09-26")).toBeNull();

@@ -34,15 +34,18 @@ export interface DetectSource {
  * call. `category:promotions` is excluded because marketing mail is full of
  * "pay now" language and produces almost all the false positives.
  */
+/** Subjects that mark a bill email; shared with the combined mail scan. */
+export const BILL_SUBJECTS = [
+  'subject:(bill OR "e-bill" OR statement OR invoice OR "due" OR "payment reminder" OR premium)',
+  'subject:("total amount due" OR "minimum amount due" OR "bill generated")',
+].join(" OR ");
+
 export const BILL_QUERY = [
   "newer_than:45d",
   "-category:promotions",
   "-category:social",
   "(",
-  [
-    'subject:(bill OR "e-bill" OR statement OR invoice OR "due" OR "payment reminder" OR premium)',
-    'subject:("total amount due" OR "minimum amount due" OR "bill generated")',
-  ].join(" OR "),
+  BILL_SUBJECTS,
   ")",
 ].join(" ");
 

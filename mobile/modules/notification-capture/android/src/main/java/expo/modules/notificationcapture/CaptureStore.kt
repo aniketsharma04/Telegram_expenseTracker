@@ -60,10 +60,19 @@ object CaptureStore {
     "indwin.c3.shareapp"            // slice
   )
 
-  /** A capture must look like money moving, or it is dropped unread. */
-  private val MONEY = Regex("""(?:rs\.?|inr|₹)\s*[\d,]+""", RegexOption.IGNORE_CASE)
+  /**
+   * A capture must look like money moving, or it is dropped unread. Kept as
+   * wide as the server's parser reads (bank-message.ts): this filter is the
+   * privacy gate, not a second parser. It used to require "Rs/INR/₹" before
+   * the amount, which silently dropped alerts like SBI's "debited by 250.0"
+   * and "Rs:500" before they were ever uploaded.
+   */
+  private val MONEY = Regex(
+    """(?:rs\.?|inr|₹)\s*:?\s*[\d,]+|\b(?:debited|credited)\s+(?:by|for|with)?\s*[\d,]+""",
+    RegexOption.IGNORE_CASE
+  )
   private val MOVEMENT = Regex(
-    """\b(debited|credited|spent|paid|sent|received|withdrawn|deposited|purchase)\b""",
+    """\b(debited|debit|credited|credit|spent|paid|sent|received|withdrawn|withdrawal|deposited|purchase|transferred|deducted|charged|refund(?:ed)?|payment)\b""",
     RegexOption.IGNORE_CASE
   )
 
@@ -125,7 +134,7 @@ object CaptureStore {
     RegexOption.IGNORE_CASE
   )
   private val NOT_CODES = listOf(
-    Regex("""(?:rs\.?|inr|₹)\s*[\d,]+(?:\.\d+)?""", RegexOption.IGNORE_CASE), // amounts
+    Regex("""(?:rs\.?|inr|₹)\s*:?\s*[\d,]+(?:\.\d+)?""", RegexOption.IGNORE_CASE), // amounts
     Regex("""\b\d{1,4}[-/.]\d{1,2}[-/.]\d{2,4}\b"""),                       // dates
     Regex("""(?:a/c|acct|account|ac|card)\s*(?:no\.?)?\s*[xX*•]*\d{3,6}\b""", RegexOption.IGNORE_CASE),
     Regex("""\b\d{9,}\b""")                                                  // refs, phone numbers
