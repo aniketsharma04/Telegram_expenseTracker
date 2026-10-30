@@ -607,7 +607,7 @@ async function handleCommand(text: string, userId: number) {
     }
     case "/dashboard": {
       const url =
-        process.env.APP_URL || "https://telegram-expense-tracker-nu.vercel.app";
+        process.env.APP_URL || "https://aaj-finance.vercel.app";
       const link = `${url}/api/auth/login?token=${signToken(userId, 900)}`;
       await reply(
         userId,

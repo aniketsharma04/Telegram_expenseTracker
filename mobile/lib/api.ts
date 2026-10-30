@@ -2,7 +2,7 @@ import type { GoalKind } from "./money-rules";
 /** Same API the web dashboard uses — the app is just another skin over it. */
 export const API_BASE =
   process.env.EXPO_PUBLIC_API_URL ??
-  "https://telegram-expense-tracker-nu.vercel.app";
+  "https://aaj-finance.vercel.app";
 
 export const BOT_URL = "https://t.me/Aniket_financial_expense_bot";
 
