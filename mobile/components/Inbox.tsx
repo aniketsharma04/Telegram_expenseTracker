@@ -9,7 +9,13 @@ import {
   View,
 } from "react-native";
 import { Text } from "./Text";
-import { fetchInbox, InboxItem, markInboxRead, patchExpense } from "../lib/api";
+import {
+  fetchInbox,
+  flipEntry,
+  InboxItem,
+  markInboxRead,
+  patchExpense,
+} from "../lib/api";
 import { PushState, registerForPush } from "../lib/push";
 import { Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
@@ -75,6 +81,9 @@ export function InboxSheet({
   const { t, fs } = useSettings();
   const [items, setItems] = useState<InboxItem[] | null>(null);
   const [moved, setMoved] = useState<Set<string>>(new Set());
+  // Entries switched between spending and income from this sheet.
+  const [flipped, setFlipped] = useState<Set<string>>(new Set());
+  const [flipError, setFlipError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
@@ -103,6 +112,27 @@ export function InboxSheet({
     if (res && res !== "unauthorized") {
       setMoved((m) => new Set(m).add(expenseId));
       onChanged();
+    }
+  };
+
+  const flip = async (
+    target: { expense_id: string } | { income_id: string },
+  ) => {
+    const id = "expense_id" in target ? target.expense_id : target.income_id;
+    if (busy) return;
+    setBusy(id);
+    setFlipError(null);
+    const res = await flipEntry(token, target).catch(() => null);
+    setBusy(null);
+    if (res?.ok) {
+      setFlipped((f) => new Set(f).add(id));
+      onChanged();
+    } else {
+      setFlipError(
+        res && !res.ok && res.error
+          ? res.error
+          : "Couldn't change that. Try again.",
+      );
     }
   };
 
@@ -144,8 +174,15 @@ export function InboxSheet({
             <ScrollView contentContainerStyle={{ gap: 10, paddingBottom: 8 }}>
               {items.map((n) => {
                 const expenseId = n.data?.expenseId;
+                const incomeId =
+                  typeof n.data?.incomeId === "string" ? n.data.incomeId : null;
+                const spendId =
+                  typeof expenseId === "string" ? expenseId : null;
+                const flipId = spendId ?? incomeId;
                 const offerSavings =
-                  n.data?.bigSpend === true && typeof expenseId === "string";
+                  n.data?.bigSpend === true &&
+                  typeof expenseId === "string" &&
+                  !flipped.has(expenseId);
                 return (
                   <View
                     key={n.id}
@@ -213,9 +250,58 @@ export function InboxSheet({
                           </Text>
                         </Pressable>
                       ))}
+                    {flipId &&
+                      (flipped.has(flipId) ? (
+                        <Text
+                          style={{
+                            color: p.good,
+                            fontSize: fs(13),
+                            fontWeight: "600",
+                          }}
+                        >
+                          {spendId
+                            ? t("flippedToIncome")
+                            : t("flippedToSpending")}
+                        </Text>
+                      ) : (
+                        <Pressable
+                          onPress={() =>
+                            flip(
+                              spendId
+                                ? { expense_id: spendId }
+                                : { income_id: incomeId! },
+                            )
+                          }
+                          accessibilityRole="button"
+                          style={[styles.action, { borderColor: p.border }]}
+                        >
+                          <Text
+                            style={{
+                              color: p.ink2,
+                              fontSize: fs(13),
+                              fontWeight: "600",
+                            }}
+                          >
+                            {busy === flipId
+                              ? "…"
+                              : `↩ ${spendId ? t("wasReceived") : t("wasSpending")}`}
+                          </Text>
+                        </Pressable>
+                      ))}
                   </View>
                 );
               })}
+              {flipError && (
+                <Text
+                  style={{
+                    color: p.danger,
+                    fontSize: fs(13),
+                    textAlign: "center",
+                  }}
+                >
+                  {flipError}
+                </Text>
+              )}
             </ScrollView>
           )}
           <Pressable

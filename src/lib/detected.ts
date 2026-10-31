@@ -15,6 +15,7 @@ import {
 import { accessToken, getMessage, listMessageIds } from "./gmail";
 import { emailTxnText, MAIL_QUERY } from "./email-txn";
 import { ingestBankMessage, recordIgnored } from "./ingest";
+import { needsSealing, open, seal } from "./secret-box";
 
 /**
  * Detected-bill inbox (v7): rows a source proposed, waiting for the user to
@@ -66,7 +67,24 @@ export async function getGmailAccount(
     .eq("user_id", userId)
     .limit(1);
   if (error) return null; // migration not applied yet — behave as "not connected"
-  return (data?.[0] as GmailAccount) ?? null;
+  const row = (data?.[0] as GmailAccount) ?? null;
+  if (!row) return null;
+  const stored = row.refresh_token;
+  // Tokens saved before encryption was switched on get sealed on first read.
+  if (needsSealing(stored)) {
+    await supabase
+      .from("gmail_accounts")
+      .update({ refresh_token: seal(stored) })
+      .eq("user_id", userId)
+      .eq("refresh_token", stored);
+  }
+  try {
+    return { ...row, refresh_token: open(stored) };
+  } catch (err) {
+    // Wrong or missing key: the sync fails and says so; the rest of the app keeps working.
+    console.error("gmail token can't be decrypted", err);
+    return { ...row, refresh_token: "" };
+  }
 }
 
 export async function saveGmailAccount(
@@ -80,7 +98,7 @@ export async function saveGmailAccount(
     {
       user_id: userId,
       email,
-      refresh_token: refreshToken,
+      refresh_token: seal(refreshToken),
       scope,
       connected_at: new Date().toISOString(),
       last_error: null,

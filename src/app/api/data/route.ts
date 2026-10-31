@@ -18,6 +18,11 @@ import { listTransfers } from "@/lib/transfers";
 import { loadDailyStatus } from "@/lib/plan";
 import { unreadCount } from "@/lib/inbox";
 import { goalOutlook } from "@/lib/goals";
+import {
+  findSubscriptions,
+  listSubscriptions,
+  subscriptionView,
+} from "@/lib/subscriptions";
 
 export const dynamic = "force-dynamic";
 
@@ -106,6 +111,7 @@ export async function GET(req: NextRequest) {
     transfers,
     daily,
     inboxUnread,
+    storedSubs,
   ] = await Promise.all([
     getBudgets(supabase, userId),
     getIncomes(supabase, userId, incomeSince),
@@ -121,6 +127,7 @@ export async function GET(req: NextRequest) {
       return null;
     }),
     unreadCount(supabase, userId),
+    listSubscriptions(supabase, userId),
   ]);
 
   const body = {
@@ -192,6 +199,8 @@ export async function GET(req: NextRequest) {
           last_sync_at: null,
           needs_reauth: false,
         },
+    // v19: subscriptions to keep or cancel (new finds included, unsaved).
+    subscriptions: subscriptionView(storedSubs, findSubscriptions(mine, today)),
     insights: {
       // All detected recurring charges; the app shows the next-12-days window
       // as "Upcoming" and offers the rest as bill suggestions.

@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { Text, TextInput } from "./Text";
-import { deleteExpense, Expense, patchExpense } from "../lib/api";
+import { deleteExpense, Expense, flipEntry, patchExpense } from "../lib/api";
 import { formatINR, Palette, seriesColor } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
 import ReceiptLines from "./ReceiptLines";
@@ -116,6 +116,26 @@ export default function EditExpenseSheet({
         onClose();
       } else {
         setError("Couldn't delete that entry.");
+      }
+    } catch {
+      setError("Couldn't reach the server. Check your connection.");
+    }
+    setBusy(false);
+  };
+
+  // Auto-capture read a credit as a debit (or the user typed it in the wrong
+  // place): one tap moves it to income, keeping amount, date and account.
+  const flip = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await flipEntry(token, { expense_id: expense.id });
+      if (result.ok) {
+        onChanged();
+        onClose();
+      } else {
+        setError(result.error ?? "Couldn't move it to income. Try again.");
       }
     } catch {
       setError("Couldn't reach the server. Check your connection.");
@@ -268,6 +288,29 @@ export default function EditExpenseSheet({
               />
             </View>
 
+            {!isSplit && (
+              <Pressable
+                onPress={flip}
+                disabled={busy}
+                accessibilityRole="button"
+                accessibilityHint={t("flipHint")}
+                style={[styles.flipBtn, { borderColor: p.border }]}
+              >
+                <Text
+                  style={{
+                    color: p.accent,
+                    fontWeight: "600",
+                    fontSize: fs(14),
+                  }}
+                >
+                  ↩ {t("flipToIncome")}
+                </Text>
+                <Text style={{ color: p.ink2, fontSize: fs(12), marginTop: 2 }}>
+                  {t("flipHint")}
+                </Text>
+              </Pressable>
+            )}
+
             {error && (
               <Text style={[styles.error, { fontSize: fs(13) }]}>{error}</Text>
             )}
@@ -392,6 +435,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   actionRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  flipBtn: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingVertical: 11,
+    paddingHorizontal: 14,
+  },
   btn: { borderRadius: 14, paddingVertical: 14, alignItems: "center" },
   btnDanger: { paddingVertical: 14, paddingHorizontal: 14 },
   error: { color: "#b91c1c", textAlign: "center" },

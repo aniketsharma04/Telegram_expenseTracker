@@ -67,6 +67,14 @@ const STRINGS = {
     hi: "पारिवारिक बँटवारे का हिस्सा",
   },
   keepDate: { en: "Keep date", hi: "तारीख़ वही" },
+  flipToIncome: {
+    en: "This was money received, not spent",
+    hi: "यह पैसा आया था, ख़र्च नहीं हुआ",
+  },
+  flipHint: {
+    en: "Moves it to income. Your spending and savings update.",
+    hi: "इसे आमदनी में ले जाएगा। ख़र्च और बचत अपने आप ठीक होंगे।",
+  },
   // cards
   budgets: { en: "Budgets", hi: "बजट" },
   setBudgets: { en: "Set budgets", hi: "बजट तय करें" },
@@ -177,6 +185,31 @@ const STRINGS = {
   mockNote: {
     en: "Live bill fetch isn't connected yet, so a new bill shows as not available (₹0). You can still save it and refresh later.",
     hi: "लाइव बिल फ़ेच अभी जुड़ा नहीं है, इसलिए नया बिल उपलब्ध नहीं (₹0) दिखेगा। आप इसे सहेजकर बाद में ताज़ा कर सकते हैं।",
+  },
+  // v19: subscriptions
+  subscriptions: { en: "Subscriptions", hi: "सब्सक्रिप्शन" },
+  subsPerMonth: { en: "a month", hi: "हर महीने" },
+  subsPerYear: { en: "a year", hi: "हर साल" },
+  subsNote: {
+    en: "Repeat charges from your spending. Keep what you use, cancel the rest.",
+    hi: "आपके खर्चों में हर महीने कटने वाले पैसे। जो काम का है रखें, बाकी बंद करें।",
+  },
+  subsKeep: { en: "Keep", hi: "रखें" },
+  subsCancel: { en: "Cancel it", hi: "बंद करना है" },
+  subsKeeping: { en: "Keeping", hi: "रख रहे हैं" },
+  subsCancelling: { en: "Cancelling", hi: "बंद कर रहे हैं" },
+  subsCancelled: { en: "Cancelled", hi: "बंद हो गया" },
+  subsHowTo: { en: "Cancel now", hi: "अभी बंद करें" },
+  subsUndo: { en: "Keep instead", hi: "रख लें" },
+  subsNext: { en: "next", hi: "अगला" },
+  subsSaved: { en: "Saving", hi: "बचत" },
+  subsCancelInApp: {
+    en: "Cancel from its app's account settings.",
+    hi: "उसके ऐप की अकाउंट सेटिंग्स से बंद करें।",
+  },
+  subsCancelHint: {
+    en: "I'll remind you 2 days before it renews, and count it as saved once no charge comes.",
+    hi: "रिन्यू होने से 2 दिन पहले याद दिलाऊँगा, और पैसा न कटने पर इसे बचत गिनूँगा।",
   },
   // v7: bills detected from email / notifications
   foundInEmail: { en: "Found in your email", hi: "आपके ईमेल में मिला" },
@@ -532,6 +565,10 @@ const STRINGS = {
     hi: "अभी कुछ नहीं। सुबह का बजट, खर्चे और अलर्ट यहाँ दिखेंगे।",
   },
   movedToSavings: { en: "Moved to savings ✓", hi: "बचत में डाला ✓" },
+  wasReceived: { en: "This was money received", hi: "यह पैसा आया था" },
+  wasSpending: { en: "This was spending", hi: "यह ख़र्च था" },
+  flippedToIncome: { en: "Moved to income ✓", hi: "आमदनी में डाला ✓" },
+  flippedToSpending: { en: "Moved to spending ✓", hi: "ख़र्च में डाला ✓" },
   pushTitle: { en: "Turn on notifications", hi: "सूचनाएँ चालू करें" },
   pushHint: {
     en: "A morning brief, a ping when money leaves your account, and a short report at night.",

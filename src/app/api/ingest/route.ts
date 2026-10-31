@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { authedUser } from "@/lib/api-auth";
 import { createServiceClient } from "@/lib/supabase-server";
 import { loadBalanceSheet } from "@/lib/accounts";
-import { ingestBankMessage, listBankMessages } from "@/lib/ingest";
-import { pingSpends } from "@/lib/briefs";
+import { ingestBankMessages, listBankMessages } from "@/lib/ingest";
+import { pingIncomes, pingSpends } from "@/lib/briefs";
 import { collectBudgetAlerts, deliverBudgetAlerts } from "@/lib/budgets";
 
 export const dynamic = "force-dynamic";
@@ -58,20 +58,31 @@ export async function POST(req: NextRequest) {
     const body = typeof item.body === "string" ? item.body.trim() : "";
     if (!body) continue;
     results.push(
-      await ingestBankMessage(supabase, userId, {
+      ...(await ingestBankMessages(supabase, userId, {
         body,
         source,
         externalId:
           typeof item.external_id === "string" ? item.external_id : null,
         receivedAt: readTimestamp(item.received_at),
-      }),
+      })),
     );
   }
 
   // "Starbucks −₹200 · ₹1,467 left today" — a push per spend, or one summary
   // for a big offline batch. Telegram-forwarded messages get the bot's reply.
   const expenseIds = results.flatMap((r) => (r.expenseId ? [r.expenseId] : []));
-  if (source !== "telegram") await pingSpends(supabase, userId, expenseIds);
+  if (source !== "telegram") {
+    await pingSpends(supabase, userId, expenseIds);
+    await pingIncomes(
+      supabase,
+      userId,
+      results.flatMap((r) =>
+        r.incomeId && r.txn
+          ? [{ id: r.incomeId, amount: r.txn.amount, from: r.txn.counterparty }]
+          : [],
+      ),
+    );
+  }
   // Auto-captured spends cross budget thresholds too.
   if (expenseIds.length) {
     const alerts = await collectBudgetAlerts(supabase, userId);

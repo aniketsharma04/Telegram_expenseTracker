@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { CategoryRule } from "./parser";
 import { geminiConfigured, withGeminiKey } from "./ai-keys";
+import { redactForAI } from "./redact";
 
 /**
  * LLM fallback (v2): anything the rules parser can't confidently handle gets
@@ -61,7 +62,7 @@ function userPrompt(
         `- ${c.name}${c.keywords.length ? ` (e.g. ${c.keywords.slice(0, 6).join(", ")})` : ""}`,
     )
     .join("\n");
-  return `Today's date (IST): ${todayIST}\n\nCategories:\n${categoryLines}\n\nExpense message: "${text}"`;
+  return `Today's date (IST): ${todayIST}\n\nCategories:\n${categoryLines}\n\nExpense message: "${redactForAI(text)}"`;
 }
 
 export async function parseWithLLM(
@@ -182,6 +183,61 @@ async function parseWithGemini(
       }),
     apiKey,
   );
+}
+
+// ── Which way did the money go? — a second opinion for bank alerts ─────────
+
+export type MoneyDirection = "credit" | "debit" | "none";
+
+const DIRECTION_PROMPT = [
+  "You read one Indian bank, UPI-app or wallet alert for the account holder.",
+  "Answer from the account holder's side:",
+  '"credit" if money came INTO their account, card or wallet (received, salary, refund, cashback, interest, money sent to them);',
+  '"debit" if money went OUT (paid, sent to someone else, spent, withdrawn, auto-debited, EMI);',
+  '"none" if no money moved yet (an ad, offer, reminder, request, OTP, failed or declined payment, a future debit).',
+  'A credit card is just a card: "spent on your credit card" is a debit.',
+].join(" ");
+
+const DIRECTION_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    direction: { type: "STRING", enum: ["credit", "debit", "none"] },
+  },
+  required: ["direction"],
+};
+
+/**
+ * Used only when the rules can't tell the direction from the wording. The
+ * text is masked first (names, accounts, VPAs), so the model sees the
+ * sentence shape and the amount, nothing that identifies anyone. Null when
+ * no model is available or it answered nonsense — the caller keeps the
+ * rules' guess and asks the user.
+ */
+export async function directionWithLLM(
+  text: string,
+  apiKey?: string | null,
+): Promise<MoneyDirection | null> {
+  if (!geminiConfigured() && !apiKey) return null;
+  try {
+    const answer = await withGeminiKey<{ direction?: string }>(
+      (key) =>
+        callGemini<{ direction?: string }>(key, {
+          systemInstruction: { parts: [{ text: DIRECTION_PROMPT }] },
+          contents: [{ parts: [{ text: `Alert: "${redactForAI(text)}"` }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: DIRECTION_SCHEMA,
+            temperature: 0,
+          },
+        }),
+      apiKey,
+    );
+    const d = answer?.direction;
+    return d === "credit" || d === "debit" || d === "none" ? d : null;
+  } catch (err) {
+    console.error("direction check failed", err);
+    return null;
+  }
 }
 
 // ── Receipt photos (v3) — Gemini vision reads the bill directly ────────────

@@ -16,6 +16,7 @@ import {
   BillStatus,
   DetectedBill,
   RecurringCharge,
+  SubscriptionView,
   payBill,
   refreshBillFetch,
   unpayBill,
@@ -25,6 +26,7 @@ import { formatINR, Palette } from "../lib/theme";
 import { KeyboardAware, Card, SectionTitle } from "./ui";
 import BillSheet from "./BillSheet";
 import DetectedBillsCard from "./DetectedBillsCard";
+import SubscriptionsCard from "./SubscriptionsCard";
 import { BILL_KIND_ICON } from "../lib/categories";
 import { IconBubble, type IconName } from "./ui";
 
@@ -57,6 +59,8 @@ interface Props {
   bills: BillStatus[];
   detected: DetectedBill[];
   recurring: RecurringCharge[];
+  /** v19 */
+  subscriptions: SubscriptionView[];
   categories: Array<{ name: string; color: string | null }>;
   today: string;
   onChanged: () => void;
@@ -68,6 +72,7 @@ export default function BillsTab({
   bills,
   detected,
   recurring,
+  subscriptions,
   categories,
   today,
   onChanged,
@@ -83,8 +88,10 @@ export default function BillsTab({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const subNames = new Set(subscriptions.map((x) => x.merchant.toLowerCase()));
   const suggestions = recurring.filter(
     (r) =>
+      !subNames.has(r.merchant.toLowerCase()) &&
       !bills.some(
         (b) =>
           b.name.toLowerCase().includes(r.merchant.toLowerCase()) ||
@@ -233,6 +240,13 @@ export default function BillsTab({
         token={token}
         detected={detected}
         bills={bills}
+        onChanged={onChanged}
+      />
+
+      <SubscriptionsCard
+        p={p}
+        token={token}
+        subscriptions={subscriptions}
         onChanged={onChanged}
       />
 

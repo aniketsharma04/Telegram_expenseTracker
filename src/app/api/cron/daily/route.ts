@@ -19,6 +19,15 @@ import {
   syncGmail,
 } from "@/lib/detected";
 import { gmailConfigured } from "@/lib/gmail";
+import {
+  eventMessage,
+  listSubscriptions,
+  monthlyTotal,
+  merchantKey,
+  syncSubscriptions,
+} from "@/lib/subscriptions";
+import { composeWeeklyReview, isReviewDay } from "@/lib/weekly";
+import { htmlToPlain } from "@/lib/push";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -31,6 +40,8 @@ const REMIND_DAYS_AHEAD = 2;
  *  - every day: remind users of recurring charges due in 2 days
  *  - every day: bill reminders at T-3, due day, and 2 days overdue
  *  - every day: scan connected Gmail inboxes for new bills
+ *  - every day: find subscriptions and follow up on keep / cancel decisions
+ *  - on Mondays: the week-in-review (skipped on the 1st, the digest's day)
  *  - on the 1st: send everyone their month-in-review digest
  * Stateless dedup: a reminder fires only on the exact day daysUntil == 2.
  */
@@ -47,6 +58,7 @@ export async function GET(req: NextRequest) {
   const supabase = createServiceClient();
   const today = localDate();
   const isFirstOfMonth = today.slice(8) === "01";
+  const isWeeklyDay = isReviewDay(today) && !isFirstOfMonth;
 
   const { data: users, error } = await supabase.from("users").select("id");
   if (error)
@@ -69,6 +81,8 @@ export async function GET(req: NextRequest) {
     }
   }
   let digests = 0;
+  let weeklies = 0;
+  let subscriptionNotices = 0;
   const failures: number[] = [];
 
   for (const user of users ?? []) {
@@ -81,8 +95,54 @@ export async function GET(req: NextRequest) {
         .gte("expense_date", localDate(LOOKBACK_DAYS));
       if (expError) throw expError;
 
+      // Subscriptions first: a planned cancel gets its own renewal warning,
+      // so the generic heads-up below skips it.
+      const subEvents = await syncSubscriptions(
+        supabase,
+        userId,
+        expenses ?? [],
+        today,
+      ).catch((err) => {
+        // Never let this block bills, Gmail or the digest (e.g. v19 not applied yet).
+        console.error(`subscription sync failed for user ${userId}`, err);
+        return [];
+      });
+      const found = subEvents.filter((x) => x.event.type === "found");
+      if (found.length === 1) {
+        await notify(
+          supabase,
+          userId,
+          eventMessage(found[0].event, found[0].id)!,
+        );
+        subscriptionNotices++;
+      } else if (found.length > 1) {
+        const names = found
+          .map((x) => ("merchant" in x.event.sub ? x.event.sub.merchant : ""))
+          .join(", ");
+        await notify(
+          supabase,
+          userId,
+          `🔁 I found ${found.length} subscriptions: ${names.replace(/&/g, "&amp;").replace(/</g, "&lt;")}.
+Keep or cancel each one: <code>/subs</code>, or in the app under Bills.`,
+        );
+        subscriptionNotices++;
+      }
+      for (const x of subEvents) {
+        if (x.event.type === "found") continue;
+        const text = eventMessage(x.event, x.id);
+        if (text) {
+          await notify(supabase, userId, text);
+          subscriptionNotices++;
+        }
+      }
+      const subs = await listSubscriptions(supabase, userId);
+      const cancelling = new Set(
+        subs.filter((s) => s.status === "cancel").map((s) => s.merchant_key),
+      );
+
       for (const charge of detectRecurring(expenses ?? [], today)) {
         if (charge.daysUntil !== REMIND_DAYS_AHEAD) continue;
+        if (cancelling.has(merchantKey(charge.merchant))) continue;
         await notify(
           supabase,
           userId,
@@ -131,6 +191,35 @@ export async function GET(req: NextRequest) {
         billReminders++;
       }
 
+      if (isWeeklyDay) {
+        const { data: goals } = await supabase
+          .from("goals")
+          .select("name")
+          .eq("user_id", userId)
+          .eq("active", true)
+          .order("created_at");
+        const review = composeWeeklyReview({
+          expenses: expenses ?? [],
+          today,
+          subscriptions: {
+            monthly: monthlyTotal(subs),
+            count: subs.filter((s) => s.status !== "cancelled").length,
+            undecided: subs.filter((s) => s.status === "new").length,
+          },
+          goalNames: (goals ?? []).map((g) => g.name as string),
+        });
+        if (review) {
+          await notify(supabase, userId, {
+            kind: "digest",
+            title: review.title,
+            body: htmlToPlain(review.html),
+            html: review.html,
+            data: { screen: "home" },
+          });
+          weeklies++;
+        }
+      }
+
       if (isFirstOfMonth) {
         const digest = await composeMonthlyDigest(supabase, userId, today);
         if (digest) {
@@ -155,6 +244,8 @@ export async function GET(req: NextRequest) {
     gmailDetected,
     gmailReauth,
     digests,
+    weeklies,
+    subscriptionNotices,
     failures,
   });
 }

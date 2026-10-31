@@ -8,6 +8,12 @@ import {
 } from "@/lib/parser";
 import { parseReceipt } from "@/lib/llm";
 import {
+  cancelUrlFor,
+  decideSubscription,
+  listSubscriptions,
+  subsListMessage,
+} from "@/lib/subscriptions";
+import {
   logExpenseFromText,
   logSplitExpense,
   deleteExpenseScoped,
@@ -44,6 +50,11 @@ import {
 } from "@/lib/family";
 import { looksLikeBankMessage } from "@/lib/bank-message";
 import { ingestBankMessage } from "@/lib/ingest";
+import {
+  flipExpenseToIncome,
+  flipIncomeToExpense,
+  lastCaptured,
+} from "@/lib/flip";
 import { redeemLinkCode, resolveTelegramUserId } from "@/lib/identity";
 import { notify, notifyTelegram } from "@/lib/notify";
 import { saveParsedReceipt } from "@/lib/receipts";
@@ -76,6 +87,7 @@ const HELP_TEXT = [
   "• <code>/category food</code>: change its category",
   "• <code>/amount 350</code>: change its amount",
   "• <code>/last</code>: show it",
+  "• <code>/flip</code>: an auto-captured entry went the wrong way (spent ↔ received)",
   "",
   "Reports:",
   "• <code>/expense</code>: spent this month",
@@ -89,6 +101,9 @@ const HELP_TEXT = [
   "• <code>/invite</code>: get a link to add members",
   "• <code>/family</code>: this month's family report",
   "• <code>/split 1200 dinner</code>: split a bill equally with your family",
+  "",
+  "Subscriptions:",
+  "• <code>/subs</code>: what you pay for every month; keep or cancel each one",
   "",
   "Money habits:",
   "• <code>/budget 15000</code>: overall monthly cap (alerts at 80% and 100%)",
@@ -544,6 +559,20 @@ async function handleCommand(text: string, userId: number) {
   const [cmd, ...rest] = text.split(/\s+/);
   const arg = rest.join(" ").trim();
 
+  // v19: /keep_ab12cd, /cancel_ab12cd — tappable answers from /subs and alerts.
+  // Telegram may append @BotName to a tapped command.
+  const decision = cmd
+    .toLowerCase()
+    .match(/^\/(keep|cancel)_([0-9a-f]{6})(?:@\w+)?$/);
+  if (decision) {
+    await answerSubscription(
+      userId,
+      decision[1] as "keep" | "cancel",
+      decision[2],
+    );
+    return;
+  }
+
   switch (cmd.toLowerCase()) {
     case "/start":
       // Deep-link payload: t.me/<bot>?start=fam_CODE → join that family.
@@ -574,6 +603,18 @@ async function handleCommand(text: string, userId: number) {
     case "/undo":
       await undoLast(userId);
       return;
+    case "/flip":
+      await flipLast(userId);
+      return;
+    case "/subs":
+    case "/subscriptions": {
+      const supabase = createServiceClient();
+      await reply(
+        userId,
+        subsListMessage(await listSubscriptions(supabase, userId)),
+      );
+      return;
+    }
     case "/last":
       await showLast(userId);
       return;
@@ -606,8 +647,7 @@ async function handleCommand(text: string, userId: number) {
       return;
     }
     case "/dashboard": {
-      const url =
-        process.env.APP_URL || "https://aaj-finance.vercel.app";
+      const url = process.env.APP_URL || "https://aaj-finance.vercel.app";
       const link = `${url}/api/auth/login?token=${signToken(userId, 900)}`;
       await reply(
         userId,
@@ -651,6 +691,46 @@ async function handleCommand(text: string, userId: number) {
     default:
       await reply(userId, `Unknown command. ${"\n"}${HELP_TEXT}`);
   }
+}
+
+// ── Subscriptions (v19) ─────────────────────────────────────────────────────
+
+async function answerSubscription(
+  userId: number,
+  decision: "keep" | "cancel",
+  tag: string,
+) {
+  const supabase = createServiceClient();
+  const sub = await decideSubscription(supabase, userId, tag, decision);
+  if (!sub) {
+    await reply(
+      userId,
+      "I couldn't find that subscription. Send <code>/subs</code> for the current list.",
+    );
+    return;
+  }
+  const name = escapeHtml(sub.merchant);
+  if (decision === "keep") {
+    await reply(
+      userId,
+      `👍 Keeping <b>${name}</b>. I won't ask about it again.`,
+    );
+    return;
+  }
+  const url = cancelUrlFor(sub.merchant);
+  const when = sub.next_date
+    ? ` It renews around ${Number(sub.next_date.slice(8))}/${Number(sub.next_date.slice(5, 7))}; I'll remind you 2 days before.`
+    : "";
+  await reply(
+    userId,
+    `✂️ Noted: cancel <b>${name}</b>.${when}
+` +
+      (url
+        ? `Cancel here: ${url}`
+        : "Cancel it from its app's account settings.") +
+      `
+When no charge comes, I'll count the ₹${Math.round(Number(sub.amount)).toLocaleString("en-IN")} a month as saved.`,
+  );
 }
 
 // ── Family commands ─────────────────────────────────────────────────────────
@@ -875,6 +955,35 @@ async function latestExpense(
     .limit(1);
   if (error) throw error;
   return (data?.[0] as Expense) ?? null;
+}
+
+/** The last auto-captured entry, the other way round. */
+async function flipLast(userId: number) {
+  const supabase = createServiceClient();
+  const last = await lastCaptured(supabase, userId);
+  if (!last) {
+    await reply(userId, "Nothing auto-captured to flip yet.");
+    return;
+  }
+  const who = last.who ? ` · ${escapeHtml(last.who)}` : "";
+  const result =
+    last.kind === "expense"
+      ? await flipExpenseToIncome(supabase, userId, last.id)
+      : await flipIncomeToExpense(supabase, userId, last.id);
+  if (result.status === "refused") {
+    await reply(userId, result.reason);
+    return;
+  }
+  if (result.status === "not_found") {
+    await reply(userId, "Couldn't find that entry any more.");
+    return;
+  }
+  await reply(
+    userId,
+    last.kind === "expense"
+      ? `↩️ ${fmtINR(last.amount)}${who} is now money <b>received</b>, not spent.\nWrong again? Send <code>/flip</code>.`
+      : `↩️ ${fmtINR(last.amount)}${who} is now money <b>spent</b>, not received.\nWrong again? Send <code>/flip</code>.`,
+  );
 }
 
 async function undoLast(userId: number) {

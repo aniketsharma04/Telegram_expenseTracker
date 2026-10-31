@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { BillKind } from "./bills";
+import { redactForAI } from "./redact";
 
 /**
  * Bill detection (v7) — turn a raw message into a candidate bill.
@@ -403,14 +404,17 @@ export function normalizeExtract(
   };
 }
 
-/** Trim to what matters — bill mail is mostly boilerplate and footers. */
-function promptFor(msg: DetectSource, todayIST: string): string {
+/**
+ * Trim to what matters — bill mail is mostly boilerplate and footers — and
+ * mask personal details before the text leaves for the model.
+ */
+export function promptFor(msg: DetectSource, todayIST: string): string {
   return [
     `Today's date (IST): ${todayIST}`,
-    `From: ${msg.from}`,
-    `Subject: ${msg.subject}`,
+    `From: ${redactForAI(msg.from)}`,
+    `Subject: ${redactForAI(msg.subject)}`,
     "",
-    msg.body.slice(0, 6000),
+    redactForAI(msg.body.slice(0, 6000)),
   ].join("\n");
 }
 

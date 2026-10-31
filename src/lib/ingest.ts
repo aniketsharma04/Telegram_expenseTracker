@@ -1,7 +1,9 @@
+import { createHash } from "node:crypto";
 import { SupabaseClient } from "@supabase/supabase-js";
 import {
   matchAccountByHint,
   parseBankMessage,
+  splitGroupedNotification,
   type BankTxn,
 } from "./bank-message";
 import { listAccounts, type Account } from "./accounts";
@@ -9,6 +11,9 @@ import { loadMerchantRules, normaliseMerchant } from "./merchants";
 import { insertExpense, loadCategories } from "./log-expense";
 import { logIncome } from "./income";
 import { localDate } from "./parser";
+import { redactForAI } from "./redact";
+import { directionWithLLM } from "./llm";
+import { userGeminiKey } from "./ai-keys";
 
 /**
  * Ingestion (v9): one bank message in, at most one ledger row out.
@@ -64,7 +69,12 @@ export interface IngestInput {
   /** Stable id from the channel (notification key, SMS id) — the dedupe key. */
   externalId?: string | null;
   receivedAt?: string;
+  /** One bullet of a bundled notification (see splitGroupedNotification). */
+  bundled?: boolean;
 }
+
+/** A bundled notification's own entry may already have come in on its own. */
+const BUNDLE_TWIN_MINUTES = 15;
 
 /**
  * Is `m`, already captured, the same purchase as `txn` arriving now from
@@ -110,12 +120,56 @@ export async function recordIgnored(
   });
 }
 
+/**
+ * Like ingestBankMessage, but a bundled notification ("2 new transaction
+ * updates. ⋅ … ⋅ …") becomes one entry per bullet. Each bullet is keyed by
+ * its own text, so the bundle growing to three bullets doesn't log the first
+ * two again.
+ */
+export async function ingestBankMessages(
+  supabase: SupabaseClient,
+  userId: number,
+  input: IngestInput,
+): Promise<IngestResult[]> {
+  const parts = splitGroupedNotification(input.body);
+  if (parts.length === 1)
+    return [await ingestBankMessage(supabase, userId, input)];
+  const results: IngestResult[] = [];
+  for (const body of parts) {
+    const key = createHash("sha1")
+      .update(body.replace(/\s+/g, " "))
+      .digest("base64url")
+      .slice(0, 12);
+    results.push(
+      await ingestBankMessage(supabase, userId, {
+        ...input,
+        body,
+        externalId: input.externalId ? `${input.externalId}#${key}` : null,
+        bundled: true,
+      }),
+    );
+  }
+  return results;
+}
+
 export async function ingestBankMessage(
   supabase: SupabaseClient,
   userId: number,
   input: IngestInput,
 ): Promise<IngestResult> {
-  const txn = parseBankMessage(input.body);
+  let txn = parseBankMessage(input.body);
+
+  // The wording didn't settle which way the money went: ask once, masked.
+  // A wrong direction corrupts income, spending and savings in one go.
+  if (txn?.directionUnsure) {
+    const answer = await directionWithLLM(
+      input.body,
+      await userGeminiKey(supabase, userId),
+    );
+    if (answer === "none") txn = null;
+    else if (answer) txn = parseBankMessage(input.body, answer) ?? txn;
+  }
+
   if (!txn) {
     await recordIgnored(
       supabase,
@@ -152,12 +206,22 @@ export async function ingestBankMessage(
   ).toISOString();
   const { data: recent } = await supabase
     .from("bank_messages")
-    .select("id, amount, direction, reference, status, source")
+    .select(
+      "id, amount, direction, reference, status, source, received_at, external_id",
+    )
     .eq("user_id", userId)
     .eq("amount", txn.amount)
     .gte("received_at", since);
-  const twin = (recent ?? []).find((m) =>
-    isSameTransaction(m, txn, input.source),
+  const twin = (recent ?? []).find(
+    (m) =>
+      isSameTransaction(m, txn, input.source) ||
+      // A bundle repeats payments the phone may have shown one by one, in
+      // either order. Bundle bullets are stored with a "#" in their key.
+      ((input.bundled || String(m.external_id ?? "").includes("#")) &&
+        m.status === "logged" &&
+        m.direction === txn.direction &&
+        Math.abs(Date.parse(m.received_at) - Date.parse(receivedAt)) <
+          BUNDLE_TWIN_MINUTES * 60_000),
   );
   if (twin) {
     await saveMessage(supabase, {
@@ -257,7 +321,11 @@ export async function ingestBankMessage(
       };
     }
 
-    const { category, merchant } = await classify(supabase, userId, txn);
+    const { category, merchant } = await classify(
+      supabase,
+      userId,
+      txn.counterparty,
+    );
     const expense = await insertExpense(supabase, {
       amount: txn.amount,
       category,
@@ -313,29 +381,29 @@ function pickAccount(txn: BankTxn, accounts: Account[]): Account | null {
 }
 
 /** Category and tidy merchant name for an auto-captured debit. */
-async function classify(
+export async function classify(
   supabase: SupabaseClient,
   userId: number,
-  txn: BankTxn,
+  counterparty: string | null,
 ): Promise<{ category: string; merchant: string | null }> {
   const [rules, categories] = await Promise.all([
     loadMerchantRules(supabase, userId),
     loadCategories(supabase),
   ]);
-  const normalised = normaliseMerchant(txn.counterparty, rules);
+  const normalised = normaliseMerchant(counterparty, rules);
   const hinted = categories.some((c) => c.name === normalised?.category)
     ? normalised!.category
     : null;
 
   // A keyword the user has already taught the rules parser beats everything.
-  const haystack = (txn.counterparty ?? "").toLowerCase();
+  const haystack = (counterparty ?? "").toLowerCase();
   const learned = categories.find((c) =>
     c.keywords?.some((k) => k.length > 2 && haystack.includes(k.toLowerCase())),
   );
 
   return {
     category: learned?.name ?? hinted ?? "Uncategorized",
-    merchant: normalised?.merchant ?? txn.counterparty,
+    merchant: normalised?.merchant ?? counterparty,
   };
 }
 
@@ -401,6 +469,10 @@ async function saveMessage(
   supabase: SupabaseClient,
   row: Record<string, unknown>,
 ): Promise<{ id: string } | null> {
+  // Only the parsed fields are used after this point, so the stored text is
+  // masked (last four digits kept, ids and phone numbers gone).
+  if (typeof row.body === "string")
+    row = { ...row, body: redactForAI(row.body) };
   try {
     const { data, error } = await supabase
       .from("bank_messages")

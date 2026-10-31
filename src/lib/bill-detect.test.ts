@@ -226,3 +226,22 @@ describe("gmail body decoding", () => {
     );
   });
 });
+
+describe("promptFor (what the model sees)", () => {
+  it("masks the customer's details but keeps the bill facts", async () => {
+    const { promptFor } = await import("./bill-detect");
+    const prompt = promptFor(
+      {
+        from: "Tata Power <noreply@tatapower.com>",
+        subject: "Bill for CA 102938475610",
+        body: "Dear Rahul Sharma,\nAmount payable Rs. 2,345.00 by 15-11-2026.\nMobile 9876543210",
+      },
+      "2026-10-31",
+    );
+    expect(prompt).toContain("@tatapower.com");
+    expect(prompt).toContain("CA XXXX5610");
+    expect(prompt).toContain("Rs. 2,345.00");
+    expect(prompt).toContain("15-11-2026");
+    expect(prompt).not.toMatch(/Rahul|9876543210|102938475610/);
+  });
+});

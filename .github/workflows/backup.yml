@@ -1,0 +1,48 @@
+# Nightly database backup. Supabase Free keeps no backups, so this dumps the
+# app's data, proves the dump restores into a fresh Postgres, encrypts it and
+# keeps it as a workflow artifact for 30 days. Restore steps:
+# scripts/backup/README.md.
+#
+# Repo secrets: SUPABASE_DB_URL (session pooler, with password),
+# BACKUP_PASSPHRASE. The repo is public and anyone signed in to GitHub can
+# download artifacts, so the file is AES-256 encrypted before upload.
+name: Database backup
+
+on:
+  schedule:
+    - cron: "30 20 * * *" # 02:00 IST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Back up, test-restore and encrypt
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          OUT_DIR: backup-out
+        run: bash scripts/backup/backup.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aaj-db-backup-${{ github.run_number }}
+          path: backup-out/*.gpg
+          retention-days: 30
+          if-no-files-found: error
+          # Encrypted data doesn't compress.
+          compression-level: 0

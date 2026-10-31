@@ -697,6 +697,7 @@ function AppInner() {
               bills={data.bills ?? []}
               detected={data.detected_bills ?? []}
               recurring={data.insights?.recurring ?? []}
+              subscriptions={data.subscriptions ?? []}
               categories={data.categories}
               today={data.today}
               onChanged={refresh}

@@ -26,3 +26,6 @@ npm-debug.log*
 
 # vercel
 .vercel
+
+# Local database backups (scripts/backup)
+backup-out/

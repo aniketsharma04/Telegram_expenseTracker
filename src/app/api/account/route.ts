@@ -48,6 +48,7 @@ const OWNED_TABLES = [
   "gmail_accounts",
   "usage_counters",
   "user_api_keys",
+  "subscriptions",
   "family_members",
 ] as const;
 
@@ -68,6 +69,7 @@ const EXPORT_TABLES = [
   "commitments",
   "notifications",
   "goals",
+  "subscriptions",
 ] as const;
 
 export async function GET(req: NextRequest) {

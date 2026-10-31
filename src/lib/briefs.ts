@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "./supabase-server";
-import { notify, type Notice } from "./notify";
+import { escapeHtml, notify, type Notice } from "./notify";
 import { localDate } from "./parser";
 import { getUser } from "./identity";
-import { loadDailyStatus, plannedUsers } from "./plan";
+import { getPlan, loadDailyStatus, plannedUsers } from "./plan";
 import { creditGoals, cycleCredits, goalOutlook } from "./goals";
 import {
   eveningPush,
@@ -189,6 +189,36 @@ export async function pingSpends(
     }
   } catch (err) {
     console.error("spend ping failed", err);
+  }
+}
+
+/**
+ * "₹31,000 received · Mridul Sharma" — money in is the capture most worth
+ * seeing: a misread here moves income, spending and savings at once. The
+ * notice carries the income id, so the app can offer "This was spending" on
+ * it, and the bot copy points at /flip.
+ */
+export async function pingIncomes(
+  supabase: SupabaseClient,
+  userId: number,
+  incomes: Array<{ id: string; amount: number; from: string | null }>,
+): Promise<void> {
+  if (!incomes.length) return;
+  try {
+    const plan = await getPlan(supabase, userId);
+    if (plan && !plan.live_updates) return;
+    for (const i of incomes) {
+      const who = i.from ? ` · ${i.from}` : "";
+      await notify(supabase, userId, {
+        kind: "spend",
+        title: `${inr(i.amount)} received${who}`,
+        body: "Counted as income. If this was a payment, open the inbox and tap “This was spending”.",
+        html: `💰 <b>${inr(i.amount)} received</b>${escapeHtml(who)}\nCounted as income. Wrong way round? Send <code>/flip</code>.`,
+        data: { screen: "home", incomeId: i.id },
+      });
+    }
+  } catch (err) {
+    console.error("income ping failed", err);
   }
 }
 

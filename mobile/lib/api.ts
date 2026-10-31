@@ -1,8 +1,7 @@
 import type { GoalKind } from "./money-rules";
 /** Same API the web dashboard uses — the app is just another skin over it. */
 export const API_BASE =
-  process.env.EXPO_PUBLIC_API_URL ??
-  "https://aaj-finance.vercel.app";
+  process.env.EXPO_PUBLIC_API_URL ?? "https://aaj-finance.vercel.app";
 
 export const BOT_URL = "https://t.me/Aniket_financial_expense_bot";
 
@@ -244,6 +243,42 @@ export interface ApiData {
   inbox_unread?: number;
   /** v17 */
   goals?: GoalView[];
+  /** v19: repeat charges to keep or cancel. */
+  subscriptions?: SubscriptionView[];
+}
+
+// ── Subscriptions (v19) ─────────────────────────────────────────────────────
+
+export type SubStatus = "new" | "keep" | "cancel" | "cancelled";
+
+export interface SubscriptionView {
+  /** null until the first decision saves it. */
+  id: string | null;
+  merchant_key: string;
+  merchant: string;
+  category: string | null;
+  amount: number;
+  last_charged: string | null;
+  next_date: string | null;
+  status: SubStatus;
+  cancel_url: string | null;
+}
+
+export async function decideSubscription(
+  token: string,
+  sub: Pick<SubscriptionView, "id" | "merchant_key">,
+  decision: "keep" | "cancel",
+): Promise<boolean> {
+  const res = await fetch(`${API_BASE}/api/subscriptions`, {
+    method: "PATCH",
+    headers: authJson(token),
+    body: JSON.stringify(
+      sub.id
+        ? { id: sub.id, decision }
+        : { merchant_key: sub.merchant_key, decision },
+    ),
+  });
+  return res.ok;
 }
 
 // ── Goals (v17) ─────────────────────────────────────────────────────────────
@@ -554,6 +589,33 @@ export async function deleteExpense(
   if (!res.ok) return false;
   const json = (await res.json()) as { deleted: boolean };
   return json.deleted;
+}
+
+/**
+ * Wrong way round: an expense becomes money received ({ expense_id }), or an
+ * income becomes money spent ({ income_id }). Returns the error text on a
+ * refusal (a split, a receipt), so the sheet can say why.
+ */
+export async function flipEntry(
+  token: string,
+  target: { expense_id: string } | { income_id: string },
+): Promise<{ ok: true } | { ok: false; error: string | null }> {
+  const res = await fetch(`${API_BASE}/api/flip`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(target),
+  });
+  if (res.ok) return { ok: true };
+  const json = (await res.json().catch(() => null)) as {
+    error?: string;
+  } | null;
+  return {
+    ok: false,
+    error: res.status === 409 ? (json?.error ?? null) : null,
+  };
 }
 
 /** Edit one of your own expenses in place. */

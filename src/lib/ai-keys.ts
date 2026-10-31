@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { needsSealing, open, seal } from "./secret-box";
 
 /**
  * Which Gemini key to call with (v13).
@@ -152,9 +153,9 @@ export async function withGeminiKey<T>(
 // ── A user's own key ────────────────────────────────────────────────────────
 
 /**
- * Stored service-role-only, exactly like Gmail refresh tokens: it's a
- * credential belonging to the user, and no client payload should ever
- * contain it.
+ * Stored service-role-only and encrypted (secret-box), exactly like Gmail
+ * refresh tokens: it's a credential belonging to the user, and no client
+ * payload should ever contain it.
  */
 export async function userGeminiKey(
   supabase: SupabaseClient,
@@ -168,7 +169,18 @@ export async function userGeminiKey(
       .eq("provider", "gemini")
       .limit(1);
     if (error) throw error;
-    return (data?.[0]?.api_key as string) ?? null;
+    const stored = (data?.[0]?.api_key as string) ?? null;
+    if (!stored) return null;
+    // Keys saved before encryption was switched on get sealed on first read.
+    if (needsSealing(stored)) {
+      await supabase
+        .from("user_api_keys")
+        .update({ api_key: seal(stored) })
+        .eq("user_id", userId)
+        .eq("provider", "gemini")
+        .eq("api_key", stored);
+    }
+    return open(stored);
   } catch (err) {
     console.error("userGeminiKey failed (v13 migration applied?)", err);
     return null;
@@ -193,7 +205,7 @@ export async function setUserGeminiKey(
     const { error } = await supabase
       .from("user_api_keys")
       .upsert(
-        { user_id: userId, provider: "gemini", api_key: apiKey.trim() },
+        { user_id: userId, provider: "gemini", api_key: seal(apiKey.trim()) },
         { onConflict: "user_id,provider" },
       );
     if (error) throw error;

@@ -3,6 +3,7 @@ import {
   looksLikeBankMessage,
   matchAccountByHint,
   parseBankMessage,
+  splitGroupedNotification,
 } from "./bank-message";
 
 /**
@@ -324,5 +325,152 @@ describe("parseBankMessage — OTP handling", () => {
     );
     expect(txn?.amount).toBe(1500);
     expect(txn?.counterparty).toBe("zepto@ybl");
+  });
+});
+
+describe("parseBankMessage — who paid whom (credit vs debit)", () => {
+  const credits: [string, string, number, string | null][] = [
+    [
+      "Google Pay: someone sent money to your bank account",
+      "Money received. Mridul  Sharma has sent ₹31,000 to your bank account State Bank of India-1090",
+      31000,
+      "Mridul Sharma",
+    ],
+    [
+      "a salary NEFT that says 'transferred'",
+      "INR 85,000.00 transferred from ACME TECHNOLOGIES PVT LTD to your A/c XX1090 on 01-11-26 towards SALARY NOV. Avl Bal INR 91,200.00",
+      85000,
+      "ACME TECHNOLOGIES PVT LTD",
+    ],
+    [
+      "an SBI salary credit by NEFT",
+      "Dear Customer, your A/C XXXXX401090 has been credited with INR 85,000.00 on 01/11/26 by NEFT-ACME TECHNOLOGIES-SALARY. Avl Bal INR 91,200.00 -SBI",
+      85000,
+      null,
+    ],
+    [
+      "an HDFC 'Money Received' alert",
+      "Money Received - INR 2,500.00 in your HDFC Bank A/c xx1234 on 31-10-26 from VPA ravi@okaxis (UPI 412345678901)",
+      2500,
+      "ravi@okaxis",
+    ],
+    [
+      "a Kotak 'Received' alert",
+      "Received Rs.700.00 in your Kotak Bank AC X1234 from priya@ybl on 31-10-26.UPI Ref:412345678901.",
+      700,
+      "priya@ybl",
+    ],
+    [
+      "a deposit 'to' an HDFC account with no 'your'",
+      "Rs.1,000.00 credited to HDFC Bank A/c XX1234 on 31-10-26 from VPA amit@okicici (UPI Ref No 412345678901)",
+      1000,
+      "amit@okicici",
+    ],
+    [
+      "a refund to a credit card",
+      "Refund of Rs.499.00 from AMAZON has been credited to your SBI Credit Card ending 0543 on 31/10/26.",
+      499,
+      null,
+    ],
+    [
+      "PhonePe 'received from'",
+      "Received ₹1,200 from Rahul Verma in your State Bank of India account.",
+      1200,
+      "Rahul Verma",
+    ],
+  ];
+  for (const [label, text, amount, from] of credits) {
+    it(`reads ${label} as income`, () => {
+      const txn = parseBankMessage(text);
+      expect(txn?.direction).toBe("credit");
+      expect(txn?.amount).toBe(amount);
+      if (from) expect(txn?.counterparty).toBe(from);
+      expect(txn?.counterparty ?? "").not.toMatch(/^your/i);
+    });
+  }
+
+  const debits: [string, string, number][] = [
+    [
+      "a credit-card spend",
+      "Rs.244.00 spent on your SBI Credit Card ending 0543 at DOMINOS on 28/10/26.",
+      244,
+    ],
+    [
+      "a debit-card spend",
+      "Rs.350.00 spent using your Debit Card XX1234 at ZOMATO on 31-10-26.",
+      350,
+    ],
+    [
+      "Google Pay 'has been sent to'",
+      "₹30 has been sent to MOTHER DAIRY KALKA JI",
+      30,
+    ],
+    [
+      "a transfer out that names the other account as credited",
+      "Your A/c XX1234 is debited for Rs.5,000.00 on 31-10-26 and credited to A/c XX9876 of RAHUL (IMPS Ref 412345678901).",
+      5000,
+    ],
+    [
+      "Kotak 'Sent'",
+      "Sent Rs.500.00 from Kotak Bank AC X1234 to shop@ybl on 31-10-26.UPI Ref 412345678901.",
+      500,
+    ],
+  ];
+  for (const [label, text, amount] of debits) {
+    it(`reads ${label} as spending`, () => {
+      const txn = parseBankMessage(text);
+      expect(txn?.direction).toBe("debit");
+      expect(txn?.amount).toBe(amount);
+    });
+  }
+
+  it("is sure about a credit card spend now that 'Credit Card' isn't a credit", () => {
+    const txn = parseBankMessage(
+      "Rs.244.00 spent on your SBI Credit Card ending 0543 at DOMINOS on 28/10/26.",
+    );
+    expect(txn?.confidence).toBe("high");
+    expect(txn?.counterparty).toBe("DOMINOS");
+  });
+
+  it("ignores a cashback ad that mentions bills paid", () => {
+    expect(
+      parseBankMessage(
+        "🎉 Bills paid. Cashback unlocked!. It's Hype Hour on BHIM! Pay any bill of ₹100+ and get flat ₹5 cashback. Zero convenience fee. Zero platform fee. What are you waiting for? 😉",
+      ),
+    ).toBeNull();
+  });
+});
+
+describe("splitGroupedNotification", () => {
+  it("splits Google Pay's bundled updates into one message each", () => {
+    expect(
+      splitGroupedNotification(
+        "2 new completed transaction updates. ⋅ Mridul  Sharma has sent ₹1 to your bank account State Bank of India-1090\n⋅ ₹30 has been sent to MOTHER DAIRY KALKA JI",
+      ),
+    ).toEqual([
+      "Mridul  Sharma has sent ₹1 to your bank account State Bank of India-1090",
+      "₹30 has been sent to MOTHER DAIRY KALKA JI",
+    ]);
+  });
+
+  it("leaves an ordinary message whole", () => {
+    const text = "Rs.20.00 debited from a/c XX1234. Avl Bal Rs.4980.00";
+    expect(splitGroupedNotification(text)).toEqual([text]);
+  });
+});
+
+describe("parseBankMessage — merchant names from wallet alerts", () => {
+  it("takes the PhonePe payee, not the time of day", () => {
+    const txn = parseBankMessage(
+      "JD-PHONPE-S. You've paid Rs.55 via PhonePe gift card to Diada coffee  on Oct 30, 2026 at 7:02:53 PM. Not you? Call us on 022-68727374. Remaining balance Rs.310.",
+    );
+    expect(txn?.counterparty).toBe("Diada coffee");
+  });
+
+  it("stops the Amazon Pay merchant before 'Updated Balance'", () => {
+    const txn = parseBankMessage(
+      "Rs 500.00 was paid on Amazon.in. Payment of Rs 500.00 using Amazon Pay Balance is successful at Amazon.in. Updated Balance: Rs 730.19.",
+    );
+    expect(txn?.counterparty).toBe("Amazon.in");
   });
 });
