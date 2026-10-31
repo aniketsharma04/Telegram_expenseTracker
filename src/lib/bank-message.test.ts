@@ -441,6 +441,68 @@ describe("parseBankMessage — who paid whom (credit vs debit)", () => {
   });
 });
 
+describe("parseBankMessage — sender named with “by”, and reference numbers", () => {
+  const credit = (text: string) => {
+    const t = parseBankMessage(text);
+    expect(t?.direction).toBe("credit");
+    return t!;
+  };
+
+  it("takes the sender after “credited … by NAME”", () => {
+    const t = credit(
+      "Dear Customer, your A/c XX0000 has been credited with Rs.1.00 on 01-11-26 by AAJ FLIP TEST via UPI (Ref No 999000111333). -AAJTEST",
+    );
+    expect(t.counterparty?.toLowerCase()).toBe("aaj flip test");
+    expect(t.reference).toBe("999000111333");
+  });
+
+  it("stops the name at a comma or “on”", () => {
+    expect(
+      credit("Rs 2,500.00 credited to your a/c XX1234 by Rahul Kumar, UPI Ref 412345678901")
+        .counterparty?.toLowerCase(),
+    ).toBe("rahul kumar");
+    expect(
+      credit("A/c XX1234 credited by Priya Singh on 01-11-26 with INR 750.00. Bal INR 9,000.00")
+        .counterparty?.toLowerCase(),
+    ).toBe("priya singh");
+  });
+
+  it("never reads an amount, a rail or “transfer” as the name", () => {
+    expect(
+      credit("Dear SBI User, your A/c X1234-credited by Rs.31000 on 30Oct26 transfer from MRIDUL SHARMA Ref No 530412345678 -SBI")
+        .counterparty?.toLowerCase(),
+    ).toBe("mridul sharma");
+    expect(
+      credit("Your A/C XXXXX1234 Credited INR 500.00 on 01/11/26 -Deposit by transfer from ANITA DEVI.")
+        .counterparty?.toLowerCase(),
+    ).toBe("anita devi");
+    const neft = credit("INR 45,000.00 credited to A/c XX1234 on 01-11-26 by NEFT. Bal INR 60,000.00");
+    expect(neft.counterparty).toBeNull();
+    const cash = credit("Rs.2000 credited to your A/c XX1234 by cash on 01-11-26");
+    expect(cash.counterparty).toBeNull();
+  });
+
+  it("reads “Ref No”, “UTR No.” and “RRN” references", () => {
+    expect(
+      parseBankMessage("Rs.1.00 debited from your A/c XX0000 on 01-11-26 to VPA x@upi (UPI Ref No 999000111222).")
+        ?.reference,
+    ).toBe("999000111222");
+    expect(
+      credit("INR 45,000.00 credited to A/c XX1234 by NEFT, UTR No. HDFCN52026110112345 from ACME PVT LTD")
+        .reference,
+    ).toBe("HDFCN52026110112345");
+    expect(
+      parseBankMessage("Rs 300 spent on card XX9876 at ZOMATO. RRN 512345678901")?.reference,
+    ).toBe("512345678901");
+  });
+
+  it("never takes a plain word after “UPI” as a reference", () => {
+    expect(
+      parseBankMessage("Rs.250 debited from A/c XX1234 for UPI payment to SWIGGY")?.reference,
+    ).toBeNull();
+  });
+});
+
 describe("splitGroupedNotification", () => {
   it("splits Google Pay's bundled updates into one message each", () => {
     expect(

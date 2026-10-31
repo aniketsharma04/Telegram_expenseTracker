@@ -189,7 +189,9 @@ const ACCOUNT_PATTERNS = [
 
 const REFERENCE_PATTERNS = [
   /\bUPI\/P2[AM]\/(\d{6,20})\b/i, // Axis: UPI/P2M/<ref>/<name>
-  /\b(?:upi|ref(?:no)?|rrn|txn(?:\s*id)?)\s*[:.# ]\s*(\w{6,20})\b/i,
+  // "Ref No 1234…", "UPI Ref: …", "RRN 1234…", "UTR No. …", "Txn ID …".
+  // The value must hold a digit, so "UPI payment" is never a reference.
+  /\b(?:upi\s+ref(?:erence)?|ref(?:erence)?|rrn|utr|txn(?:\s*id)?|upi)(?:\s*(?:no|number|id)\b\.?)?\s*[:.#-]?\s*((?=[A-Za-z]*\d)\w{6,20})\b/i,
 ];
 
 const num = (raw: string): number => Number(raw.replace(/,/g, ""));
@@ -269,6 +271,11 @@ function extractCounterparty(
       )?.[1] ??
       text.match(
         /\bfrom\s+(?!your\b|a\/c|ac\b|acct)(.+?)(?=\s+(?:to|in|into|on|via|towards|for|has|was|is)\s|[.(;]|$)/i,
+      )?.[1] ??
+      // "credited with Rs.500 on 01-11-26 by RAHUL KUMAR via UPI" — but not
+      // "credited by Rs.500", "by transfer", "by NEFT" or "by cash".
+      text.match(
+        /\bby\s+(?!(?:rs\.?|inr|₹|\d|transfer|trf|cash|cheque|chq|clearing|neft|imps|rtgs|upi|a\/c|ac\b|acct|account|your|the|mobile|net\s*banking)\b)([A-Za-z].+?)(?=\s+(?:to|in|into|on|via|towards|for|has|was|is|ref|with|through)\b|[.(;,]|$)/i,
       )?.[1];
     return {
       name: cleanCounterparty(sender),
