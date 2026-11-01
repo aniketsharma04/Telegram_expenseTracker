@@ -41,6 +41,9 @@ import { PlanSummaryCard } from "./components/DailyBudgetCard";
 import { InboxBell, InboxSheet, PushPromptCard } from "./components/Inbox";
 import { CaptureSetupCard } from "./components/CaptureSetupCard";
 import { GoalsCard } from "./components/GoalsCard";
+import CardsApp from "./components/cards/CardsApp";
+import { CardsTile } from "./components/cards/CardsTile";
+import { CARDS_OFF_KEY } from "./components/cards/parts";
 import { MoneySplitCard } from "./components/MoneySplitCard";
 import { emiCommitments } from "./lib/money-rules";
 import { PushState, registerForPush, unregisterPush } from "./lib/push";
@@ -108,6 +111,16 @@ function AppInner() {
   const [transferOpen, setTransferOpen] = useState(false);
   // v15: notifications — the inbox sheet, and whether this phone can be pinged.
   const [inboxOpen, setInboxOpen] = useState(false);
+  const [cardsOpen, setCardsOpen] = useState(false);
+  // Aaj Cards can be turned off (Settings, or Privacy & data inside Cards).
+  const [cardsOn, setCardsOnState] = useState(true);
+  useEffect(() => {
+    AsyncStorage.getItem(CARDS_OFF_KEY).then((v) => setCardsOnState(v !== "1"));
+  }, []);
+  const setCardsOn = (on: boolean) => {
+    setCardsOnState(on);
+    void AsyncStorage.setItem(CARDS_OFF_KEY, on ? "0" : "1");
+  };
   const [pushState, setPushState] = useState<PushState>("unavailable");
   const [pushPromptDismissed, setPushPromptDismissed] = useState(true);
   const handledColdStart = useRef(false);
@@ -606,15 +619,24 @@ function AppInner() {
               </>
             }
             bottom={
-              goals.length > 0 ? (
-                <GoalsCard
-                  p={p}
-                  goals={goals}
-                  token={token}
-                  {...goalMoney}
-                  onChanged={refresh}
-                />
-              ) : null
+              <>
+                {goals.length > 0 && (
+                  <GoalsCard
+                    p={p}
+                    goals={goals}
+                    token={token}
+                    {...goalMoney}
+                    onChanged={refresh}
+                  />
+                )}
+                {cardsOn && (
+                  <CardsTile
+                    p={p}
+                    dark={dark}
+                    onOpen={() => setCardsOpen(true)}
+                  />
+                )}
+              </>
             }
           />
         )}
@@ -800,6 +822,19 @@ function AppInner() {
         p={p}
       />
 
+      {cardsOpen && (
+        <CardsApp
+          visible
+          p={p}
+          dark={dark}
+          token={token}
+          onClose={() => setCardsOpen(false)}
+          onTurnOff={() => {
+            setCardsOn(false);
+            setCardsOpen(false);
+          }}
+        />
+      )}
       {inboxOpen && (
         <InboxSheet
           p={p}
@@ -817,6 +852,8 @@ function AppInner() {
         onChanged={refresh}
         onAccountDeleted={logout}
         onLogout={logout}
+        cardsOn={cardsOn}
+        onCardsOn={setCardsOn}
       />
 
       <View

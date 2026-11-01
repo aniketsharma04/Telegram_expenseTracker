@@ -42,6 +42,8 @@ export default function SettingsSheet({
   onChanged,
   onAccountDeleted,
   onLogout,
+  cardsOn,
+  onCardsOn,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -53,6 +55,9 @@ export default function SettingsSheet({
   onAccountDeleted?: () => void;
   /** Sign out of this phone (v18: lives here, not in the header). */
   onLogout?: () => void;
+  /** Aaj Cards shows on Today; turning it off hides the tile (data stays). */
+  cardsOn?: boolean;
+  onCardsOn?: (on: boolean) => void;
 }) {
   const { t, fs, lang, scale, setLang, setLarge } = useSettings();
   const [busy, setBusy] = useState(false);
@@ -264,6 +269,28 @@ export default function SettingsSheet({
                 },
               ])}
             </View>
+
+            {onCardsOn && (
+              <View style={styles.row}>
+                <Text style={{ fontSize: fs(14), color: p.ink2, flex: 1 }}>
+                  {lang === "hi" ? "Aaj कार्ड्स" : "Aaj Cards"}
+                </Text>
+                {seg([
+                  {
+                    key: "on",
+                    label: lang === "hi" ? "चालू" : "On",
+                    active: !!cardsOn,
+                    onPress: () => onCardsOn(true),
+                  },
+                  {
+                    key: "off",
+                    label: lang === "hi" ? "बंद" : "Off",
+                    active: !cardsOn,
+                    onPress: () => onCardsOn(false),
+                  },
+                ])}
+              </View>
+            )}
 
             {token && gmailAvailable && (
               <View style={[styles.block, { borderTopColor: p.border }]}>
