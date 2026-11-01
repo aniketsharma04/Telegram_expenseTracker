@@ -1,0 +1,634 @@
+{
+  "nodes": [
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "label": "Regulatory and platform-policy constraints for Aaj",
+      "file_type": "document",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ia_regulations",
+      "label": "SEBI Investment Adviser Regulations 2013",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L21",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ra_regulations",
+      "label": "SEBI Research Analyst Regulations (2024/2025 amendments)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ai_amendment_2024",
+      "label": "SEBI IA Second Amendment 2024 (AI responsibility and disclosure)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L25",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_finfluencer_circular",
+      "label": "SEBI finfluencer circular (Oct 2024, Jan 2025 clarification)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L33",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_personalised_allocation_grey_zone",
+      "label": "Personalised asset allocation grey zone",
+      "file_type": "rationale",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L48",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Names no security but is tailored; treat as advice or offer only as a user-driven calculator with disclaimers."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_rbi_digital_lending_directions_2025",
+      "label": "RBI Digital Lending Directions 2025 (LSP)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L79",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_payment_aggregator_directions_2025",
+      "label": "RBI Payment Aggregator Directions 2025 (Rs 15 crore net worth)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L85",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_play_financial_services_policy",
+      "label": "Google Play Financial Services policy (India DLA list)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L86",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_data_localisation",
+      "label": "RBI 2018 payment-data localisation circular",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L94",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_irdai_web_aggregators",
+      "label": "IRDAI Insurance Web Aggregators Regulations 2017",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L112",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_bima_sugam",
+      "label": "Bima Sugam marketplace regulations 2024",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L114",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_rules_2025",
+      "label": "DPDP Act 2023 and DPDP Rules 2025",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L136",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_breach_72h",
+      "label": "DPDP breach notification (72-hour Board report)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L154",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_children",
+      "label": "DPDP children rule (under-18 parental consent)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L165",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_penalties",
+      "label": "DPDP penalties (up to Rs 250 crore)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L167",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_build_list",
+      "label": "Minimum DPDP build list for a solo developer",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L173",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_play_sms_exception",
+      "label": "Play SMS and Call Log exception for money management",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L212",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_notification_listener_route",
+      "label": "Notification listener as primary capture route",
+      "file_type": "rationale",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L251",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Avoids the SMS restricted-permission declaration since bank/UPI alerts also arrive as notifications; inference, Play policy not researched."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_restricted_scope_verification",
+      "label": "Google OAuth restricted-scope verification and CASA",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L226",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_workspace_limited_use",
+      "label": "Google Workspace API Limited Use policy",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L233",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Bans using Gmail-derived data for ads, credit-worthiness or lending; conflicts with lending monetisation."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_telegram_bot_terms",
+      "label": "Telegram Bot Platform Developer Terms",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L275",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_gst_threshold",
+      "label": "GST registration threshold (Rs 20 lakh) and OIDAR",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L312",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_regulation_summary_matrix",
+      "label": "Regulatory summary matrix",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": "L335",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ia_regulations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ra_regulations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ai_amendment_2024",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_finfluencer_circular",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_personalised_allocation_grey_zone",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_rbi_digital_lending_directions_2025",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_payment_aggregator_directions_2025",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_play_financial_services_policy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_data_localisation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_irdai_web_aggregators",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_bima_sugam",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_rules_2025",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_build_list",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_play_sms_exception",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_notification_listener_route",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_restricted_scope_verification",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_workspace_limited_use",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_telegram_bot_terms",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_gst_threshold",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_summary_matrix",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ai_amendment_2024",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ia_regulations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_personalised_allocation_grey_zone",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ia_regulations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_rules_2025",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_breach_72h",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_rules_2025",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_children",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_rules_2025",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_penalties",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_build_list",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_rules_2025",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_rbi_digital_lending_directions_2025",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_play_financial_services_policy",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_irdai_web_aggregators",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_bima_sugam",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_notification_listener_route",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_play_sms_exception",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_restricted_scope_verification",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_workspace_limited_use",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_workspace_limited_use",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_rbi_digital_lending_directions_2025",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_play_sms_exception",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_play_sms_policy",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_restricted_scope_verification",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_casa_tier2",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_notification_listener_route",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_notification_listener",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_regulation_finfluencer_circular",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_trust_ranking_monetisation",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "research_notes/Aaj complete finance roadmap/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

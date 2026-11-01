@@ -1,0 +1,113 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v7_detect_sql",
+      "label": "v7-detect.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v7_detect_gmail_accounts",
+      "label": "gmail_accounts",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L12"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v7-detect.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v7_detect_detected_bills",
+      "label": "detected_bills",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L23"
+    },
+    {
+      "id": "bills",
+      "label": "bills",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v7-detect.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v7_detect_detected_bills_pending_idx",
+      "label": "detected_bills_pending_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L43"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v7_detect_sql",
+      "target": "$graphify-root$_supabase_migrations_v7_detect_gmail_accounts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v7_detect_gmail_accounts",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v7_detect_sql",
+      "target": "$graphify-root$_supabase_migrations_v7_detect_detected_bills",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v7_detect_detected_bills",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v7_detect_detected_bills",
+      "target": "bills",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v7_detect_sql",
+      "target": "$graphify-root$_supabase_migrations_v7_detect_detected_bills_pending_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v7_detect_detected_bills_pending_idx",
+      "target": "$graphify-root$_supabase_migrations_v7_detect_detected_bills",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v7-detect.sql",
+      "source_location": "L43",
+      "weight": 1.0
+    }
+  ]
+}

@@ -1,0 +1,1773 @@
+{
+  ".github/workflows/backup.yml": {
+    "size": 1376,
+    "mtime_ns": 1793389018878824500,
+    "indexed_at_ns": 1793536902273505000,
+    "word_count": 156,
+    "hashes": {
+      ".github/workflows/backup.yml": "8ef3dab9218aa828d4c10f91f05b7f84d26f4f41d15628eaa70491eae1784145"
+    }
+  },
+  ".github/workflows/deploy.yml": {
+    "size": 1434,
+    "mtime_ns": 1793337395015150100,
+    "indexed_at_ns": 1793536902749599000,
+    "word_count": 179,
+    "hashes": {
+      ".github/workflows/deploy.yml": "afaf392441c9799c4c47fee30ebb289bbfc4c174cb22498ddbb1bff4775cff0b"
+    }
+  },
+  "README.md": {
+    "size": 7945,
+    "mtime_ns": 1792865170113950800,
+    "indexed_at_ns": 1793536828267960300,
+    "word_count": 1156,
+    "hashes": {
+      "readme.md": "328da973ed5d0f9e8a933bf169bdd7cbe2dc704a93af9e62c753a1179ec2b579"
+    }
+  },
+  "docs/play-store/data-safety.md": {
+    "size": 7032,
+    "mtime_ns": 1792870622334405200,
+    "indexed_at_ns": 1793536828270594700,
+    "word_count": 703,
+    "hashes": {
+      "docs/play-store/data-safety.md": "e327d3ca4c62f1b2039374b8394a8b00873c38b808f96321e58b6c815f9032cd"
+    }
+  },
+  "docs/play-store/listing.md": {
+    "size": 2635,
+    "mtime_ns": 1793295375673676900,
+    "indexed_at_ns": 1793536828271434300,
+    "word_count": 441,
+    "hashes": {
+      "docs/play-store/listing.md": "b07eb66e9fc14bf87bebd5d4f7593984fa37377f82d2224238c50f5e8389ec93"
+    }
+  },
+  "docs/play-store/release-checklist.md": {
+    "size": 7338,
+    "mtime_ns": 1793295375697708400,
+    "indexed_at_ns": 1793536828272235700,
+    "word_count": 681,
+    "hashes": {
+      "docs/play-store/release-checklist.md": "1ed5f35f7a8c73cede0a572c867cf801f17f12a3b70a0e6af5bdc773e6f43bd8"
+    }
+  },
+  "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md": {
+    "size": 5118,
+    "mtime_ns": 1792865171871758500,
+    "indexed_at_ns": 1793536828273155500,
+    "word_count": 726,
+    "hashes": {
+      "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md": "dd8fef6b03080ad17929eb0674387b1f89a36ce43d474357fe26af24591f9072"
+    }
+  },
+  "expense-tracker-project-plan.md": {
+    "size": 19087,
+    "mtime_ns": 1786876253440496600,
+    "indexed_at_ns": 1793536828274180800,
+    "word_count": 2612,
+    "hashes": {
+      "expense-tracker-project-plan.md": "403a2b22f51e01c63038f505409b67c8d4602a025b83ed6b85197e263eba8df7"
+    }
+  },
+  "mobile/.claude/settings.json": {
+    "size": 71,
+    "mtime_ns": 1786895214608481900,
+    "indexed_at_ns": 1793536902750283400,
+    "word_count": 7,
+    "hashes": {
+      "mobile/.claude/settings.json": "db0c00865b9cab4b99f11a6b8c221465f57f1d466cd40d50add1c1d382f4d434"
+    }
+  },
+  "mobile/AGENTS.md": {
+    "size": 118,
+    "mtime_ns": 1786895214606556900,
+    "indexed_at_ns": 1793536828275231700,
+    "word_count": 15,
+    "hashes": {
+      "mobile/agents.md": "538c87a0719fee369039f0497fc389cf23c6afa3cae1402300f327362cd0aa3e"
+    }
+  },
+  "mobile/App.tsx": {
+    "size": 31207,
+    "mtime_ns": 1793486010144616700,
+    "indexed_at_ns": 1793536813874105700,
+    "word_count": 2691
+  },
+  "mobile/CLAUDE.md": {
+    "size": 11,
+    "mtime_ns": 1786895214607483900,
+    "indexed_at_ns": 1793536828276383100,
+    "word_count": 1,
+    "hashes": {
+      "mobile/claude.md": "cd4451f5575b977e3cf1230fa9c439266dd76c4c69380ce009466ea8e2addb01"
+    }
+  },
+  "mobile/README.md": {
+    "size": 1652,
+    "mtime_ns": 1786895587616453000,
+    "indexed_at_ns": 1793536828277544900,
+    "word_count": 250,
+    "hashes": {
+      "mobile/readme.md": "49a8b5cb0c90d0728cbdd271273130267a183ba6fd55c9af3360b44959c098c5"
+    }
+  },
+  "mobile/app.config.js": {
+    "size": 552,
+    "mtime_ns": 1792865171879898500,
+    "indexed_at_ns": 1793536813967781100,
+    "word_count": 72
+  },
+  "mobile/app.json": {
+    "size": 2006,
+    "mtime_ns": 1793391602897384300,
+    "indexed_at_ns": 1793536902750959900,
+    "word_count": 124,
+    "hashes": {
+      "mobile/app.json": "e34630665296368599a3f36abe204966b2dd6ecb3e6c73d2ee51f3c7f4c17d7a"
+    }
+  },
+  "mobile/components/AccountSheet.tsx": {
+    "size": 10349,
+    "mtime_ns": 1793295373960987100,
+    "indexed_at_ns": 1793536814037134600,
+    "word_count": 878
+  },
+  "mobile/components/AccountsCard.tsx": {
+    "size": 7868,
+    "mtime_ns": 1793295373991340600,
+    "indexed_at_ns": 1793536814068504400,
+    "word_count": 731
+  },
+  "mobile/components/AddExpenseSheet.tsx": {
+    "size": 29240,
+    "mtime_ns": 1793295374086377300,
+    "indexed_at_ns": 1793536814089091700,
+    "word_count": 2250
+  },
+  "mobile/components/BillSheet.tsx": {
+    "size": 27995,
+    "mtime_ns": 1793295374159599300,
+    "indexed_at_ns": 1793536814121405300,
+    "word_count": 2072
+  },
+  "mobile/components/BillsTab.tsx": {
+    "size": 22776,
+    "mtime_ns": 1793390610107158200,
+    "indexed_at_ns": 1793536814156768000,
+    "word_count": 1853
+  },
+  "mobile/components/CaptureSetupCard.tsx": {
+    "size": 9348,
+    "mtime_ns": 1793295375777236100,
+    "indexed_at_ns": 1793536814188480400,
+    "word_count": 903
+  },
+  "mobile/components/DailyBudgetCard.tsx": {
+    "size": 22472,
+    "mtime_ns": 1793295375819227600,
+    "indexed_at_ns": 1793536814223718700,
+    "word_count": 1927
+  },
+  "mobile/components/DetectedBillsCard.tsx": {
+    "size": 6708,
+    "mtime_ns": 1793295374232492500,
+    "indexed_at_ns": 1793536814255064300,
+    "word_count": 644
+  },
+  "mobile/components/EditExpenseSheet.tsx": {
+    "size": 13315,
+    "mtime_ns": 1793480328392479000,
+    "indexed_at_ns": 1793536814284711600,
+    "word_count": 1150
+  },
+  "mobile/components/FamilyTab.tsx": {
+    "size": 7496,
+    "mtime_ns": 1793295374290847700,
+    "indexed_at_ns": 1793536814315148900,
+    "word_count": 691
+  },
+  "mobile/components/GoalsCard.tsx": {
+    "size": 18750,
+    "mtime_ns": 1793297456663254900,
+    "indexed_at_ns": 1793536814343405900,
+    "word_count": 1778
+  },
+  "mobile/components/HomeTab.tsx": {
+    "size": 7628,
+    "mtime_ns": 1793295374325817200,
+    "indexed_at_ns": 1793536814374670200,
+    "word_count": 789
+  },
+  "mobile/components/Inbox.tsx": {
+    "size": 13524,
+    "mtime_ns": 1793480328427490600,
+    "indexed_at_ns": 1793536814404072900,
+    "word_count": 1204
+  },
+  "mobile/components/LoginScreen.tsx": {
+    "size": 10020,
+    "mtime_ns": 1793295374352975200,
+    "indexed_at_ns": 1793536814443127300,
+    "word_count": 920
+  },
+  "mobile/components/MoneyCards.tsx": {
+    "size": 14662,
+    "mtime_ns": 1793295374400249500,
+    "indexed_at_ns": 1793536814476412700,
+    "word_count": 1254
+  },
+  "mobile/components/MoneySplitCard.tsx": {
+    "size": 5617,
+    "mtime_ns": 1793297462626854500,
+    "indexed_at_ns": 1793536814507635400,
+    "word_count": 580
+  },
+  "mobile/components/ReceiptLines.tsx": {
+    "size": 3388,
+    "mtime_ns": 1793295374414149300,
+    "indexed_at_ns": 1793536814534667100,
+    "word_count": 388
+  },
+  "mobile/components/SettingsSheet.tsx": {
+    "size": 19273,
+    "mtime_ns": 1793295374455138400,
+    "indexed_at_ns": 1793536814566589000,
+    "word_count": 1470
+  },
+  "mobile/components/SetupFlow.tsx": {
+    "size": 28435,
+    "mtime_ns": 1793295375933583500,
+    "indexed_at_ns": 1793536814597241900,
+    "word_count": 2369
+  },
+  "mobile/components/SubscriptionsCard.tsx": {
+    "size": 8983,
+    "mtime_ns": 1793480329489125000,
+    "indexed_at_ns": 1793536814630802300,
+    "word_count": 740
+  },
+  "mobile/components/Text.tsx": {
+    "size": 2250,
+    "mtime_ns": 1793295375938636200,
+    "indexed_at_ns": 1793536814658210600,
+    "word_count": 267
+  },
+  "mobile/components/TodayTab.tsx": {
+    "size": 13392,
+    "mtime_ns": 1793295375965332100,
+    "indexed_at_ns": 1793536814687824800,
+    "word_count": 1181
+  },
+  "mobile/components/TransactionsTab.tsx": {
+    "size": 6934,
+    "mtime_ns": 1793295374470389300,
+    "indexed_at_ns": 1793536814715829500,
+    "word_count": 614
+  },
+  "mobile/components/TransferSheet.tsx": {
+    "size": 7538,
+    "mtime_ns": 1793295374491831200,
+    "indexed_at_ns": 1793536814744872100,
+    "word_count": 721
+  },
+  "mobile/components/cards/CardsApp.tsx": {
+    "size": 53674,
+    "mtime_ns": 1793486290295263800,
+    "indexed_at_ns": 1793536814773886100,
+    "word_count": 5119
+  },
+  "mobile/components/cards/CardsTile.tsx": {
+    "size": 1870,
+    "mtime_ns": 1793486010143617000,
+    "indexed_at_ns": 1793536814817565600,
+    "word_count": 225
+  },
+  "mobile/components/cards/parts.tsx": {
+    "size": 8279,
+    "mtime_ns": 1793485800902065000,
+    "indexed_at_ns": 1793536814843921100,
+    "word_count": 1015
+  },
+  "mobile/components/cards/strings.ts": {
+    "size": 12092,
+    "mtime_ns": 1793486805924925200,
+    "indexed_at_ns": 1793536814874953200,
+    "word_count": 1453
+  },
+  "mobile/components/ui.tsx": {
+    "size": 11030,
+    "mtime_ns": 1793295374520815200,
+    "indexed_at_ns": 1793536814905365300,
+    "word_count": 1323
+  },
+  "mobile/eas.json": {
+    "size": 584,
+    "mtime_ns": 1793480328430494100,
+    "indexed_at_ns": 1793536902751920800,
+    "word_count": 51,
+    "hashes": {
+      "mobile/eas.json": "a57882223e429012ed6da651ec024539f0655ad489d3bc252cd6e16dbe47f2e5"
+    }
+  },
+  "mobile/google-services.json": {
+    "size": 704,
+    "mtime_ns": 1792865171987835300,
+    "indexed_at_ns": 1793536902752634300,
+    "word_count": 45,
+    "hashes": {
+      "mobile/google-services.json": "495e628ee48e8083b33e0184ed9d7b8393ffd9795046a2871e33fce09de6456b"
+    }
+  },
+  "mobile/index.ts": {
+    "size": 315,
+    "mtime_ns": 1792913906703284300,
+    "indexed_at_ns": 1793536814974144600,
+    "word_count": 43
+  },
+  "mobile/lib/amount.ts": {
+    "size": 793,
+    "mtime_ns": 1793295375972345600,
+    "indexed_at_ns": 1793536815005675300,
+    "word_count": 105
+  },
+  "mobile/lib/api.ts": {
+    "size": 34870,
+    "mtime_ns": 1793480328622098900,
+    "indexed_at_ns": 1793536815036265200,
+    "word_count": 4157
+  },
+  "mobile/lib/cache.ts": {
+    "size": 2704,
+    "mtime_ns": 1793295375979448100,
+    "indexed_at_ns": 1793536815077368300,
+    "word_count": 388
+  },
+  "mobile/lib/capture.ts": {
+    "size": 4591,
+    "mtime_ns": 1792865171003027300,
+    "indexed_at_ns": 1793536815109175300,
+    "word_count": 551
+  },
+  "mobile/lib/cards-api.ts": {
+    "size": 4279,
+    "mtime_ns": 1793486290295263800,
+    "indexed_at_ns": 1793536815143787600,
+    "word_count": 540
+  },
+  "mobile/lib/categories.ts": {
+    "size": 2007,
+    "mtime_ns": 1792861662528731400,
+    "indexed_at_ns": 1793536815178605700,
+    "word_count": 255
+  },
+  "mobile/lib/i18n.tsx": {
+    "size": 48417,
+    "mtime_ns": 1793480328673614800,
+    "indexed_at_ns": 1793536815208379200,
+    "word_count": 5858
+  },
+  "mobile/lib/money-rules.test.ts": {
+    "size": 6635,
+    "mtime_ns": 1793297360018583200,
+    "indexed_at_ns": 1793536815244397900,
+    "word_count": 716
+  },
+  "mobile/lib/money-rules.ts": {
+    "size": 10008,
+    "mtime_ns": 1793297405199212500,
+    "indexed_at_ns": 1793536815272533100,
+    "word_count": 1397
+  },
+  "mobile/lib/push.ts": {
+    "size": 5340,
+    "mtime_ns": 1792865172001159000,
+    "indexed_at_ns": 1793536815309903900,
+    "word_count": 652
+  },
+  "mobile/lib/settle.ts": {
+    "size": 1050,
+    "mtime_ns": 1787401849280886500,
+    "indexed_at_ns": 1793536815345886500,
+    "word_count": 161
+  },
+  "mobile/lib/theme.ts": {
+    "size": 3603,
+    "mtime_ns": 1793295374668452500,
+    "indexed_at_ns": 1793536815374990700,
+    "word_count": 431
+  },
+  "mobile/modules/notification-capture/android/build.gradle": {
+    "size": 645,
+    "mtime_ns": 1792852904282233400,
+    "indexed_at_ns": 1793536902753595100,
+    "word_count": 69,
+    "hashes": {
+      "mobile/modules/notification-capture/android/build.gradle": "ce67c7b625b12d8f4a80f0561d7abd002d2c97cabc3ff09d39238e9c1c71137f"
+    }
+  },
+  "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt": {
+    "size": 3269,
+    "mtime_ns": 1792852904283255600,
+    "indexed_at_ns": 1793536902754513200,
+    "word_count": 341,
+    "hashes": {
+      "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/banknotificationlistenerservice.kt": "321917ffaabe91271953f1e3598225aee75e2f87a827bc139e9f81c8bdc44e7c"
+    }
+  },
+  "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt": {
+    "size": 7772,
+    "mtime_ns": 1793334769683902800,
+    "indexed_at_ns": 1793536902755612700,
+    "word_count": 800,
+    "hashes": {
+      "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/capturestore.kt": "92323bb1cdd7b02cc8e0f0caed8126341b8e277933ee3566c5a5cdef0560fd54"
+    }
+  },
+  "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureUploadWorker.kt": {
+    "size": 4205,
+    "mtime_ns": 1792852904285231600,
+    "indexed_at_ns": 1793536902756692200,
+    "word_count": 431,
+    "hashes": {
+      "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/captureuploadworker.kt": "8377359fd7c495f618c6c507b566e4cca208f76751eabcd85a39ae1bde9452a2"
+    }
+  },
+  "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/NotificationCaptureModule.kt": {
+    "size": 5572,
+    "mtime_ns": 1792852904286227700,
+    "indexed_at_ns": 1793536902757817300,
+    "word_count": 563,
+    "hashes": {
+      "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/notificationcapturemodule.kt": "f76b42085b9c2f84494453127e8a6d81b9c9d6f7472608e50781487448aef430"
+    }
+  },
+  "mobile/modules/notification-capture/expo-module.config.json": {
+    "size": 129,
+    "mtime_ns": 1788339653336821000,
+    "indexed_at_ns": 1793536902758822700,
+    "word_count": 9,
+    "hashes": {
+      "mobile/modules/notification-capture/expo-module.config.json": "1d7cd11cdb351471f2be9ff4ea433cd88ee41a8482dc4439f806ab84f8cf4830"
+    }
+  },
+  "mobile/modules/notification-capture/index.ts": {
+    "size": 4131,
+    "mtime_ns": 1792865171065571100,
+    "indexed_at_ns": 1793536815588122100,
+    "word_count": 553
+  },
+  "mobile/package.json": {
+    "size": 988,
+    "mtime_ns": 1793333262702858800,
+    "indexed_at_ns": 1793536902759770600,
+    "word_count": 72,
+    "hashes": {
+      "mobile/package.json": "6f524fee88d190e74f7af405b06a20fdaa65a69f5d2fd2dafa5ee9fe44e8a5b4"
+    }
+  },
+  "mobile/tsconfig.json": {
+    "size": 85,
+    "mtime_ns": 1786895214482495600,
+    "indexed_at_ns": 1793536902760714400,
+    "word_count": 9,
+    "hashes": {
+      "mobile/tsconfig.json": "f43069734187122c3c348b94e469c20ad2cf2b796a061fbba2bd0da21bc3b246"
+    }
+  },
+  "next.config.ts": {
+    "size": 104,
+    "mtime_ns": 1786873964246032100,
+    "indexed_at_ns": 1793536815639401400,
+    "word_count": 15
+  },
+  "package.json": {
+    "size": 827,
+    "mtime_ns": 1793337711566259300,
+    "indexed_at_ns": 1793536902761643700,
+    "word_count": 69,
+    "hashes": {
+      "package.json": "418d6cf44201ea5379a72af55a428f18953603abc4b21b7ce507c77f59194417"
+    }
+  },
+  "reports/Aaj complete finance roadmap.md": {
+    "size": 40995,
+    "mtime_ns": 1793480329800802200,
+    "indexed_at_ns": 1793536828278631200,
+    "word_count": 4614,
+    "hashes": {
+      "reports/aaj complete finance roadmap.md": "346553f96f365a4757e4904fd4b1716e178ad62e8dfca55cf8637def30687a44"
+    }
+  },
+  "reports/Monzy and Indian card recommenders.md": {
+    "size": 30680,
+    "mtime_ns": 1793484596883366300,
+    "indexed_at_ns": 1793536828279954700,
+    "word_count": 3909,
+    "hashes": {
+      "reports/monzy and indian card recommenders.md": "49c16dddceca1d8d902dc31cf021cd21a48a136f78e46c0d986301d67741890e"
+    }
+  },
+  "research_notes/Aaj Cards app design/card_rules.md": {
+    "size": 118640,
+    "mtime_ns": 1793486460414123300,
+    "indexed_at_ns": 1793536828281263500,
+    "word_count": 14252,
+    "hashes": {
+      "research_notes/aaj cards app design/card_rules.md": "1d06d72fd995967524a89d5e05b2b1b752dcf9a264fe2ed0838ec3e766d9e15c"
+    }
+  },
+  "research_notes/Aaj Cards app design/ux.md": {
+    "size": 37769,
+    "mtime_ns": 1793485535253182300,
+    "indexed_at_ns": 1793536828282908600,
+    "word_count": 5635,
+    "hashes": {
+      "research_notes/aaj cards app design/ux.md": "9f8cae6cb155c17ee90426c413a68265a7df5a2bb0fc0840adddc07794537c73"
+    }
+  },
+  "research_notes/Aaj complete finance roadmap/competitors.md": {
+    "size": 20589,
+    "mtime_ns": 1793480329923686500,
+    "indexed_at_ns": 1793536828284269000,
+    "word_count": 2371,
+    "hashes": {
+      "research_notes/aaj complete finance roadmap/competitors.md": "bca3b43ce43ba37de356bf98e2c8978c2bd8a9088b65e2ee120edace21596403"
+    }
+  },
+  "research_notes/Aaj complete finance roadmap/data_access.md": {
+    "size": 29564,
+    "mtime_ns": 1793480330078608300,
+    "indexed_at_ns": 1793536828285532700,
+    "word_count": 3849,
+    "hashes": {
+      "research_notes/aaj complete finance roadmap/data_access.md": "5b19ee9c2fbaed9e3780f03370a9c0793690062bb52c730786f3eb206f4589b2"
+    }
+  },
+  "research_notes/Aaj complete finance roadmap/features_retention.md": {
+    "size": 23585,
+    "mtime_ns": 1793480330168146200,
+    "indexed_at_ns": 1793536828286662300,
+    "word_count": 2713,
+    "hashes": {
+      "research_notes/aaj complete finance roadmap/features_retention.md": "872b20b76d19c26abc97b93f7b5ca64de9880f7bb7ae43e9db43e472346cb370"
+    }
+  },
+  "research_notes/Aaj complete finance roadmap/regulation.md": {
+    "size": 38131,
+    "mtime_ns": 1793480330326614800,
+    "indexed_at_ns": 1793536828287740400,
+    "word_count": 4638,
+    "hashes": {
+      "research_notes/aaj complete finance roadmap/regulation.md": "a75b322d48f3f5d176e3bc7b3e35a4e6e4817ccd33e36154d732bba173dfe6ed"
+    }
+  },
+  "research_notes/Aaj complete finance roadmap/tech_monetisation.md": {
+    "size": 22920,
+    "mtime_ns": 1793480330431580300,
+    "indexed_at_ns": 1793536828288696800,
+    "word_count": 3230,
+    "hashes": {
+      "research_notes/aaj complete finance roadmap/tech_monetisation.md": "103da2d8652ed62abcf32c2778988dfda39c834c3acac33d054d190750141512"
+    }
+  },
+  "research_notes/Monzy and Indian card recommenders/competitors.md": {
+    "size": 23050,
+    "mtime_ns": 1793484596963573600,
+    "indexed_at_ns": 1793536828289635500,
+    "word_count": 2415,
+    "hashes": {
+      "research_notes/monzy and indian card recommenders/competitors.md": "5fc5eb4c367dec417b4748d346616f56d296f886a20cf7e65dd95861232192a9"
+    }
+  },
+  "research_notes/Monzy and Indian card recommenders/economics_and_build.md": {
+    "size": 23235,
+    "mtime_ns": 1793484597031628200,
+    "indexed_at_ns": 1793536828290508900,
+    "word_count": 2965,
+    "hashes": {
+      "research_notes/monzy and indian card recommenders/economics_and_build.md": "46aef569fbf258fcee38a1010126ebdbeaea00575791f5880654b07851ec8636"
+    }
+  },
+  "research_notes/Monzy and Indian card recommenders/monzy.md": {
+    "size": 17628,
+    "mtime_ns": 1793484597073370300,
+    "indexed_at_ns": 1793536828291303100,
+    "word_count": 2456,
+    "hashes": {
+      "research_notes/monzy and indian card recommenders/monzy.md": "6b8e103c0a098ef64cf5564cf70ed7c2cce3cf38d7309d424e2e748b17f35350"
+    }
+  },
+  "research_notes/Monzy and Indian card recommenders/regulation.md": {
+    "size": 33106,
+    "mtime_ns": 1793484597124679600,
+    "indexed_at_ns": 1793536828292060700,
+    "word_count": 3752,
+    "hashes": {
+      "research_notes/monzy and indian card recommenders/regulation.md": "1d9484dce889318ffe134bf82e213ef1db10f495cbee8b51ed1874a9b06adb73"
+    }
+  },
+  "scripts/backup/README.md": {
+    "size": 1806,
+    "mtime_ns": 1793389019024984300,
+    "indexed_at_ns": 1793536828292966100,
+    "word_count": 260,
+    "hashes": {
+      "scripts/backup/readme.md": "34f9acaf1a3accb16369a8aa4742b52650efd03c1f9c92977f8d717ba1f29ce8"
+    }
+  },
+  "scripts/backup/backup.sh": {
+    "size": 4175,
+    "mtime_ns": 1793388938690004400,
+    "indexed_at_ns": 1793536902762566800,
+    "word_count": 598,
+    "hashes": {
+      "scripts/backup/backup.sh": "2609cc759eb3ba9d93829d0d0c7e6871f792c56b6d1bc11f2ff73f16b6ca64bd"
+    }
+  },
+  "scripts/build-card-catalog.py": {
+    "size": 8061,
+    "mtime_ns": 1793486787847214100,
+    "indexed_at_ns": 1793536902763495600,
+    "word_count": 834,
+    "hashes": {
+      "scripts/build-card-catalog.py": "92de9662962dcebe543cef5566911eea1a99d5724f310e5615a9963cd2855b97"
+    }
+  },
+  "scripts/redact-bank-messages.mts": {
+    "size": 2029,
+    "mtime_ns": 1793389780431434600,
+    "indexed_at_ns": 1793536816097159700,
+    "word_count": 244
+  },
+  "scripts/set-commands.mjs": {
+    "size": 2410,
+    "mtime_ns": 1793474386168004600,
+    "indexed_at_ns": 1793536816108967500,
+    "word_count": 325
+  },
+  "scripts/set-webhook.mjs": {
+    "size": 1123,
+    "mtime_ns": 1786874221785427000,
+    "indexed_at_ns": 1793536816120665000,
+    "word_count": 114
+  },
+  "scripts/setu-check.mjs": {
+    "size": 5823,
+    "mtime_ns": 1787488786974737200,
+    "indexed_at_ns": 1793536816133187800,
+    "word_count": 657
+  },
+  "src/app/api/account/route.ts": {
+    "size": 6219,
+    "mtime_ns": 1793480328699617100,
+    "indexed_at_ns": 1793536816148089300,
+    "word_count": 769
+  },
+  "src/app/api/accounts/route.ts": {
+    "size": 5743,
+    "mtime_ns": 1788337835958467200,
+    "indexed_at_ns": 1793536816161566200,
+    "word_count": 685
+  },
+  "src/app/api/auth/email/route.ts": {
+    "size": 4995,
+    "mtime_ns": 1793295374793386400,
+    "indexed_at_ns": 1793536816176536100,
+    "word_count": 595
+  },
+  "src/app/api/auth/link/route.ts": {
+    "size": 1097,
+    "mtime_ns": 1788420759455923400,
+    "indexed_at_ns": 1793536816189822000,
+    "word_count": 155
+  },
+  "src/app/api/auth/login/route.ts": {
+    "size": 730,
+    "mtime_ns": 1786894729776396300,
+    "indexed_at_ns": 1793536816200505900,
+    "word_count": 85
+  },
+  "src/app/api/auth/logout/route.ts": {
+    "size": 387,
+    "mtime_ns": 1786894731327707400,
+    "indexed_at_ns": 1793536816211204200,
+    "word_count": 44
+  },
+  "src/app/api/bbps/billers/route.ts": {
+    "size": 1055,
+    "mtime_ns": 1787429755824496000,
+    "indexed_at_ns": 1793536816222071900,
+    "word_count": 119
+  },
+  "src/app/api/bbps/fetch/route.ts": {
+    "size": 1818,
+    "mtime_ns": 1787429755832017800,
+    "indexed_at_ns": 1793536816234007200,
+    "word_count": 236
+  },
+  "src/app/api/bills/pay/route.ts": {
+    "size": 2562,
+    "mtime_ns": 1792865171177039400,
+    "indexed_at_ns": 1793536816246892900,
+    "word_count": 327
+  },
+  "src/app/api/bills/refresh/route.ts": {
+    "size": 1523,
+    "mtime_ns": 1787429755840394100,
+    "indexed_at_ns": 1793536816259135600,
+    "word_count": 203
+  },
+  "src/app/api/bills/route.ts": {
+    "size": 6916,
+    "mtime_ns": 1792865171190643400,
+    "indexed_at_ns": 1793536816270521700,
+    "word_count": 821
+  },
+  "src/app/api/budget/route.ts": {
+    "size": 2730,
+    "mtime_ns": 1787425481641386900,
+    "indexed_at_ns": 1793536816285077700,
+    "word_count": 344
+  },
+  "src/app/api/cards/route.ts": {
+    "size": 2099,
+    "mtime_ns": 1793485626696028600,
+    "indexed_at_ns": 1793536816296015800,
+    "word_count": 278
+  },
+  "src/app/api/commitments/route.ts": {
+    "size": 2856,
+    "mtime_ns": 1792865172013182000,
+    "indexed_at_ns": 1793536816308388500,
+    "word_count": 350
+  },
+  "src/app/api/cron/daily/route.ts": {
+    "size": 8383,
+    "mtime_ns": 1793480328733617500,
+    "indexed_at_ns": 1793536816319969300,
+    "word_count": 913
+  },
+  "src/app/api/cron/evening/route.ts": {
+    "size": 333,
+    "mtime_ns": 1792865172021704000,
+    "indexed_at_ns": 1793536816332389200,
+    "word_count": 46
+  },
+  "src/app/api/cron/morning/route.ts": {
+    "size": 333,
+    "mtime_ns": 1792865172029715200,
+    "indexed_at_ns": 1793536816354002300,
+    "word_count": 46
+  },
+  "src/app/api/data/route.ts": {
+    "size": 7057,
+    "mtime_ns": 1793480328757613900,
+    "indexed_at_ns": 1793536816376915700,
+    "word_count": 781
+  },
+  "src/app/api/detected-bills/route.ts": {
+    "size": 3582,
+    "mtime_ns": 1792865171233314100,
+    "indexed_at_ns": 1793536816410218800,
+    "word_count": 439
+  },
+  "src/app/api/expense/media/route.ts": {
+    "size": 5380,
+    "mtime_ns": 1792865171247285200,
+    "indexed_at_ns": 1793536816442351600,
+    "word_count": 627
+  },
+  "src/app/api/expense/route.ts": {
+    "size": 8647,
+    "mtime_ns": 1792865171262293900,
+    "indexed_at_ns": 1793536816473679900,
+    "word_count": 1038
+  },
+  "src/app/api/flip/route.ts": {
+    "size": 1498,
+    "mtime_ns": 1793474337752333700,
+    "indexed_at_ns": 1793536816507320500,
+    "word_count": 185
+  },
+  "src/app/api/gmail/callback/route.ts": {
+    "size": 2446,
+    "mtime_ns": 1792865171272803600,
+    "indexed_at_ns": 1793536816537319600,
+    "word_count": 250
+  },
+  "src/app/api/gmail/connect/route.ts": {
+    "size": 1059,
+    "mtime_ns": 1787494631947282500,
+    "indexed_at_ns": 1793536816571957300,
+    "word_count": 142
+  },
+  "src/app/api/gmail/route.ts": {
+    "size": 2087,
+    "mtime_ns": 1788235808485384800,
+    "indexed_at_ns": 1793536816597739600,
+    "word_count": 239
+  },
+  "src/app/api/goals/route.ts": {
+    "size": 4026,
+    "mtime_ns": 1793297322031429700,
+    "indexed_at_ns": 1793536816628737500,
+    "word_count": 522
+  },
+  "src/app/api/income/route.ts": {
+    "size": 2518,
+    "mtime_ns": 1788337835718714500,
+    "indexed_at_ns": 1793536816659943400,
+    "word_count": 306
+  },
+  "src/app/api/ingest/route.ts": {
+    "size": 3827,
+    "mtime_ns": 1793480328777613800,
+    "indexed_at_ns": 1793536816693881500,
+    "word_count": 461
+  },
+  "src/app/api/notifications/route.ts": {
+    "size": 1465,
+    "mtime_ns": 1792865172047260200,
+    "indexed_at_ns": 1793536816718539300,
+    "word_count": 191
+  },
+  "src/app/api/plan/route.ts": {
+    "size": 3300,
+    "mtime_ns": 1792865172055773700,
+    "indexed_at_ns": 1793536816745342700,
+    "word_count": 434
+  },
+  "src/app/api/push/route.ts": {
+    "size": 2179,
+    "mtime_ns": 1792865172063788900,
+    "indexed_at_ns": 1793536816775669200,
+    "word_count": 271
+  },
+  "src/app/api/receipt/route.ts": {
+    "size": 1524,
+    "mtime_ns": 1788412221117706500,
+    "indexed_at_ns": 1793536816798035100,
+    "word_count": 195
+  },
+  "src/app/api/subscriptions/route.ts": {
+    "size": 3100,
+    "mtime_ns": 1793480330485545400,
+    "indexed_at_ns": 1793536816817624900,
+    "word_count": 375
+  },
+  "src/app/api/telegram/route.ts": {
+    "size": 55034,
+    "mtime_ns": 1793480328917521400,
+    "indexed_at_ns": 1793536816840598100,
+    "word_count": 6122
+  },
+  "src/app/api/transfers/route.ts": {
+    "size": 4081,
+    "mtime_ns": 1788337835970462900,
+    "indexed_at_ns": 1793536816885355100,
+    "word_count": 489
+  },
+  "src/app/delete-account/page.tsx": {
+    "size": 4918,
+    "mtime_ns": 1793295376099789300,
+    "indexed_at_ns": 1793536816920225300,
+    "word_count": 515
+  },
+  "src/app/layout.tsx": {
+    "size": 769,
+    "mtime_ns": 1793295375114255900,
+    "indexed_at_ns": 1793536816952138700,
+    "word_count": 89
+  },
+  "src/app/page.tsx": {
+    "size": 90,
+    "mtime_ns": 1786894443153812800,
+    "indexed_at_ns": 1793536816973062300,
+    "word_count": 13
+  },
+  "src/app/privacy/page.tsx": {
+    "size": 4963,
+    "mtime_ns": 1793295376111368200,
+    "indexed_at_ns": 1793536816993751900,
+    "word_count": 621
+  },
+  "src/components/App.tsx": {
+    "size": 9633,
+    "mtime_ns": 1793295375150913300,
+    "indexed_at_ns": 1793536817023656100,
+    "word_count": 907
+  },
+  "src/components/CategoryChart.tsx": {
+    "size": 3394,
+    "mtime_ns": 1786880881388733700,
+    "indexed_at_ns": 1793536817052341500,
+    "word_count": 384
+  },
+  "src/components/ChartTip.tsx": {
+    "size": 1339,
+    "mtime_ns": 1786876253728002800,
+    "indexed_at_ns": 1793536817080509600,
+    "word_count": 126
+  },
+  "src/components/DailyCard.tsx": {
+    "size": 4416,
+    "mtime_ns": 1792865172089983500,
+    "indexed_at_ns": 1793536817098055600,
+    "word_count": 382
+  },
+  "src/components/FamilyTab.tsx": {
+    "size": 4970,
+    "mtime_ns": 1792865171517847100,
+    "indexed_at_ns": 1793536817130345700,
+    "word_count": 406
+  },
+  "src/components/HomeTab.tsx": {
+    "size": 3171,
+    "mtime_ns": 1792865171529381500,
+    "indexed_at_ns": 1793536817159320100,
+    "word_count": 303
+  },
+  "src/components/LoginScreen.tsx": {
+    "size": 1020,
+    "mtime_ns": 1793295375177966900,
+    "indexed_at_ns": 1793536817187127700,
+    "word_count": 92
+  },
+  "src/components/TopMerchants.tsx": {
+    "size": 1686,
+    "mtime_ns": 1786880861216337900,
+    "indexed_at_ns": 1793536817213306700,
+    "word_count": 182
+  },
+  "src/components/TransactionsTab.tsx": {
+    "size": 5024,
+    "mtime_ns": 1792865171543932200,
+    "indexed_at_ns": 1793536817239397600,
+    "word_count": 438
+  },
+  "src/components/TrendChart.tsx": {
+    "size": 2908,
+    "mtime_ns": 1786880890987156700,
+    "indexed_at_ns": 1793536817269235400,
+    "word_count": 327
+  },
+  "src/components/theme.ts": {
+    "size": 2937,
+    "mtime_ns": 1786894266224235700,
+    "indexed_at_ns": 1793536817297575200,
+    "word_count": 380
+  },
+  "src/lib/accounts.test.ts": {
+    "size": 6070,
+    "mtime_ns": 1788337835982459600,
+    "indexed_at_ns": 1793536817328501200,
+    "word_count": 692
+  },
+  "src/lib/accounts.ts": {
+    "size": 10466,
+    "mtime_ns": 1788341438708463800,
+    "indexed_at_ns": 1793536817356396400,
+    "word_count": 1314
+  },
+  "src/lib/ai-keys.test.ts": {
+    "size": 3077,
+    "mtime_ns": 1788512007734558600,
+    "indexed_at_ns": 1793536817394149500,
+    "word_count": 352
+  },
+  "src/lib/ai-keys.ts": {
+    "size": 7146,
+    "mtime_ns": 1793389115038589500,
+    "indexed_at_ns": 1793536817421026000,
+    "word_count": 970
+  },
+  "src/lib/api-auth.ts": {
+    "size": 405,
+    "mtime_ns": 1787401416106496700,
+    "indexed_at_ns": 1793536817457084700,
+    "word_count": 46
+  },
+  "src/lib/auth.ts": {
+    "size": 1453,
+    "mtime_ns": 1786894230695068700,
+    "indexed_at_ns": 1793536817485802700,
+    "word_count": 190
+  },
+  "src/lib/bank-message.corpus.test.ts": {
+    "size": 11608,
+    "mtime_ns": 1793480330506634800,
+    "indexed_at_ns": 1793536817519249500,
+    "word_count": 1661
+  },
+  "src/lib/bank-message.test.ts": {
+    "size": 19469,
+    "mtime_ns": 1793486226936554900,
+    "indexed_at_ns": 1793536817548658200,
+    "word_count": 2330
+  },
+  "src/lib/bank-message.ts": {
+    "size": 17710,
+    "mtime_ns": 1793485284530008500,
+    "indexed_at_ns": 1793536817577036500,
+    "word_count": 2161
+  },
+  "src/lib/bbps/index.ts": {
+    "size": 1639,
+    "mtime_ns": 1787429755849425300,
+    "indexed_at_ns": 1793536817613377900,
+    "word_count": 210
+  },
+  "src/lib/bbps/mock.test.ts": {
+    "size": 2989,
+    "mtime_ns": 1793031436960592400,
+    "indexed_at_ns": 1793536817640479200,
+    "word_count": 322
+  },
+  "src/lib/bbps/mock.ts": {
+    "size": 8034,
+    "mtime_ns": 1793031436959590000,
+    "indexed_at_ns": 1793536817666643800,
+    "word_count": 988
+  },
+  "src/lib/bbps/setu.ts": {
+    "size": 9670,
+    "mtime_ns": 1792865171609491300,
+    "indexed_at_ns": 1793536817697271700,
+    "word_count": 1090
+  },
+  "src/lib/bbps/types.ts": {
+    "size": 1309,
+    "mtime_ns": 1793031423772848100,
+    "indexed_at_ns": 1793536817733342500,
+    "word_count": 168
+  },
+  "src/lib/bill-detect.test.ts": {
+    "size": 7051,
+    "mtime_ns": 1793389643556671700,
+    "indexed_at_ns": 1793536817753873500,
+    "word_count": 772
+  },
+  "src/lib/bill-detect.ts": {
+    "size": 15810,
+    "mtime_ns": 1793389633315627500,
+    "indexed_at_ns": 1793536817786619800,
+    "word_count": 1894
+  },
+  "src/lib/billers.test.ts": {
+    "size": 3355,
+    "mtime_ns": 1788512007755785400,
+    "indexed_at_ns": 1793536817825524700,
+    "word_count": 357
+  },
+  "src/lib/billers.ts": {
+    "size": 16103,
+    "mtime_ns": 1788512007783884500,
+    "indexed_at_ns": 1793536817850229300,
+    "word_count": 1750
+  },
+  "src/lib/bills.test.ts": {
+    "size": 4501,
+    "mtime_ns": 1787429755716070700,
+    "indexed_at_ns": 1793536817873364100,
+    "word_count": 436
+  },
+  "src/lib/bills.ts": {
+    "size": 17325,
+    "mtime_ns": 1793031423774849200,
+    "indexed_at_ns": 1793536817900939700,
+    "word_count": 2082
+  },
+  "src/lib/briefs.ts": {
+    "size": 7743,
+    "mtime_ns": 1793480329155204500,
+    "indexed_at_ns": 1793536817940148700,
+    "word_count": 952
+  },
+  "src/lib/budgets.ts": {
+    "size": 5101,
+    "mtime_ns": 1792865171662430000,
+    "indexed_at_ns": 1793536817974206400,
+    "word_count": 623
+  },
+  "src/lib/cards/catalog-data.ts": {
+    "size": 58195,
+    "mtime_ns": 1793486788120614200,
+    "indexed_at_ns": 1793536818008126400,
+    "word_count": 4809
+  },
+  "src/lib/cards/catalog.ts": {
+    "size": 965,
+    "mtime_ns": 1793486226545624900,
+    "indexed_at_ns": 1793536818049211700,
+    "word_count": 158
+  },
+  "src/lib/cards/detect.ts": {
+    "size": 4515,
+    "mtime_ns": 1793486627685392700,
+    "indexed_at_ns": 1793536818076593000,
+    "word_count": 473
+  },
+  "src/lib/cards/engine.test.ts": {
+    "size": 17222,
+    "mtime_ns": 1793486839328491400,
+    "indexed_at_ns": 1793536818114098700,
+    "word_count": 2132
+  },
+  "src/lib/cards/engine.ts": {
+    "size": 26538,
+    "mtime_ns": 1793486867014710300,
+    "indexed_at_ns": 1793536818148266900,
+    "word_count": 3174
+  },
+  "src/lib/cards/service.ts": {
+    "size": 13257,
+    "mtime_ns": 1793486680352874800,
+    "indexed_at_ns": 1793536818189300700,
+    "word_count": 1463
+  },
+  "src/lib/cards/types.ts": {
+    "size": 3094,
+    "mtime_ns": 1793486533507145700,
+    "indexed_at_ns": 1793536818223536500,
+    "word_count": 464
+  },
+  "src/lib/daily-budget.test.ts": {
+    "size": 9204,
+    "mtime_ns": 1793301051173332500,
+    "indexed_at_ns": 1793536818245172900,
+    "word_count": 928
+  },
+  "src/lib/daily-budget.ts": {
+    "size": 20858,
+    "mtime_ns": 1793301065420115900,
+    "indexed_at_ns": 1793536818275698800,
+    "word_count": 2699
+  },
+  "src/lib/detected.test.ts": {
+    "size": 1670,
+    "mtime_ns": 1788236944250668400,
+    "indexed_at_ns": 1793536818311429800,
+    "word_count": 193
+  },
+  "src/lib/detected.ts": {
+    "size": 15006,
+    "mtime_ns": 1793389123261170800,
+    "indexed_at_ns": 1793536818341114800,
+    "word_count": 1819
+  },
+  "src/lib/digest.ts": {
+    "size": 5158,
+    "mtime_ns": 1792865171698027300,
+    "indexed_at_ns": 1793536818375995800,
+    "word_count": 611
+  },
+  "src/lib/email-txn.test.ts": {
+    "size": 2703,
+    "mtime_ns": 1793336121017605600,
+    "indexed_at_ns": 1793536818410059000,
+    "word_count": 322
+  },
+  "src/lib/email-txn.ts": {
+    "size": 1800,
+    "mtime_ns": 1793336121022603900,
+    "indexed_at_ns": 1793536818439564400,
+    "word_count": 249
+  },
+  "src/lib/etag.test.ts": {
+    "size": 1058,
+    "mtime_ns": 1793295376195895700,
+    "indexed_at_ns": 1793536818467168300,
+    "word_count": 133
+  },
+  "src/lib/etag.ts": {
+    "size": 810,
+    "mtime_ns": 1793295376199897500,
+    "indexed_at_ns": 1793536818493895300,
+    "word_count": 106
+  },
+  "src/lib/family.ts": {
+    "size": 5484,
+    "mtime_ns": 1792865171709645500,
+    "indexed_at_ns": 1793536818517174300,
+    "word_count": 665
+  },
+  "src/lib/flip.ts": {
+    "size": 4994,
+    "mtime_ns": 1793480330531636700,
+    "indexed_at_ns": 1793536818552751900,
+    "word_count": 596
+  },
+  "src/lib/gmail.ts": {
+    "size": 7208,
+    "mtime_ns": 1792865171721657400,
+    "indexed_at_ns": 1793536818579981300,
+    "word_count": 822
+  },
+  "src/lib/goals.test.ts": {
+    "size": 2374,
+    "mtime_ns": 1792865172160030100,
+    "indexed_at_ns": 1793536818620892700,
+    "word_count": 288
+  },
+  "src/lib/goals.ts": {
+    "size": 7374,
+    "mtime_ns": 1793297322031429700,
+    "indexed_at_ns": 1793536818645049500,
+    "word_count": 985
+  },
+  "src/lib/identity.test.ts": {
+    "size": 5703,
+    "mtime_ns": 1788512007798431800,
+    "indexed_at_ns": 1793536818677385700,
+    "word_count": 595
+  },
+  "src/lib/identity.ts": {
+    "size": 9286,
+    "mtime_ns": 1792865171740799700,
+    "indexed_at_ns": 1793536818706549800,
+    "word_count": 1239
+  },
+  "src/lib/inbox.ts": {
+    "size": 2778,
+    "mtime_ns": 1792865172180283300,
+    "indexed_at_ns": 1793536818743552800,
+    "word_count": 363
+  },
+  "src/lib/income.ts": {
+    "size": 2141,
+    "mtime_ns": 1788337835879393500,
+    "indexed_at_ns": 1793536818775367000,
+    "word_count": 258
+  },
+  "src/lib/ingest.test.ts": {
+    "size": 1876,
+    "mtime_ns": 1793336121027621400,
+    "indexed_at_ns": 1793536818803642900,
+    "word_count": 224
+  },
+  "src/lib/ingest.ts": {
+    "size": 16274,
+    "mtime_ns": 1793480329282611400,
+    "indexed_at_ns": 1793536818829813300,
+    "word_count": 2036
+  },
+  "src/lib/insights.test.ts": {
+    "size": 4341,
+    "mtime_ns": 1787401239658463800,
+    "indexed_at_ns": 1793536818866703000,
+    "word_count": 466
+  },
+  "src/lib/insights.ts": {
+    "size": 7935,
+    "mtime_ns": 1787401195289599000,
+    "indexed_at_ns": 1793536818892573800,
+    "word_count": 1091
+  },
+  "src/lib/llm.receipt.test.ts": {
+    "size": 1632,
+    "mtime_ns": 1786890837234248200,
+    "indexed_at_ns": 1793536818930009400,
+    "word_count": 188
+  },
+  "src/lib/llm.ts": {
+    "size": 13440,
+    "mtime_ns": 1793480329335623100,
+    "indexed_at_ns": 1793536818955762000,
+    "word_count": 1643
+  },
+  "src/lib/log-expense.ts": {
+    "size": 12827,
+    "mtime_ns": 1793295375489174000,
+    "indexed_at_ns": 1793536818992977400,
+    "word_count": 1602
+  },
+  "src/lib/mailer.ts": {
+    "size": 7638,
+    "mtime_ns": 1793295375499012700,
+    "indexed_at_ns": 1793536819025549300,
+    "word_count": 862
+  },
+  "src/lib/merchants.test.ts": {
+    "size": 3564,
+    "mtime_ns": 1792865171774450500,
+    "indexed_at_ns": 1793536819058030100,
+    "word_count": 320
+  },
+  "src/lib/merchants.ts": {
+    "size": 5459,
+    "mtime_ns": 1792865171782451100,
+    "indexed_at_ns": 1793536819085244800,
+    "word_count": 714
+  },
+  "src/lib/notify.test.ts": {
+    "size": 995,
+    "mtime_ns": 1792865172184277300,
+    "indexed_at_ns": 1793536819125335300,
+    "word_count": 120
+  },
+  "src/lib/notify.ts": {
+    "size": 5327,
+    "mtime_ns": 1793480329364146600,
+    "indexed_at_ns": 1793536819141971400,
+    "word_count": 718
+  },
+  "src/lib/otp.ts": {
+    "size": 4635,
+    "mtime_ns": 1788512007844687400,
+    "indexed_at_ns": 1793536819157779300,
+    "word_count": 578
+  },
+  "src/lib/parser.test.ts": {
+    "size": 3621,
+    "mtime_ns": 1786876253816972400,
+    "indexed_at_ns": 1793536819174574000,
+    "word_count": 365
+  },
+  "src/lib/parser.ts": {
+    "size": 4627,
+    "mtime_ns": 1786885670236758600,
+    "indexed_at_ns": 1793536819187187700,
+    "word_count": 621
+  },
+  "src/lib/plan.ts": {
+    "size": 10381,
+    "mtime_ns": 1793301072098633400,
+    "indexed_at_ns": 1793536819202098100,
+    "word_count": 1215
+  },
+  "src/lib/push.test.ts": {
+    "size": 2461,
+    "mtime_ns": 1792865172211251500,
+    "indexed_at_ns": 1793536819217496200,
+    "word_count": 271
+  },
+  "src/lib/push.ts": {
+    "size": 2718,
+    "mtime_ns": 1792865172218247200,
+    "indexed_at_ns": 1793536819230108200,
+    "word_count": 336
+  },
+  "src/lib/quota.ts": {
+    "size": 4540,
+    "mtime_ns": 1792865171804735300,
+    "indexed_at_ns": 1793536819245853000,
+    "word_count": 625
+  },
+  "src/lib/receipts.test.ts": {
+    "size": 4109,
+    "mtime_ns": 1788412221150354600,
+    "indexed_at_ns": 1793536819261870300,
+    "word_count": 525
+  },
+  "src/lib/receipts.ts": {
+    "size": 9458,
+    "mtime_ns": 1788412221182606000,
+    "indexed_at_ns": 1793536819274783800,
+    "word_count": 1232
+  },
+  "src/lib/redact.test.ts": {
+    "size": 3393,
+    "mtime_ns": 1793480330544635000,
+    "indexed_at_ns": 1793536819290769200,
+    "word_count": 323
+  },
+  "src/lib/redact.ts": {
+    "size": 2944,
+    "mtime_ns": 1793480330562637600,
+    "indexed_at_ns": 1793536819303038500,
+    "word_count": 369
+  },
+  "src/lib/review.test.ts": {
+    "size": 1241,
+    "mtime_ns": 1793295376278249800,
+    "indexed_at_ns": 1793536819318613900,
+    "word_count": 91
+  },
+  "src/lib/review.ts": {
+    "size": 1230,
+    "mtime_ns": 1792870551357353700,
+    "indexed_at_ns": 1793536819327437600,
+    "word_count": 172
+  },
+  "src/lib/secret-box.test.ts": {
+    "size": 1679,
+    "mtime_ns": 1793480330573636000,
+    "indexed_at_ns": 1793536819339368700,
+    "word_count": 156
+  },
+  "src/lib/secret-box.ts": {
+    "size": 2522,
+    "mtime_ns": 1793480330585626500,
+    "indexed_at_ns": 1793536819350451900,
+    "word_count": 336
+  },
+  "src/lib/subscriptions.test.ts": {
+    "size": 7380,
+    "mtime_ns": 1793480330613670400,
+    "indexed_at_ns": 1793536819364021700,
+    "word_count": 671
+  },
+  "src/lib/subscriptions.ts": {
+    "size": 17951,
+    "mtime_ns": 1793480330695165300,
+    "indexed_at_ns": 1793536819376449200,
+    "word_count": 2090
+  },
+  "src/lib/supabase-browser.ts": {
+    "size": 565,
+    "mtime_ns": 1786876253838396200,
+    "indexed_at_ns": 1793536819394742300,
+    "word_count": 65
+  },
+  "src/lib/supabase-server.ts": {
+    "size": 539,
+    "mtime_ns": 1786876253840403800,
+    "indexed_at_ns": 1793536819418253800,
+    "word_count": 69
+  },
+  "src/lib/telegram.ts": {
+    "size": 2152,
+    "mtime_ns": 1786891614936967000,
+    "indexed_at_ns": 1793536819443683700,
+    "word_count": 248
+  },
+  "src/lib/transfers.test.ts": {
+    "size": 3364,
+    "mtime_ns": 1788337836022461700,
+    "indexed_at_ns": 1793536819478607100,
+    "word_count": 371
+  },
+  "src/lib/transfers.ts": {
+    "size": 5978,
+    "mtime_ns": 1792865171813744500,
+    "indexed_at_ns": 1793536819504927600,
+    "word_count": 755
+  },
+  "src/lib/types.ts": {
+    "size": 958,
+    "mtime_ns": 1792865171816742600,
+    "indexed_at_ns": 1793536819539069600,
+    "word_count": 125
+  },
+  "src/lib/voice.ts": {
+    "size": 1185,
+    "mtime_ns": 1787401428647973000,
+    "indexed_at_ns": 1793536819559163800,
+    "word_count": 139
+  },
+  "src/lib/weekly.test.ts": {
+    "size": 3318,
+    "mtime_ns": 1793480330709222200,
+    "indexed_at_ns": 1793536819585785100,
+    "word_count": 357
+  },
+  "src/lib/weekly.ts": {
+    "size": 6411,
+    "mtime_ns": 1793480330745441100,
+    "indexed_at_ns": 1793536819614593400,
+    "word_count": 909
+  },
+  "supabase/.temp/linked-project.json": {
+    "size": 157,
+    "mtime_ns": 1792865172225424200,
+    "indexed_at_ns": 1793536902766573600,
+    "word_count": 10,
+    "hashes": {
+      "supabase/.temp/linked-project.json": "30436cb5ff2f6ffdae652898a2b94b7f910143bd9516d85b66c6f84517bfba8d"
+    }
+  },
+  "supabase/migrations/v10-receipt-items.sql": {
+    "size": 2882,
+    "mtime_ns": 1788411472684237200,
+    "indexed_at_ns": 1793536902767684300,
+    "word_count": 374,
+    "hashes": {
+      "supabase/migrations/v10-receipt-items.sql": "15a59984adc908b8904d811a3629421666985aabb3600ee37ac2a58e6a58ecf1"
+    }
+  },
+  "supabase/migrations/v11-billers.sql": {
+    "size": 5041,
+    "mtime_ns": 1788415070668321800,
+    "indexed_at_ns": 1793536902768999600,
+    "word_count": 504,
+    "hashes": {
+      "supabase/migrations/v11-billers.sql": "d1a5c1798017fac2d546b176017b2f0759a9f0c267db327455bbca133aaeafb2"
+    }
+  },
+  "supabase/migrations/v12-accounts.sql": {
+    "size": 4003,
+    "mtime_ns": 1788420452719848900,
+    "indexed_at_ns": 1793536902769962200,
+    "word_count": 525,
+    "hashes": {
+      "supabase/migrations/v12-accounts.sql": "be67beb30a6810ab9f1cd9db9af84da0ccad2c2f6947fdcc9e47c34394bd3402"
+    }
+  },
+  "supabase/migrations/v13-user-keys.sql": {
+    "size": 1026,
+    "mtime_ns": 1788427926252126300,
+    "indexed_at_ns": 1793536902770860200,
+    "word_count": 174,
+    "hashes": {
+      "supabase/migrations/v13-user-keys.sql": "072ccda81aa513d3a1ee906b8898ff2f4d770c72fd73d5fb2ea4222458517d12"
+    }
+  },
+  "supabase/migrations/v14-daily-budget.sql": {
+    "size": 2840,
+    "mtime_ns": 1792852904318837500,
+    "indexed_at_ns": 1793536902771794100,
+    "word_count": 379,
+    "hashes": {
+      "supabase/migrations/v14-daily-budget.sql": "fd2b9f63e581fb6c253e4462e0c7138fc86629f8652a0ff308c229a53a606d06"
+    }
+  },
+  "supabase/migrations/v15-push.sql": {
+    "size": 2019,
+    "mtime_ns": 1792852904319827100,
+    "indexed_at_ns": 1793536902772717500,
+    "word_count": 264,
+    "hashes": {
+      "supabase/migrations/v15-push.sql": "a84eb72e6dfa59b209f602932a8dcac49dd9feab958f5e9f3a9dedb642ea4dd1"
+    }
+  },
+  "supabase/migrations/v16-payday.sql": {
+    "size": 352,
+    "mtime_ns": 1792852904319827100,
+    "indexed_at_ns": 1793536902773679800,
+    "word_count": 64,
+    "hashes": {
+      "supabase/migrations/v16-payday.sql": "de13ff19eab5ded300d791ab16e38045e94d66c1398bc109fc58fc0700f51803"
+    }
+  },
+  "supabase/migrations/v17-goals.sql": {
+    "size": 1445,
+    "mtime_ns": 1792852904319827100,
+    "indexed_at_ns": 1793536902774675500,
+    "word_count": 208,
+    "hashes": {
+      "supabase/migrations/v17-goals.sql": "7a781875856cb84fa6daabb86b33c7b23293af7e10586b37b3cf8b9acf69e1a1"
+    }
+  },
+  "supabase/migrations/v18-goal-kind.sql": {
+    "size": 443,
+    "mtime_ns": 1793297321490369600,
+    "indexed_at_ns": 1793536902775694600,
+    "word_count": 78,
+    "hashes": {
+      "supabase/migrations/v18-goal-kind.sql": "6cbf02654ef6f36ad43c8a538aa2eec8569f755ae91b091619013456706c5d47"
+    }
+  },
+  "supabase/migrations/v19-subscriptions.sql": {
+    "size": 1514,
+    "mtime_ns": 1793390719797564700,
+    "indexed_at_ns": 1793536902776819400,
+    "word_count": 217,
+    "hashes": {
+      "supabase/migrations/v19-subscriptions.sql": "5cbd534f2f701241da5f410c3da66ef6d5d708892e9d103cf9a8065b51fbd76c"
+    }
+  },
+  "supabase/migrations/v20-cards.sql": {
+    "size": 2314,
+    "mtime_ns": 1793485650790385600,
+    "indexed_at_ns": 1793536902778090200,
+    "word_count": 335,
+    "hashes": {
+      "supabase/migrations/v20-cards.sql": "ea521da213eb600e1792437214cc1a1629fbd8bb616238b6b921a10af6f11b01"
+    }
+  },
+  "supabase/migrations/v3-multiuser.sql": {
+    "size": 2336,
+    "mtime_ns": 1786891499755123300,
+    "indexed_at_ns": 1793536902779213100,
+    "word_count": 257,
+    "hashes": {
+      "supabase/migrations/v3-multiuser.sql": "942ec2d3011c5bdd6dde07fc95860b721157515c1fa75148ddf120e27b51cb24"
+    }
+  },
+  "supabase/migrations/v3c-lockdown.sql": {
+    "size": 344,
+    "mtime_ns": 1786896469244165400,
+    "indexed_at_ns": 1793536902780223600,
+    "word_count": 58,
+    "hashes": {
+      "supabase/migrations/v3c-lockdown.sql": "fb4cd414933293c76953549f86781decf6854483c6d1ee92abd8750c208f11fe"
+    }
+  },
+  "supabase/migrations/v4-features.sql": {
+    "size": 2607,
+    "mtime_ns": 1787401149002825000,
+    "indexed_at_ns": 1793536902781412000,
+    "word_count": 340,
+    "hashes": {
+      "supabase/migrations/v4-features.sql": "64a3796ee5e59f6a9131b8da345c104797ce5b2c9cc420e20d408a84e72e547e"
+    }
+  },
+  "supabase/migrations/v5-bills.sql": {
+    "size": 2031,
+    "mtime_ns": 1787427200399512500,
+    "indexed_at_ns": 1793536902782481200,
+    "word_count": 269,
+    "hashes": {
+      "supabase/migrations/v5-bills.sql": "706b8a9517e184d8106fddb7b4536e666db174da1d166c1ddb9f6b62b29753d9"
+    }
+  },
+  "supabase/migrations/v6-bbps.sql": {
+    "size": 1647,
+    "mtime_ns": 1787494087522565200,
+    "indexed_at_ns": 1793536902783637400,
+    "word_count": 235,
+    "hashes": {
+      "supabase/migrations/v6-bbps.sql": "ab7a6c31a129dca013af659bc40c058c63c453c252db7b13a9ff02c7378c7088"
+    }
+  },
+  "supabase/migrations/v7-detect.sql": {
+    "size": 2682,
+    "mtime_ns": 1788235819415449900,
+    "indexed_at_ns": 1793536902784856400,
+    "word_count": 332,
+    "hashes": {
+      "supabase/migrations/v7-detect.sql": "ae5fe7d896e2327f1dd1f598886e2800a294b5ea53e0d39488a631c4b2899eef"
+    }
+  },
+  "supabase/migrations/v8-ledger.sql": {
+    "size": 7198,
+    "mtime_ns": 1788338073763261700,
+    "indexed_at_ns": 1793536902785778200,
+    "word_count": 840,
+    "hashes": {
+      "supabase/migrations/v8-ledger.sql": "b02f76c23ebb693664fbf236672ce7e3c40390bbde27c00217b1bdc2a5f78d07"
+    }
+  },
+  "supabase/migrations/v9-capture.sql": {
+    "size": 3608,
+    "mtime_ns": 1788338665323953600,
+    "indexed_at_ns": 1793536902786578100,
+    "word_count": 491,
+    "hashes": {
+      "supabase/migrations/v9-capture.sql": "6257562de5f07b85f161325afb27bfc804367cd8ca51dde398e3acc0be619bdb"
+    }
+  },
+  "supabase/schema.sql": {
+    "size": 4962,
+    "mtime_ns": 1786891618173534300,
+    "indexed_at_ns": 1793536902787285900,
+    "word_count": 386,
+    "hashes": {
+      "supabase/schema.sql": "58d5fb2330faaae14c7b270ae7d40b57d5fe01cbb2e4295884d861358092c60b"
+    }
+  },
+  "tsconfig.json": {
+    "size": 576,
+    "mtime_ns": 1786895266273541900,
+    "indexed_at_ns": 1793536902787932800,
+    "word_count": 51,
+    "hashes": {
+      "tsconfig.json": "82b9f876927d0f8a75c221e6402facb557dea02c299874cd4ca824053352bf92"
+    }
+  },
+  "vercel.json": {
+    "size": 255,
+    "mtime_ns": 1792865171818754400,
+    "indexed_at_ns": 1793536902788582700,
+    "word_count": 35,
+    "hashes": {
+      "vercel.json": "863b593e60d110935d5c566b6bb1ca9f9c732178036c64428b404faad1a4d6ea"
+    }
+  },
+  "vitest.config.ts": {
+    "size": 371,
+    "mtime_ns": 1793350439497044500,
+    "indexed_at_ns": 1793536820146085300,
+    "word_count": 54
+  },
+  "docs/play-store/assets/feature-graphic.png": {
+    "size": 25050,
+    "mtime_ns": 1792874573068205500,
+    "indexed_at_ns": 1793536828293784500,
+    "hashes": {
+      "docs/play-store/assets/feature-graphic.png": "d114d2cc1f723490a030f03ed521cae635341dfb5391146376c376f6c6221b71"
+    }
+  },
+  "docs/play-store/assets/icon-512.png": {
+    "size": 16619,
+    "mtime_ns": 1792874500725262300,
+    "indexed_at_ns": 1793536828301583700,
+    "hashes": {
+      "docs/play-store/assets/icon-512.png": "e639cca4c7b641d79fe95f80cafedc4f2258f39b9b6238ab5f885facfe6c1426"
+    }
+  },
+  "mobile/assets/android-icon-background.png": {
+    "size": 5235,
+    "mtime_ns": 1792874500484862200,
+    "indexed_at_ns": 1793536828308806700,
+    "hashes": {
+      "mobile/assets/android-icon-background.png": "3f8f106fa1a984750166c2c1203871162d0c0fa7f16d5de4400f8c781fbf9fe8"
+    }
+  },
+  "mobile/assets/android-icon-foreground.png": {
+    "size": 23656,
+    "mtime_ns": 1792874500453351000,
+    "indexed_at_ns": 1793536828315421300,
+    "hashes": {
+      "mobile/assets/android-icon-foreground.png": "325cbcca2dae4909981d8723454f08618e11fd494bc37b4a078301df02c526fd"
+    }
+  },
+  "mobile/assets/android-icon-monochrome.png": {
+    "size": 20653,
+    "mtime_ns": 1792874500527178000,
+    "indexed_at_ns": 1793536828326914200,
+    "hashes": {
+      "mobile/assets/android-icon-monochrome.png": "2c9321a022f44fb19ce9d3a28d1f19ed9a178c6c5a4db1d4bb6aa30088f94592"
+    }
+  },
+  "mobile/assets/favicon.png": {
+    "size": 2249,
+    "mtime_ns": 1792874500663949600,
+    "indexed_at_ns": 1793536828341448100,
+    "hashes": {
+      "mobile/assets/favicon.png": "6629f41e72240c574d8d4d1014bb7832eb9a504e896a088b7f8eb49d9d678014"
+    }
+  },
+  "mobile/assets/icon.png": {
+    "size": 35687,
+    "mtime_ns": 1792874500412956100,
+    "indexed_at_ns": 1793536828354623600,
+    "hashes": {
+      "mobile/assets/icon.png": "af502462292302a8f5efdfe119858fefd4f19c8e0f2795f20d59c766dca0d430"
+    }
+  },
+  "mobile/assets/notification-icon.png": {
+    "size": 2996,
+    "mtime_ns": 1792874500567520400,
+    "indexed_at_ns": 1793536828372217800,
+    "hashes": {
+      "mobile/assets/notification-icon.png": "cdc93fbd0342650a915b90a679176b777dec4f874627b5161578ce4e9c91744a"
+    }
+  },
+  "mobile/assets/splash-icon.png": {
+    "size": 32338,
+    "mtime_ns": 1792874500611622500,
+    "indexed_at_ns": 1793536828385590800,
+    "hashes": {
+      "mobile/assets/splash-icon.png": "6ca31ec56e6a644df1e933857739d676219acdadf4f188946af5e524e60bef2d"
+    }
+  },
+  "public/icon-192.png": {
+    "size": 10494,
+    "mtime_ns": 1792874548918662300,
+    "indexed_at_ns": 1793536828401184900,
+    "hashes": {
+      "public/icon-192.png": "a740382d4e99189942ea8d0a4bf9c1da76b3f15a09dd245323504b722b866e9a"
+    }
+  },
+  "public/icon-512.png": {
+    "size": 31425,
+    "mtime_ns": 1792874548902172400,
+    "indexed_at_ns": 1793536828415095900,
+    "hashes": {
+      "public/icon-512.png": "592295024e758ba8deddda319ac676d508184473b923b37119486b9e884a1015"
+    }
+  }
+}

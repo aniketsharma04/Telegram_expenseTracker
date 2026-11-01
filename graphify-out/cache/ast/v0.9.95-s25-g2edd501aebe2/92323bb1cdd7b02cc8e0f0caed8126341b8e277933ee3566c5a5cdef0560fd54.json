@@ -1,0 +1,1240 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_kt",
+      "label": "CaptureStore.kt",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "label": "CaptureStore",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L17",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "label": ".prefs()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L79",
+      "_callable": true
+    },
+    {
+      "id": "context",
+      "label": "Context",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt"
+    },
+    {
+      "id": "sharedpreferences",
+      "label": "SharedPreferences",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt"
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "label": ".watchedPackages()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L83",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "label": ".setUploadConfig()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L94",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_uploadconfig",
+      "label": ".uploadConfig()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L100",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "label": ".snapshot()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L108",
+      "_callable": true
+    },
+    {
+      "id": "jsonarray",
+      "label": "JSONArray",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt"
+    },
+    {
+      "id": "synchronized",
+      "label": "Synchronized",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt"
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "label": ".remove()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L117",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "label": ".setWatchedPackages()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L128",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_carriescode",
+      "label": ".carriesCode()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L149",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_looksfinancial",
+      "label": ".looksFinancial()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L157",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "label": ".enqueue()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L160",
+      "_callable": true
+    },
+    {
+      "id": "jsonobject",
+      "label": "JSONObject",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt"
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "label": ".drain()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L176",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_pendingcount",
+      "label": ".pendingCount()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L183",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "label": ".readQueue()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L185",
+      "_callable": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_kt",
+      "target": "context",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L3",
+      "weight": 1.0,
+      "metadata": { "target_fqn": "android.content.Context" }
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_kt",
+      "target": "sharedpreferences",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L4",
+      "weight": 1.0,
+      "metadata": { "target_fqn": "android.content.SharedPreferences" }
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_kt",
+      "target": "jsonarray",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L5",
+      "weight": 1.0,
+      "metadata": { "target_fqn": "org.json.JSONArray" }
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_kt",
+      "target": "jsonobject",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L6",
+      "weight": 1.0,
+      "metadata": { "target_fqn": "org.json.JSONObject" }
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_kt",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L79",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "target": "sharedpreferences",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L79",
+      "weight": 1.0,
+      "context": "return_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L83",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L94",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_uploadconfig",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_uploadconfig",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L100",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L108",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "target": "jsonarray",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L108",
+      "weight": 1.0,
+      "context": "return_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "target": "synchronized",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L108",
+      "weight": 1.0,
+      "context": "attribute"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L117",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "target": "synchronized",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L117",
+      "weight": 1.0,
+      "context": "attribute"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L128",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_carriescode",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L149",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_looksfinancial",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L160",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "target": "jsonobject",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L160",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "target": "synchronized",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L160",
+      "weight": 1.0,
+      "context": "attribute"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L176",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L176",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "target": "jsonarray",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L176",
+      "weight": 1.0,
+      "context": "return_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "target": "synchronized",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L176",
+      "weight": 1.0,
+      "context": "attribute"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_pendingcount",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_pendingcount",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L183",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "target": "context",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L185",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "target": "jsonarray",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L185",
+      "weight": 1.0,
+      "context": "return_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_uploadconfig",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_pendingcount",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L186",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_prefs",
+      "callee": "getSharedPreferences",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L80",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "callee": "getString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L84",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "callee": "JSONArray",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L86",
+      "receiver": null,
+      "via_stub": true
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "callee": "distinct",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L87",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L87",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "callee": "length",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L87",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_watchedpackages",
+      "callee": "getString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L87",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "callee": "putString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L95",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "callee": "edit",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L95",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "callee": "isNullOrBlank",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L96",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "callee": "putString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L96",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setuploadconfig",
+      "callee": "apply",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L97",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_uploadconfig",
+      "callee": "getString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L102",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_uploadconfig",
+      "callee": "getString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L103",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "callee": "JSONArray",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L111",
+      "receiver": null,
+      "via_stub": true
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "callee": "minOf",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L112",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "callee": "length",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L112",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "callee": "put",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L112",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_snapshot",
+      "callee": "getJSONObject",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L112",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "JSONArray",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L120",
+      "receiver": null,
+      "via_stub": true
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "length",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L121",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "getJSONObject",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L122",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "optString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L123",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "put",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L123",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "apply",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L125",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "putString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L125",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "edit",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L125",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_remove",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L125",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "callee": "apply",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L129",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "callee": "putString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L129",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "callee": "edit",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L129",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L129",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_setwatchedpackages",
+      "callee": "JSONArray",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L129",
+      "receiver": null,
+      "via_stub": true
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_carriescode",
+      "callee": "containsMatchIn",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L150",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_carriescode",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L152",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_carriescode",
+      "callee": "containsMatchIn",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L153",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "CODE"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_looksfinancial",
+      "callee": "containsMatchIn",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L158",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "MONEY"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_looksfinancial",
+      "callee": "containsMatchIn",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L158",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "MOVEMENT"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "optString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L164",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "isNotEmpty",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L165",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "length",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L166",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "optString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L167",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "getJSONObject",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L167",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "put",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L170",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "length",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L172",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "apply",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L173",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "putString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L173",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "edit",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L173",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_enqueue",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L173",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "callee": "apply",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L179",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_drain",
+      "callee": "edit",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L179",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_pendingcount",
+      "callee": "length",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L183",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "callee": "getString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L186",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "callee": "JSONArray",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L186",
+      "receiver": null,
+      "via_stub": true
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "callee": "JSONArray",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L188",
+      "receiver": null,
+      "via_stub": true
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore_readqueue",
+      "callee": "JSONArray",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L190",
+      "receiver": null,
+      "via_stub": true
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "listOf",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L30",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "Regex",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L70",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "Regex",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L74",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "Regex",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L132",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "listOf",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L136",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "Regex",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L137",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "Regex",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L138",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "Regex",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L139",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "Regex",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L140",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_capturestore_capturestore",
+      "callee": "Regex",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/CaptureStore.kt",
+      "source_location": "L142",
+      "receiver": null
+    }
+  ],
+  "kotlin_package": "expo.modules.notificationcapture"
+}

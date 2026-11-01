@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v3c_lockdown_sql",
+      "label": "v3c-lockdown.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v3c-lockdown.sql",
+      "source_location": null
+    }
+  ],
+  "edges": []
+}

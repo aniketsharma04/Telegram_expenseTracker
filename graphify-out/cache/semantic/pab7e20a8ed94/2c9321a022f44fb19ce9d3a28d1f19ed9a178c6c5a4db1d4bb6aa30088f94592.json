@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "mobile_assets_android_icon_monochrome_adaptive_icon_monochrome",
+      "label": "Android themed/monochrome icon (white on transparent; renders blank)",
+      "file_type": "image",
+      "source_file": "mobile/assets/android-icon-monochrome.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "mobile_assets_android_icon_monochrome_adaptive_icon_monochrome",
+      "target": "docs_play_store_assets_feature_graphic_rupee_progress_ring_logo",
+      "relation": "references",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.3,
+      "source_file": "mobile/assets/android-icon-monochrome.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,283 @@
+{
+  "nodes": [
+    {
+      "id": "docs_play_store_release_checklist",
+      "label": "Google Play release checklist",
+      "file_type": "document",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_twelve_tester_rule",
+      "label": "12-tester / 14-day closed test rule",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "0",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_server_settings",
+      "label": "Server env vars (SUPPORT_EMAIL, REVIEW_EMAIL, REVIEW_CODE)",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_app_content",
+      "label": "App content answers",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_store_listing_assets",
+      "label": "Store listing assets",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_eas_upload_access",
+      "label": "EAS upload service account",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_build_and_upload",
+      "label": "EAS build and submit",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_testing_tracks",
+      "label": "Testing tracks -> production",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_after_launch_ota",
+      "label": "After launch: OTA updates on production channel",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_release_checklist_metrodiaries_audience",
+      "label": "MetroDiaries audience (tester source)",
+      "file_type": "concept",
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": "0",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_twelve_tester_rule",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_server_settings",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_app_content",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_store_listing_assets",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_eas_upload_access",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_build_and_upload",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_testing_tracks",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_after_launch_ota",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_release_checklist_metrodiaries_audience",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_data_safety",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist",
+      "target": "docs_play_store_listing",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist_app_content",
+      "target": "docs_play_store_data_safety",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist_store_listing_assets",
+      "target": "docs_play_store_listing",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist_after_launch_ota",
+      "target": "docs_play_store_data_safety_gmail_casa",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_release_checklist_app_content",
+      "target": "docs_play_store_data_safety_financial_features_declaration",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/play-store/release-checklist.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "play_store_release_flow",
+      "label": "Play Store release preparation",
+      "nodes": [
+        "docs_play_store_data_safety",
+        "docs_play_store_listing",
+        "docs_play_store_release_checklist_twelve_tester_rule",
+        "docs_play_store_release_checklist_build_and_upload",
+        "docs_play_store_release_checklist_testing_tracks"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/release-checklist.md"
+    }
+  ]
+}

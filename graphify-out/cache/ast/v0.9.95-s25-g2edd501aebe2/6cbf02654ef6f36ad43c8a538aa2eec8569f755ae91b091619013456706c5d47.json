@@ -1,0 +1,20 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v18_goal_kind_sql",
+      "label": "v18-goal-kind.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v18-goal-kind.sql",
+      "source_location": null
+    },
+    {
+      "id": "goals",
+      "label": "goals",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v18-goal-kind.sql"
+    }
+  ],
+  "edges": []
+}

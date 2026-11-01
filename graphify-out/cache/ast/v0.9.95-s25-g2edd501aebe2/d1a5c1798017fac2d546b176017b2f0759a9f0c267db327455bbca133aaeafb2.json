@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v11_billers_sql",
+      "label": "v11-billers.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v11-billers.sql",
+      "source_location": null
+    }
+  ],
+  "edges": []
+}

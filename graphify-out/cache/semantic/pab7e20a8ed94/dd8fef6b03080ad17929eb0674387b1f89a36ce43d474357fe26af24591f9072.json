@@ -1,0 +1,389 @@
+{
+  "nodes": [
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "label": "App-first roadmap and push notifications spec",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_intent",
+      "label": "App-first intent: everything automatic",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Intent",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Money feels real at the size it is spent: a day; nobody types expenses."
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_goals",
+      "label": "Roadmap goals",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Goals",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_non_goals",
+      "label": "Non-goals (manual entry, READ_SMS, licences)",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Non-goals",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_capture_routes",
+      "label": "Capture routes (notification listener, Gmail, iOS Shortcuts, Account Aggregator)",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Capture",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_order_of_work",
+      "label": "Order of work",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Order of work",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_retire_telegram",
+      "label": "Retire Telegram bot",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Order of work",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_expo_push_fcm",
+      "label": "Expo push service backed by FCM (chosen)",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Free, one server path for both platforms, no service-account key on server."
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notifications_inbox",
+      "label": "notifications table as inbox (store then deliver)",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Design",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Push is the doorbell; inbox is the record."
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notify_entry_point",
+      "label": "notify(supabase, userId, notice) single entry point",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Design",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notice_kinds_channels",
+      "label": "Notice kinds -> Android channels (daily, spend, alerts, digest)",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Design",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_push_tokens_table",
+      "label": "push_tokens table",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Design",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_left_to_user",
+      "label": "Firebase setup left to user",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": "Left to the user",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_intent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_goals",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_non_goals",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_capture_routes",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_order_of_work",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_retire_telegram",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_expo_push_fcm",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notifications_inbox",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notify_entry_point",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notice_kinds_channels",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_push_tokens_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_left_to_user",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notify_entry_point",
+      "target": "src_lib_notify",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_goals",
+      "target": "src_lib_daily_budget",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notify_entry_point",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notifications_inbox",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notify_entry_point",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_push_tokens_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_expo_push_fcm",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_push_tokens_table",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_capture_routes",
+      "target": "docs_play_store_data_safety_notification_access",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_non_goals",
+      "target": "docs_play_store_data_safety_no_sms_permissions",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_capture_routes",
+      "target": "docs_play_store_data_safety_gmail_casa",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_retire_telegram",
+      "target": "expense_tracker_project_plan_why_telegram",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_order_of_work",
+      "target": "docs_play_store_release_checklist",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "push_notification_delivery",
+      "label": "Notice stored in inbox then pushed via Expo/FCM",
+      "nodes": [
+        "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notify_entry_point",
+        "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notifications_inbox",
+        "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_push_tokens_table",
+        "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_expo_push_fcm",
+        "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_notice_kinds_channels"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-10-24-app-first-roadmap-design.md"
+    }
+  ]
+}

@@ -1,0 +1,581 @@
+{
+  "nodes": [
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "label": "Competitor landscape for Aaj (Oct 2026)",
+      "file_type": "document",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_lender_tracker_model",
+      "label": "SMS tracker attached to a lender model",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_aa_consolidator_model",
+      "label": "AA consolidator attached to investing/credit business model",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_fi_money",
+      "label": "Fi Money",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Banking discontinued Mar 2026; pivot to enterprise AI."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_axio",
+      "label": "axio (ex-Walnut, Amazon-owned)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L19",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_amazon",
+      "label": "Amazon",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L21",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_moneyview",
+      "label": "Moneyview",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L26",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_indmoney",
+      "label": "INDmoney",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L30",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_cred_money",
+      "label": "CRED Money",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L37",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_jupiter",
+      "label": "Jupiter",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L42",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_et_money",
+      "label": "ET Money",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L47",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_ask_google_pay",
+      "label": "Ask Google Pay (Gemini assistant)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L52",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_indie_privacy_trackers",
+      "label": "Indie privacy-first trackers (Finny, Needle, Vrid, Finledge, Paisa Track)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L61",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_money_manager_wallet",
+      "label": "Money Manager (Realbyte) and Wallet by BudgetBakers",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L59",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_mint_shutdown",
+      "label": "Mint shutdown (2024)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L98",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_monarch",
+      "label": "Monarch Money",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L99",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_ynab",
+      "label": "YNAB",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L100",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_copilot_money",
+      "label": "Copilot Money",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L101",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_rocket_money",
+      "label": "Rocket Money",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L102",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_cleo",
+      "label": "Cleo",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L103",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_aaj_opportunities",
+      "label": "Opportunities for Aaj (neutral, privacy, cash, family, vernacular, continuity)",
+      "file_type": "rationale",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L137",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Incumbents monetise via finance products; GPay sees only GPay; INDmoney family needs per-member accounts; shutdowns and price hikes break trust."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_competitors_feature_grid",
+      "label": "India competitor feature grid",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": "L67",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_lender_tracker_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_aa_consolidator_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_fi_money",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_axio",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_moneyview",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_indmoney",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_cred_money",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_jupiter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_et_money",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_ask_google_pay",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_indie_privacy_trackers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_money_manager_wallet",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_mint_shutdown",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_monarch",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_ynab",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_copilot_money",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_rocket_money",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_cleo",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_aaj_opportunities",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_feature_grid",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_axio",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_lender_tracker_model",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_moneyview",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_lender_tracker_model",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_indmoney",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_aa_consolidator_model",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_cred_money",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_aa_consolidator_model",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_jupiter",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_aa_consolidator_model",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_amazon",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_axio",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_mint_shutdown",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_monarch",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_mint_shutdown",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_fi_money",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_cleo",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_lender_tracker_model",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_aaj_opportunities",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_ask_google_pay",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_aaj_opportunities",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_indmoney",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_aaj_opportunities",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_indie_privacy_trackers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_competitors_aa_consolidator_model",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "research_notes/Aaj complete finance roadmap/competitors.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

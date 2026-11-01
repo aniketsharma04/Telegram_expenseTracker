@@ -1,0 +1,572 @@
+{
+  "nodes": [
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "label": "Features and design patterns that drive retention",
+      "file_type": "document",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_d30_retention",
+      "label": "Finance app D30 retention (~5% Android, ~9% iOS)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_megastudy_weekly_reminders",
+      "label": "Milkman et al. 2025 bank megastudy: weekly personalised reminders",
+      "file_type": "paper",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_karlan_reminders",
+      "label": "Karlan et al. 2016 savings reminders",
+      "file_type": "paper",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_brazil_card_reminders",
+      "label": "Brazil credit-card reminders (late fees -14%, overdraft +9%)",
+      "file_type": "paper",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L18",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_gamification_rct",
+      "label": "UK gamified savings RCT (~20% more of goal)",
+      "file_type": "paper",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L20",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_streaks_experiment",
+      "label": "Streaks as an unproven experiment",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_subscription_detection",
+      "label": "Subscription and recurring-payment detection",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "People underestimate subscription spend by $133/month; 42% forgot one still being paid."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_per_user_categorisation",
+      "label": "Per-user categorisation rules learned from corrections",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L51",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Categorisation accuracy is the main differentiator among US apps (Copilot vs Monarch)."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_credit_card_cycle_view",
+      "label": "Credit-card cycle view",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L58",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_cash_flow_forecast",
+      "label": "Cash-flow forecast to next salary and anomaly alerts",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L58",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_income_tax_act_2025",
+      "label": "Income-tax Act 2025 (new regime, Rs 12 lakh zero-tax)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L71",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_advance_tax_itr_dates",
+      "label": "Advance tax and ITR due dates",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L77",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_festive_spending",
+      "label": "Festive spending (LocalCircles 2026: ~Rs 20,000, 83% use savings)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L79",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_wedding_spending",
+      "label": "Wedding spending (WedMeGood: Rs 39.5 lakh average)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L81",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_sinking_funds",
+      "label": "Sinking funds (mental accounting)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L88",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_tax_features",
+      "label": "Tax features: regime calculator, reminders, ITR checklist",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L87",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_semantic_layer_tools",
+      "label": "Semantic layer / fixed typed tools for finance chat (dbt, M1 Finance)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L110",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Free-form text-to-SQL is probabilistic; predefined metrics with deterministic computation avoid hallucinated numbers."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_cleo_personality",
+      "label": "Cleo personality-driven assistant (Roast mode, voice, memory)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L24",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_not_an_advisor_framing",
+      "label": "'Not an advisor' framing (Monarch, Copilot)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L107",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_aha_moments",
+      "label": "Candidate first-week aha moments",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L137",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_features_retention_install_backfill",
+      "label": "Install-time 30-90 day SMS/Gmail backfill",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": "L138",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_d30_retention",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_megastudy_weekly_reminders",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_karlan_reminders",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_brazil_card_reminders",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_gamification_rct",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_streaks_experiment",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_subscription_detection",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_per_user_categorisation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_credit_card_cycle_view",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_cash_flow_forecast",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_income_tax_act_2025",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_advance_tax_itr_dates",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_festive_spending",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_wedding_spending",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_sinking_funds",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_tax_features",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_semantic_layer_tools",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_cleo_personality",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_not_an_advisor_framing",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_aha_moments",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_install_backfill",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_festive_spending",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_sinking_funds",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_wedding_spending",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_sinking_funds",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_income_tax_act_2025",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_tax_features",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_advance_tax_itr_dates",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_tax_features",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_megastudy_weekly_reminders",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_karlan_reminders",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_aha_moments",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_install_backfill",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_aha_moments",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_subscription_detection",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_semantic_layer_tools",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_not_an_advisor_framing",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_cleo_personality",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_cleo",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_not_an_advisor_framing",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ia_regulations",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_features_retention_d30_retention",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_aha_moments",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "research_notes/Aaj complete finance roadmap/features_retention.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,297 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "label": "v8-ledger.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_accounts",
+      "label": "accounts",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L18"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v8-ledger.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_accounts_user_idx",
+      "label": "accounts_user_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L33"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_accounts_one_default_idx",
+      "label": "accounts_one_default_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L38"
+    },
+    {
+      "id": "expenses",
+      "label": "expenses",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v8-ledger.sql"
+    },
+    {
+      "id": "incomes",
+      "label": "incomes",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v8-ledger.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_expenses_account_idx",
+      "label": "expenses_account_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L47"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_incomes_account_idx",
+      "label": "incomes_account_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L48"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_transfers",
+      "label": "transfers",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L57"
+    },
+    {
+      "id": "bill_payments",
+      "label": "bill_payments",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v8-ledger.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_transfers_user_date_idx",
+      "label": "transfers_user_date_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L74"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_merchants",
+      "label": "merchants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L80"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v8_ledger_merchants_pattern_idx",
+      "label": "merchants_pattern_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L89"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_accounts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_accounts",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_accounts_user_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_accounts_user_idx",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_accounts",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_accounts_one_default_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_accounts_one_default_idx",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_accounts",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_expenses_account_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_expenses_account_idx",
+      "target": "expenses",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_incomes_account_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_incomes_account_idx",
+      "target": "incomes",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_transfers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_transfers",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_transfers",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_accounts",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_transfers",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_accounts",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_transfers",
+      "target": "bill_payments",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_transfers_user_date_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_transfers_user_date_idx",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_transfers",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_merchants",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_merchants",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_sql",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_merchants_pattern_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v8_ledger_merchants_pattern_idx",
+      "target": "$graphify-root$_supabase_migrations_v8_ledger_merchants",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v8-ledger.sql",
+      "source_location": "L89",
+      "weight": 1.0
+    }
+  ]
+}

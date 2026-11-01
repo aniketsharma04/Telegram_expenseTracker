@@ -1,0 +1,40 @@
+{
+  "nodes": [
+    {
+      "id": "mobile_agents",
+      "label": "Mobile AGENTS.md (Expo v57 notice)",
+      "file_type": "document",
+      "source_file": "mobile/AGENTS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mobile_agents_expo_v57_docs",
+      "label": "Expo v57 versioned docs requirement",
+      "file_type": "rationale",
+      "source_file": "mobile/AGENTS.md",
+      "source_location": "1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Expo has changed; read exact versioned docs before coding."
+    }
+  ],
+  "edges": [
+    {
+      "source": "mobile_agents",
+      "target": "mobile_agents_expo_v57_docs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/AGENTS.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

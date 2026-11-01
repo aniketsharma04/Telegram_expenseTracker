@@ -1,0 +1,147 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v9_capture_sql",
+      "label": "v9-capture.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v9_capture_bank_messages",
+      "label": "bank_messages",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L17"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v9-capture.sql"
+    },
+    {
+      "id": "accounts",
+      "label": "accounts",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v9-capture.sql"
+    },
+    {
+      "id": "expenses",
+      "label": "expenses",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v9-capture.sql"
+    },
+    {
+      "id": "incomes",
+      "label": "incomes",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v9-capture.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v9_capture_bank_messages_external_idx",
+      "label": "bank_messages_external_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L47"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v9_capture_bank_messages_dedupe_idx",
+      "label": "bank_messages_dedupe_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L52"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_sql",
+      "target": "$graphify-root$_supabase_migrations_v9_capture_bank_messages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_bank_messages",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_bank_messages",
+      "target": "accounts",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_bank_messages",
+      "target": "expenses",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_bank_messages",
+      "target": "incomes",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_sql",
+      "target": "$graphify-root$_supabase_migrations_v9_capture_bank_messages_external_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_bank_messages_external_idx",
+      "target": "$graphify-root$_supabase_migrations_v9_capture_bank_messages",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_sql",
+      "target": "$graphify-root$_supabase_migrations_v9_capture_bank_messages_dedupe_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v9_capture_bank_messages_dedupe_idx",
+      "target": "$graphify-root$_supabase_migrations_v9_capture_bank_messages",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v9-capture.sql",
+      "source_location": "L52",
+      "weight": 1.0
+    }
+  ]
+}

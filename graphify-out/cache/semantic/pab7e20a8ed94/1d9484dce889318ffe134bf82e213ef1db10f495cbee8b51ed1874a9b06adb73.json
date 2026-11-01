@@ -1,0 +1,1136 @@
+{
+  "nodes": [
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "label": "Indian regulatory framework for a card recommender earning referral income",
+      "file_type": "document",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "label": "RBI Credit and Debit Cards Issuance and Conduct Directions 2025",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_issuer_final_decision",
+      "label": "Para 11(10): issuer alone decides issuance",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_unsolicited_cards_ban",
+      "label": "Unsolicited cards strictly prohibited",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_explicit_consent",
+      "label": "Explicit, not implied, consent",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_kfs_mitc",
+      "label": "Key Fact Statement and MITC disclosure",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L18",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_agent_liability_para44",
+      "label": "Para 44: issuer liable for acts of agents",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L20",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_data_minimisation_agents",
+      "label": "Data minimisation for DSAs/DMAs",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L21",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_co_branding_rules",
+      "label": "Co-branding partner rules (no transaction data access)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L22",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_card_network_choice",
+      "label": "Card network choice circular (Mar 2024)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L24",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_sales_amendments_2027",
+      "label": "RBI advertising, marketing and sale amendments (15 Jun 2026, effective 1 Jan 2027)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L26",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_dma_definition",
+      "label": "Para 4(10B) DSA/DMA definition 'irrespective of nomenclature'",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_code_of_conduct",
+      "label": "DSA/DMA list publication and Code of Conduct",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L28",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_default_no_consent",
+      "label": "Default-'No' explicit consent and no unsolicited push",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L29",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_eleven_dark_patterns",
+      "label": "Eleven banned dark patterns (Annex IIA)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L30",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_mis_selling_refund",
+      "label": "Mis-selling: suitability check, full refund plus compensation",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L31",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_affiliate_is_dsa_inference",
+      "label": "Paid affiliate recommender likely a DSA/DMA from 2027",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Bank is liable for agents (Para 44), so banks/networks will push down codes of conduct, audits, consent standards and indemnities. LAWYER to confirm sub-agent status."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_digital_lending_directions",
+      "label": "RBI Digital Lending Directions 2025",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_loan_service_provider",
+      "label": "Loan Service Provider (LSP)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L54",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_cards_only_scope",
+      "label": "Keep recommender to cards only (no loans/BNPL/EMI)",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L60",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Loans/BNPL/EMI would trigger LSP duties and Play's personal-loan policy."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_cic_directions_2025",
+      "label": "RBI Credit Information Companies Directions 2025",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L74",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_specified_user",
+      "label": "CIC Specified User eligibility (net worth Rs 2 crore etc.)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L75",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_free_annual_report",
+      "label": "Free full credit report once a year",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L78",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_user_entered_score_band",
+      "label": "Let users enter their own score band",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L83",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Bureau access needs Specified User status or restrictive consent contracts; data cannot be passed to banks."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_account_aggregator",
+      "label": "Account Aggregator framework (FIU must be regulated)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L93",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_sahamati",
+      "label": "Sahamati",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L98",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_dpdp_rules",
+      "label": "DPDP Rules 2025",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L110",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_stand_alone_consents",
+      "label": "Stand-alone consents for card recommendation and data sharing",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L122",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Design now for May 2027; keep recommender on-device so the bank gets only a click or referral ID."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_play_sms_exception",
+      "label": "Google Play SMS-based money management exception",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L137",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_play_personal_loan_policy",
+      "label": "Google Play personal-loan policy (India)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L139",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_on_device_pattern",
+      "label": "On-device SMS parsing; send no SMS content to partners",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L144",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Play forbids any transfer resulting in a sale of SMS data."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_asci_addendum",
+      "label": "ASCI influencer guidelines Addendum 2 (Apr 2025)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L158",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_ccpa_dark_patterns",
+      "label": "CCPA Dark Patterns Guidelines 2023 and Jun 2025 advisory",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L160",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_trai_tcccpr",
+      "label": "TRAI TCCCPR / NCPR DND",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L162",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_gst_on_commission",
+      "label": "18% GST on referral commission",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L182",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_tds_194h",
+      "label": "s.194H TDS at 2%, Rs 20,000 threshold",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L180",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_amex_penalty",
+      "label": "RBI penalty on American Express (Oct 2025)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L200",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_regulation_aaj",
+      "label": "Aaj (SMS-reading expense tracker)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_issuer_final_decision",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_unsolicited_cards_ban",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_explicit_consent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_kfs_mitc",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_agent_liability_para44",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_data_minimisation_agents",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_co_branding_rules",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_card_network_choice",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_sales_amendments_2027",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_dma_definition",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_code_of_conduct",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_default_no_consent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_eleven_dark_patterns",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_mis_selling_refund",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_affiliate_is_dsa_inference",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_digital_lending_directions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_loan_service_provider",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_cards_only_scope",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_cic_directions_2025",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_specified_user",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_free_annual_report",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_user_entered_score_band",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_account_aggregator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_sahamati",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_dpdp_rules",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_stand_alone_consents",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_play_sms_exception",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_play_personal_loan_policy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_on_device_pattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_asci_addendum",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_ccpa_dark_patterns",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_trai_tcccpr",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_gst_on_commission",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_tds_194h",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_amex_penalty",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_aaj",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_issuer_final_decision",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_unsolicited_cards_ban",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_explicit_consent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_kfs_mitc",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_agent_liability_para44",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_data_minimisation_agents",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_co_branding_rules",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_sales_amendments_2027",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_dma_definition",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_sales_amendments_2027",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_code_of_conduct",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_sales_amendments_2027",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_default_no_consent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_sales_amendments_2027",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_eleven_dark_patterns",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_sales_amendments_2027",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_mis_selling_refund",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_dma_definition",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_loan_service_provider",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_dma_definition",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_affiliate_is_dsa_inference",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_agent_liability_para44",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_affiliate_is_dsa_inference",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_digital_lending_directions",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_loan_service_provider",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_digital_lending_directions",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_cards_only_scope",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_play_personal_loan_policy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_cards_only_scope",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_cic_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_specified_user",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_cic_directions_2025",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_free_annual_report",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_specified_user",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_user_entered_score_band",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_dpdp_rules",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_stand_alone_consents",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_play_sms_exception",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_on_device_pattern",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_eleven_dark_patterns",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_ccpa_dark_patterns",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_mis_selling_refund",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_trai_tcccpr",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_amex_penalty",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_rbi_card_directions_2025",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_account_aggregator",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_sahamati",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_stand_alone_consents",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_aaj",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_on_device_pattern",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_aaj",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_cards_only_scope",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_aaj",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_default_no_consent",
+      "target": "research_notes_monzy_and_indian_card_recommenders_regulation_stand_alone_consents",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_regulation_affiliate_is_dsa_inference",
+      "target": "reports_monzy_and_indian_card_recommenders_never_sell_loan_promise",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "rbi_2027_sales_practice_regime",
+      "label": "RBI 2027 sales-practice regime for paid referrers",
+      "nodes": [
+        "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_dma_definition",
+        "research_notes_monzy_and_indian_card_recommenders_regulation_dsa_code_of_conduct",
+        "research_notes_monzy_and_indian_card_recommenders_regulation_default_no_consent",
+        "research_notes_monzy_and_indian_card_recommenders_regulation_eleven_dark_patterns",
+        "research_notes_monzy_and_indian_card_recommenders_regulation_mis_selling_refund"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/regulation.md"
+    }
+  ]
+}

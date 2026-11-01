@@ -1,0 +1,446 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_kt",
+      "label": "BankNotificationListenerService.kt",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice",
+      "label": "BankNotificationListenerService",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L22",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "notificationlistenerservice",
+      "label": "NotificationListenerService",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt"
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onnotificationposted",
+      "label": ".onNotificationPosted()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L24",
+      "_callable": true
+    },
+    {
+      "id": "statusbarnotification",
+      "label": "StatusBarNotification",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt"
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "label": ".capture()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L35",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onlistenerconnected",
+      "label": ".onListenerConnected()",
+      "file_type": "code",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L69",
+      "_callable": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_kt",
+      "target": "notification",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L3",
+      "weight": 1.0,
+      "metadata": { "target_fqn": "android.app.Notification" }
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_kt",
+      "target": "notificationlistenerservice",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L4",
+      "weight": 1.0,
+      "metadata": {
+        "target_fqn": "android.service.notification.NotificationListenerService"
+      }
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_kt",
+      "target": "statusbarnotification",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L5",
+      "weight": 1.0,
+      "metadata": {
+        "target_fqn": "android.service.notification.StatusBarNotification"
+      }
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_kt",
+      "target": "jsonobject",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L6",
+      "weight": 1.0,
+      "metadata": { "target_fqn": "org.json.JSONObject" }
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_kt",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice",
+      "target": "notificationlistenerservice",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onnotificationposted",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onnotificationposted",
+      "target": "statusbarnotification",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L24",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "target": "statusbarnotification",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L35",
+      "weight": 1.0,
+      "context": "parameter_type"
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onlistenerconnected",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onnotificationposted",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onlistenerconnected",
+      "target": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onlistenerconnected",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L70",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onnotificationposted",
+      "callee": "w",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L31",
+      "receiver": null,
+      "lang": "kotlin",
+      "qualified_prefix": "android.util.Log"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "contains",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L37",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "watchedPackages",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L37",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "orEmpty",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L44",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L44",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "getCharSequence",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L44",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "orEmpty",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L46",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L46",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "getCharSequence",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L46",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "getCharSequence",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L47",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L51",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "joinToString",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L51",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L51",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "listOf",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L51",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "isNotBlank",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L51",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "looksFinancial",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L53",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "apply",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L55",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "JSONObject",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L55",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L56",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L57",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L59",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L60",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "enqueue",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L62",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "CaptureStore"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "notifyCaptured",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L63",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "NotificationCaptureModule"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "pendingCount",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L63",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "CaptureStore"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_capture",
+      "callee": "schedule",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L65",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "CaptureUploadWorker"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onlistenerconnected",
+      "callee": "pendingCount",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L72",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "CaptureStore"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onlistenerconnected",
+      "callee": "schedule",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L72",
+      "receiver": null,
+      "lang": "kotlin",
+      "kotlin_object_receiver": "CaptureUploadWorker"
+    },
+    {
+      "caller_nid": "$graphify-root$_mobile_modules_notification_capture_android_src_main_java_expo_modules_notificationcapture_banknotificationlistenerservice_banknotificationlistenerservice_onlistenerconnected",
+      "callee": "w",
+      "is_member_call": true,
+      "source_file": "mobile/modules/notification-capture/android/src/main/java/expo/modules/notificationcapture/BankNotificationListenerService.kt",
+      "source_location": "L74",
+      "receiver": null,
+      "lang": "kotlin",
+      "qualified_prefix": "android.util.Log"
+    }
+  ],
+  "kotlin_package": "expo.modules.notificationcapture"
+}

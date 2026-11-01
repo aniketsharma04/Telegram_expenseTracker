@@ -1,0 +1,49 @@
+{
+  "nodes": [
+    {
+      "id": "mobile_assets_android_icon_background_adaptive_icon_background",
+      "label": "Android adaptive icon background (solid teal)",
+      "file_type": "image",
+      "source_file": "mobile/assets/android-icon-background.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mobile_assets_android_icon_background_brand_teal",
+      "label": "Brand colour: deep teal",
+      "file_type": "concept",
+      "source_file": "mobile/assets/android-icon-background.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "mobile_assets_android_icon_background_adaptive_icon_background",
+      "target": "mobile_assets_android_icon_background_brand_teal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/assets/android-icon-background.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_assets_android_icon_background_adaptive_icon_background",
+      "target": "mobile_assets_android_icon_foreground_adaptive_icon_foreground",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "mobile/assets/android-icon-background.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

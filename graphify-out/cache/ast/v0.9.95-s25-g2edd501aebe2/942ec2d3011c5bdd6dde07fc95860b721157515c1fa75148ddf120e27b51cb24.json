@@ -1,0 +1,121 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v3_multiuser_sql",
+      "label": "v3-multiuser.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v3_multiuser_users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L4"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v3_multiuser_families",
+      "label": "families",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L12"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v3_multiuser_family_members",
+      "label": "family_members",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L21"
+    },
+    {
+      "id": "expenses",
+      "label": "expenses",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v3-multiuser.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v3_multiuser_expenses_user_id_idx",
+      "label": "expenses_user_id_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L31"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v3_multiuser_sql",
+      "target": "$graphify-root$_supabase_migrations_v3_multiuser_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v3_multiuser_sql",
+      "target": "$graphify-root$_supabase_migrations_v3_multiuser_families",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v3_multiuser_families",
+      "target": "$graphify-root$_supabase_migrations_v3_multiuser_users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v3_multiuser_sql",
+      "target": "$graphify-root$_supabase_migrations_v3_multiuser_family_members",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v3_multiuser_family_members",
+      "target": "$graphify-root$_supabase_migrations_v3_multiuser_families",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v3_multiuser_family_members",
+      "target": "$graphify-root$_supabase_migrations_v3_multiuser_users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v3_multiuser_sql",
+      "target": "$graphify-root$_supabase_migrations_v3_multiuser_expenses_user_id_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v3_multiuser_expenses_user_id_idx",
+      "target": "expenses",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v3-multiuser.sql",
+      "source_location": "L31",
+      "weight": 1.0
+    }
+  ]
+}

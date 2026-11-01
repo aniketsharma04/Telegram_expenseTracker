@@ -1,0 +1,179 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v4_features_sql",
+      "label": "v4-features.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v4_features_budgets",
+      "label": "budgets",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L5"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v4-features.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v4_features_budgets_user_cat_uidx",
+      "label": "budgets_user_cat_uidx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L13"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v4_features_budget_alerts",
+      "label": "budget_alerts",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L17"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v4_features_incomes",
+      "label": "incomes",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L26"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v4_features_incomes_user_idx",
+      "label": "incomes_user_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L36"
+    },
+    {
+      "id": "expenses",
+      "label": "expenses",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v4-features.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v4_features_expenses_split_idx",
+      "label": "expenses_split_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L43"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_sql",
+      "target": "$graphify-root$_supabase_migrations_v4_features_budgets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_budgets",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_sql",
+      "target": "$graphify-root$_supabase_migrations_v4_features_budgets_user_cat_uidx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_budgets_user_cat_uidx",
+      "target": "$graphify-root$_supabase_migrations_v4_features_budgets",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_sql",
+      "target": "$graphify-root$_supabase_migrations_v4_features_budget_alerts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_budget_alerts",
+      "target": "$graphify-root$_supabase_migrations_v4_features_budgets",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_sql",
+      "target": "$graphify-root$_supabase_migrations_v4_features_incomes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_incomes",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_sql",
+      "target": "$graphify-root$_supabase_migrations_v4_features_incomes_user_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_incomes_user_idx",
+      "target": "$graphify-root$_supabase_migrations_v4_features_incomes",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_sql",
+      "target": "$graphify-root$_supabase_migrations_v4_features_expenses_split_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v4_features_expenses_split_idx",
+      "target": "expenses",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v4-features.sql",
+      "source_location": "L43",
+      "weight": 1.0
+    }
+  ]
+}

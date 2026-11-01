@@ -1,0 +1,492 @@
+{
+  "nodes": [
+    {
+      "id": "expense_tracker_project_plan",
+      "label": "Personal Expense Tracker project plan",
+      "file_type": "document",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_overview",
+      "label": "Telegram input + dashboard analysis split",
+      "file_type": "rationale",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Each surface good at its own job."
+    },
+    {
+      "id": "expense_tracker_project_plan_goals",
+      "label": "Project goals (log in <5 s)",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_scope",
+      "label": "Scope / out of scope (no native app, no bank import)",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_system_architecture",
+      "label": "System architecture",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Telegram removes logging friction; dashboard needs real UI."
+    },
+    {
+      "id": "expense_tracker_project_plan_tech_stack",
+      "label": "Tech stack (Telegram, Vercel, Supabase, Next.js, Recharts)",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_expenses_table",
+      "label": "expenses table",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_categories_table",
+      "label": "categories table",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_budget_alerts_table",
+      "label": "budget_alerts table (v3)",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_parsing_strategy",
+      "label": "Parsing strategy (rules fast path + LLM fallback)",
+      "file_type": "rationale",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Instant and free for the common case; LLM only for messy input; keyword table self-improves."
+    },
+    {
+      "id": "expense_tracker_project_plan_week1_v1",
+      "label": "Week 1: v1 Foundation & MVP",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_week2_v2",
+      "label": "Week 2: v2 Smarter logging",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_week3_v3",
+      "label": "Week 3: v3 Receipts, budgets, polish",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_feature_matrix",
+      "label": "Feature matrix",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_testing_checklist",
+      "label": "Testing & quality checklist",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_deployment_checklist",
+      "label": "Deployment checklist",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_risks_mitigations",
+      "label": "Risks & mitigations",
+      "file_type": "rationale",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_success_metrics",
+      "label": "Success metrics",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_future_roadmap",
+      "label": "Future roadmap (Mini App, bank SMS import)",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "expense_tracker_project_plan_why_telegram",
+      "label": "Why Telegram bot + standalone dashboard",
+      "file_type": "rationale",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "WhatsApp Business API needs verification/approval; web chat box loses always-open convenience; Mini App more upfront work and harder to show publicly."
+    },
+    {
+      "id": "expense_tracker_project_plan_metrosaathi",
+      "label": "MetroSaathi (portfolio reference)",
+      "file_type": "concept",
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": "2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_overview",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_goals",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_scope",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_system_architecture",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_tech_stack",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_expenses_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_categories_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_budget_alerts_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_parsing_strategy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_week1_v1",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_week2_v2",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_week3_v3",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_feature_matrix",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_testing_checklist",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_deployment_checklist",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_risks_mitigations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_success_metrics",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_future_roadmap",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_why_telegram",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan",
+      "target": "expense_tracker_project_plan_metrosaathi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan_system_architecture",
+      "target": "expense_tracker_project_plan_why_telegram",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan_parsing_strategy",
+      "target": "expense_tracker_project_plan_categories_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan_budget_alerts_table",
+      "target": "expense_tracker_project_plan_categories_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan_expenses_table",
+      "target": "expense_tracker_project_plan_categories_table",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "expense_tracker_project_plan_future_roadmap",
+      "target": "readme_background_capture",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "expense-tracker-project-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

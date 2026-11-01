@@ -1,0 +1,153 @@
+{
+  "nodes": [
+    {
+      "id": "mobile_readme",
+      "label": "Mobile app README",
+      "file_type": "document",
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mobile_readme_expo_go_dev",
+      "label": "Run with Expo Go (development)",
+      "file_type": "concept",
+      "source_file": "mobile/README.md",
+      "source_location": "Run it on your phone",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mobile_readme_eas_store_builds",
+      "label": "EAS store builds",
+      "file_type": "concept",
+      "source_file": "mobile/README.md",
+      "source_location": "Store builds",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mobile_readme_architecture",
+      "label": "Mobile architecture (App.tsx, components, lib/api, lib/theme)",
+      "file_type": "concept",
+      "source_file": "mobile/README.md",
+      "source_location": "Architecture",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "One backend, three skins: consumes same /api/data as web dashboard."
+    },
+    {
+      "id": "mobile_readme_telegram_app_login",
+      "label": "Login via Telegram /app code",
+      "file_type": "concept",
+      "source_file": "mobile/README.md",
+      "source_location": "Run it on your phone",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "mobile_readme",
+      "target": "mobile_readme_expo_go_dev",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_readme",
+      "target": "mobile_readme_eas_store_builds",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_readme",
+      "target": "mobile_readme_architecture",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_readme",
+      "target": "mobile_readme_telegram_app_login",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_readme_architecture",
+      "target": "mobile_app",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_readme_architecture",
+      "target": "mobile_lib_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_readme_architecture",
+      "target": "mobile_lib_theme",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_readme_eas_store_builds",
+      "target": "docs_play_store_release_checklist_build_and_upload",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_readme_telegram_app_login",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_retire_telegram",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "mobile/README.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

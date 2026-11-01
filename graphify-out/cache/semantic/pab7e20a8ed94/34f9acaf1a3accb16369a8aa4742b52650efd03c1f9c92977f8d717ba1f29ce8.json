@@ -1,0 +1,146 @@
+{
+  "nodes": [
+    {
+      "id": "scripts_backup_readme",
+      "label": "Database backups README",
+      "file_type": "document",
+      "source_file": "scripts/backup/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "scripts_backup_readme_nightly_backup_workflow",
+      "label": "Nightly backup workflow (backup.yml, 02:00 IST)",
+      "file_type": "concept",
+      "source_file": "scripts/backup/README.md",
+      "source_location": "header",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Supabase Free has no backups."
+    },
+    {
+      "id": "scripts_backup_readme_restore_verification",
+      "label": "Restore into fresh Postgres 17 and check row counts",
+      "file_type": "concept",
+      "source_file": "scripts/backup/README.md",
+      "source_location": "2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "scripts_backup_readme_gpg_encryption",
+      "label": "AES-256 gpg encryption, 30-day artifact",
+      "file_type": "concept",
+      "source_file": "scripts/backup/README.md",
+      "source_location": "3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "scripts_backup_readme_repo_secrets",
+      "label": "Repo secrets SUPABASE_DB_URL / BACKUP_PASSPHRASE",
+      "file_type": "concept",
+      "source_file": "scripts/backup/README.md",
+      "source_location": "One-time setup",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "GitHub runners have no IPv6, so use session pooler URI."
+    },
+    {
+      "id": "scripts_backup_readme_restore_procedure",
+      "label": "Restore procedure (session_replication_role = replica)",
+      "file_type": "concept",
+      "source_file": "scripts/backup/README.md",
+      "source_location": "Restore",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Skip FK checks because expenses, incomes and bank_messages refer to each other."
+    }
+  ],
+  "edges": [
+    {
+      "source": "scripts_backup_readme",
+      "target": "scripts_backup_readme_nightly_backup_workflow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/backup/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_backup_readme",
+      "target": "scripts_backup_readme_restore_verification",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/backup/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_backup_readme",
+      "target": "scripts_backup_readme_gpg_encryption",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/backup/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_backup_readme",
+      "target": "scripts_backup_readme_repo_secrets",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/backup/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_backup_readme",
+      "target": "scripts_backup_readme_restore_procedure",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/backup/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_backup_readme_nightly_backup_workflow",
+      "target": "scripts_backup_backup",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/backup/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_backup_readme_nightly_backup_workflow",
+      "target": "expense_tracker_project_plan_deployment_checklist",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "scripts/backup/README.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

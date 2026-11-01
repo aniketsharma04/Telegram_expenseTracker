@@ -1,0 +1,71 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v19_subscriptions_sql",
+      "label": "v19-subscriptions.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v19-subscriptions.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v19_subscriptions_subscriptions",
+      "label": "subscriptions",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v19-subscriptions.sql",
+      "source_location": "L8"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v19-subscriptions.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v19_subscriptions_subscriptions_user_idx",
+      "label": "subscriptions_user_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v19-subscriptions.sql",
+      "source_location": "L26"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v19_subscriptions_sql",
+      "target": "$graphify-root$_supabase_migrations_v19_subscriptions_subscriptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v19-subscriptions.sql",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v19_subscriptions_subscriptions",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v19-subscriptions.sql",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v19_subscriptions_sql",
+      "target": "$graphify-root$_supabase_migrations_v19_subscriptions_subscriptions_user_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v19-subscriptions.sql",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v19_subscriptions_subscriptions_user_idx",
+      "target": "$graphify-root$_supabase_migrations_v19_subscriptions_subscriptions",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v19-subscriptions.sql",
+      "source_location": "L26",
+      "weight": 1.0
+    }
+  ]
+}

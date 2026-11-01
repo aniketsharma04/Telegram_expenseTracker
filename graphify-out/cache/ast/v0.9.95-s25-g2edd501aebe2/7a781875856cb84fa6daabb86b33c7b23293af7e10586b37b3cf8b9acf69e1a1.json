@@ -1,0 +1,96 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v17_goals_sql",
+      "label": "v17-goals.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v17_goals_goals",
+      "label": "goals",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L7"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v17-goals.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v17_goals_goals_user_idx",
+      "label": "goals_user_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L19"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v17_goals_goal_credits",
+      "label": "goal_credits",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L22"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v17_goals_sql",
+      "target": "$graphify-root$_supabase_migrations_v17_goals_goals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v17_goals_goals",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v17_goals_sql",
+      "target": "$graphify-root$_supabase_migrations_v17_goals_goals_user_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v17_goals_goals_user_idx",
+      "target": "$graphify-root$_supabase_migrations_v17_goals_goals",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v17_goals_sql",
+      "target": "$graphify-root$_supabase_migrations_v17_goals_goal_credits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v17_goals_goal_credits",
+      "target": "$graphify-root$_supabase_migrations_v17_goals_goals",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v17-goals.sql",
+      "source_location": "L22",
+      "weight": 1.0
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v16_payday_sql",
+      "label": "v16-payday.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v16-payday.sql",
+      "source_location": null
+    },
+    {
+      "id": "budget_plans",
+      "label": "budget_plans",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v16-payday.sql"
+    }
+  ],
+  "edges": []
+}

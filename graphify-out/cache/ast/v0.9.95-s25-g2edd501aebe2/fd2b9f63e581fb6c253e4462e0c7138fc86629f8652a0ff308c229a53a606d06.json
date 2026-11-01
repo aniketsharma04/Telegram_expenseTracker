@@ -1,0 +1,104 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v14_daily_budget_sql",
+      "label": "v14-daily-budget.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v14_daily_budget_budget_plans",
+      "label": "budget_plans",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L16"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v14-daily-budget.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v14_daily_budget_commitments",
+      "label": "commitments",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L30"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v14_daily_budget_commitments_user_idx",
+      "label": "commitments_user_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L40"
+    },
+    {
+      "id": "expenses",
+      "label": "expenses",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v14-daily-budget.sql"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v14_daily_budget_sql",
+      "target": "$graphify-root$_supabase_migrations_v14_daily_budget_budget_plans",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v14_daily_budget_budget_plans",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v14_daily_budget_sql",
+      "target": "$graphify-root$_supabase_migrations_v14_daily_budget_commitments",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v14_daily_budget_commitments",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v14_daily_budget_sql",
+      "target": "$graphify-root$_supabase_migrations_v14_daily_budget_commitments_user_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v14_daily_budget_commitments_user_idx",
+      "target": "$graphify-root$_supabase_migrations_v14_daily_budget_commitments",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v14-daily-budget.sql",
+      "source_location": "L40",
+      "weight": 1.0
+    }
+  ]
+}

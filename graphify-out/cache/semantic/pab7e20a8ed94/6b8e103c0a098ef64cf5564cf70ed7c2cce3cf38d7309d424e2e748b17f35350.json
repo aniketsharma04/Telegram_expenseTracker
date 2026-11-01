@@ -1,0 +1,837 @@
+{
+  "nodes": [
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "label": "Monzy (monzy.co): profile of the credit-card recommendation flow",
+      "file_type": "document",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "label": "Monzy (monzy.co)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_monzo",
+      "label": "Monzo (UK bank, unrelated)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_go_ytn_redirect",
+      "label": "/go/ytn YouTube UTM redirect",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_go_redirect_layer",
+      "label": "/go/ apply-link click-counting redirect layer",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_privacy_policy",
+      "label": "Monzy privacy policy (no account, no PII)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L20",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_terms",
+      "label": "Monzy terms (not advisor, scraping prohibited)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_card_catalogue",
+      "label": "Monzy card catalogue (348/335/493 cards)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L38",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_quiz",
+      "label": "Monzy ~6-question adaptive credit-card quiz",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L58",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_api_start_answer",
+      "label": "/api/start and /api/answer endpoints",
+      "file_type": "code",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L80",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_recaptcha_v3",
+      "label": "Google reCAPTCHA v3",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L82",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_refined_catalog_api",
+      "label": "/api/refined-catalog endpoint",
+      "file_type": "code",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L96",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_card_apply_urls_api",
+      "label": "/api/card-apply-urls endpoint",
+      "file_type": "code",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L118",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_scoring_methodology",
+      "label": "Monzy three-step scoring methodology",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L88",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_preference_weighting",
+      "label": "Preference-weighted attribute matching (no rupee value calc)",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L100",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Spend question is a coarse 3-bucket band; ranking matches stated preferences rather than computing personalised reward value."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_no_eligibility_check",
+      "label": "No eligibility check",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L101",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_cheq_au_led_card",
+      "label": "CheQ AU LED Credit Card (AU Small Finance Bank)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L71",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_accuracy_critique",
+      "label": "Accuracy critique: niche CheQ-dependent pick for mainstream Amazon shopper",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L183",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Top rates require routing spend through the CheQ app; enthusiasts may question such picks."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_no_monetisation",
+      "label": "No visible revenue mechanism (plain bank links + utm_source=monzy)",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L113",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Looks like an audience-building play for the Warikoo ecosystem; the /go/ layer could later swap in affiliate URLs (speculative)."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_ankur_warikoo",
+      "label": "Ankur Warikoo",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L135",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_anmol_ratan_sachdeva",
+      "label": "Anmol Ratan Sachdeva (SEO and Data Lead)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L144",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_amarjeet_sarma",
+      "label": "Amarjeet Sarma (Chief Developer)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L145",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_product_hunt_launch",
+      "label": "Monzy Product Hunt launch (#33, 8 upvotes)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L153",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_warikoo_distribution_moat",
+      "label": "Distribution through Warikoo's audience is the moat",
+      "file_type": "rationale",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L158",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Traffic arrives via YouTube description links; the engine itself is not the differentiator."
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_mutual_fund_quiz",
+      "label": "Monzy mutual-fund one-fund quiz",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L176",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy_tools",
+      "label": "Monzy tools (MCC scanner, card stack checker, card changes, calculators)",
+      "file_type": "concept",
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": "L177",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_monzo",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_go_ytn_redirect",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_go_redirect_layer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_privacy_policy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_terms",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_card_catalogue",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_quiz",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_api_start_answer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_recaptcha_v3",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_refined_catalog_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_card_apply_urls_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_scoring_methodology",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_preference_weighting",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_no_eligibility_check",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_cheq_au_led_card",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_accuracy_critique",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_no_monetisation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_ankur_warikoo",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_anmol_ratan_sachdeva",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_amarjeet_sarma",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_product_hunt_launch",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_warikoo_distribution_moat",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_mutual_fund_quiz",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_doc",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy_tools",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_go_ytn_redirect",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_go_redirect_layer",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_privacy_policy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_terms",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_card_catalogue",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_quiz",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_quiz",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_api_start_answer",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_api_start_answer",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_recaptcha_v3",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_quiz",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_scoring_methodology",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_refined_catalog_api",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_card_catalogue",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_quiz",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_cheq_au_led_card",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_card_apply_urls_api",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_no_monetisation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_go_redirect_layer",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_no_monetisation",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_ankur_warikoo",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_anmol_ratan_sachdeva",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_card_catalogue",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_amarjeet_sarma",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_scoring_methodology",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_anmol_ratan_sachdeva",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_product_hunt_launch",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_warikoo_distribution_moat",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_go_ytn_redirect",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_warikoo_distribution_moat",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_mutual_fund_quiz",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy_tools",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_scoring_methodology",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_preference_weighting",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_quiz",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_no_eligibility_check",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_cheq_au_led_card",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_accuracy_critique",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_monzy",
+      "target": "research_notes_monzy_and_indian_card_recommenders_monzy_monzo",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_terms",
+      "target": "reports_monzy_and_indian_card_recommenders_mvp_30_40_cards",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_preference_weighting",
+      "target": "reports_monzy_and_indian_card_recommenders_build_decision",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_warikoo_distribution_moat",
+      "target": "reports_monzy_and_indian_card_recommenders_monzy",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_monzy_and_indian_card_recommenders_monzy_go_redirect_layer",
+      "target": "research_notes_monzy_and_indian_card_recommenders_competitors_great_cards",
+      "relation": "conceptually_related_to",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.2,
+      "source_file": "research_notes/Monzy and Indian card recommenders/monzy.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

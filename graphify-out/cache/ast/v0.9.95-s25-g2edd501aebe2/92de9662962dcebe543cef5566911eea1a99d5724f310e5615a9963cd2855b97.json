@@ -1,0 +1,678 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_scripts_build_card_catalog_py",
+      "label": "build-card-catalog.py",
+      "file_type": "code",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_scripts_build_card_catalog_buckets",
+      "label": "buckets()",
+      "file_type": "code",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L55",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_scripts_build_card_catalog_num",
+      "label": "num()",
+      "file_type": "code",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L64",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_scripts_build_card_catalog_cash_ratio",
+      "label": "cash_ratio()",
+      "file_type": "code",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L68",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_scripts_build_card_catalog_convert",
+      "label": "convert()",
+      "file_type": "code",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L78",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_scripts_build_card_catalog_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L177",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_scripts_build_card_catalog_rationale_1",
+      "label": "Build src/lib/cards/catalog-data.ts from the reward-rules research file. python\u2026",
+      "file_type": "rationale",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_scripts_build_card_catalog_rationale_69",
+      "label": "Points are valued at what most people get: cash or vouchers, not airline\u2026",
+      "file_type": "rationale",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L69"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_py",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_python_import_module": "json",
+      "_python_import_bindings": [["json", "json"]],
+      "_python_import_module_binding": true
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_py",
+      "target": "re",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_python_import_module": "re",
+      "_python_import_bindings": [["re", "re"]],
+      "_python_import_module_binding": true
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_py",
+      "target": "pathlib",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_python_import_module": "pathlib",
+      "_python_import_bindings": [["Path", "Path"]]
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_py",
+      "target": "$graphify-root$_scripts_build_card_catalog_buckets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_py",
+      "target": "$graphify-root$_scripts_build_card_catalog_num",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_py",
+      "target": "$graphify-root$_scripts_build_card_catalog_cash_ratio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_py",
+      "target": "$graphify-root$_scripts_build_card_catalog_convert",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_py",
+      "target": "$graphify-root$_scripts_build_card_catalog_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_convert",
+      "target": "$graphify-root$_scripts_build_card_catalog_cash_ratio",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_convert",
+      "target": "$graphify-root$_scripts_build_card_catalog_buckets",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_convert",
+      "target": "$graphify-root$_scripts_build_card_catalog_num",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_main",
+      "target": "$graphify-root$_scripts_build_card_catalog_convert",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L180",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_rationale_1",
+      "target": "$graphify-root$_scripts_build_card_catalog_py",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_build_card_catalog_rationale_69",
+      "target": "$graphify-root$_scripts_build_card_catalog_cash_ratio",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L69",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_buckets",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L58",
+      "receiver": "ALIAS",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_buckets",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L60",
+      "receiver": "out",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_num",
+      "callee": "is_integer",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L65",
+      "receiver": null,
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_cash_ratio",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L71",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_cash_ratio",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L72",
+      "receiver": "pv",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_cash_ratio",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L72",
+      "receiver": "pv",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L80",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L80",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L80",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L87",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L88",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L88",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L88",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L89",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L92",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L93",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "lower",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L95",
+      "receiver": "m",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L95",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L96",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L99",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L100",
+      "receiver": "r",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L118",
+      "receiver": "rules",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "items",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L121",
+      "receiver": null,
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L121",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L125",
+      "receiver": "ALIAS",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L130",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L131",
+      "receiver": "m",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L134",
+      "receiver": "milestones",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L136",
+      "receiver": "milestones",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L138",
+      "receiver": "milestones",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "rstrip",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L140",
+      "receiver": null,
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L140",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L143",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L143",
+      "receiver": "OFFICIAL",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L143",
+      "receiver": "BANK_HOME",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L149",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L150",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L151",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L152",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L153",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L156",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L157",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L158",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_convert",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L170",
+      "receiver": "c",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_main",
+      "callee": "read_text",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L178",
+      "receiver": "SRC",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_main",
+      "callee": "findall",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L179",
+      "receiver": "re",
+      "_python_receiver_shadowed": false
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_main",
+      "callee": "loads",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L180",
+      "receiver": "json",
+      "_python_receiver_shadowed": false
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_main",
+      "callee": "len",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L180"
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_main",
+      "callee": "dumps",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L181",
+      "receiver": "json",
+      "_python_receiver_shadowed": false
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_main",
+      "callee": "write_text",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L182",
+      "receiver": "OUT",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_main",
+      "callee": "relative_to",
+      "is_member_call": true,
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L189",
+      "receiver": "OUT",
+      "_python_receiver_shadowed": true
+    },
+    {
+      "caller_nid": "$graphify-root$_scripts_build_card_catalog_main",
+      "callee": "ROOT",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "scripts/build-card-catalog.py",
+      "source_location": "L189"
+    }
+  ]
+}

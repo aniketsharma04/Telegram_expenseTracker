@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v13_user_keys_sql",
+      "label": "v13-user-keys.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v13-user-keys.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v13_user_keys_user_api_keys",
+      "label": "user_api_keys",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v13-user-keys.sql",
+      "source_location": "L14"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v13-user-keys.sql"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v13_user_keys_sql",
+      "target": "$graphify-root$_supabase_migrations_v13_user_keys_user_api_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v13-user-keys.sql",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v13_user_keys_user_api_keys",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v13-user-keys.sql",
+      "source_location": "L14",
+      "weight": 1.0
+    }
+  ]
+}

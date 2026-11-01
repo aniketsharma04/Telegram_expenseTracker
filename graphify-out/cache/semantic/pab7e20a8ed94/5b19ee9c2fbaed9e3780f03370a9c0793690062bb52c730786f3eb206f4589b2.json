@@ -1,0 +1,613 @@
+{
+  "nodes": [
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "label": "Data access and payment rails in India for a solo developer",
+      "file_type": "document",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "label": "Account Aggregator (AA) framework",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_sahamati",
+      "label": "Sahamati (AA SRO)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_fiu",
+      "label": "Financial Information User (FIU)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Must be regulated by RBI, SEBI, IRDAI or PFRDA; an unregistered solo developer cannot be one."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_tsp_setu_finvu",
+      "label": "AA technical service providers (Setu, Finvu, Finarkein)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_aa_fee_model_nov_2026",
+      "label": "Standardised AA fee model from 1 Nov 2026",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L19",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_aa_live_fi_types",
+      "label": "AA live FI types (EPF, PPF, bonds, G-Secs not live)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_cas_statement",
+      "label": "Consolidated Account Statement (CAMS/KFintech/NSDL/CDSL)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L54",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_casparser",
+      "label": "casparser (MIT Python library)",
+      "file_type": "code",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L67",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_mf_central",
+      "label": "MF Central",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L63",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_epf_passbook",
+      "label": "EPF passbook PDF (EPFO/UMANG)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L92",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_credit_bureaus",
+      "label": "Credit bureaus under CICRA 2005",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L108",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_experian_whatsapp",
+      "label": "Experian free score on WhatsApp",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L121",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_bbps",
+      "label": "BBPS / Bharat Connect",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L135",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_bbps_agent_institution",
+      "label": "BBPS agent institution under a COU (Setu, Cashfree)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L146",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_upi_intent",
+      "label": "UPI Intent upi://pay deep link",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L161",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Mandatory mobile standard since 28 Feb 2026; no licence needed to generate; no success callback so confirm from bank SMS."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_upi_autopay",
+      "label": "UPI Autopay mandates",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L178",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_restricted_scope",
+      "label": "gmail.readonly restricted scope (100-user lifetime cap, 7-day token expiry)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L186",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_casa_tier2",
+      "label": "CASA Tier 2 security assessment (TAC Security $540-1,800/yr)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L196",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_forwarding",
+      "label": "Gmail filter auto-forward to inbound address (Cloudflare Email Routing)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L213",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_play_sms_policy",
+      "label": "Play SMS-based money management exception",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L199",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_bluecoins",
+      "label": "Bluecoins SMS rejection precedent",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L207",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_notification_listener",
+      "label": "NotificationListenerService fallback",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L215",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "label": "Feasibility tiers A/B/C for a solo developer",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": "L223",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_cas_statement",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_casparser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_epf_passbook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_credit_bureaus",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_bbps",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_upi_intent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_restricted_scope",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_play_sms_policy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_fiu",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_sahamati",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_fiu",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_tsp_setu_finvu",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_aa_fee_model_nov_2026",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_aa_live_fi_types",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_casparser",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_cas_statement",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_casparser",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_mf_central",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_cas_statement",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_credit_bureaus",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_experian_whatsapp",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_bbps",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_bbps_agent_institution",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_bbps",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_upi_intent",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_upi_intent",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_upi_autopay",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_restricted_scope",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_casa_tier2",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_forwarding",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_restricted_scope",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_play_sms_policy",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_bluecoins",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_play_sms_policy",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_notification_listener",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_fiu",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_casparser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_upi_intent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_bbps_agent_institution",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_casa_tier2",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_forwarding",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_feasibility_tiers",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_credit_bureaus",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_data_access_epf_passbook",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_aa_live_fi_types",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/data_access.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

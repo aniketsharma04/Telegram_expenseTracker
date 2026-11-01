@@ -1,0 +1,654 @@
+{
+  "nodes": [
+    {
+      "id": "readme",
+      "label": "Telegram Expense Tracker README",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_pipeline",
+      "label": "Telegram -> webhook -> parser -> Supabase -> realtime dashboard pipeline",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "How it works",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_rules_parser",
+      "label": "Rules parser",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "How it works",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_telegram_webhook",
+      "label": "Telegram webhook (/api/telegram)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "How it works",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_dashboard",
+      "label": "Next.js realtime dashboard",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "How it works",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_setup",
+      "label": "Setup (BotFather, Supabase, Vercel)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "Setup",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_notes",
+      "label": "Security notes (service role server-only, always 200)",
+      "file_type": "rationale",
+      "source_file": "README.md",
+      "source_location": "Notes",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Always answer 200 so Telegram does not re-deliver processed messages."
+    },
+    {
+      "id": "readme_llm_fallback",
+      "label": "LLM fallback (Gemini / Claude)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "v2 features",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_self_improving_keywords",
+      "label": "Self-improving keyword table",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "v2 features",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_voice_notes",
+      "label": "Voice notes via Groq Whisper",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "v2 features",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_correction_commands",
+      "label": "Correction commands (/undo, /category, /amount, /last)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "v2 features",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_daily_budget",
+      "label": "Daily budget (v14)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "Daily budget",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "A monthly income is too big to feel; turn it into one number per day."
+    },
+    {
+      "id": "readme_morning_night_briefs",
+      "label": "Morning brief and night report",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "Daily budget",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_push_inbox",
+      "label": "Push + in-app inbox (v15)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "App-first",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_background_capture",
+      "label": "Background capture via WorkManager",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "App-first",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_salary_cycle_months",
+      "label": "Salary-cycle months (v16)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "App-first",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_goals",
+      "label": "Goals (v17)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "App-first",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_push_setup",
+      "label": "One-time Firebase/FCM push setup",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "One-time setup for push",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_roadmap",
+      "label": "Roadmap (v3, post-v3)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "Roadmap",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "readme",
+      "target": "readme_pipeline",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_rules_parser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_telegram_webhook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_dashboard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_setup",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_notes",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_llm_fallback",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_self_improving_keywords",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_voice_notes",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_correction_commands",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_daily_budget",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_morning_night_briefs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_push_inbox",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_background_capture",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_salary_cycle_months",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_goals",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_push_setup",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "readme_roadmap",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_rules_parser",
+      "target": "src_lib_parser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_telegram_webhook",
+      "target": "src_app_api_telegram_route",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_llm_fallback",
+      "target": "src_lib_llm",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_daily_budget",
+      "target": "src_lib_daily_budget",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_daily_budget",
+      "target": "src_lib_plan",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_morning_night_briefs",
+      "target": "src_lib_briefs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_push_inbox",
+      "target": "src_lib_notify",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_push_inbox",
+      "target": "src_lib_push",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_push_setup",
+      "target": "mobile_app_config",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "expense_tracker_project_plan",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_pipeline",
+      "target": "readme_rules_parser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_pipeline",
+      "target": "readme_telegram_webhook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_pipeline",
+      "target": "readme_dashboard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_llm_fallback",
+      "target": "readme_self_improving_keywords",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_voice_notes",
+      "target": "readme_rules_parser",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_daily_budget",
+      "target": "readme_salary_cycle_months",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_goals",
+      "target": "readme_daily_budget",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_rules_parser",
+      "target": "expense_tracker_project_plan_parsing_strategy",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_self_improving_keywords",
+      "target": "expense_tracker_project_plan_parsing_strategy",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_pipeline",
+      "target": "expense_tracker_project_plan_system_architecture",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_push_inbox",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_expo_push_fcm",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_push_setup",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_left_to_user",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_background_capture",
+      "target": "docs_superpowers_specs_2026_10_24_app_first_roadmap_design_capture_routes",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "expense_capture_pipeline",
+      "label": "Telegram message to dashboard pipeline",
+      "nodes": [
+        "readme_telegram_webhook",
+        "readme_rules_parser",
+        "readme_llm_fallback",
+        "readme_self_improving_keywords",
+        "readme_dashboard"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md"
+    }
+  ]
+}

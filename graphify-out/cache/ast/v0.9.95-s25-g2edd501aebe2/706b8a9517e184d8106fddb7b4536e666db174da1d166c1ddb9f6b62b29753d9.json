@@ -1,0 +1,122 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v5_bills_sql",
+      "label": "v5-bills.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v5_bills_bills",
+      "label": "bills",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L5"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v5-bills.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v5_bills_bills_user_idx",
+      "label": "bills_user_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L20"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v5_bills_bill_payments",
+      "label": "bill_payments",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L23"
+    },
+    {
+      "id": "expenses",
+      "label": "expenses",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v5-bills.sql"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v5_bills_sql",
+      "target": "$graphify-root$_supabase_migrations_v5_bills_bills",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v5_bills_bills",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v5_bills_sql",
+      "target": "$graphify-root$_supabase_migrations_v5_bills_bills_user_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v5_bills_bills_user_idx",
+      "target": "$graphify-root$_supabase_migrations_v5_bills_bills",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v5_bills_sql",
+      "target": "$graphify-root$_supabase_migrations_v5_bills_bill_payments",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v5_bills_bill_payments",
+      "target": "$graphify-root$_supabase_migrations_v5_bills_bills",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v5_bills_bill_payments",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v5_bills_bill_payments",
+      "target": "expenses",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v5-bills.sql",
+      "source_location": "L23",
+      "weight": 1.0
+    }
+  ]
+}

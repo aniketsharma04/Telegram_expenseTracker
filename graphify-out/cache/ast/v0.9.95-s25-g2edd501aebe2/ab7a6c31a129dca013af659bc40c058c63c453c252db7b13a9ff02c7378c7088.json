@@ -1,0 +1,87 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v6_bbps_sql",
+      "label": "v6-bbps.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": null
+    },
+    {
+      "id": "bills",
+      "label": "bills",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v6-bbps.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers",
+      "label": "bbps_billers",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": "L18"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers_name_idx",
+      "label": "bbps_billers_name_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": "L25"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers_category_idx",
+      "label": "bbps_billers_category_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": "L26"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v6_bbps_sql",
+      "target": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v6_bbps_sql",
+      "target": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers_name_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers_name_idx",
+      "target": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v6_bbps_sql",
+      "target": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers_category_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers_category_idx",
+      "target": "$graphify-root$_supabase_migrations_v6_bbps_bbps_billers",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v6-bbps.sql",
+      "source_location": "L26",
+      "weight": 1.0
+    }
+  ]
+}

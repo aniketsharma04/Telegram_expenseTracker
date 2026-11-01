@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": "docs_play_store_listing",
+      "label": "Play Store listing draft",
+      "file_type": "document",
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_listing_app_name",
+      "label": "App name Aaj (\u0906\u091c, today)",
+      "file_type": "concept",
+      "source_file": "docs/play-store/listing.md",
+      "source_location": "header",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_listing_short_description",
+      "label": "Short description",
+      "file_type": "concept",
+      "source_file": "docs/play-store/listing.md",
+      "source_location": "Short description",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_listing_full_description",
+      "label": "Full description",
+      "file_type": "concept",
+      "source_file": "docs/play-store/listing.md",
+      "source_location": "Full description",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_listing_private_by_design",
+      "label": "Private by design",
+      "file_type": "concept",
+      "source_file": "docs/play-store/listing.md",
+      "source_location": "Full description",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_listing_screenshot_captions",
+      "label": "Screenshot captions",
+      "file_type": "concept",
+      "source_file": "docs/play-store/listing.md",
+      "source_location": "Screenshot captions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_listing_whats_new",
+      "label": "What's new (first release)",
+      "file_type": "concept",
+      "source_file": "docs/play-store/listing.md",
+      "source_location": "What's new",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_play_store_listing",
+      "target": "docs_play_store_listing_app_name",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_listing",
+      "target": "docs_play_store_listing_short_description",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_listing",
+      "target": "docs_play_store_listing_full_description",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_listing",
+      "target": "docs_play_store_listing_private_by_design",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_listing",
+      "target": "docs_play_store_listing_screenshot_captions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_listing",
+      "target": "docs_play_store_listing_whats_new",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_listing_full_description",
+      "target": "readme_daily_budget",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_listing_private_by_design",
+      "target": "docs_play_store_data_safety_otp_dropped_on_device",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/play-store/listing.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,987 @@
+{
+  "nodes": [
+    {
+      "id": "reports_aaj_complete_finance_roadmap_doc",
+      "label": "Aaj complete finance roadmap (report)",
+      "file_type": "document",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_neutral_money_hub",
+      "label": "Aaj as India's neutral money hub",
+      "file_type": "rationale",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Every large Indian tracker monetises via loans, cards or investments (axio, Moneyview, INDmoney, CRED); a neutral, chat-first, family-aware tracker covering cash and every bank is an open gap."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_four_differentiators",
+      "label": "Four differentiators: cross-source coverage, neutrality, family without sign-ups, coaching layer",
+      "file_type": "rationale",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Google Pay's free Gemini assistant commoditised Hindi chat/voice, so Aaj must win on the combination; privacy is table stakes since indie apps already market on-device parsing."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_user_supplied_documents_strategy",
+      "label": "User-supplied documents beat licensed data pipes",
+      "file_type": "rationale",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "AA, bureaus, BBPS and Gmail CASA are closed or costly to an unregistered solo developer; SMS/notification parsing, Gmail forwarding, CAS parsing, statement uploads and upi://pay hand-offs cover nearly the same ground for free."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_data_access_matrix",
+      "label": "Data access matrix (free / entity / licence)",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_track_and_teach_boundary",
+      "label": "Track and teach freely; recommend, refer or hold money only with a licence",
+      "file_type": "rationale",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L33",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Tracking, budgeting rules and read-only display are not regulated advice; naming securities, loan referrals, fund holding and insurance quotes are regulated by SEBI, RBI and IRDAI."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "label": "Free-tier and policy risks to fix before new features",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L43",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Bank text on Gemini free tier, Gmail 100-user cap, Vercel Hobby non-commercial clause, no Supabase backups, mocked BBPS fetch carry legal or data-loss risk."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_on_device_parsing_pipeline",
+      "label": "On-device parsing pipeline (regex, Gemini Nano, masked fallback)",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L45",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Gemini Unpaid terms forbid personal info and allow training/human review; bank alerts are highly templated so regex covers most."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_gmail_forward_inbound",
+      "label": "Gmail forward-to-inbound address",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L21",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Avoids restricted gmail.readonly scope, 100-user lifetime cap and annual CASA; user controls what is shared."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_mocked_bbps_replacement",
+      "label": "Replace mocked BBPS fetch with parsed bills plus upi://pay hand-off",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L54",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "A fake bill amount misleads users and implies BBPS access Aaj does not have; no fund handling means no RBI PA or BBPS licence."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_weekly_personalised_review",
+      "label": "Weekly personalised review in briefs",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L61",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Megastudy found weekly congratulate/nudge reminders best; monthly or salary-day timing had no effect; effects fade so nudging should be permanent."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_sinking_funds",
+      "label": "Sinking funds for Diwali, weddings, school fees and premiums",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L65",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_family_without_signups",
+      "label": "Family tracking without forced sign-ups",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L65",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "INDmoney's family view requires every member to hold an account; Aaj can let one person track a parent or household."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_ask_your_money",
+      "label": "Ask your money with fixed typed tools and deterministic numbers",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L67",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Model chooses tools, SQL/TS computes numbers, model only phrases reply; framed as 'not an advisor' for SEBI reasons."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_roadmap_now",
+      "label": "Roadmap Now (0-3 months): legal, safe and sticky",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L73",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_roadmap_next",
+      "label": "Roadmap Next (3-9 months): earn the all-in-one-place claim",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L89",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_roadmap_later",
+      "label": "Roadmap Later (9+ months): gated on money, entity or partner",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L105",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_monetise_low_price",
+      "label": "Monetise with low prices and no product pushing",
+      "file_type": "rationale",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L117",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Commission on loans/investments is regulated and fatal to neutrality; Gmail data cannot feed lending; start with donations (Vercel-allowed), then a low-priced Pro/one-time unlock after moving off Vercel Hobby."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_eas_store_build_path",
+      "label": "Store-build release path beyond EAS 1,000 MAU",
+      "file_type": "concept",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L57",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "The project rule 'OTA updates first' stops working past 1,000 monthly users on Expo Free."
+    },
+    {
+      "id": "reports_aaj_complete_finance_roadmap_chat_is_commodity",
+      "label": "Chat is a commodity; verified numbers are the moat",
+      "file_type": "rationale",
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": "L127",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Google Pay's free multilingual assistant shows chat alone is commoditised; Aaj's edge is verified data across every bank, cash, family and calendar."
+    }
+  ],
+  "edges": [
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_neutral_money_hub",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_four_differentiators",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_user_supplied_documents_strategy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_data_access_matrix",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_track_and_teach_boundary",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_weekly_personalised_review",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_ask_your_money",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_roadmap_now",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_roadmap_next",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_roadmap_later",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_monetise_low_price",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "reports_aaj_complete_finance_roadmap_chat_is_commodity",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_now",
+      "target": "reports_aaj_complete_finance_roadmap_on_device_parsing_pipeline",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_now",
+      "target": "reports_aaj_complete_finance_roadmap_gmail_forward_inbound",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_now",
+      "target": "reports_aaj_complete_finance_roadmap_mocked_bbps_replacement",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_now",
+      "target": "reports_aaj_complete_finance_roadmap_weekly_personalised_review",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_next",
+      "target": "reports_aaj_complete_finance_roadmap_sinking_funds",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_next",
+      "target": "reports_aaj_complete_finance_roadmap_family_without_signups",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_next",
+      "target": "reports_aaj_complete_finance_roadmap_ask_your_money",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "target": "reports_aaj_complete_finance_roadmap_on_device_parsing_pipeline",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "target": "reports_aaj_complete_finance_roadmap_gmail_forward_inbound",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "target": "reports_aaj_complete_finance_roadmap_mocked_bbps_replacement",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "target": "reports_aaj_complete_finance_roadmap_eas_store_build_path",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_neutral_money_hub",
+      "target": "reports_aaj_complete_finance_roadmap_four_differentiators",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_four_differentiators",
+      "target": "reports_aaj_complete_finance_roadmap_family_without_signups",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_chat_is_commodity",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_ask_google_pay",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_neutral_money_hub",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_axio",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_neutral_money_hub",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_moneyview",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_neutral_money_hub",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_indmoney",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_neutral_money_hub",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_cred_money",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_neutral_money_hub",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_fi_money",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_four_differentiators",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_ask_google_pay",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_family_without_signups",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_indmoney",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_user_supplied_documents_strategy",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_account_aggregator",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_user_supplied_documents_strategy",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_casparser",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_user_supplied_documents_strategy",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_upi_intent",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_user_supplied_documents_strategy",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_credit_bureaus",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_user_supplied_documents_strategy",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_bbps",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_gmail_forward_inbound",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_restricted_scope",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_gmail_forward_inbound",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_forwarding",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_track_and_teach_boundary",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ia_regulations",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_track_and_teach_boundary",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ai_amendment_2024",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_track_and_teach_boundary",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_finfluencer_circular",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_track_and_teach_boundary",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_rbi_digital_lending_directions_2025",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_track_and_teach_boundary",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_payment_aggregator_directions_2025",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_track_and_teach_boundary",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_irdai_web_aggregators",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_dpdp_rules_2025",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_telegram_bot_terms",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_workspace_limited_use",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_on_device_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_free_tier_terms",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_on_device_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_transaction_sms_parser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_on_device_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_nano_mlkit",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_on_device_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_oracle_always_free",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_on_device_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_commercial_clause",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_supabase_free",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_free_tier_risks",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_eas_update_cap",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_eas_store_build_path",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_eas_update_cap",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_monetise_low_price",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_play_billing_fee",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_monetise_low_price",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_cloudflare_workers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_monetise_low_price",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_gst_threshold",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_monetise_low_price",
+      "target": "research_notes_aaj_complete_finance_roadmap_competitors_mint_shutdown",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_weekly_personalised_review",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_megastudy_weekly_reminders",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_sinking_funds",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_festive_spending",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_sinking_funds",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_wedding_spending",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_ask_your_money",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_semantic_layer_tools",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_now",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_subscription_detection",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_next",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_credit_card_cycle_view",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_aaj_complete_finance_roadmap_roadmap_next",
+      "target": "research_notes_aaj_complete_finance_roadmap_features_retention_income_tax_act_2025",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "aaj_free_data_access_stack",
+      "label": "Free user-initiated data access stack (Gmail forwarding, CAS parsing, UPI intent, on-device SMS parsing)",
+      "nodes": [
+        "research_notes_aaj_complete_finance_roadmap_data_access_gmail_forwarding",
+        "research_notes_aaj_complete_finance_roadmap_data_access_casparser",
+        "research_notes_aaj_complete_finance_roadmap_data_access_upi_intent",
+        "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+        "reports_aaj_complete_finance_roadmap_user_supplied_documents_strategy"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md"
+    },
+    {
+      "id": "aaj_regulated_gates",
+      "label": "Regulated gates Aaj must not cross without a licence (SEBI IA, RBI LSP, RBI PA, IRDAI)",
+      "nodes": [
+        "research_notes_aaj_complete_finance_roadmap_regulation_sebi_ia_regulations",
+        "research_notes_aaj_complete_finance_roadmap_regulation_rbi_digital_lending_directions_2025",
+        "research_notes_aaj_complete_finance_roadmap_regulation_payment_aggregator_directions_2025",
+        "research_notes_aaj_complete_finance_roadmap_regulation_irdai_web_aggregators",
+        "reports_aaj_complete_finance_roadmap_track_and_teach_boundary"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md"
+    },
+    {
+      "id": "aaj_free_tier_risk_fixes",
+      "label": "Free-tier risks and their free fixes",
+      "nodes": [
+        "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_commercial_clause",
+        "research_notes_aaj_complete_finance_roadmap_tech_monetisation_supabase_free",
+        "research_notes_aaj_complete_finance_roadmap_tech_monetisation_eas_update_cap",
+        "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_free_tier_terms",
+        "reports_aaj_complete_finance_roadmap_free_tier_risks"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/Aaj complete finance roadmap.md"
+    }
+  ]
+}

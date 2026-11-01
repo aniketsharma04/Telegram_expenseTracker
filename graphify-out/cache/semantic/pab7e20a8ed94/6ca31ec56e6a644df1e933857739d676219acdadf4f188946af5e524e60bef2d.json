@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {
+      "id": "mobile_assets_splash_icon_splash_icon",
+      "label": "Splash icon (teal rupee ring on white)",
+      "file_type": "image",
+      "source_file": "mobile/assets/splash-icon.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "mobile_assets_splash_icon_splash_icon",
+      "target": "docs_play_store_assets_feature_graphic_rupee_progress_ring_logo",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/assets/splash-icon.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_assets_splash_icon_splash_icon",
+      "target": "mobile_assets_icon_app_icon",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "mobile/assets/splash-icon.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

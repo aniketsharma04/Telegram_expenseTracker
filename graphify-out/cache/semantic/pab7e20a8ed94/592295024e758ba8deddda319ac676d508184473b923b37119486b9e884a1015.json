@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "public_icon_512_pwa_icon_512",
+      "label": "Web/PWA icon 512px",
+      "file_type": "image",
+      "source_file": "public/icon-512.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "public_icon_512_pwa_icon_512",
+      "target": "docs_play_store_assets_feature_graphic_rupee_progress_ring_logo",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/icon-512.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

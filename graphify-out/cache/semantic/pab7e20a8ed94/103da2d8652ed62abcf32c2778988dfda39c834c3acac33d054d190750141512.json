@@ -1,0 +1,634 @@
+{
+  "nodes": [
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "label": "Free-tier tech choices and monetisation for Aaj",
+      "file_type": "document",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_hobby",
+      "label": "Vercel Hobby plan limits",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_commercial_clause",
+      "label": "Vercel Hobby non-commercial clause (donations allowed)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L19",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_supabase_free",
+      "label": "Supabase Free (500 MB, 1-week pause, no backups)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L22",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_eas_update_cap",
+      "label": "EAS Update 1,000 MAU cap on Expo Free",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L26",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_free_tier_terms",
+      "label": "Gemini API Unpaid Services terms",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L31",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "'Do not submit sensitive, confidential, or personal information'; Google may train on inputs and humans may review; quotas unpublished."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_groq_whisper",
+      "label": "Groq free whisper-large-v3",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L37",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_cloudflare_workers",
+      "label": "Cloudflare Workers Free",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L42",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_oracle_always_free",
+      "label": "Oracle Cloud Always Free (Ampere A1)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L47",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_telegram_broadcast_limit",
+      "label": "Telegram Bot API broadcast limit (~30 msg/s)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L51",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_github_actions_cron",
+      "label": "GitHub Actions scheduled workflows as free cron",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L75",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_what_breaks_first",
+      "label": "What breaks first for Aaj",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L66",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_transaction_sms_parser",
+      "label": "transaction-sms-parser (JS/npm)",
+      "file_type": "code",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L121",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_upi_sms_parser",
+      "label": "upi_sms_parser (Dart)",
+      "file_type": "code",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L122",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_pennywise_ai",
+      "label": "PennyWise AI",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L124",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_nano_mlkit",
+      "label": "Gemini Nano via ML Kit GenAI Prompt API",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L119",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "label": "Recommended on-device parsing pipeline",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L129",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Regex covers templated bank alerts at zero cost; LLM only for long tail with PII masked; keeps non-financial SMS off server per Play policy."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_pg_dump_backups",
+      "label": "Nightly encrypted pg_dump backups via GitHub Actions",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L161",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_rls_token_encryption",
+      "label": "RLS on every table and token encryption at rest",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L159",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_play_billing_fee",
+      "label": "Google Play Billing 15% subscription fee (user-choice 4 pts lower)",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L175",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_razorpay",
+      "label": "Razorpay onboarding for individuals",
+      "file_type": "concept",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L177",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_trust_ranking_monetisation",
+      "label": "Monetisation trust ranking (one-time unlock best, MF/insurance referrals worst)",
+      "file_type": "rationale",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L184",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Affiliate offers reward pushing debt and touch RBI lending rules; MF/insurance referrals need ARN/IRDAI and hit SEBI finfluencer rules."
+    },
+    {
+      "id": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_hosting_migration_sequencing",
+      "label": "Port API off Vercel Hobby before charging",
+      "file_type": "rationale",
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": "L99",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Any payment, ads or affiliate links make the deployment commercial under Vercel's terms."
+    }
+  ],
+  "edges": [
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_hobby",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_supabase_free",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_eas_update_cap",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_free_tier_terms",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_groq_whisper",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_cloudflare_workers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_oracle_always_free",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_telegram_broadcast_limit",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_what_breaks_first",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_rls_token_encryption",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_pg_dump_backups",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_play_billing_fee",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_razorpay",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_trust_ranking_monetisation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_doc",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_hosting_migration_sequencing",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_hobby",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_commercial_clause",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_what_breaks_first",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_commercial_clause",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_what_breaks_first",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_free_tier_terms",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_what_breaks_first",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_eas_update_cap",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_what_breaks_first",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_supabase_free",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_vercel_commercial_clause",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_hosting_migration_sequencing",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_hosting_migration_sequencing",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_cloudflare_workers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_hosting_migration_sequencing",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_oracle_always_free",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_transaction_sms_parser",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_nano_mlkit",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_upi_sms_parser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_pennywise_ai",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_gemini_free_tier_terms",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_supabase_free",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_pg_dump_backups",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_pg_dump_backups",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_github_actions_cron",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_transaction_sms_parser",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_upi_sms_parser",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_parsing_pipeline",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_play_sms_policy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_trust_ranking_monetisation",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_play_billing_fee",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_trust_ranking_monetisation",
+      "target": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_razorpay",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_trust_ranking_monetisation",
+      "target": "research_notes_aaj_complete_finance_roadmap_regulation_finfluencer_circular",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "research_notes_aaj_complete_finance_roadmap_tech_monetisation_rls_token_encryption",
+      "target": "research_notes_aaj_complete_finance_roadmap_data_access_gmail_restricted_scope",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "research_notes/Aaj complete finance roadmap/tech_monetisation.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

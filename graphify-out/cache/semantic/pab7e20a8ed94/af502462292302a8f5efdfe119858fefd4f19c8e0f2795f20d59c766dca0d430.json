@@ -1,0 +1,69 @@
+{
+  "nodes": [
+    {
+      "id": "mobile_assets_icon_app_icon",
+      "label": "Mobile app icon 1024px (white rupee ring on teal)",
+      "file_type": "image",
+      "source_file": "mobile/assets/icon.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "mobile_assets_icon_app_icon",
+      "target": "docs_play_store_assets_feature_graphic_rupee_progress_ring_logo",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "mobile/assets/icon.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_assets_feature_graphic_rupee_progress_ring_logo",
+      "target": "mobile_assets_android_icon_background_brand_teal",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "mobile/assets/icon.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mobile_assets_icon_app_icon",
+      "target": "docs_play_store_assets_icon_512_play_store_icon",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "mobile/assets/icon.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "aaj_app_icon_set",
+      "label": "Aaj app icon set (store, mobile, Android adaptive, web/PWA)",
+      "nodes": [
+        "docs_play_store_assets_icon_512_play_store_icon",
+        "mobile_assets_icon_app_icon",
+        "mobile_assets_android_icon_background_adaptive_icon_background",
+        "mobile_assets_android_icon_foreground_adaptive_icon_foreground",
+        "mobile_assets_android_icon_monochrome_adaptive_icon_monochrome",
+        "mobile_assets_favicon_favicon",
+        "mobile_assets_notification_icon_notification_icon",
+        "mobile_assets_splash_icon_splash_icon",
+        "public_icon_192_pwa_icon_192",
+        "public_icon_512_pwa_icon_512"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "mobile/assets/icon.png"
+    }
+  ]
+}

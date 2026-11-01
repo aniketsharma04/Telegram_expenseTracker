@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "id": "docs_play_store_assets_feature_graphic_play_store_feature_graphic",
+      "label": "Play Store feature graphic: Aaj logo + 'Know what you can spend today.'",
+      "file_type": "image",
+      "source_file": "docs/play-store/assets/feature-graphic.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_assets_feature_graphic_rupee_progress_ring_logo",
+      "label": "Aaj logo mark: rupee sign inside partial progress ring",
+      "file_type": "concept",
+      "source_file": "docs/play-store/assets/feature-graphic.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_assets_feature_graphic_aaj_brand",
+      "label": "Aaj app brand (tagline: Know what you can spend today.)",
+      "file_type": "concept",
+      "source_file": "docs/play-store/assets/feature-graphic.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_play_store_assets_feature_graphic_play_store_feature_graphic",
+      "target": "docs_play_store_assets_feature_graphic_aaj_brand",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/assets/feature-graphic.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_assets_feature_graphic_play_store_feature_graphic",
+      "target": "docs_play_store_assets_feature_graphic_rupee_progress_ring_logo",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/assets/feature-graphic.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_assets_feature_graphic_rupee_progress_ring_logo",
+      "target": "docs_play_store_assets_feature_graphic_aaj_brand",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/play-store/assets/feature-graphic.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_assets_feature_graphic_play_store_feature_graphic",
+      "target": "mobile_assets_android_icon_background_brand_teal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/assets/feature-graphic.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

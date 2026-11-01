@@ -1,0 +1,96 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_migrations_v20_cards_sql",
+      "label": "v20-cards.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v20_cards_user_cards",
+      "label": "user_cards",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L7"
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/supabase/migrations/v20-cards.sql"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v20_cards_user_cards_user_idx",
+      "label": "user_cards_user_idx",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L25"
+    },
+    {
+      "id": "$graphify-root$_supabase_migrations_v20_cards_card_profiles",
+      "label": "card_profiles",
+      "file_type": "code",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L29"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_migrations_v20_cards_sql",
+      "target": "$graphify-root$_supabase_migrations_v20_cards_user_cards",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v20_cards_user_cards",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v20_cards_sql",
+      "target": "$graphify-root$_supabase_migrations_v20_cards_user_cards_user_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v20_cards_user_cards_user_idx",
+      "target": "$graphify-root$_supabase_migrations_v20_cards_user_cards",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v20_cards_sql",
+      "target": "$graphify-root$_supabase_migrations_v20_cards_card_profiles",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_migrations_v20_cards_card_profiles",
+      "target": "users",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/migrations/v20-cards.sql",
+      "source_location": "L29",
+      "weight": 1.0
+    }
+  ]
+}

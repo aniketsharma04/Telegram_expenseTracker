@@ -1,0 +1,104 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_supabase_schema_sql",
+      "label": "schema.sql",
+      "file_type": "code",
+      "source_file": "supabase/schema.sql",
+      "source_location": null
+    },
+    {
+      "id": "$graphify-root$_supabase_schema_categories",
+      "label": "categories",
+      "file_type": "code",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L7"
+    },
+    {
+      "id": "$graphify-root$_supabase_schema_expenses",
+      "label": "expenses",
+      "file_type": "code",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L15"
+    },
+    {
+      "id": "$graphify-root$_supabase_schema_expenses_expense_date_idx",
+      "label": "expenses_expense_date_idx",
+      "file_type": "code",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L27"
+    },
+    {
+      "id": "$graphify-root$_supabase_schema_expenses_category_idx",
+      "label": "expenses_category_idx",
+      "file_type": "code",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L28"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_supabase_schema_sql",
+      "target": "$graphify-root$_supabase_schema_categories",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_schema_sql",
+      "target": "$graphify-root$_supabase_schema_expenses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_schema_expenses",
+      "target": "$graphify-root$_supabase_schema_categories",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_schema_sql",
+      "target": "$graphify-root$_supabase_schema_expenses_expense_date_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_schema_expenses_expense_date_idx",
+      "target": "$graphify-root$_supabase_schema_expenses",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_schema_sql",
+      "target": "$graphify-root$_supabase_schema_expenses_category_idx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_supabase_schema_expenses_category_idx",
+      "target": "$graphify-root$_supabase_schema_expenses",
+      "relation": "indexes",
+      "confidence": "EXTRACTED",
+      "source_file": "supabase/schema.sql",
+      "source_location": "L28",
+      "weight": 1.0
+    }
+  ]
+}

@@ -1,0 +1,281 @@
+{
+  "nodes": [
+    {
+      "id": "docs_play_store_data_safety",
+      "label": "Play Console data safety answers",
+      "file_type": "document",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_data_safety_form",
+      "label": "Data safety form answers",
+      "file_type": "concept",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Data safety form",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_data_types",
+      "label": "Collected data types (email, purchase history, SMS notifications, push token)",
+      "file_type": "concept",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Data safety form",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_notification_access",
+      "label": "Notification access (BIND_NOTIFICATION_LISTENER_SERVICE)",
+      "file_type": "concept",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Sensitive permissions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_prominent_disclosure",
+      "label": "Prominent disclosure card",
+      "file_type": "concept",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Sensitive permissions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_no_sms_permissions",
+      "label": "No READ_SMS / RECEIVE_SMS",
+      "file_type": "rationale",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Sensitive permissions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Avoids the Call log & SMS declaration form."
+    },
+    {
+      "id": "docs_play_store_data_safety_battery_optimisation",
+      "label": "Battery optimisation settings (no REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)",
+      "file_type": "rationale",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Sensitive permissions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_blocked_permissions",
+      "label": "Blocked permissions removed on purpose",
+      "file_type": "rationale",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Sensitive permissions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_financial_features_declaration",
+      "label": "Financial features declaration (none of regulated)",
+      "file_type": "concept",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Financial features",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_gmail_casa",
+      "label": "Gmail restricted scope / CASA Tier 2",
+      "file_type": "concept",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Still to do",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "CASA ~US$540/yr; keep Gmail off in public build until verified."
+    },
+    {
+      "id": "docs_play_store_data_safety_policy_links",
+      "label": "Privacy policy and account deletion URLs",
+      "file_type": "concept",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Links",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_play_store_data_safety_otp_dropped_on_device",
+      "label": "OTP messages dropped on device",
+      "file_type": "rationale",
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": "Data types",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_data_safety_form",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_data_types",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_notification_access",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_prominent_disclosure",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_no_sms_permissions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_battery_optimisation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_blocked_permissions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_financial_features_declaration",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_gmail_casa",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_policy_links",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "docs_play_store_data_safety_otp_dropped_on_device",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety",
+      "target": "src_app_privacy_page",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety_prominent_disclosure",
+      "target": "mobile_components_capturesetupcard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_play_store_data_safety_notification_access",
+      "target": "docs_play_store_data_safety_prominent_disclosure",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/play-store/data-safety.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

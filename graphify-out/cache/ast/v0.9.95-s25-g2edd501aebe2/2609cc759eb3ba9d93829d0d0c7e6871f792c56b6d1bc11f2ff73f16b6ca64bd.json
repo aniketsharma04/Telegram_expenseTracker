@@ -1,0 +1,246 @@
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_scripts_backup_backup_sh",
+      "label": "backup.sh",
+      "file_type": "code",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L1",
+      "metadata": { "language": "bash", "kind": "file" }
+    },
+    {
+      "id": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "label": "backup.sh script",
+      "file_type": "code",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L1",
+      "metadata": { "language": "bash", "kind": "bash_entrypoint" }
+    },
+    {
+      "id": "$graphify-root$_scripts_backup_backup_cleanup",
+      "label": "cleanup()",
+      "file_type": "code",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L36",
+      "metadata": { "language": "bash", "kind": "bash_function" }
+    },
+    {
+      "id": "$graphify-root$_scripts_backup_backup_psql_verify",
+      "label": "psql_verify()",
+      "file_type": "code",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L61",
+      "metadata": { "language": "bash", "kind": "bash_function" }
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_scripts_backup_backup_sh",
+      "target": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_backup_backup_sh",
+      "target": "$graphify-root$_scripts_backup_backup_cleanup",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_backup_backup_sh",
+      "target": "$graphify-root$_scripts_backup_backup_psql_verify",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "target": "$graphify-root$_scripts_backup_backup_psql_verify",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L66",
+      "weight": 1.0,
+      "context": "call"
+    }
+  ],
+  "raw_calls": [
+    {
+      "language": "bash",
+      "callee": "set",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L12"
+    },
+    {
+      "language": "bash",
+      "callee": "date",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L19"
+    },
+    {
+      "language": "bash",
+      "callee": ":",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L20"
+    },
+    {
+      "language": "bash",
+      "callee": "echo",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L27"
+    },
+    {
+      "language": "bash",
+      "callee": "exit",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L28"
+    },
+    {
+      "language": "bash",
+      "callee": "mkdir",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L32"
+    },
+    {
+      "language": "bash",
+      "callee": "rm",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L34"
+    },
+    {
+      "language": "bash",
+      "callee": "trap",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L40"
+    },
+    {
+      "language": "bash",
+      "callee": "awk",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L47"
+    },
+    {
+      "language": "bash",
+      "callee": "sort",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L51"
+    },
+    {
+      "language": "bash",
+      "callee": "wc",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L52"
+    },
+    {
+      "language": "bash",
+      "callee": "docker",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L59"
+    },
+    {
+      "language": "bash",
+      "callee": "true",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L59"
+    },
+    {
+      "language": "bash",
+      "callee": "sleep",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L65"
+    },
+    {
+      "language": "bash",
+      "callee": "break",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L66"
+    },
+    {
+      "language": "bash",
+      "callee": "cat",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L71"
+    },
+    {
+      "language": "bash",
+      "callee": "read",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L77"
+    },
+    {
+      "language": "bash",
+      "callee": "tar",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L93"
+    },
+    {
+      "language": "bash",
+      "callee": "gpg",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L94"
+    },
+    {
+      "language": "bash",
+      "callee": "tr",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_sh__entry",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L99"
+    },
+    {
+      "language": "bash",
+      "callee": "docker",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_cleanup",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L37"
+    },
+    {
+      "language": "bash",
+      "callee": "true",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_cleanup",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L37"
+    },
+    {
+      "language": "bash",
+      "callee": "rm",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_cleanup",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L38"
+    },
+    {
+      "language": "bash",
+      "callee": "docker",
+      "caller_nid": "$graphify-root$_scripts_backup_backup_psql_verify",
+      "source_file": "scripts/backup/backup.sh",
+      "source_location": "L61"
+    }
+  ],
+  "bash_sources": []
+}

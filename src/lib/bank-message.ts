@@ -182,6 +182,8 @@ const BALANCE_PATTERNS = [
 
 /** "a/c XX1234", "A/C x1234", "Acct XX123", "Card no. XX1234", "ac 1234". */
 const ACCOUNT_PATTERNS = [
+  // "SBI Credit Card ending 0543", "card ending with 1234", "Card ends in XX9876".
+  /\bcard\b[^.\d]{0,30}?\b(?:ending|ends)(?:\s+(?:with|in))?\s*[:-]?\s*[xX*•]*(\d{4})\b/i,
   /(?:a\/c|acct|account|ac)\s*(?:no\.?)?\s*[xX*•]*(\d{3,6})\b/i,
   /card\s*(?:no\.?)?\s*[xX*•]*(\d{3,6})\b/i,
   /\b[xX*]{2,}(\d{3,6})\b/,
