@@ -48,8 +48,6 @@ Every evening: what you spent, what's left for tomorrow, and whether you're on t
 The app only reads notifications that mention money moving, and messages with OTPs or codes are skipped on your
 phone and never sent. No ads, no selling data. Export or delete everything at any time.
 
-Works in English and Hindi.
-
 ## What's new (first release)
 
 First release: daily budget, automatic tracking from bank and UPI alerts, morning and night notifications, goals

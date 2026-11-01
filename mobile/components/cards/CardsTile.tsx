@@ -15,13 +15,10 @@ export function CardsTile({
   dark: boolean;
   onOpen: () => void;
 }) {
-  const { fs, lang } = useSettings();
+  const { fs } = useSettings();
   const c = cardsAccent(dark);
-  const title = lang === "hi" ? "Aaj कार्ड्स" : "Aaj Cards";
-  const body =
-    lang === "hi"
-      ? "देखें कौन-से रिवॉर्ड छूटे, और आपके खर्च के लिए सबसे अच्छा कार्ड"
-      : "See the rewards you missed, and the best card for how you spend";
+  const title = "Aaj Cards";
+  const body = "See the rewards you missed, and the best card for how you spend";
   return (
     <PressableScale
       onPress={onOpen}

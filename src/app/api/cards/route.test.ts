@@ -82,6 +82,7 @@ function withDefaults(table: string, row: Row): Row {
       score_band: "unknown",
       monthly_income: null,
       stress_cleared_at: null,
+      spend_tips: true, // v21
       ...row,
     };
   return row;
@@ -183,6 +184,10 @@ function from(table: string) {
       filters.push((r) => String(r[col]) >= v),
       b
     ),
+    in: (col: string, list: unknown[]) => (
+      filters.push((r) => list.includes(r[col])),
+      b
+    ),
     is: (col: string, v: null) => (
       filters.push((r) => (r[col] ?? null) === v),
       b
@@ -216,6 +221,7 @@ vi.mock("@/lib/api-auth", () => ({
 }));
 
 const { GET, POST } = await import("./route");
+const { spendTips } = await import("@/lib/cards/service");
 
 // ── fixtures: two users, real-looking messages ──────────────────────────────
 
@@ -734,5 +740,63 @@ describe("/api/cards: rule-change alerts on cards you hold", () => {
     });
     expect(r.body.alerts).toEqual([]);
     expect(r.body.cards[0].health.changes.length).toBeGreaterThan(0);
+  });
+});
+
+describe("spend alerts: 'next time here, use this card'", () => {
+  const client = () => ({ from }) as never;
+  async function twoCards() {
+    await post({
+      action: "confirm",
+      bank: "SBI",
+      last4: "0543",
+      product_key: "sbi-simplyclick",
+    });
+    await post({ action: "add", bank: "HSBC", product_key: "hsbc-live-plus" });
+  }
+  it("a Zepto spend on the weaker card gets a tip naming the better one", async () => {
+    await twoCards();
+    const tips = await spendTips(client(), 1, ["e1"]);
+    const tip = tips.get("e1");
+    expect(tip).toMatch(/^Next time at Zepto, use HSBC Live\+/);
+    expect(tip).toMatch(/% back/);
+    expect(tip).toMatch(/About ₹\d+ more on this one\.$/);
+  });
+  it("nothing with only one named card", async () => {
+    await post({
+      action: "confirm",
+      bank: "SBI",
+      last4: "0543",
+      product_key: "sbi-simplyclick",
+    });
+    expect((await spendTips(client(), 1, ["e1"])).size).toBe(0);
+  });
+  it("nothing on petrol, a debit card, or someone else's spend", async () => {
+    await twoCards();
+    const petrol = db.tables.expenses.find((e) => e.merchant === "Petrol")!.id;
+    const debit = db.tables.expenses.find((e) => e.merchant === "Cafe")!.id;
+    const other = db.tables.expenses.find((e) => e.user_id === 2)!.id;
+    const tips = await spendTips(client(), 1, [
+      petrol as string,
+      debit as string,
+      other as string,
+    ]);
+    expect(tips.size).toBe(0);
+  });
+  it("turned off in the profile: no tips; back on: tips again", async () => {
+    await twoCards();
+    const off = await post({ action: "profile", spend_tips: false });
+    expect(off.body.profile.spend_tips).toBe(false);
+    expect((await spendTips(client(), 1, ["e1"])).size).toBe(0);
+    await post({ action: "profile", spend_tips: true });
+    expect((await spendTips(client(), 1, ["e1"])).size).toBe(1);
+    expect((await post({ action: "profile", spend_tips: "no" })).status).toBe(
+      400,
+    );
+  });
+  it("before the card tables exist: no tips, no error", async () => {
+    db.missing.add("user_cards");
+    db.missing.add("card_profiles");
+    expect((await spendTips(client(), 1, ["e1"])).size).toBe(0);
   });
 });

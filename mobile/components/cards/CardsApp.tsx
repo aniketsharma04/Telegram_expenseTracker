@@ -346,6 +346,10 @@ export default function CardsApp({
                 <PrivacyScreen
                   p={p}
                   accent={c}
+                  tipsOn={data.profile.spend_tips !== false}
+                  onTips={(on) =>
+                    void act({ action: "profile", spend_tips: on })
+                  }
                   onForget={async () => {
                     if (await act({ action: "forget" }, t("forgetDone")))
                       setStack([]);
@@ -1589,11 +1593,15 @@ function LineScreen({
 function PrivacyScreen({
   p,
   accent,
+  tipsOn,
+  onTips,
   onForget,
   onTurnOff,
 }: {
   p: Palette;
   accent: Accent;
+  tipsOn: boolean;
+  onTips: (on: boolean) => void;
   onForget: () => void | Promise<void>;
   onTurnOff?: () => void;
 }) {
@@ -1640,6 +1648,44 @@ function PrivacyScreen({
           "x",
           p.muted,
         )}
+      </Card>
+
+      <Card p={p} style={{ padding: 18, gap: 8 }}>
+        <Text style={{ color: p.ink, fontWeight: "700", fontSize: fs(15) }}>
+          {t("tipsTitle")}
+        </Text>
+        <Text style={{ color: p.ink2, fontSize: fs(14), lineHeight: fs(20) }}>
+          {t("tipsBody")}
+        </Text>
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          {([true, false] as const).map((on) => (
+            <Pressable
+              key={String(on)}
+              accessibilityRole="button"
+              accessibilityState={{ selected: tipsOn === on }}
+              onPress={() => tipsOn !== on && onTips(on)}
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                borderRadius: 10,
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: tipsOn === on ? accent.accent : p.border,
+                backgroundColor: tipsOn === on ? accent.soft : "transparent",
+              }}
+            >
+              <Text
+                style={{
+                  color: tipsOn === on ? accent.accent : p.ink2,
+                  fontWeight: "600",
+                  fontSize: fs(14),
+                }}
+              >
+                {t(on ? "tipsOn" : "tipsOff")}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
       </Card>
 
       <Card p={p} style={{ padding: 18, gap: 8 }}>

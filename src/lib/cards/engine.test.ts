@@ -8,6 +8,7 @@ import {
   nextCards,
   rateFor,
   readTxn,
+  spendTip,
   useFor,
 } from "./engine";
 import { cardOf, detectCards, isCreditCardMessage } from "./detect";
@@ -715,5 +716,61 @@ describe("card health: fee waiver, milestones, rule changes", () => {
   });
   it("no fee waiver line for a card without a fee", () => {
     expect(cardHealth(plain, spends, 60, "2026-11-01").feeWaiver).toBeNull();
+  });
+});
+
+describe("spend tip: next time here, use this card", () => {
+  const held: HeldCard[] = [
+    { id: "p", bank: "Test", last4: "1111", product: plain },
+    { id: "s", bank: "Test", last4: "2222", product: swiggyCard },
+  ];
+  it("names the better card, its cap, and the rupees more", () => {
+    const tip = spendTip(
+      held,
+      txn({ merchant: "Swiggy", category: "Food delivery", amount: 600, cardId: "p" }),
+    );
+    expect(tip).toMatchObject({
+      cardId: "s",
+      rate: 10,
+      capMonthly: 1500,
+      paidWith: "p",
+      paidRate: 1,
+      extra: 54,
+    });
+  });
+  it("silent when you already used the best card", () => {
+    expect(
+      spendTip(held, txn({ merchant: "Swiggy", amount: 600, cardId: "s" })),
+    ).toBeNull();
+  });
+  it("silent below ₹10 more, or on excluded and skipped spends", () => {
+    expect(
+      spendTip(held, txn({ merchant: "Swiggy", amount: 90, cardId: "p" })),
+    ).toBeNull();
+    expect(
+      spendTip(held, txn({ category: "Investments", amount: 9000, cardId: "p" })),
+    ).toBeNull();
+  });
+  it("silent with one named card or an unknown card", () => {
+    expect(
+      spendTip(held.slice(0, 1), txn({ merchant: "Swiggy", amount: 600, cardId: "p" })),
+    ).toBeNull();
+    expect(
+      spendTip(held, txn({ merchant: "Swiggy", amount: 600, cardId: null })),
+    ).toBeNull();
+  });
+  it("UPI in Swiggy's app: tip to pay by card; UPI at a shop: nothing", () => {
+    expect(
+      spendTip(held, txn({ merchant: "Swiggy", amount: 600, channel: "upi" })),
+    ).toMatchObject({ cardId: "s", paidWith: "upi", extra: 60 });
+    expect(
+      spendTip(held, txn({ merchant: "Sharma Kirana", amount: 2000, channel: "upi" })),
+    ).toBeNull();
+  });
+  it("no UPI tip when a card of yours works on UPI (it may have been paid by card)", () => {
+    const withRupay = [...held, { id: "r", bank: "T", last4: "3333", product: rupay }];
+    expect(
+      spendTip(withRupay, txn({ merchant: "Swiggy", amount: 600, channel: "upi" })),
+    ).toBeNull();
   });
 });

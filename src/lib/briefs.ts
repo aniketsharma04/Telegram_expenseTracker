@@ -4,6 +4,7 @@ import { createServiceClient } from "./supabase-server";
 import { escapeHtml, notify, type Notice } from "./notify";
 import { localDate } from "./parser";
 import { getUser } from "./identity";
+import { spendTips } from "./cards/service";
 import { getPlan, loadDailyStatus, plannedUsers } from "./plan";
 import { creditGoals, cycleCredits, goalOutlook } from "./goals";
 import {
@@ -177,12 +178,22 @@ export async function pingSpends(
       });
       return;
     }
+    // "Next time at Zepto, use HSBC Live+ ••4321" — only with two named cards.
+    const tips = await spendTips(
+      supabase,
+      userId,
+      spends.map((e) => e.id!),
+    );
     for (const e of spends) {
       const { bigSpend, ...text } = spendPush(e, status);
+      const tip = tips.get(e.id!);
       await notify(supabase, userId, {
         kind: "spend",
         ...text,
-        html: spendLine(e, status),
+        body: tip ? `${text.body}\n💳 ${tip}` : text.body,
+        html: tip
+          ? `${spendLine(e, status)}\n\n💳 ${escapeHtml(tip)}`
+          : spendLine(e, status),
         // The app offers "Paid from savings" right on a big one.
         data: { screen: "home", expenseId: e.id, bigSpend },
       });

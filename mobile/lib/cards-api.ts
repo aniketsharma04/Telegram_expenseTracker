@@ -140,6 +140,8 @@ export interface CardsData {
     score_band: ScoreBand;
     monthly_income: number | null;
     stress_cleared_at: string | null;
+    /** The "next time here, use this card" line on spend alerts. */
+    spend_tips: boolean;
     estimatedIncome: number | null;
   };
   catalog: Array<{ key: string; bank: string; name: string }>;
@@ -161,6 +163,7 @@ export type CardAction =
       action: "profile";
       score_band?: ScoreBand;
       monthly_income?: number | null;
+      spend_tips?: boolean;
     }
   | { action: "clear_stress" }
   | { action: "forget" };

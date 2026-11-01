@@ -514,6 +514,76 @@ export function useFor(held: HeldCard[], txns: CardTxn[], limit = 5): UseFor[] {
     .filter((u) => u.rate > 0);
 }
 
+// ── A tip on the spend alert: "next time here, use this card" ──────────────
+
+export interface SpendTip {
+  /** The card that pays most here. */
+  cardId: string;
+  rate: number;
+  why: string;
+  /** Monthly cap on that rate, when there is one. */
+  capMonthly: number | null;
+  /** What the spend was paid with: a held card, or UPI. */
+  paidWith: string | "upi";
+  paidRate: number;
+  /** Rupees more this spend would have earned on the better card. */
+  extra: number;
+}
+
+/** A tip is worth a line only when it's this many rupees… */
+export const TIP_MIN_RS = 10;
+/** …and this many points of value % better. */
+export const TIP_MIN_POINTS = 1;
+
+/**
+ * The better card to use next time at the place this spend was made, or null
+ * when there is nothing worth saying. Needs two known cards; a UPI spend
+ * counts only at an online brand that takes cards too, and only when no card
+ * of yours works on UPI (then we can't know it wasn't already a card).
+ */
+export function spendTip(held: HeldCard[], txn: CardTxn): SpendTip | null {
+  const known = held.filter((h) => h.product);
+  if (known.length < 2) return null;
+  const read = readTxn(txn);
+  if (read.skip || !read.cardAble) return null;
+
+  let paidWith: string;
+  let paidRate: number;
+  if (txn.channel === "card") {
+    const used = known.find((h) => h.id === txn.cardId);
+    if (!used) return null;
+    paidWith = used.id;
+    paidRate = rateFor(used.product!, read, "card").rate;
+  } else if (txn.channel === "upi") {
+    if (known.some((h) => h.product!.upi)) return null;
+    paidWith = "upi";
+    paidRate = 0;
+  } else return null;
+
+  const [best] = known
+    .filter((h) => h.id !== paidWith)
+    .map((h) => ({ h, r: rateFor(h.product!, read, "card") }))
+    .sort((a, b) => b.r.rate - a.r.rate);
+  if (!best) return null;
+  const extra = ((best.r.rate - paidRate) * txn.amount) / 100;
+  if (best.r.rate - paidRate < TIP_MIN_POINTS || extra < TIP_MIN_RS)
+    return null;
+  const rule = best.r.ruleIndex >= 0 ? best.h.product!.rules[best.r.ruleIndex] : null;
+  const capMonthly =
+    best.r.ruleIndex === BASE
+      ? (best.h.product!.baseCapMonthly ?? null)
+      : (rule?.capMonthly ?? null);
+  return {
+    cardId: best.h.id,
+    rate: best.r.rate,
+    why: best.r.label,
+    capMonthly,
+    paidWith,
+    paidRate,
+    extra: round(extra),
+  };
+}
+
 // ── 2. The next card, ranked by what it adds ────────────────────────────────
 
 export type Chance = "likely" | "stretch" | "unlikely";

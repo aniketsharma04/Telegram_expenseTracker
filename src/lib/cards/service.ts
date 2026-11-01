@@ -13,6 +13,7 @@ import {
   debtStress,
   missedRewards,
   nextCards,
+  spendTip,
   STRESS_TEXT,
   useFor,
   type UseFor,
@@ -44,6 +45,8 @@ export interface CardProfile {
   score_band: ScoreBand;
   monthly_income: number | null;
   stress_cleared_at: string | null;
+  /** Card tips on spend alerts; true until the user turns them off (v21). */
+  spend_tips: boolean;
 }
 
 /** A catalogue card, trimmed for the app. */
@@ -124,7 +127,7 @@ export async function loadCards(
         .eq("user_id", userId),
       supabase
         .from("card_profiles")
-        .select("score_band, monthly_income, stress_cleared_at")
+        .select("*") // spend_tips arrives with v21
         .eq("user_id", userId)
         .maybeSingle(),
       supabase
@@ -149,7 +152,12 @@ export async function loadCards(
   const rows = (cardsRes.error ? [] : (cardsRes.data ?? [])) as UserCardRow[];
   const profile: CardProfile =
     profileRes.error || !profileRes.data
-      ? { score_band: "unknown", monthly_income: null, stress_cleared_at: null }
+      ? {
+          score_band: "unknown",
+          monthly_income: null,
+          stress_cleared_at: null,
+          spend_tips: true,
+        }
       : {
           score_band: profileRes.data.score_band as ScoreBand,
           monthly_income:
@@ -157,6 +165,7 @@ export async function loadCards(
               ? null
               : Number(profileRes.data.monthly_income),
           stress_cleared_at: profileRes.data.stress_cleared_at ?? null,
+          spend_tips: profileRes.data.spend_tips !== false,
         };
   if (expensesRes.error) throw expensesRes.error;
   if (messagesRes.error) throw messagesRes.error;
@@ -305,6 +314,118 @@ export async function loadCards(
   };
 }
 
+// ── Tips on spend alerts ────────────────────────────────────────────────────
+
+/** "HSBC Live+ ••4321" — how a held card is named in a tip. */
+export function cardName(h: HeldCard): string {
+  const p = h.product;
+  const name = !p
+    ? `${h.bank} card`
+    : p.name.toLowerCase().startsWith(p.bank.toLowerCase())
+      ? p.name
+      : `${p.bank} ${p.name}`;
+  return h.last4 ? `${name} ••${h.last4}` : name;
+}
+
+/**
+ * For each captured spend, a one-line "next time here, use this card" tip,
+ * when the user holds a card that pays clearly more there. Nothing at all
+ * when the card tables aren't there, the user turned tips off, or holds
+ * fewer than two named cards. Never throws: a tip is never worth a lost push.
+ */
+export async function spendTips(
+  supabase: SupabaseClient,
+  userId: number,
+  expenseIds: string[],
+): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  if (!expenseIds.length) return out;
+  try {
+    const [cardsRes, profileRes] = await Promise.all([
+      supabase
+        .from("user_cards")
+        .select("id, bank, last4, product_key, added_by, hidden")
+        .eq("user_id", userId),
+      // select("*") so this works before and after v21 adds spend_tips.
+      supabase
+        .from("card_profiles")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle(),
+    ]);
+    if (cardsRes.error) return out;
+    if (!profileRes.error && profileRes.data?.spend_tips === false) return out;
+    const rows = (cardsRes.data ?? []) as UserCardRow[];
+    const held: HeldCard[] = rows
+      .filter((r) => !r.hidden)
+      .map((r) => ({
+        id: r.id,
+        bank: r.bank,
+        last4: r.last4,
+        product: productByKey(r.product_key),
+      }));
+    if (held.filter((h) => h.product).length < 2) return out;
+
+    const [expensesRes, messagesRes] = await Promise.all([
+      supabase
+        .from("expenses")
+        .select("id, amount, merchant, category, expense_date")
+        .eq("user_id", userId)
+        .in("id", expenseIds),
+      supabase
+        .from("bank_messages")
+        .select("expense_id, body, channel")
+        .eq("user_id", userId)
+        .in("expense_id", expenseIds),
+    ]);
+    if (expensesRes.error || messagesRes.error) return out;
+    const byBankLast4 = new Map(
+      rows.filter((r) => r.last4).map((r) => [`${r.bank}|${r.last4}`, r]),
+    );
+    const msgByExpense = new Map(
+      (messagesRes.data ?? []).map((m) => [m.expense_id as string, m]),
+    );
+    const byId = new Map(held.map((h) => [h.id, h]));
+
+    for (const e of expensesRes.data ?? []) {
+      const m = msgByExpense.get(e.id);
+      if (!m) continue; // typed in by hand: the user knows how they paid
+      const card = cardOf(m.body);
+      const row = card ? byBankLast4.get(`${card.bank}|${card.last4}`) : undefined;
+      const txn: CardTxn = {
+        id: e.id,
+        amount: Number(e.amount),
+        date: e.expense_date,
+        merchant: e.merchant,
+        category: e.category,
+        channel:
+          card || isCreditCardMessage(m.body)
+            ? "card"
+            : m.channel === "upi"
+              ? "upi"
+              : "other",
+        cardId: row && !row.hidden ? row.id : null,
+      };
+      const tip = spendTip(held, txn);
+      if (!tip) continue;
+      const best = byId.get(tip.cardId)!;
+      const place = e.merchant?.trim() || "here";
+      const cap = tip.capMonthly ? `, up to ₹${tip.capMonthly.toLocaleString("en-IN")} a month` : "";
+      out.set(
+        e.id,
+        `Next time at ${place}, use ${cardName(best)}: ${pct(tip.rate)}% back${cap}. About ₹${tip.extra.toLocaleString("en-IN")} more on this one.`,
+      );
+    }
+  } catch (err) {
+    console.error("card tips failed", err);
+  }
+  return out;
+}
+
+function pct(n: number): string {
+  return Number.isInteger(n) ? String(n) : n.toFixed(1).replace(/\.0$/, "");
+}
+
 // ── Changes from the app ────────────────────────────────────────────────────
 
 const SCORE_BANDS = new Set([
@@ -327,7 +448,13 @@ export type CardAction =
   | { action: "hide"; id: string }
   | { action: "dismiss"; bank: string; last4: string }
   | { action: "remove"; id: string }
-  | { action: "profile"; score_band?: string; monthly_income?: number | null }
+  | {
+      action: "profile";
+      score_band?: string;
+      monthly_income?: number | null;
+      /** Card tips on spend alerts (v21). */
+      spend_tips?: boolean;
+    }
   | { action: "clear_stress" }
   /** Delete every card and the card profile. Spends and messages stay. */
   | { action: "forget" };
@@ -428,6 +555,11 @@ export async function applyCardAction(
         )
           throw new CardInputError("monthly_income must be a positive number");
         patch.monthly_income = v;
+      }
+      if (a.spend_tips !== undefined) {
+        if (typeof a.spend_tips !== "boolean")
+          throw new CardInputError("spend_tips must be true or false");
+        patch.spend_tips = a.spend_tips;
       }
       const { error } = await supabase
         .from("card_profiles")

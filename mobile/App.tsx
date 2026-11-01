@@ -44,6 +44,7 @@ import { GoalsCard } from "./components/GoalsCard";
 import CardsApp from "./components/cards/CardsApp";
 import { CardsTile } from "./components/cards/CardsTile";
 import { CARDS_OFF_KEY } from "./components/cards/parts";
+import { cardAction } from "./lib/cards-api";
 import { MoneySplitCard } from "./components/MoneySplitCard";
 import { emiCommitments } from "./lib/money-rules";
 import { PushState, registerForPush, unregisterPush } from "./lib/push";
@@ -120,6 +121,8 @@ function AppInner() {
   const setCardsOn = (on: boolean) => {
     setCardsOnState(on);
     void AsyncStorage.setItem(CARDS_OFF_KEY, on ? "0" : "1");
+    // Cards off means no card tips on spend alerts either (they're sent by the server).
+    if (token) void cardAction(token, { action: "profile", spend_tips: on });
   };
   const [pushState, setPushState] = useState<PushState>("unavailable");
   const [pushPromptDismissed, setPushPromptDismissed] = useState(true);

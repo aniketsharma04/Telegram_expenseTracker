@@ -22,7 +22,7 @@ import {
 import { captureStatus, syncCaptures } from "../lib/capture";
 import { openCaptureSettings } from "../modules/notification-capture";
 import { Palette } from "../lib/theme";
-import { Lang, useSettings } from "../lib/i18n";
+import { useSettings } from "../lib/i18n";
 import * as Updates from "expo-updates";
 
 /**
@@ -32,7 +32,7 @@ import * as Updates from "expo-updates";
  */
 const gmailAvailable = Updates.channel !== "production";
 
-/** Language + text-size settings — the "parent mode" knobs — plus Gmail linking. */
+/** Text size — the "parent mode" knob — plus Gmail linking. */
 export default function SettingsSheet({
   visible,
   onClose,
@@ -59,7 +59,7 @@ export default function SettingsSheet({
   cardsOn?: boolean;
   onCardsOn?: (on: boolean) => void;
 }) {
-  const { t, fs, lang, scale, setLang, setLarge } = useSettings();
+  const { t, fs, scale, setLarge } = useSettings();
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
 
@@ -234,24 +234,6 @@ export default function SettingsSheet({
 
             <View style={styles.row}>
               <Text style={{ fontSize: fs(14), color: p.ink2, flex: 1 }}>
-                {t("language")}
-              </Text>
-              {seg(
-                (
-                  [
-                    { key: "en", label: "English" },
-                    { key: "hi", label: "हिंदी" },
-                  ] as Array<{ key: Lang; label: string }>
-                ).map((o) => ({
-                  ...o,
-                  active: lang === o.key,
-                  onPress: () => setLang(o.key),
-                })),
-              )}
-            </View>
-
-            <View style={styles.row}>
-              <Text style={{ fontSize: fs(14), color: p.ink2, flex: 1 }}>
                 {t("textSize")}
               </Text>
               {seg([
@@ -273,18 +255,18 @@ export default function SettingsSheet({
             {onCardsOn && (
               <View style={styles.row}>
                 <Text style={{ fontSize: fs(14), color: p.ink2, flex: 1 }}>
-                  {lang === "hi" ? "Aaj कार्ड्स" : "Aaj Cards"}
+                  Aaj Cards
                 </Text>
                 {seg([
                   {
                     key: "on",
-                    label: lang === "hi" ? "चालू" : "On",
+                    label: "On",
                     active: !!cardsOn,
                     onPress: () => onCardsOn(true),
                   },
                   {
                     key: "off",
-                    label: lang === "hi" ? "बंद" : "Off",
+                    label: "Off",
                     active: !cardsOn,
                     onPress: () => onCardsOn(false),
                   },
