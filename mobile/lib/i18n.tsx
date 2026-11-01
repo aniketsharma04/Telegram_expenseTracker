@@ -24,37 +24,29 @@ const STRINGS = {
   addIncome: "Add income",
   expense: "Expense",
   income: "Income",
-  smartPlaceholder:
-    'Type it like a text: "250 groceries at More"',
+  smartPlaceholder: 'Type it like a text: "250 groceries at More"',
   orFillIn: "or fill it in",
-  wherePlaceholder:
-    "Where / what for? (optional)",
-  sourcePlaceholder:
-    "From where? e.g. Salary (optional)",
+  wherePlaceholder: "Where / what for? (optional)",
+  sourcePlaceholder: "From where? e.g. Salary (optional)",
   today: "Today",
   yesterday: "Yesterday",
   save: "Save",
-  splitWithFamily:
-    "Split equally with family",
+  splitWithFamily: "Split equally with family",
   logged: "Logged",
   removed: "Removed",
   undo: "Undo",
   addAnother: "Add another",
   holdToRecord: "Voice",
-  recording:
-    "Listening… tap to finish",
+  recording: "Listening… tap to finish",
   receipt: "Receipt",
   gallery: "Gallery",
   // edit sheet
   editExpense: "Edit expense",
   delete: "Delete",
-  partOfSplit:
-    "Part of a family split",
+  partOfSplit: "Part of a family split",
   keepDate: "Keep date",
-  flipToIncome:
-    "This was money received, not spent",
-  flipHint:
-    "Moves it to income. Your spending and savings update.",
+  flipToIncome: "This was money received, not spent",
+  flipHint: "Moves it to income. Your spending and savings update.",
   // cards
   budgets: "Budgets",
   setBudgets: "Set budgets",
@@ -91,20 +83,15 @@ const STRINGS = {
   dueIn: "Due in",
   overdue: "overdue",
   daysShort: "d",
-  billName:
-    "Bill name, e.g. BSES Electricity",
+  billName: "Bill name, e.g. BSES Electricity",
   dueDay: "Due day of month",
   usualAmount: "Usual amount (optional)",
-  upiId:
-    "UPI ID for Pay now (optional), e.g. biller@upi",
-  payeeName:
-    "Payee name (optional)",
-  consumerNo:
-    "Consumer / account no. (optional)",
+  upiId: "UPI ID for Pay now (optional), e.g. biller@upi",
+  payeeName: "Payee name (optional)",
+  consumerNo: "Consumer / account no. (optional)",
   didYouPay: "Did the payment go through?",
   notYet: "Not yet",
-  openUpiApp:
-    "No UPI ID saved. Open your app to pay:",
+  openUpiApp: "No UPI ID saved. Open your app to pay:",
   suggested: "Looks like a monthly bill",
   addAsBill: "Add as bill",
   amountPaid: "Amount paid",
@@ -121,16 +108,14 @@ const STRINGS = {
   // BBPS auto-fetch
   autoFetch: "Auto-fetch",
   manual: "Manual",
-  searchBiller:
-    "Search billers: BSES, HDFC card, Airtel…",
+  searchBiller: "Search billers: BSES, HDFC card, Airtel…",
   allCategories: "All",
   noBillers: "No billers match that.",
   fetchBill: "Fetch bill",
   fetching: "Fetching from biller…",
   fetchedBill: "Bill found",
   noDues: "No outstanding bill right now",
-  billUnavailable:
-    "Bill not available for this account yet",
+  billUnavailable: "Bill not available for this account yet",
   noBillAvailable: "no bill available",
   accountHolder: "Account holder",
   dueOn: "Due",
@@ -161,16 +146,13 @@ const STRINGS = {
   subsUndo: "Keep instead",
   subsNext: "next",
   subsSaved: "Saving",
-  subsCancelInApp:
-    "Cancel from its app's account settings.",
+  subsCancelInApp: "Cancel from its app's account settings.",
   subsCancelHint:
     "I'll remind you 2 days before it renews, and count it as saved once no charge comes.",
   // v7: bills detected from email / notifications
   foundInEmail: "Found in your email",
-  foundInNotification:
-    "Spotted in a notification",
-  detectedNote:
-    "Nothing is added until you confirm.",
+  foundInNotification: "Spotted in a notification",
+  detectedNote: "Nothing is added until you confirm.",
   confirmAdd: "Add as bill",
   updateExisting: "Update",
   dismiss: "Not a bill",
@@ -194,13 +176,10 @@ const STRINGS = {
   addAccount: "Add account",
   editAccount: "Edit account",
   accountName: "Account name",
-  accountNamePlaceholder:
-    "HDFC Savings, Cash, Paytm…",
-  lastDigits:
-    "Last 4 digits (optional)",
+  accountNamePlaceholder: "HDFC Savings, Cash, Paytm…",
+  lastDigits: "Last 4 digits (optional)",
   openingBalance: "Balance today",
-  creditLimit:
-    "Credit limit (optional)",
+  creditLimit: "Credit limit (optional)",
   bank: "Bank",
   cash: "Cash",
   wallet: "Wallet",
@@ -212,8 +191,7 @@ const STRINGS = {
   archiveAccount: "Archive",
   noAccountsYet:
     "Add your bank, cash and cards to see what you're actually worth.",
-  unassignedNote:
-    "not linked to an account yet",
+  unassignedNote: "not linked to an account yet",
   transfer: "Transfer",
   moveMoney: "Move money",
   fromAccount: "From",
@@ -222,8 +200,7 @@ const STRINGS = {
     "Moving your own money isn't spending, so it won't touch your totals.",
   cardPayment: "Card payment",
   recordTransfer: "Record transfer",
-  notSpending:
-    "Recorded as a transfer, not spending.",
+  notSpending: "Recorded as a transfer, not spending.",
   payFrom: "Paid from",
   // itemised receipts (v10)
   billItems: "On this bill",
@@ -235,26 +212,20 @@ const STRINGS = {
   billPartial:
     "The lines don't add up to the total. Some may have been missed.",
   // auto-capture (v9)
-  autoCapture:
-    "Auto-capture from notifications",
+  autoCapture: "Auto-capture from notifications",
   captureBlurb:
     "Read bank SMS alerts as they arrive, so spending logs itself and balances stay right.",
-  captureOn:
-    "On. Payments are captured and counted as they happen.",
+  captureOn: "On. Payments are captured and counted as they happen.",
   // capture setup card (v15) — doubles as the Play "prominent disclosure"
-  setupTitle:
-    "Track spending automatically",
+  setupTitle: "Track spending automatically",
   setupDisclosure:
     "To log payments for you, this app reads notifications from your SMS app, bank apps and UPI apps, and only the ones that mention money being debited or credited. The amount, merchant and balance are sent securely to your account to update your budget. Messages containing OTPs or codes are skipped on your phone and never sent. Other notifications (chats, email) are ignored.",
-  restrictedTitle:
-    'Switch greyed out? "Controlled by restricted setting"',
+  restrictedTitle: 'Switch greyed out? "Controlled by restricted setting"',
   restrictedSteps:
     "Android blocks this for apps not installed from the Play Store. To allow it:\n1. Tap Open app info below.\n2. Tap ⋮ (top right) → Allow restricted settings, then confirm with your PIN or fingerprint.\n3. Come back here and tap Agree & turn on again.",
   openAppInfo: "Open app info",
-  setupStep1:
-    "Allow notification access",
-  setupStep2:
-    "Let it run in the background",
+  setupStep1: "Allow notification access",
+  setupStep2: "Let it run in the background",
   setupStep2Hint:
     "Make sure “Allow background usage” is on for Aaj (on older phones: All apps → Aaj → “Don't optimise”). Already on? Tap “It's on”.",
   alreadyOn: "It's on",
@@ -265,18 +236,15 @@ const STRINGS = {
   open: "Open",
   setupDone: "Done",
   grantAccess: "Grant access",
-  grantHint:
-    'Find "Aaj" in the list and turn it on, then come back.',
+  grantHint: 'Find "Aaj" in the list and turn it on, then come back.',
   syncNow: "Sync now",
   capturePending: "waiting to upload",
   captureLogged: "logged",
   captureSkipped: "already known",
   captureNothing: "Nothing new to capture.",
-  captureFailed:
-    "Couldn't upload. Kept for the next try.",
+  captureFailed: "Couldn't upload. Kept for the next try.",
   bankSays: "Bank says",
-  checkDrift:
-    "off from what's logged, so some spending wasn't captured",
+  checkDrift: "off from what's logged, so some spending wasn't captured",
   // daily budget (v14)
   dailyBudget: "Daily budget",
   leftToday: "left to spend today",
@@ -291,8 +259,7 @@ const STRINGS = {
     "Last 14 days: bars are what you spent, the line is that day's budget.",
   daysToGo: "days to go",
   tomorrow: "Tomorrow",
-  streakDays:
-    "days in a row under budget",
+  streakDays: "days in a row under budget",
   notCounted: "Not counted",
   monthlyIncome: "Monthly income",
   savingsGoal: "Savings goal / month",
@@ -305,10 +272,8 @@ const STRINGS = {
   deleteConfirm: "Yes, delete everything",
   deleteWarning:
     "This permanently deletes your account and all your expenses, income, plan, goals and notifications. It can't be undone, so export first if you want a copy.",
-  exportFailed:
-    "Couldn't export. Try again.",
-  deleteFailed:
-    "Couldn't delete. Try again.",
+  exportFailed: "Couldn't export. Try again.",
+  deleteFailed: "Couldn't delete. Try again.",
   // Calm redesign (v18)
   goodMorning: "Good morning",
   goodAfternoon: "Good afternoon",
@@ -322,39 +287,28 @@ const STRINGS = {
   leftThisMonth: "Left this month",
   daysWord: "days",
   newMonth: "New month",
-  nothingToday:
-    "Nothing spent yet today.",
-  notCountedOne:
-    "was a fixed cost or from savings, so it isn't counted here.",
+  nothingToday: "Nothing spent yet today.",
+  notCountedOne: "was a fixed cost or from savings, so it isn't counted here.",
   notCountedMany:
     "were fixed costs or from savings, so they aren't counted here.",
   setUpTitle: "Get your daily number",
   profile: "Profile",
   addManually: "Add",
-  offlineNote:
-    "Offline · showing data from",
+  offlineNote: "Offline · showing data from",
   savePlan: "Save plan",
-  saveFailed:
-    "Couldn't save. Check your connection and try again.",
-  incomeNeeded:
-    "Add your monthly income, like 1,00,000 or 1 lakh.",
-  savingsInvalid:
-    "Savings should be a number below your income.",
-  paydayInvalid:
-    "Salary day is a date from 1 to 31.",
-  fixedNeeded:
-    "Give the fixed cost a name and an amount.",
+  saveFailed: "Couldn't save. Check your connection and try again.",
+  incomeNeeded: "Add your monthly income, like 1,00,000 or 1 lakh.",
+  savingsInvalid: "Savings should be a number below your income.",
+  paydayInvalid: "Salary day is a date from 1 to 31.",
+  fixedNeeded: "Give the fixed cost a name and an amount.",
   // guided setup (v19)
-  setupIncomeTitle:
-    "How much lands in your account each month?",
+  setupIncomeTitle: "How much lands in your account each month?",
   setupIncomeHint:
     "Your take-home salary, after tax. You can change it any time.",
-  setupFixedTitle:
-    "What goes out every month, no matter what?",
+  setupFixedTitle: "What goes out every month, no matter what?",
   setupFixedHint:
     "These come off the top, so they never eat into your daily number.",
-  setupSaveTitle:
-    "How much do you want to save each month?",
+  setupSaveTitle: "How much do you want to save each month?",
   setupSaveHint:
     "Set it aside before you spend. Slide to see your daily number change.",
   salaryArrives: "Salary arrives on",
@@ -373,10 +327,8 @@ const STRINGS = {
   leftTodayCap: "Left today",
   paceOnTrack: "On track",
   offPace: "Off pace",
-  aheadAtPace:
-    "ahead of plan at this pace",
-  shortAtPace:
-    "short by month-end at this pace",
+  aheadAtPace: "ahead of plan at this pace",
+  shortAtPace: "short by month-end at this pace",
   last7: "Spending over the last 7 days",
   // goals (v17)
   goals: "Goals",
@@ -396,16 +348,14 @@ const STRINGS = {
   paydayHint:
     "Your budget month runs from this day to the day before the next one. Leave empty for calendar months.",
   fixedCosts: "Fixed monthly costs",
-  fixedHint:
-    "Rent, EMI, SIP and subscriptions stay out of the daily number.",
+  fixedHint: "Rent, EMI, SIP and subscriptions stay out of the daily number.",
   suggestedFixed: "Looks like a fixed cost",
   costName: "Name, e.g. Rent",
   add: "Add",
   morningMsg: "Morning message",
   eveningMsg: "Night report",
   liveMsg: "Ping on every spend",
-  messagesVia:
-    "These arrive as notifications on this phone.",
+  messagesVia: "These arrive as notifications on this phone.",
   // inbox + push (v15)
   inbox: "Notifications",
   inboxEmpty:
@@ -424,8 +374,7 @@ const STRINGS = {
   openSettings: "Open settings",
   notNow: "Not now",
   fromSavings: "Paid from savings",
-  fromSavingsHint:
-    "Won't touch your daily budget.",
+  fromSavingsHint: "Won't touch your daily budget.",
   perDay: "/day",
 
   // v18: money rules — the salary split and goal rules of thumb
@@ -441,14 +390,11 @@ const STRINGS = {
     "The 50/30/20 rule: half your take-home for needs, 30% for wants, and at least 20% saved or invested.",
   rule602020:
     "Your fixed costs are over half your income, common with city rents, so the 60/20/20 rule fits: 60% needs, 20% wants, 20% still saved.",
-  splitGood:
-    "You're saving {n}%. That's on track.",
-  splitLow:
-    "You're saving {n}% of your income. Aim for 20%.",
+  splitGood: "You're saving {n}%. That's on track.",
+  splitLow: "You're saving {n}% of your income. Aim for 20%.",
   splitHighNeeds:
     "Fixed costs take {n}% of your income. Above 60% leaves little room; a cheaper rent or ending an EMI frees the most.",
-  splitApply:
-    "Save {amount} a month",
+  splitApply: "Save {amount} a month",
   rulesNote:
     "Rules of thumb from Indian personal-finance guides, not advice for your exact situation.",
   kind_goal_car: "Car",
@@ -461,8 +407,7 @@ const STRINGS = {
   ruleVehicleTitle: "The 20/4/10 rule",
   ruleVehicleBody:
     "Pay 20% down ({down}), take a loan of 4 years or less, and keep the EMI under 10% of your income ({cap}).",
-  ruleEmiLine:
-    "At about {rate}% for {years} years, the EMI is {emi}.",
+  ruleEmiLine: "At about {rate}% for {years} years, the EMI is {emi}.",
   ruleFits: "✓ This fits.",
   ruleVehicleOver:
     "That's over the limit. A price up to {max} fits your income.",
@@ -473,18 +418,15 @@ const STRINGS = {
   ruleHomeTitle: "The 20/30/40 rule",
   ruleHomeBody:
     "Pay 20% down ({down}), keep the home-loan EMI under 30% of your income ({cap}), and all your EMIs together under 40%.",
-  ruleHomeOver:
-    "That's over the limit. A home up to {max} fits your income.",
+  ruleHomeOver: "That's over the limit. A home up to {max} fits your income.",
   ruleHomeYears:
     "The price is {n} years of your income; guides suggest staying near 5 or under.",
-  ruleSaveDown:
-    "Save for the {amount} down payment",
+  ruleSaveDown: "Save for the {amount} down payment",
   ruleEmergencyTitle: "6 months of expenses",
   ruleEmergencyBody:
     "An emergency fund should cover about 6 months of spending ({monthly} a month here), kept in a savings account or liquid fund. Build it before other goals.",
   ruleUseAmount: "Use {amount}",
-  ruleSaveFirstTitle:
-    "Save first, then buy",
+  ruleSaveFirstTitle: "Save first, then buy",
   ruleGadgetBody:
     'This is {n} months of your income. Save for it rather than taking an EMI; "no-cost" EMIs often hide the interest in the price or a processing fee.',
   ruleTripBody:

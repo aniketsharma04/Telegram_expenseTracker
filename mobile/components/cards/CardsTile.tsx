@@ -18,7 +18,8 @@ export function CardsTile({
   const { fs } = useSettings();
   const c = cardsAccent(dark);
   const title = "Aaj Cards";
-  const body = "See the rewards you missed, and the best card for how you spend";
+  const body =
+    "See the rewards you missed, and the best card for how you spend";
   return (
     <PressableScale
       onPress={onOpen}

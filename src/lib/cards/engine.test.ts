@@ -727,7 +727,12 @@ describe("spend tip: next time here, use this card", () => {
   it("names the better card, its cap, and the rupees more", () => {
     const tip = spendTip(
       held,
-      txn({ merchant: "Swiggy", category: "Food delivery", amount: 600, cardId: "p" }),
+      txn({
+        merchant: "Swiggy",
+        category: "Food delivery",
+        amount: 600,
+        cardId: "p",
+      }),
     );
     expect(tip).toMatchObject({
       cardId: "s",
@@ -748,12 +753,18 @@ describe("spend tip: next time here, use this card", () => {
       spendTip(held, txn({ merchant: "Swiggy", amount: 90, cardId: "p" })),
     ).toBeNull();
     expect(
-      spendTip(held, txn({ category: "Investments", amount: 9000, cardId: "p" })),
+      spendTip(
+        held,
+        txn({ category: "Investments", amount: 9000, cardId: "p" }),
+      ),
     ).toBeNull();
   });
   it("silent with one named card or an unknown card", () => {
     expect(
-      spendTip(held.slice(0, 1), txn({ merchant: "Swiggy", amount: 600, cardId: "p" })),
+      spendTip(
+        held.slice(0, 1),
+        txn({ merchant: "Swiggy", amount: 600, cardId: "p" }),
+      ),
     ).toBeNull();
     expect(
       spendTip(held, txn({ merchant: "Swiggy", amount: 600, cardId: null })),
@@ -764,13 +775,22 @@ describe("spend tip: next time here, use this card", () => {
       spendTip(held, txn({ merchant: "Swiggy", amount: 600, channel: "upi" })),
     ).toMatchObject({ cardId: "s", paidWith: "upi", extra: 60 });
     expect(
-      spendTip(held, txn({ merchant: "Sharma Kirana", amount: 2000, channel: "upi" })),
+      spendTip(
+        held,
+        txn({ merchant: "Sharma Kirana", amount: 2000, channel: "upi" }),
+      ),
     ).toBeNull();
   });
   it("no UPI tip when a card of yours works on UPI (it may have been paid by card)", () => {
-    const withRupay = [...held, { id: "r", bank: "T", last4: "3333", product: rupay }];
+    const withRupay = [
+      ...held,
+      { id: "r", bank: "T", last4: "3333", product: rupay },
+    ];
     expect(
-      spendTip(withRupay, txn({ merchant: "Swiggy", amount: 600, channel: "upi" })),
+      spendTip(
+        withRupay,
+        txn({ merchant: "Swiggy", amount: 600, channel: "upi" }),
+      ),
     ).toBeNull();
   });
 });

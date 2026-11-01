@@ -568,7 +568,8 @@ export function spendTip(held: HeldCard[], txn: CardTxn): SpendTip | null {
   const extra = ((best.r.rate - paidRate) * txn.amount) / 100;
   if (best.r.rate - paidRate < TIP_MIN_POINTS || extra < TIP_MIN_RS)
     return null;
-  const rule = best.r.ruleIndex >= 0 ? best.h.product!.rules[best.r.ruleIndex] : null;
+  const rule =
+    best.r.ruleIndex >= 0 ? best.h.product!.rules[best.r.ruleIndex] : null;
   const capMonthly =
     best.r.ruleIndex === BASE
       ? (best.h.product!.baseCapMonthly ?? null)

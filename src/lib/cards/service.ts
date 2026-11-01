@@ -391,7 +391,9 @@ export async function spendTips(
       const m = msgByExpense.get(e.id);
       if (!m) continue; // typed in by hand: the user knows how they paid
       const card = cardOf(m.body);
-      const row = card ? byBankLast4.get(`${card.bank}|${card.last4}`) : undefined;
+      const row = card
+        ? byBankLast4.get(`${card.bank}|${card.last4}`)
+        : undefined;
       const txn: CardTxn = {
         id: e.id,
         amount: Number(e.amount),
@@ -410,7 +412,9 @@ export async function spendTips(
       if (!tip) continue;
       const best = byId.get(tip.cardId)!;
       const place = e.merchant?.trim() || "here";
-      const cap = tip.capMonthly ? `, up to ₹${tip.capMonthly.toLocaleString("en-IN")} a month` : "";
+      const cap = tip.capMonthly
+        ? `, up to ₹${tip.capMonthly.toLocaleString("en-IN")} a month`
+        : "";
       out.set(
         e.id,
         `Next time at ${place}, use ${cardName(best)}: ${pct(tip.rate)}% back${cap}. About ₹${tip.extra.toLocaleString("en-IN")} more on this one.`,
