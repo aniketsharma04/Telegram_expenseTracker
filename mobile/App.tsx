@@ -45,6 +45,7 @@ import CardsApp from "./components/cards/CardsApp";
 import { CardsTile } from "./components/cards/CardsTile";
 import { CARDS_OFF_KEY } from "./components/cards/parts";
 import { cardAction } from "./lib/cards-api";
+import { UpdateBanner } from "./components/UpdateBanner";
 import { MoneySplitCard } from "./components/MoneySplitCard";
 import { emiCommitments } from "./lib/money-rules";
 import { PushState, registerForPush, unregisterPush } from "./lib/push";
@@ -528,6 +529,7 @@ function AppInner() {
       ]}
     >
       <StatusBar style={tab === "today" || dark ? "light" : "dark"} />
+      <UpdateBanner p={p} />
 
       {tab !== "today" && (
         <View style={styles.header}>
@@ -619,6 +621,13 @@ function AppInner() {
                     }}
                   />
                 )}
+                {cardsOn && (
+                  <CardsTile
+                    p={p}
+                    dark={dark}
+                    onOpen={() => setCardsOpen(true)}
+                  />
+                )}
               </>
             }
             bottom={
@@ -630,13 +639,6 @@ function AppInner() {
                     token={token}
                     {...goalMoney}
                     onChanged={refresh}
-                  />
-                )}
-                {cardsOn && (
-                  <CardsTile
-                    p={p}
-                    dark={dark}
-                    onOpen={() => setCardsOpen(true)}
                   />
                 )}
               </>

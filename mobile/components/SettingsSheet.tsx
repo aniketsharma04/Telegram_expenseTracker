@@ -24,6 +24,7 @@ import { openCaptureSettings } from "../modules/notification-capture";
 import { Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
 import * as Updates from "expo-updates";
+import { applyUpdate } from "./UpdateBanner";
 
 /**
  * Gmail reading uses a restricted Google scope: public users can only connect
@@ -273,6 +274,8 @@ export default function SettingsSheet({
                 ])}
               </View>
             )}
+
+            <AppUpdateRow p={p} />
 
             {token && gmailAvailable && (
               <View style={[styles.block, { borderTopColor: p.border }]}>
@@ -634,3 +637,78 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+/** "Version 1.2.0 · updated 1 Nov" with a button that checks for, and applies, a new update. */
+function AppUpdateRow({ p }: { p: Palette }) {
+  const { fs } = useSettings();
+  const { isUpdateAvailable, isUpdatePending, isChecking, isDownloading } =
+    Updates.useUpdates();
+  const [state, setState] = useState<"idle" | "busy" | "latest" | "failed">(
+    "idle",
+  );
+  const ready = isUpdateAvailable || isUpdatePending;
+  const working = state === "busy" || isChecking || isDownloading;
+  const when = Updates.createdAt
+    ? ` · updated ${Updates.createdAt.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}`
+    : "";
+
+  const onPress = async () => {
+    if (!Updates.isEnabled || __DEV__) return;
+    setState("busy");
+    try {
+      if (!ready) {
+        const r = await Updates.checkForUpdateAsync();
+        if (!r.isAvailable) {
+          setState("latest");
+          return;
+        }
+      }
+      await applyUpdate(isUpdatePending);
+    } catch {
+      setState("failed");
+    }
+  };
+
+  return (
+    <View style={styles.row}>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: fs(14), color: p.ink2 }}>App updates</Text>
+        <Text style={{ fontSize: fs(12), color: p.muted, marginTop: 2 }}>
+          {state === "latest"
+            ? "You're on the latest version."
+            : state === "failed"
+              ? "Couldn't update. Check your internet."
+              : ready
+                ? "A new version is ready."
+                : `Version ${Updates.runtimeVersion ?? ""}${when}`}
+        </Text>
+      </View>
+      {working ? (
+        <ActivityIndicator color={p.accent} />
+      ) : (
+        <Pressable
+          onPress={onPress}
+          accessibilityRole="button"
+          style={{
+            paddingVertical: 8,
+            paddingHorizontal: 14,
+            borderRadius: 10,
+            backgroundColor: ready ? p.accent : p.page,
+            borderWidth: ready ? 0 : 1,
+            borderColor: p.border,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: fs(13.5),
+              fontWeight: "600",
+              color: ready ? p.onAccent : p.ink,
+            }}
+          >
+            {ready ? "Update now" : "Check"}
+          </Text>
+        </Pressable>
+      )}
+    </View>
+  );
+}
