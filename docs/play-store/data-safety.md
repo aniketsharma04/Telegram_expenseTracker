@@ -5,8 +5,8 @@ update this file and `src/app/privacy/page.tsx` together.
 
 Links Play asks for:
 
-- **Privacy policy:** `https://telegram-expense-tracker-nu.vercel.app/privacy`
-- **Account deletion (web):** `https://telegram-expense-tracker-nu.vercel.app/delete-account`
+- **Privacy policy:** `https://aaj-finance.vercel.app/privacy`
+- **Account deletion (web):** `https://aaj-finance.vercel.app/delete-account`
 - In-app deletion: Settings → Your data → Delete account.
 
 Set `NEXT_PUBLIC_SUPPORT_EMAIL` in Vercel so the privacy page shows a contact address (Play requires a
