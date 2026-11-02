@@ -1,7 +1,7 @@
 import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "../Text";
-import { Icon, IconName } from "../ui";
+import { Icon, IconName, KeyboardAware } from "../ui";
 import { formatINR, type Palette } from "../../lib/theme";
 import { useSettings } from "../../lib/i18n";
 import type { Chance } from "../../lib/cards-api";
@@ -216,53 +216,57 @@ export function Sheet({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <Pressable
-        style={styles.backdrop}
-        onPress={onClose}
-        accessibilityLabel="Close"
-      />
-      <View
-        style={[
-          styles.sheet,
-          { backgroundColor: p.surface, paddingBottom: insets.bottom + 12 },
-        ]}
-      >
-        <View style={[styles.handle, { backgroundColor: p.border }]} />
-        <View style={styles.sheetHead}>
-          <Text
-            style={{
-              color: p.ink,
-              fontSize: fs(18),
-              fontWeight: "700",
-              flex: 1,
-            }}
-            accessibilityRole="header"
-          >
-            {title}
-          </Text>
-          <Pressable
-            onPress={onClose}
-            hitSlop={12}
-            style={styles.iconBtn}
-            accessibilityRole="button"
-            accessibilityLabel="Close"
-          >
-            <Icon name="x" size={20} color={p.ink2} />
-          </Pressable>
-        </View>
-        <ScrollView
-          style={{ maxHeight: 520 }}
-          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 8 }}
-          keyboardShouldPersistTaps="handled"
+      {/* Rises with the keyboard: the backdrop gives up its space first, then
+          the list scrolls, so the search box and Confirm stay in view. */}
+      <KeyboardAware style={styles.frame}>
+        <Pressable
+          style={styles.backdrop}
+          onPress={onClose}
+          accessibilityLabel="Close"
+        />
+        <View
+          style={[
+            styles.sheet,
+            { backgroundColor: p.surface, paddingBottom: insets.bottom + 12 },
+          ]}
         >
-          {children}
-        </ScrollView>
-        {footer && (
-          <View style={{ paddingHorizontal: 20, paddingTop: 10, gap: 10 }}>
-            {footer}
+          <View style={[styles.handle, { backgroundColor: p.border }]} />
+          <View style={styles.sheetHead}>
+            <Text
+              style={{
+                color: p.ink,
+                fontSize: fs(18),
+                fontWeight: "700",
+                flex: 1,
+              }}
+              accessibilityRole="header"
+            >
+              {title}
+            </Text>
+            <Pressable
+              onPress={onClose}
+              hitSlop={12}
+              style={styles.iconBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Close"
+            >
+              <Icon name="x" size={20} color={p.ink2} />
+            </Pressable>
           </View>
-        )}
-      </View>
+          <ScrollView
+            style={{ maxHeight: 520, flexShrink: 1 }}
+            contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 8 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            {children}
+          </ScrollView>
+          {footer && (
+            <View style={{ paddingHorizontal: 20, paddingTop: 10, gap: 10 }}>
+              {footer}
+            </View>
+          )}
+        </View>
+      </KeyboardAware>
     </Modal>
   );
 }
@@ -361,8 +365,14 @@ export const styles = StyleSheet.create({
     borderRadius: 999,
     alignSelf: "flex-start",
   },
-  backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)" },
-  sheet: { borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingTop: 8 },
+  frame: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)" },
+  backdrop: { flex: 1 },
+  sheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 8,
+    flexShrink: 1,
+  },
   handle: {
     width: 40,
     height: 4,
