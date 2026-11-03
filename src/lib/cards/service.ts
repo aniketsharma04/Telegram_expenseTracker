@@ -13,6 +13,7 @@ import {
   debtStress,
   missedRewards,
   nextCards,
+  readTxn,
   spendTip,
   STRESS_TEXT,
   useFor,
@@ -23,6 +24,15 @@ import {
   type ScoreBand,
 } from "./engine";
 import type { CardProduct, CardTxn, HeldCard } from "./types";
+import { CARD_ART } from "./art";
+import {
+  findCards,
+  parseAnswers,
+  realSpendingUsable,
+  type FinderAnswers,
+  type FinderPick,
+  type FinderResult,
+} from "./finder";
 
 /**
  * Aaj Cards, server side: load the user's spends, bank messages and cards,
@@ -70,7 +80,9 @@ export function productView(p: CardProduct) {
     loungeIntlYear: p.loungeIntlYear ?? null,
     forexMarkup: p.forexMarkup ?? null,
     minIncomeMonthly: p.minIncomeMonthly ?? null,
-    url: p.url ?? null,
+    // The bank's own product page; art.ts fixes catalogue links to PDFs.
+    url: CARD_ART[p.key]?.page ?? p.url ?? null,
+    image: CARD_ART[p.key]?.image ?? null,
     verified: p.verified,
     confidence: p.confidence,
     pitch: p.pitch ?? null,
@@ -110,7 +122,14 @@ export interface CardsView {
   /** When non-empty, the app shows no new-card suggestions at all. */
   stress: Array<{ kind: string; text: string; date: string }>;
   profile: CardProfile & { estimatedIncome: number | null };
-  catalog: Array<{ key: string; bank: string; name: string }>;
+  /** What the Card Finder can prefill: is there enough real spending to score on? */
+  finder: { realSpending: boolean; monthlySpend: number | null };
+  catalog: Array<{
+    key: string;
+    bank: string;
+    name: string;
+    image: string | null;
+  }>;
 }
 
 export async function loadCards(
@@ -118,6 +137,165 @@ export async function loadCards(
   userId: number,
   today = localDate(),
 ): Promise<CardsView> {
+  const {
+    profile,
+    messages,
+    held,
+    txns,
+    days,
+    estimatedIncome,
+    monthlyIncome,
+    stress,
+    byBankLast4,
+  } = await loadContext(supabase, userId, today);
+  const missed = missedRewards(held, txns, days);
+  const earnedByTxn = actualEarnings(
+    held,
+    txns.filter((t) => t.cardId),
+  );
+  const next = stress.length
+    ? []
+    : nextCards(CATALOG, held, txns, days, {
+        monthlyIncome,
+        score: profile.score_band,
+      });
+
+  const suggestions = detectCards(messages)
+    .filter((d) => !byBankLast4.has(`${d.bank}|${d.last4}`))
+    .map((d) => {
+      const p = productByKey(d.productGuess);
+      return { ...d, product: p ? productView(p) : null };
+    });
+
+  // Where the user spends most, so a rule change that touches it stands out.
+  const topLabels = [
+    ...txns.reduce((m, t) => {
+      const l = t.merchant?.trim() || t.category || "";
+      if (l) m.set(l, (m.get(l) ?? 0) + t.amount);
+      return m;
+    }, new Map<string, number>()),
+  ]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(([l]) => l);
+
+  const cards = held.map((h) => {
+    const mine = txns.filter((t) => t.cardId === h.id);
+    return {
+      id: h.id,
+      bank: h.bank,
+      last4: h.last4,
+      product: h.product ? productView(h.product) : null,
+      spendInWindow: Math.round(mine.reduce((s, t) => s + t.amount, 0)),
+      earned: Math.round(
+        mine.reduce((s, t) => s + (earnedByTxn.get(t.id) ?? 0), 0),
+      ),
+      health: h.product
+        ? cardHealth(h.product, mine, days, today, topLabels)
+        : null,
+    };
+  });
+  const alerts = cards
+    .flatMap((c) =>
+      (c.health?.changes ?? [])
+        .filter((ch) => ch.upcoming || ch.recent)
+        .map((ch) => ({
+          cardId: c.id,
+          date: ch.date,
+          change: ch.change,
+          upcoming: ch.upcoming,
+          affectsYou: ch.affectsYou,
+        })),
+    )
+    .sort(
+      (a, b) =>
+        Number(b.affectsYou) - Number(a.affectsYou) ||
+        b.date.localeCompare(a.date),
+    );
+
+  return {
+    days,
+    catalogVerified: CATALOG_VERIFIED,
+    cards,
+    alerts,
+    suggestions,
+    missed,
+    useFor: useFor(held, txns),
+    next: next.map((n) => ({ ...n, product: productView(n.product) })),
+    stress: stress.map((s) => ({ ...s, text: STRESS_TEXT[s.kind] })),
+    profile: { ...profile, estimatedIncome },
+    finder: {
+      realSpending: realSpendingUsable(txns, days),
+      monthlySpend: monthlySpendOf(txns, days),
+    },
+    catalog: CATALOG.map((c) => ({
+      key: c.key,
+      bank: c.bank,
+      name: c.name,
+      image: CARD_ART[c.key]?.image ?? null,
+    })),
+  };
+}
+
+/** Average monthly card-able spend over the window, for the finder's prefill. */
+function monthlySpendOf(txns: CardTxn[], days: number): number | null {
+  if (!days) return null;
+  const total = txns
+    .filter((t) => !readTxn(t).skip)
+    .reduce((s, t) => s + t.amount, 0);
+  return Math.round((total / Math.max(days, 30)) * 30);
+}
+
+// ── Card Finder ─────────────────────────────────────────────────────────────
+
+export interface FinderView extends Omit<FinderResult, "picks" | "more"> {
+  picks: Array<Omit<FinderPick, "product"> & { product: ProductView }>;
+  more: Array<Omit<FinderPick, "product"> & { product: ProductView }>;
+  /** Signs of debt stress: the app shows no picks, only the reason. */
+  stressed: boolean;
+}
+
+/**
+ * "Find my best card": the quiz answers, scored on the user's own spending
+ * when there's enough of it. Read-only — the answers are not stored.
+ */
+export async function findForUser(
+  supabase: SupabaseClient,
+  userId: number,
+  rawAnswers: unknown,
+  today = localDate(),
+): Promise<FinderView> {
+  let answers: FinderAnswers;
+  try {
+    answers = parseAnswers(rawAnswers);
+  } catch (err) {
+    throw new CardInputError((err as Error).message);
+  }
+  const { profile, held, txns, days, monthlyIncome, stress } =
+    await loadContext(supabase, userId, today);
+  const result = findCards({
+    catalog: CATALOG,
+    answers,
+    txns,
+    days,
+    held,
+    profile: { monthlyIncome, score: profile.score_band },
+  });
+  const view = (p: FinderPick) => ({ ...p, product: productView(p.product) });
+  return {
+    ...result,
+    picks: result.picks.map(view),
+    more: result.more.map(view),
+    stressed: stress.length > 0,
+  };
+}
+
+/** The user's cards, spends (with how each was paid) and profile. */
+async function loadContext(
+  supabase: SupabaseClient,
+  userId: number,
+  today: string,
+) {
   const since = shift(today, -LOOKBACK_DAYS);
   const [cardsRes, profileRes, expensesRes, messagesRes, incomesRes] =
     await Promise.all([
@@ -234,83 +412,16 @@ export async function loadCards(
         amount: m.amount == null ? null : Number(m.amount),
       })),
   );
-  const missed = missedRewards(held, txns, days);
-  const earnedByTxn = actualEarnings(
-    held,
-    txns.filter((t) => t.cardId),
-  );
-  const next = stress.length
-    ? []
-    : nextCards(CATALOG, held, txns, days, {
-        monthlyIncome,
-        score: profile.score_band,
-      });
-
-  const suggestions = detectCards(messages)
-    .filter((d) => !byBankLast4.has(`${d.bank}|${d.last4}`))
-    .map((d) => {
-      const p = productByKey(d.productGuess);
-      return { ...d, product: p ? productView(p) : null };
-    });
-
-  // Where the user spends most, so a rule change that touches it stands out.
-  const topLabels = [
-    ...txns.reduce((m, t) => {
-      const l = t.merchant?.trim() || t.category || "";
-      if (l) m.set(l, (m.get(l) ?? 0) + t.amount);
-      return m;
-    }, new Map<string, number>()),
-  ]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 12)
-    .map(([l]) => l);
-
-  const cards = held.map((h) => {
-    const mine = txns.filter((t) => t.cardId === h.id);
-    return {
-      id: h.id,
-      bank: h.bank,
-      last4: h.last4,
-      product: h.product ? productView(h.product) : null,
-      spendInWindow: Math.round(mine.reduce((s, t) => s + t.amount, 0)),
-      earned: Math.round(
-        mine.reduce((s, t) => s + (earnedByTxn.get(t.id) ?? 0), 0),
-      ),
-      health: h.product
-        ? cardHealth(h.product, mine, days, today, topLabels)
-        : null,
-    };
-  });
-  const alerts = cards
-    .flatMap((c) =>
-      (c.health?.changes ?? [])
-        .filter((ch) => ch.upcoming || ch.recent)
-        .map((ch) => ({
-          cardId: c.id,
-          date: ch.date,
-          change: ch.change,
-          upcoming: ch.upcoming,
-          affectsYou: ch.affectsYou,
-        })),
-    )
-    .sort(
-      (a, b) =>
-        Number(b.affectsYou) - Number(a.affectsYou) ||
-        b.date.localeCompare(a.date),
-    );
-
   return {
+    profile,
+    messages,
+    held,
+    txns,
     days,
-    catalogVerified: CATALOG_VERIFIED,
-    cards,
-    alerts,
-    suggestions,
-    missed,
-    useFor: useFor(held, txns),
-    next: next.map((n) => ({ ...n, product: productView(n.product) })),
-    stress: stress.map((s) => ({ ...s, text: STRESS_TEXT[s.kind] })),
-    profile: { ...profile, estimatedIncome },
-    catalog: CATALOG.map((c) => ({ key: c.key, bank: c.bank, name: c.name })),
+    estimatedIncome,
+    monthlyIncome,
+    stress,
+    byBankLast4,
   };
 }
 

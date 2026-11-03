@@ -800,3 +800,113 @@ describe("spend alerts: 'next time here, use this card'", () => {
     expect((await spendTips(client(), 1, ["e1"])).size).toBe(0);
   });
 });
+
+// ── Card Finder (/api/cards/find) ───────────────────────────────────────────
+
+const { POST: FIND } = await import("./find/route");
+
+async function find(body: unknown, user: number | null = 1) {
+  const r = await FIND(req(user, body));
+  return { status: r.status, body: await r.json() };
+}
+
+const ANSWERS = {
+  goal: "food",
+  fee: "2000",
+  platform: "food-apps",
+  upi: false,
+  spend: "15-50",
+  useMySpending: true,
+};
+
+describe("/api/cards/find: the Card Finder", () => {
+  it("401 without a session; 400 with a reason for bad answers", async () => {
+    expect((await find(ANSWERS, null)).status).toBe(401);
+    const bad = await find({ ...ANSWERS, goal: "crypto" });
+    expect(bad.status).toBe(400);
+    expect(bad.body.error).toMatch(/goal must be one of/);
+  });
+
+  it("scores on the user's real spending, three picks, with art and a plain bank link", async () => {
+    const { status, body } = await find(ANSWERS);
+    expect(status).toBe(200);
+    expect(body.basis).toBe("real");
+    expect(body.stressed).toBe(false);
+    expect(body.picks).toHaveLength(3);
+    for (const p of body.picks) {
+      expect(p.product.annualFee).toBeLessThanOrEqual(2000);
+      expect(p.netYearly).toBeGreaterThan(0);
+      expect(["likely", "stretch", "unlikely"]).toContain(p.eligibility.chance);
+      // Never a tracked or affiliate link.
+      if (p.product.url) expect(p.product.url).not.toMatch(/utm_|aff|ref=/i);
+    }
+    // Ranked by value among cards that fit the goal.
+    const fit = body.picks.filter(
+      (p: { closestFit: boolean }) => !p.closestFit,
+    );
+    const nets = fit.map((p: { netYearly: number }) => p.netYearly);
+    expect(nets).toEqual([...nets].sort((a, b) => b - a));
+    // User 1 spends on Swiggy every week: it shows up as a reason.
+    expect(
+      body.picks.some((p: { wins: Array<{ label: string }> }) =>
+        p.wins.some((w) => w.label === "Swiggy"),
+      ),
+    ).toBe(true);
+  });
+
+  it("answers only (no real spending) when asked, or when there isn't enough", async () => {
+    const asked = await find({ ...ANSWERS, useMySpending: false });
+    expect(asked.body.basis).toBe("answers");
+    expect(asked.body.monthlySpend).toBe(30000);
+    // User 2 has one spend: the answers decide.
+    const thin = await find(ANSWERS, 2);
+    expect(thin.body.basis).toBe("answers");
+  });
+
+  it("UPI and fee wishes are hard filters", async () => {
+    const { body } = await find({ ...ANSWERS, upi: true, fee: "free" });
+    for (const p of body.picks) {
+      expect(p.product.upi).toBe(true);
+      expect(p.product.annualFee).toBe(0);
+    }
+  });
+
+  it("a card you already hold is marked, not hidden", async () => {
+    await post({
+      action: "confirm",
+      bank: "SBI",
+      last4: "0543",
+      product_key: "hdfc-swiggy-blck",
+    });
+    const { body } = await find(ANSWERS);
+    const all = [...body.picks, ...body.more];
+    const mine = all.find(
+      (p: { product: { key: string } }) => p.product.key === "hdfc-swiggy-blck",
+    );
+    expect(mine?.held).toBe(true);
+  });
+
+  it("signs of debt stress are passed on, so the app shows no picks", async () => {
+    (db.tables.bank_messages as Row[]).push({
+      id: "late",
+      user_id: 1,
+      body: "A late payment fee of Rs.700 has been levied on your SBI Credit Card ending 0543.",
+      received_at: `${day(2)}T10:00:00Z`,
+      expense_id: null,
+      direction: "debit",
+      amount: 700,
+      channel: "card",
+    });
+    expect((await find(ANSWERS)).body.stressed).toBe(true);
+  });
+
+  it("GET /api/cards carries card images and the finder prefill", async () => {
+    const { body } = await get();
+    expect(body.finder.realSpending).toBe(true);
+    expect(body.finder.monthlySpend).toBeGreaterThan(3000);
+    const millennia = body.catalog.find(
+      (c: { key: string }) => c.key === "hdfc-millennia",
+    );
+    expect(millennia.image).toMatch(/^https:\/\/s7ap1\.scene7\.com\//);
+  });
+});
