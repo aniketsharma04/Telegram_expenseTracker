@@ -18,7 +18,10 @@ import { useSettings } from "../../lib/i18n";
 import {
   cardAction,
   fetchCards,
+  findCards,
   type CardAction,
+  type FinderAnswers,
+  type FinderResult,
   type CardsData,
   type CardSuggestion,
   type HeldCardView,
@@ -27,6 +30,14 @@ import {
   type ScoreBand,
 } from "../../lib/cards-api";
 import { useCardsT, type CardsKey } from "./strings";
+import {
+  CompareScreen,
+  FINDER_KEY,
+  FinderEntry,
+  FinderQuiz,
+  FinderResults,
+  PickDetail,
+} from "./Finder";
 import {
   CardArt,
   ChanceChip,
@@ -54,7 +65,12 @@ type Screen =
   | { kind: "offer"; key: string }
   | { kind: "line"; index: number }
   | { kind: "calc" }
-  | { kind: "privacy" };
+  | { kind: "privacy" }
+  // Card Finder: the quiz, its results, one pick, and the side-by-side.
+  | { kind: "finder" }
+  | { kind: "results" }
+  | { kind: "pick"; key: string }
+  | { kind: "compare" };
 
 type Matcher =
   | { mode: "confirm"; queue: CardSuggestion[]; index: number }
@@ -96,6 +112,10 @@ export default function CardsApp({
   const [intro, setIntro] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [hiddenOffers, setHiddenOffers] = useState<string[]>([]);
+  const [finderAnswers, setFinderAnswers] = useState<FinderAnswers | null>(
+    null,
+  );
+  const [finderResult, setFinderResult] = useState<FinderResult | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -113,6 +133,9 @@ export default function CardsApp({
     }
     void load();
     AsyncStorage.getItem(INTRO_KEY).then((v) => setIntro(!v));
+    AsyncStorage.getItem(FINDER_KEY)
+      .then((v) => v && setFinderAnswers(JSON.parse(v) as FinderAnswers))
+      .catch(() => {});
   }, [visible, load]);
 
   useEffect(() => {
@@ -151,6 +174,22 @@ export default function CardsApp({
   };
 
   const top = stack[stack.length - 1];
+  const finderPick = (key: string) =>
+    [...(finderResult?.picks ?? []), ...(finderResult?.more ?? [])].find(
+      (x) => x.product.key === key,
+    ) ?? null;
+
+  const runFinder = async (answers: FinderAnswers) => {
+    const r = await findCards(token, answers);
+    if (!r.ok) {
+      setToast(r.error ?? t("somethingWrong"));
+      return;
+    }
+    setFinderAnswers(answers);
+    setFinderResult(r.data);
+    void AsyncStorage.setItem(FINDER_KEY, JSON.stringify(answers));
+    setStack([{ kind: "results" }]);
+  };
   const cardById = (id: string) => data?.cards.find((x) => x.id === id) ?? null;
   const cardName = (id: string) => {
     const h = cardById(id);
@@ -168,7 +207,15 @@ export default function CardsApp({
           ? (data?.missed.lines[top.index]?.label ?? "")
           : top.kind === "privacy"
             ? t("privacyTitle")
-            : t("calcTitle")
+            : top.kind === "finder"
+              ? "Find your best card"
+              : top.kind === "results"
+                ? "Your card matches"
+                : top.kind === "pick"
+                  ? (finderPick(top.key)?.product.name ?? "")
+                  : top.kind === "compare"
+                    ? "Side by side"
+                    : t("calcTitle")
     : null;
 
   return (
@@ -298,7 +345,45 @@ export default function CardsApp({
                 />
               }
             >
-              {top?.kind === "card" ? (
+              {top?.kind === "finder" ? (
+                <FinderQuiz
+                  data={data}
+                  initial={finderAnswers}
+                  p={p}
+                  accent={c}
+                  onDone={runFinder}
+                />
+              ) : top?.kind === "results" && finderResult ? (
+                <FinderResults
+                  result={finderResult}
+                  data={data}
+                  p={p}
+                  accent={c}
+                  onOpen={(key) =>
+                    setStack((st) => [...st, { kind: "pick", key }])
+                  }
+                  onCompare={() =>
+                    setStack((st) => [...st, { kind: "compare" }])
+                  }
+                  onRedo={() => setStack([{ kind: "finder" }])}
+                />
+              ) : top?.kind === "pick" ? (
+                <PickDetail
+                  x={finderPick(top.key)}
+                  p={p}
+                  accent={c}
+                  onGo={(url) => setLeaving({ url })}
+                />
+              ) : top?.kind === "compare" && finderResult ? (
+                <CompareScreen
+                  picks={finderResult.picks}
+                  p={p}
+                  accent={c}
+                  onOpen={(key) =>
+                    setStack((st) => [...st, { kind: "pick", key }])
+                  }
+                />
+              ) : top?.kind === "card" ? (
                 <CardDetail
                   card={cardById(top.id)}
                   data={data}
@@ -380,17 +465,29 @@ export default function CardsApp({
                   onGoWallet={() => setTab("wallet")}
                 />
               ) : (
-                <Explore
-                  data={data}
-                  hidden={hiddenOffers}
-                  p={p}
-                  accent={c}
-                  onOpen={(key) => setStack([{ kind: "offer", key }])}
-                  onProfile={() => setProfileOpen(true)}
-                  onClearStress={() =>
-                    act({ action: "clear_stress" }, t("stressCleared"))
-                  }
-                />
+                <>
+                  {!data.stress.length && (
+                    <FinderEntry
+                      data={data}
+                      p={p}
+                      accent={c}
+                      hasResult={!!finderResult}
+                      onStart={() => setStack([{ kind: "finder" }])}
+                      onResult={() => setStack([{ kind: "results" }])}
+                    />
+                  )}
+                  <Explore
+                    data={data}
+                    hidden={hiddenOffers}
+                    p={p}
+                    accent={c}
+                    onOpen={(key) => setStack([{ kind: "offer", key }])}
+                    onProfile={() => setProfileOpen(true)}
+                    onClearStress={() =>
+                      act({ action: "clear_stress" }, t("stressCleared"))
+                    }
+                  />
+                </>
               )}
             </ScrollView>
 
@@ -876,6 +973,7 @@ function Wallet({
               name={card.product?.name ?? t("unknownCard")}
               last4={card.last4}
               dashed={!card.product}
+              image={card.product?.image}
             />
             <View style={{ padding: 14, gap: 6 }}>
               {card.product ? (
@@ -1045,6 +1143,7 @@ function CardDetail({
         bank={card.bank}
         name={prod?.name ?? t("unknownCard")}
         last4={card.last4}
+        image={prod?.image}
       />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={{ color: p.ink2, fontSize: fs(14), flex: 1 }}>
@@ -1987,6 +2086,7 @@ function OfferCard({
           name={o.product.name}
           last4={null}
           size="sm"
+          image={o.product.image}
         />
         <View style={{ flex: 1 }}>
           <Text
@@ -2069,7 +2169,12 @@ function OfferDetail({
   }[offer.eligibility.chance];
   return (
     <>
-      <CardArt bank={prod.bank} name={prod.name} last4={null} />
+      <CardArt
+        bank={prod.bank}
+        name={prod.name}
+        last4={null}
+        image={prod.image}
+      />
       {prod.pitch && (
         <Text style={{ color: p.ink2, fontSize: fs(14.5), lineHeight: fs(21) }}>
           {prod.pitch}
@@ -2469,7 +2574,13 @@ function MatcherSheet({
             accessibilityState={{ checked: on }}
             style={[s.option, { borderColor: on ? accent.accent : p.border }]}
           >
-            <CardArt bank={c.bank} name={c.name} last4={null} size="sm" />
+            <CardArt
+              bank={c.bank}
+              name={c.name}
+              last4={null}
+              size="sm"
+              image={c.image}
+            />
             <View style={{ flex: 1 }}>
               <Text
                 style={{ color: p.ink, fontWeight: "700", fontSize: fs(14.5) }}

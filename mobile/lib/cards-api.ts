@@ -24,6 +24,8 @@ export interface CardProductView {
   forexMarkup: number | null;
   minIncomeMonthly: number | null;
   url: string | null;
+  /** The card face from the bank site; null = draw it. */
+  image: string | null;
   verified: string;
   confidence: "high" | "medium" | "low";
   pitch: string | null;
@@ -144,7 +146,14 @@ export interface CardsData {
     spend_tips: boolean;
     estimatedIncome: number | null;
   };
-  catalog: Array<{ key: string; bank: string; name: string }>;
+  /** Card Finder prefill: real spending to score on, and its monthly size. */
+  finder?: { realSpending: boolean; monthlySpend: number | null };
+  catalog: Array<{
+    key: string;
+    bank: string;
+    name: string;
+    image?: string | null;
+  }>;
 }
 
 export type CardAction =
@@ -207,4 +216,83 @@ export async function cardAction(
   } catch {
     return { ok: false, error: null };
   }
+}
+
+// ── Card Finder (/api/cards/find) ───────────────────────────────────────────
+
+export type FinderGoal =
+  "shopping" | "food" | "travel" | "fuel" | "bills" | "value";
+export type FinderFee = "free" | "500" | "2000" | "5000" | "any";
+export type FinderPlatform =
+  "amazon" | "flipkart" | "myntra" | "food-apps" | "tata" | "mix";
+export type FinderSpend = "lt15" | "15-50" | "50-100" | "100plus";
+
+export interface FinderAnswers {
+  goal: FinderGoal;
+  fee: FinderFee;
+  platform: FinderPlatform;
+  upi: boolean;
+  spend: FinderSpend;
+  useMySpending: boolean;
+}
+
+export interface FinderPick {
+  product: CardProductView;
+  netYearly: number;
+  rewardsYearly: number;
+  milestonesYearly: number;
+  feeYearly: number;
+  feeWaived: boolean;
+  spendYearly: number;
+  effectiveRate: number;
+  wins: Array<{ label: string; valueYearly: number }>;
+  fits: string[];
+  watchOuts: string[];
+  strengths: FinderGoal[];
+  closestFit: boolean;
+  held: boolean;
+  eligibility: { chance: Chance; reasons: string[] };
+}
+
+export interface FinderResult {
+  basis: "real" | "answers";
+  monthlySpend: number;
+  picks: FinderPick[];
+  more: FinderPick[];
+  relaxed: Array<"goal" | "fee" | "upi">;
+  stressed: boolean;
+}
+
+/** The best cards for these answers, or an error to show. */
+export async function findCards(
+  token: string,
+  answers: FinderAnswers,
+): Promise<
+  { ok: true; data: FinderResult } | { ok: false; error: string | null }
+> {
+  try {
+    const res = await fetch(`${API_BASE}/api/cards/find`, {
+      method: "POST",
+      headers: headers(token),
+      body: JSON.stringify(answers),
+    });
+    const json = (await res.json().catch(() => null)) as
+      (FinderResult & { error?: string }) | null;
+    if (res.ok && json) return { ok: true, data: json };
+    return { ok: false, error: json?.error ?? null };
+  } catch {
+    return { ok: false, error: null };
+  }
+}
+
+/**
+ * A bank card image, resized and cached by the Aaj server (the Next image
+ * optimiser), so the app never hot-links a bank site. The width must be one
+ * of the server's sizes: 256, 384, 640 or 750.
+ */
+export function cardImageUrl(
+  src: string,
+  width: 256 | 384 | 640 | 750,
+): string {
+  return `${API_BASE}/_next/image?url=${encodeURIComponent(src)}&w=${width}&q=75`;
 }

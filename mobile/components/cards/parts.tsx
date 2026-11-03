@@ -1,10 +1,18 @@
-import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "../Text";
 import { Icon, IconName, KeyboardAware } from "../ui";
 import { formatINR, type Palette } from "../../lib/theme";
 import { useSettings } from "../../lib/i18n";
-import type { Chance } from "../../lib/cards-api";
+import { cardImageUrl, type Chance } from "../../lib/cards-api";
 
 /**
  * Aaj Cards building blocks. Same surfaces, font and spacing as Aaj; one
@@ -73,8 +81,74 @@ export function bankColors(bank: string): [string, string] {
   return BANK_COLORS[bank] ?? ["#2c3440", "#4b5563"];
 }
 
-/** A card-shaped tile: bank colours, name, last four. */
+/**
+ * A card-shaped tile. With `image` it shows the card's real face from the
+ * bank's site (through Aaj's image cache); without one, or if the picture
+ * fails to load, it draws the card from bank colours, name and last four.
+ */
 export function CardArt({
+  bank,
+  name,
+  last4,
+  size = "md",
+  dashed,
+  image,
+}: {
+  bank: string;
+  name: string | null;
+  last4: string | null;
+  size?: "sm" | "md";
+  dashed?: boolean;
+  image?: string | null;
+}) {
+  const [broken, setBroken] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    setBroken(false);
+    setLoaded(false);
+  }, [image]);
+  if (image && !broken) {
+    const sm = size === "sm";
+    const [from] = bankColors(bank);
+    return (
+      <View
+        accessible
+        accessibilityRole="image"
+        accessibilityLabel={`${bank} ${name ?? ""} ${last4 ? `ending ${last4}` : ""}`}
+        style={[
+          sm ? styles.artSm : styles.artMd,
+          styles.photo,
+          !loaded && { backgroundColor: from, opacity: 0.12 },
+          dashed && styles.artDashed,
+        ]}
+      >
+        <Image
+          source={{ uri: cardImageUrl(image, sm ? 256 : 750) }}
+          style={StyleSheet.absoluteFill}
+          resizeMode="contain"
+          onLoad={() => setLoaded(true)}
+          onError={() => setBroken(true)}
+        />
+        {last4 && !sm && loaded && (
+          <View style={styles.last4}>
+            <Text style={styles.last4Text}>•••• {last4}</Text>
+          </View>
+        )}
+      </View>
+    );
+  }
+  return (
+    <DrawnArt
+      bank={bank}
+      name={name}
+      last4={last4}
+      size={size}
+      dashed={dashed}
+    />
+  );
+}
+
+function DrawnArt({
   bank,
   name,
   last4,
@@ -347,6 +421,17 @@ export const styles = StyleSheet.create({
   artMd: { width: "100%", aspectRatio: 1.75 },
   artSm: { width: 64, height: 42, borderRadius: 8, padding: 6 },
   artDashed: { opacity: 0.55 },
+  photo: { borderRadius: 12, overflow: "hidden" },
+  last4: {
+    position: "absolute",
+    right: 8,
+    bottom: 8,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  last4Text: { color: "#fff", fontWeight: "700", letterSpacing: 1.5 },
   artGlow: {
     position: "absolute",
     width: "120%",
