@@ -55,6 +55,75 @@ Get pre-approved personal loan offer up to Rs.5,00,000. Apply now! T&C apply.`;
   });
 });
 
+/**
+ * "DEBIT TRANSACTION ALERT" mails are tables: no single line has both an
+ * amount and "debited", so these used to be ignored — 9 real debits in the
+ * owner's inbox in one week (28–30 Oct 2026).
+ */
+describe("emailTxnText on label/value alerts", () => {
+  // What htmlToText makes of a <table>: one "Label value" row per line.
+  const table = `Dear Customer,
+Greetings from the bank. The following transaction has been made on your account:
+Account Number XXXXXX4521
+Transaction Date 28-10-2026 18:42:10
+Transaction Amount INR 1,250.00
+Transaction Type Debit
+Description UPI/612345678901/SWIGGY LIMITED
+Available Balance INR 10,250.50
+If this was not you, call 1800 425 1400.
+Pre-approved loan up to Rs 5,00,000. Apply now.`;
+
+  it("reads a table alert as a debit with amount, merchant and balance", () => {
+    const text = emailTxnText("DEBIT TRANSACTION ALERT", table);
+    expect(text).toMatch(/^INR 1,250\.00 debited from A\/c XXXXXX4521/);
+    const txn = parseBankMessage(text!);
+    expect(txn?.direction).toBe("debit");
+    expect(txn?.amount).toBe(1250);
+    expect(txn?.balance).toBe(10250.5);
+    expect(txn?.counterparty ?? "").toMatch(/swiggy/i);
+  });
+
+  it("takes the direction from a type field over a generic subject", () => {
+    const text = emailTxnText(
+      "Transaction alert",
+      "Account No: XX9876\nAmount: Rs. 25,000.00\nDr/Cr: CR\nRemarks: NEFT-SALARY ACME TECH\nAvailable Balance: Rs. 61,200.00",
+    );
+    const txn = parseBankMessage(text!);
+    expect(txn?.direction).toBe("credit");
+    expect(txn?.amount).toBe(25000);
+  });
+
+  it("reads colon and next-line layouts", () => {
+    const text = emailTxnText(
+      "Debit Alert",
+      "Card No:\nXXXX1111\nAmount:\nINR 499.00\nMerchant Name:\nNETFLIX\nDate:\n29/10/2026",
+    );
+    const txn = parseBankMessage(text!);
+    expect(txn?.amount).toBe(499);
+    expect(txn?.direction).toBe("debit");
+  });
+
+  it("never invents a transaction without a stated direction", () => {
+    // A promo with a price and an "Amount" line, but no debit/credit anywhere.
+    expect(
+      emailTxnText(
+        "🪔 StockEdge Premium for just ₹1,499/yr",
+        "Amount ₹1,499\nOffer valid till 5 Nov",
+      ),
+    ).toBeNull();
+    // A card bill is not a credit, even with "Credit" in the subject.
+    expect(
+      emailTxnText(
+        "Your Credit Card payment due alert",
+        "Total Amount Due INR 12,450.00\nMinimum Amount Due INR 620.00\nDue Date 15-11-2026",
+      ),
+    ).toBeNull();
+    expect(
+      emailTxnText("OTP for transaction", "Amount INR 2,000\nOTP 482913"),
+    ).toBeNull();
+  });
+});
+
 describe("parseBankMessage on card-bill payments", () => {
   it("doesn't count paying a card bill as income", () => {
     // The bank debit for this payment is the real transaction.
@@ -72,5 +141,15 @@ describe("MAIL_QUERY", () => {
     expect(MAIL_QUERY).toMatch(/newer_than:45d/);
     expect(MAIL_QUERY).toMatch(/newer_than:10d/);
     expect(MAIL_QUERY).toMatch(/debited/);
+  });
+});
+
+describe("emailTxnText keeps the payment rail", () => {
+  it("marks a UPI table alert as UPI", () => {
+    const text = emailTxnText(
+      "DEBIT TRANSACTION ALERT",
+      "Transaction Amount INR 80.00\nTransaction Type Debit\nDescription UPI/612345678902/RAPIDO",
+    );
+    expect(parseBankMessage(text!)?.channel).toBe("upi");
   });
 });

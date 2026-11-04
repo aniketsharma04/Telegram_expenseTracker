@@ -62,7 +62,9 @@ class CaptureUploadWorker(context: Context, params: WorkerParameters) : Worker(c
         put("messages", batch)
       }
       connection.outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
-      when (val code = connection.responseCode) {
+      val code = connection.responseCode
+      CaptureStore.markUpload(applicationContext, code.toString())
+      when (code) {
         in 200..299 -> Outcome.Done
         401, 403 -> Outcome.SignedOut
         // Any other 4xx means this batch's shape is wrong; retrying would wedge
@@ -71,6 +73,7 @@ class CaptureUploadWorker(context: Context, params: WorkerParameters) : Worker(c
         else -> Outcome.TryLater
       }
     } catch (e: Exception) {
+      CaptureStore.markUpload(applicationContext, "offline")
       Outcome.TryLater // offline, DNS, timeout
     } finally {
       connection?.disconnect()

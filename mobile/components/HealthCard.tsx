@@ -11,9 +11,11 @@ import {
 } from "../lib/api";
 import { captureStatus, connectCapture, syncCaptures } from "../lib/capture";
 import {
+  captureDiagnostics,
   openAppSettings,
   openCaptureSettings,
 } from "../modules/notification-capture";
+import { explainCapture } from "../lib/capture-diag";
 
 function shortDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-IN", {
@@ -61,8 +63,18 @@ export function HealthCard({
     return () => sub.remove();
   }, [token]);
 
+  // Two witnesses: the server (nothing arrived for 2 days) and, on v22+
+  // builds, the phone itself (reader stopped, uploads failing, silence).
+  // Missing access is CaptureSetupCard's job, so that verdict is skipped.
+  const verdict =
+    status.supported && status.granted
+      ? explainCapture(captureDiagnostics(), true)
+      : null;
+  const phoneSaysDown = Boolean(verdict && !verdict.ok);
   const captureDown =
-    status.supported && status.granted && Boolean(capture?.quiet);
+    status.supported &&
+    status.granted &&
+    (Boolean(capture?.quiet) || phoneSaysDown);
   const gmailDown = Boolean(gmail?.needs_reauth);
   if (!captureDown && !gmailDown) return null;
 
@@ -96,11 +108,18 @@ export function HealthCard({
 
   return (
     <Card p={p} style={{ gap: 12, borderColor: p.warn, borderWidth: 1 }}>
-      {captureDown && capture?.last_at && (
+      {captureDown && (
         <View style={{ gap: 8 }}>
           <Text style={title}>
-            No bank alerts since {shortDate(capture.last_at)}
+            {capture?.quiet && capture.last_at
+              ? `No bank alerts since ${shortDate(capture.last_at)}`
+              : (verdict?.title ?? "Bank alerts aren't reaching Aaj")}
           </Text>
+          {phoneSaysDown && verdict && (
+            <Text style={{ ...body, color: p.warn }}>
+              On this phone: {verdict.detail}
+            </Text>
+          )}
           <Text style={body}>
             Android has stopped passing your bank and UPI alerts to Aaj, so new
             spends aren't being logged. This usually happens after installing a

@@ -97,6 +97,51 @@ object CaptureStore {
     edit.apply()
   }
 
+  // ── Diagnostics (v22) ────────────────────────────────────────────────────
+  //
+  // Capture can break in three places that look identical from the app: the
+  // listener stops running, alerts are captured but uploads fail, or no
+  // bank alert arrives at all. A few timestamps tell them apart, so the app
+  // can say which one it is (and the user can tell us).
+
+  private const val KEY_LAST_SEEN = "diag_last_seen"           // any alert from a watched app
+  private const val KEY_LAST_CAPTURED = "diag_last_captured"   // one that looked like money
+  private const val KEY_CONNECTED = "diag_connected"           // listener bound
+  private const val KEY_DISCONNECTED = "diag_disconnected"     // listener unbound
+  private const val KEY_UPLOAD_AT = "diag_upload_at"
+  private const val KEY_UPLOAD_RESULT = "diag_upload_result"   // HTTP code, or "offline"
+
+  fun mark(context: Context, key: String) {
+    prefs(context).edit().putLong(key, System.currentTimeMillis()).apply()
+  }
+
+  fun markSeen(context: Context) = mark(context, KEY_LAST_SEEN)
+  fun markCaptured(context: Context) = mark(context, KEY_LAST_CAPTURED)
+  fun markConnected(context: Context) = mark(context, KEY_CONNECTED)
+  fun markDisconnected(context: Context) = mark(context, KEY_DISCONNECTED)
+
+  fun markUpload(context: Context, result: String) {
+    prefs(context).edit()
+      .putLong(KEY_UPLOAD_AT, System.currentTimeMillis())
+      .putString(KEY_UPLOAD_RESULT, result)
+      .apply()
+  }
+
+  /** Epoch ms (0 = never) and the last upload result, for the app to show. */
+  fun diagnostics(context: Context): Map<String, Any> {
+    val p = prefs(context)
+    return mapOf(
+      "lastSeen" to p.getLong(KEY_LAST_SEEN, 0L),
+      "lastCaptured" to p.getLong(KEY_LAST_CAPTURED, 0L),
+      "connectedAt" to p.getLong(KEY_CONNECTED, 0L),
+      "disconnectedAt" to p.getLong(KEY_DISCONNECTED, 0L),
+      "uploadAt" to p.getLong(KEY_UPLOAD_AT, 0L),
+      "uploadResult" to (p.getString(KEY_UPLOAD_RESULT, null) ?: ""),
+      "pending" to pendingCount(context),
+      "signedIn" to (uploadConfig(context) != null)
+    )
+  }
+
   fun uploadConfig(context: Context): Pair<String, String>? {
     val p = prefs(context)
     val base = p.getString(KEY_API_BASE, null) ?: return null

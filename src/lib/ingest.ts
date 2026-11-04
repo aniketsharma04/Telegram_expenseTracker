@@ -10,7 +10,7 @@ import { listAccounts, type Account } from "./accounts";
 import { loadMerchantRules, normaliseMerchant } from "./merchants";
 import { insertExpense, loadCategories } from "./log-expense";
 import { logIncome } from "./income";
-import { localDate } from "./parser";
+import { categoryByKeyword, localDate } from "./parser";
 import { redactForAI } from "./redact";
 import { directionWithLLM } from "./llm";
 import { userGeminiKey } from "./ai-keys";
@@ -396,13 +396,12 @@ export async function classify(
     : null;
 
   // A keyword the user has already taught the rules parser beats everything.
-  const haystack = (counterparty ?? "").toLowerCase();
-  const learned = categories.find((c) =>
-    c.keywords?.some((k) => k.length > 2 && haystack.includes(k.toLowerCase())),
-  );
+  // Whole words only, and 3+ letters: a bank's merchant string is noisier
+  // than something the user typed.
+  const learned = categoryByKeyword(counterparty ?? "", categories, 3);
 
   return {
-    category: learned?.name ?? hinted ?? "Uncategorized",
+    category: learned ?? hinted ?? "Uncategorized",
     merchant: normalised?.merchant ?? counterparty,
   };
 }

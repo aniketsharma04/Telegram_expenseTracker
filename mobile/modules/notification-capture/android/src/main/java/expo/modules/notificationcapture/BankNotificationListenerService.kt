@@ -35,6 +35,7 @@ class BankNotificationListenerService : NotificationListenerService() {
   private fun capture(sbn: StatusBarNotification) {
     val packageName = sbn.packageName ?: return
     if (!CaptureStore.watchedPackages(applicationContext).contains(packageName)) return
+    CaptureStore.markSeen(applicationContext)
 
     val extras = sbn.notification?.extras ?: return
     val flags = sbn.notification?.flags ?: 0
@@ -60,6 +61,7 @@ class BankNotificationListenerService : NotificationListenerService() {
       put("received_at", sbn.postTime)
     }
     CaptureStore.enqueue(applicationContext, item)
+    CaptureStore.markCaptured(applicationContext)
     NotificationCaptureModule.notifyCaptured(CaptureStore.pendingCount(applicationContext))
     // Send it now, not when the app is next opened — the live daily budget depends on it.
     CaptureUploadWorker.schedule(applicationContext)
@@ -69,9 +71,25 @@ class BankNotificationListenerService : NotificationListenerService() {
   override fun onListenerConnected() {
     super.onListenerConnected()
     try {
+      CaptureStore.markConnected(applicationContext)
       if (CaptureStore.pendingCount(applicationContext) > 0) CaptureUploadWorker.schedule(applicationContext)
     } catch (e: Exception) {
       android.util.Log.w(TAG, "flush on connect failed", e)
+    }
+  }
+
+  /**
+   * Android unbinds listeners (memory pressure, app updates, some OEM battery
+   * savers) and doesn't always bring them back. Ask to be re-bound at once —
+   * the documented recovery — instead of waiting for the app to be opened.
+   */
+  override fun onListenerDisconnected() {
+    super.onListenerDisconnected()
+    try {
+      CaptureStore.markDisconnected(applicationContext)
+      NotificationListenerService.requestRebind(android.content.ComponentName(applicationContext, BankNotificationListenerService::class.java))
+    } catch (e: Exception) {
+      android.util.Log.w(TAG, "rebind after disconnect failed", e)
     }
   }
 

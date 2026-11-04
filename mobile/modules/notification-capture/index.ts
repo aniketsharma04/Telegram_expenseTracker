@@ -38,6 +38,32 @@ declare class NotificationCaptureModule extends NativeModule<CaptureEvents> {
   isBatteryOptimized?(): boolean;
   openBatterySettings?(): void;
   openAppSettings?(): void;
+  // v22
+  diagnostics?(): CaptureDiagnostics;
+}
+
+/** Epoch ms; 0 means never. */
+export interface CaptureDiagnostics {
+  /** Any notification from a watched app (SMS, bank, UPI) reached the listener. */
+  lastSeen: number;
+  /** One that looked like money and was queued. */
+  lastCaptured: number;
+  connectedAt: number;
+  disconnectedAt: number;
+  uploadAt: number;
+  /** HTTP status of the last background upload, "offline", or "". */
+  uploadResult: string;
+  pending: number;
+  signedIn: boolean;
+}
+
+/** Null on builds before v22, iOS and Expo Go. */
+export function captureDiagnostics(): CaptureDiagnostics | null {
+  try {
+    return native?.diagnostics?.() ?? null;
+  } catch {
+    return null;
+  }
 }
 
 /**

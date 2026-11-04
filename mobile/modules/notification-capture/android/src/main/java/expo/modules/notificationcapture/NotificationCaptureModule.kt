@@ -103,6 +103,9 @@ class NotificationCaptureModule : Module() {
       }
     }
 
+    /** v22: when the listener last ran, captured and uploaded — see CaptureStore. */
+    Function("diagnostics") { CaptureStore.diagnostics(context) }
+
     /** True when Android may stop the app in the background to save battery. */
     Function("isBatteryOptimized") {
       val power = (context.getSystemService(Context.POWER_SERVICE) as PowerManager)

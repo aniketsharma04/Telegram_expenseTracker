@@ -20,7 +20,11 @@ import {
   gmailSync,
 } from "../lib/api";
 import { captureStatus, syncCaptures } from "../lib/capture";
-import { openCaptureSettings } from "../modules/notification-capture";
+import {
+  captureDiagnostics,
+  openCaptureSettings,
+} from "../modules/notification-capture";
+import { explainCapture } from "../lib/capture-diag";
 import { Palette } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
 import * as Updates from "expo-updates";
@@ -69,6 +73,10 @@ export default function SettingsSheet({
   const [capture, setCapture] = useState(captureStatus);
   const [capturing, setCapturing] = useState(false);
   const [captureNote, setCaptureNote] = useState<string | null>(null);
+  // v22: what the native reader last did, as one verdict (null on old builds).
+  const verdict = capture.supported
+    ? explainCapture(captureDiagnostics(), capture.granted)
+    : null;
 
   useEffect(() => {
     if (visible) setCapture(captureStatus());
@@ -393,8 +401,37 @@ export default function SettingsSheet({
                     lineHeight: 17,
                   }}
                 >
-                  {capture.granted ? t("captureOn") : t("captureBlurb")}
+                  {!capture.granted
+                    ? t("captureBlurb")
+                    : !verdict
+                      ? t("captureOn")
+                      : verdict.ok
+                        ? `${verdict.title}. ${verdict.detail}`
+                        : t("captureOn")}
                 </Text>
+                {/* v22: when capture is broken, say exactly how. */}
+                {capture.granted && verdict && !verdict.ok && (
+                  <View style={{ marginTop: 6, gap: 2 }}>
+                    <Text
+                      style={{
+                        fontSize: fs(13),
+                        fontWeight: "600",
+                        color: p.warn,
+                      }}
+                    >
+                      {verdict.title}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: fs(12.5),
+                        color: p.ink2,
+                        lineHeight: 18,
+                      }}
+                    >
+                      {verdict.detail}
+                    </Text>
+                  </View>
+                )}
                 {capture.granted && capture.pending > 0 && (
                   <Text
                     style={{ fontSize: fs(12.5), color: p.ink2, marginTop: 6 }}

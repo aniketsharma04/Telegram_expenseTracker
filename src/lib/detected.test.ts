@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { GmailAccount, needsReauth, reauthNotice } from "./detected";
+import {
+  GmailAccount,
+  NO_TXN_NOTE,
+  needsReauth,
+  reauthNotice,
+  shouldReread,
+} from "./detected";
 
 const account = (lastError: string | null): GmailAccount => ({
   user_id: 1,
@@ -49,5 +55,43 @@ describe("reauthNotice", () => {
     const text = reauthNotice(undefined);
     expect(text).toContain("Open the app");
     expect(text).not.toContain("<a href");
+  });
+});
+
+describe("shouldReread", () => {
+  const old = "Email with no transaction in it.";
+  it("gives alerts the old reader ignored one more read", () => {
+    expect(
+      shouldReread({
+        status: "ignored",
+        note: old,
+        body: "DEBIT TRANSACTION ALERT",
+      }),
+    ).toBe(true);
+  });
+  it("leaves everything else alone", () => {
+    // Not an alert by its subject.
+    expect(
+      shouldReread({ status: "ignored", note: old, body: "Payment Reminder" }),
+    ).toBe(false);
+    expect(
+      shouldReread({ status: "ignored", note: old, body: "Rapido Invoice" }),
+    ).toBe(false);
+    // Already re-read by v22 (new note): never loop.
+    expect(
+      shouldReread({
+        status: "ignored",
+        note: NO_TXN_NOTE,
+        body: "DEBIT TRANSACTION ALERT",
+      }),
+    ).toBe(false);
+    // Logged rows are the ledger's: never touched.
+    expect(
+      shouldReread({
+        status: "logged",
+        note: old,
+        body: "DEBIT TRANSACTION ALERT",
+      }),
+    ).toBe(false);
   });
 });

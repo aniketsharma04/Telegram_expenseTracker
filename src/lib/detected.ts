@@ -207,6 +207,28 @@ export async function seenExternalIds(
   return new Set((data ?? []).map((r) => r.external_id as string));
 }
 
+/** The note for an email read and found to hold no transaction. */
+export const NO_TXN_NOTE = "Email with no transaction in it (v22).";
+/**
+ * The note the reader before v22 used. It couldn't read table-style alerts
+ * ("DEBIT TRANSACTION ALERT"), so an alert it ignored deserves one more read.
+ */
+const OLD_NO_TXN_NOTE = "Email with no transaction in it.";
+const ALERT_SUBJECT = /debit|credit|transaction|txn|spent|upi|withdraw/i;
+
+/** Should this stored email row be forgotten so the next sync reads it again? */
+export function shouldReread(row: {
+  status?: string | null;
+  note?: string | null;
+  body?: string | null;
+}): boolean {
+  return (
+    row.status === "ignored" &&
+    row.note === OLD_NO_TXN_NOTE &&
+    ALERT_SUBJECT.test(String(row.body ?? ""))
+  );
+}
+
 /** Gmail ids the mail scan already put through ingest (logged or not). */
 async function seenEmailIds(
   supabase: SupabaseClient,
@@ -216,12 +238,31 @@ async function seenEmailIds(
   if (!ids.length) return new Set();
   const { data, error } = await supabase
     .from("bank_messages")
-    .select("external_id")
+    .select("id, external_id, status, note, body")
     .eq("user_id", userId)
     .eq("source", "email")
     .in("external_id", ids);
   if (error) return new Set();
-  return new Set((data ?? []).map((r) => r.external_id as string));
+  // Alerts the old reader dropped: forget that read (only the "ignored" log
+  // row — nothing in the ledger) so this sync reads them again. The new
+  // note means each one is retried once, not on every sync.
+  const retry = (data ?? []).filter(shouldReread);
+  if (retry.length) {
+    await supabase
+      .from("bank_messages")
+      .delete()
+      .eq("user_id", userId)
+      .in(
+        "id",
+        retry.map((r) => r.id),
+      );
+  }
+  const retried = new Set(retry.map((r) => r.external_id as string));
+  return new Set(
+    (data ?? [])
+      .map((r) => r.external_id as string)
+      .filter((id) => !retried.has(id)),
+  );
 }
 
 export async function dismissDetected(
@@ -383,7 +424,7 @@ export async function syncGmail(
           supabase,
           userId,
           { ...mail, body: msg.subject },
-          "Email with no transaction in it.",
+          NO_TXN_NOTE,
         );
       }
 

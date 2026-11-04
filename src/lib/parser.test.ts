@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { extractAmount, localDate, parseExpense, CategoryRule } from "./parser";
+import {
+  categoryByKeyword,
+  extractAmount,
+  localDate,
+  parseExpense,
+  CategoryRule,
+} from "./parser";
 
 const CATEGORIES: CategoryRule[] = [
   { name: "Food delivery", keywords: ["zomato", "swiggy", "kfc"] },
@@ -105,5 +111,31 @@ describe("localDate", () => {
   it("formats in IST", () => {
     // 2026-08-15 20:00 UTC is already 2026-08-16 in IST
     expect(localDate(0, new Date("2026-08-15T20:00:00Z"))).toBe("2026-08-16");
+  });
+});
+
+describe("categoryByKeyword", () => {
+  const cats = [
+    { name: "Loans & EMI", keywords: ["emi", "loan"] },
+    { name: "Utilities & bills", keywords: ["rent", "premium", "jio"] },
+    { name: "Transport", keywords: ["ola", "metro", "metro card"] },
+    { name: "Dining out", keywords: ["coffee", "tea"] },
+    { name: "Entertainment", keywords: ["prime video"] },
+    { name: "Shopping", keywords: ["amazon"] },
+  ];
+  it("matches whole words, not pieces of other words", () => {
+    expect(categoryByKeyword("Motorola India", cats)).toBeNull();
+    expect(categoryByKeyword("Current Account charges", cats)).toBeNull();
+    expect(categoryByKeyword("Steam games", cats)).toBeNull();
+    expect(categoryByKeyword("HDFC Premium", cats)).toBe("Utilities & bills");
+    expect(categoryByKeyword("Diada coffee", cats)).toBe("Dining out");
+    expect(categoryByKeyword("OLA cabs", cats)).toBe("Transport");
+  });
+  it("prefers the longest keyword", () => {
+    expect(categoryByKeyword("Amazon Prime Video", cats)).toBe("Entertainment");
+    expect(categoryByKeyword("Delhi Metro Card", cats)).toBe("Transport");
+  });
+  it("skips keywords shorter than the minimum", () => {
+    expect(categoryByKeyword("tea stall", cats, 4)).toBeNull();
   });
 });

@@ -95,6 +95,34 @@ const DATE_WORDS: Array<{ re: RegExp; offsetDays: number }> = [
   { re: /\btoday\b/i, offsetDays: 0 },
 ];
 
+/**
+ * The category whose keyword appears in `text` as a whole word, longest
+ * keyword first ("metro card" over "card"). Whole words matter: as a bare
+ * substring "emi" is inside "Premium", "rent" inside "Current" and "ola"
+ * inside "Motorola", which filed payments under the wrong heading.
+ */
+export function categoryByKeyword(
+  text: string,
+  categories: Array<{ name: string; keywords?: string[] | null }>,
+  minLength = 1,
+): string | null {
+  const haystack = ` ${text.toLowerCase()} `;
+  let best: { name: string; len: number } | null = null;
+  for (const cat of categories) {
+    for (const keyword of cat.keywords ?? []) {
+      const kw = keyword.toLowerCase().trim();
+      if (kw.length < minLength) continue;
+      const re = new RegExp(
+        `(?:^|[^a-z0-9])${escapeRegExp(kw)}(?:$|[^a-z0-9])`,
+        "i",
+      );
+      if (re.test(haystack) && (!best || kw.length > best.len))
+        best = { name: cat.name, len: kw.length };
+    }
+  }
+  return best?.name ?? null;
+}
+
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
