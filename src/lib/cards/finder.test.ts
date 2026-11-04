@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { CATALOG, productByKey } from "./catalog";
-import { CARD_ART, CARD_ART_HOSTS } from "./art";
+import { existsSync, statSync } from "node:fs";
+import { join } from "node:path";
+import { CARD_ART } from "./art";
 import {
   findCards,
   parseAnswers,
@@ -267,18 +269,27 @@ describe("parseAnswers", () => {
 });
 
 describe("card art", () => {
-  it("every entry is a catalogue card; images are https from the bank's own hosts", () => {
+  it("every entry is a catalogue card, taken from the bank's own site", () => {
     for (const [key, art] of Object.entries(CARD_ART)) {
       expect(productByKey(key), key).not.toBeNull();
-      if (art.image) expect(art.image).toMatch(/^https:\/\//);
+      expect(art.source, key).toMatch(/^https:\/\//);
+      // No third-party aggregator as an image source.
+      expect(art.source, key).not.toMatch(
+        /monzy|cardinsider|paisabazaar|bankbazaar|great\.cards/,
+      );
       if (art.page) expect(art.page).toMatch(/^https:\/\//);
       if (art.page) expect(art.page).not.toMatch(/utm_|aff|ref=|\.pdf$/i);
     }
-    expect(CARD_ART_HOSTS.length).toBeGreaterThan(5);
-    // No third-party aggregator in the image hosts.
-    for (const h of CARD_ART_HOSTS)
-      expect(h).not.toMatch(
-        /monzy|cardinsider|paisabazaar|bankbazaar|great\.cards/,
-      );
+  });
+
+  it("every catalogue card has a real card image, served by Aaj", () => {
+    for (const p of CATALOG) {
+      const art = CARD_ART[p.key];
+      expect(art, p.key).toBeDefined();
+      expect(art.image).toBe(`/cards/${p.key}.webp`);
+      const file = join(process.cwd(), "public", art.image);
+      expect(existsSync(file), file).toBe(true);
+      expect(statSync(file).size, file).toBeGreaterThan(1500);
+    }
   });
 });

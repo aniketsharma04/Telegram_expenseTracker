@@ -28,11 +28,13 @@ Synthetic mix (shares of monthly spend, before the goal tilt): online 18%, groce
 
 ## Card images
 
-- **Source:** each issuer's own product or card-listing page, never an aggregator. Found by fetching the pages (headless Chrome for JS-rendered SBI, AU and BOBCARD pages), listing the image URLs, and checking every candidate by eye on a contact sheet.
-- **Left out (drawn instead):** Tata Neu Infinity/Plus (only 125×78 thumbnails on HDFC's site), IDFC Millennia (picture shows two variants), AU Altura (only Altura Plus found), Axis Magnus Burgundy, HSBC Live+/TravelOne, YES Marquee, Jupiter, CRED IndusInd, Kotak League, OneCard, Kiwi (lifestyle shots, tilted cards, or nothing found). Scapia's page is behind a bot challenge, so it was not scraped.
-- **Delivery:** the app never hot-links a bank. Images go through the Next.js image optimiser on aaj-finance (`next.config.ts` `images.remotePatterns` = the bank hosts in `src/lib/cards/art.ts`), resized to 256/750 px and cached for 30 days. On Vercel Hobby this counts against the free image-transformation allowance; about 38 images × 2 sizes is far inside it.
+- **Coverage:** all 52 catalogue cards have a real card face (2026-11-04). The first pass (2026-11-02) had 38; the other 14 fell back to a drawn card, which is what the app showed for HSBC Live+, Jupiter Edge+ and Scapia.
+- **Source:** each issuer's own product, listing or brand page, never an aggregator (`source` in `src/lib/cards/art.ts`). Pages that render with JavaScript (HDFC Tata Neu, YES, IndusInd, Axis Burgundy, AU, Jupiter, OneCard) were opened in headless Chrome to find the image files.
+- **Clean-up:** each image is trimmed to the card. Where the bank shows the card at an angle in a banner (HSBC Live+, Tata Neu Infinity and Plus, YES Marquee), it is straightened into a flat card. Cards cut out of a banner (TravelOne, Kotak League, IDFC Millennia, Kiwi) get rounded corners. Every result was checked by eye on a contact sheet.
+- **Judgement calls:** IDFC shows Millennia as two designs; the first is used. Scapia comes in Visa and RuPay; the Visa face is used. Jupiter's red Edge+ is the RuPay one (the green one carries Mastercard). Axis's Burgundy page shows the standard Magnus card for Magnus for Burgundy, so both use that face. Kiwi's face is its card art from the gokiwi.in home page.
+- **Delivery:** the faces are stored in `public/cards/<key>.webp` (52 files, about 1.1 MB) and served by Aaj. The Next.js image optimiser (`images.localPatterns`) resizes them for the app and caches each size for 30 days. Nothing is fetched from a bank at runtime, so a bank renaming a file, blocking servers (Bank of Baroda did) or going down can't break an image.
 - **Rights:** card designs are the banks' trademarks and copyright. Showing them to identify a card in a comparison is common practice (comparison sites do it), but it is not a licence. The app credits "Card image and details from {bank}'s website", links only to the bank, and drops an image on any bank's request.
-- **Upkeep:** banks rename image files when they redesign. A broken image falls back to the drawn card automatically, so a dead link degrades rather than breaks. Re-check `art.ts` with the catalogue's monthly review.
+- **Upkeep:** when a bank redesigns a card, replace its file and `source`. A test checks that every catalogue card has an image file.
 
 ## Also fixed
 

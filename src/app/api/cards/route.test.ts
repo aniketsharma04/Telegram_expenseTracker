@@ -907,6 +907,6 @@ describe("/api/cards/find: the Card Finder", () => {
     const millennia = body.catalog.find(
       (c: { key: string }) => c.key === "hdfc-millennia",
     );
-    expect(millennia.image).toMatch(/^https:\/\/s7ap1\.scene7\.com\//);
+    expect(millennia.image).toBe("/cards/hdfc-millennia.webp");
   });
 });

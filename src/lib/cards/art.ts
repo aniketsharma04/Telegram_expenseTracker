@@ -1,12 +1,12 @@
 /**
- * Card art and product pages, straight from each bank's own website.
+ * Card art and product pages, from each bank's own website.
  *
- * Every image here was found on the issuer's product or card-listing page and
- * checked by eye against the card it's filed under (2026-11-02). Cards with no
- * clean, verified face image are left out: the app draws them instead of
- * showing a picture that might be the wrong card. The app loads these through
- * Aaj's image optimiser (next.config `images.remotePatterns`), which resizes
- * and caches them; the bank sites are hit once per image, not per user.
+ * Every catalogue card has a face image in public/cards/<key>.webp, served by
+ * Aaj itself (and resized by its image optimiser), so the app never depends
+ * on a bank site staying up or keeping a file name. Each was cut from the
+ * image at `source` on the issuer's site, trimmed, straightened where the bank
+ * shows the card at an angle, and checked by eye against the card it's filed
+ * under (2026-11-04). Re-run the check when the catalogue is reviewed.
  *
  * `page` is the plain product page on the bank's site — never an affiliate or
  * tracked link. It replaces catalogue URLs that pointed at PDFs or listings.
@@ -32,228 +32,256 @@ const INDUS = "https://www.indusind.bank.in/in/en/personal/cards/credit-card";
 const AMEX_IMG =
   "https://icm.aexp-static.com/Internet/internationalcardshop/en_in/images/cards";
 
-export interface CardArtSource {
-  /** The card face, from the bank's site; null when none was verified. */
-  image: string | null;
+interface CardArtEntry {
+  /** Where the card face was taken from on the bank's site (provenance). */
+  source: string;
   /** The bank's own product page. */
   page: string | null;
 }
 
-export const CARD_ART: Record<string, CardArtSource> = {
+export interface CardArtSource extends CardArtEntry {
+  /** The card face, served by Aaj itself from public/cards/<key>.webp. */
+  image: string;
+}
+
+const SOURCES: Record<string, CardArtEntry> = {
   "hdfc-millennia": {
-    image: `${S7}/millennia-credit-card?fmt=png-alpha`,
+    source: `${S7}/millennia-credit-card?fmt=png-alpha`,
     page: `${HDFC}/millennia-credit-card`,
   },
   "hdfc-regalia-gold": {
-    image: `${S7}/regalia-gold-credit-card?fmt=png-alpha`,
+    source: `${S7}/regalia-gold-credit-card?fmt=png-alpha`,
     page: `${HDFC}/regalia-gold-credit-card`,
   },
   "hdfc-infinia": {
-    image: `${S7}/infinia-credit-card?fmt=png-alpha`,
+    source: `${S7}/infinia-credit-card?fmt=png-alpha`,
     page: `${HDFC}/infinia-credit-card`,
   },
   "hdfc-diners-black-metal": {
-    image:
+    source:
       "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/calculators/diners-black-metal-credit-card-calculator/diner_black_metal_fascia.png",
     page: `${HDFC}/diners-club-black-metal-edition-credit-card`,
   },
   "hdfc-swiggy-blck": {
-    image: `${S7}/facia-swiggy-blck-cc?fmt=png-alpha`,
+    source: `${S7}/facia-swiggy-blck-cc?fmt=png-alpha`,
     page: `${HDFC}/swiggy-blck-hdfc-bank-credit-card`,
   },
   "hdfc-swiggy-ornge": {
-    image: `${S7}/facia?fmt=png-alpha`,
+    source: `${S7}/facia?fmt=png-alpha`,
     page: `${HDFC}/swiggy-ornge-hdfc-bank-credit-card`,
   },
   "hdfc-swiggy-legacy": {
-    image: `${S7}/card-facia-swiggy?fmt=png-alpha`,
+    source: `${S7}/card-facia-swiggy?fmt=png-alpha`,
     page: `${HDFC}/swiggy-hdfc-bank-credit-card`,
   },
-  // The only Tata Neu faces on HDFC's site are 125×78 thumbnails: drawn instead.
   "hdfc-tata-neu-infinity": {
-    image: null,
+    source: `${S7}/Tata-Neu-Infinity1?fmt=png&wid=1920`,
     page: `${HDFC}/tata-neu-infinity-hdfc-bank-credit-card`,
   },
   "hdfc-tata-neu-plus": {
-    image: null,
+    source: `${S7}/Tata-Neu-Plus1?fmt=png&wid=1920`,
     page: `${HDFC}/tata-neu-plus-hdfc-bank-credit-card`,
   },
   "hdfc-irctc": {
-    image: `${S7}/Card-Facia-IRCTC?fmt=png-alpha`,
+    source: `${S7}/Card-Facia-IRCTC?fmt=png-alpha`,
     page: `${HDFC}/irctc-credit-card`,
   },
   "hdfc-moneyback-plus": {
-    image: `${S7}/moneyback-plus-credit-card?fmt=png-alpha`,
+    source: `${S7}/moneyback-plus-credit-card?fmt=png-alpha`,
     page: `${HDFC}/moneyback-plus-credit-card`,
   },
 
   "sbi-cashback": {
-    image: `${SBI_IMG}/card/card-face-assets/for-website/front/vertical/cashback-card-face-min.png`,
+    source: `${SBI_IMG}/card/card-face-assets/for-website/front/vertical/cashback-card-face-min.png`,
     page: `${SBI}/cashback-sbi-card.html`,
   },
   "sbi-simplyclick": {
-    image: `${SBI_IMG}/card/product-detail-assets/core-cards/simply-click/left-banner/simply-click-card-face.png`,
+    source: `${SBI_IMG}/card/product-detail-assets/core-cards/simply-click/left-banner/simply-click-card-face.png`,
     page: `${SBI}/simplyclick-sbi-card.html`,
   },
   "sbi-simplysave": {
-    image: `${SBI_IMG}/card/product-detail-assets/core-cards/simply-save/left-banner/simply-save-card-face.png`,
+    source: `${SBI_IMG}/card/product-detail-assets/core-cards/simply-save/left-banner/simply-save-card-face.png`,
     page: `${SBI}/simplysave-sbi-card.html`,
   },
   "sbi-bpcl-octane": {
-    image: `${SBI_IMG}/card-face/front/horizontal/bpcl-octane-sbi-card.png`,
+    source: `${SBI_IMG}/card-face/front/horizontal/bpcl-octane-sbi-card.png`,
     page: `${SBI}/bpcl-sbi-card-octane.html`,
   },
   "sbi-elite": {
-    image: `${SBI_IMG}/card/card-face-assets/for-website/front/horizontal/elite-sbi-card.png`,
+    source: `${SBI_IMG}/card/card-face-assets/for-website/front/horizontal/elite-sbi-card.png`,
     page: `${SBI}/sbi-card-elite.html`,
   },
   "sbi-prime": {
-    image: `${SBI_IMG}/card/card-face-assets/for-website/front/horizontal/prime-sbi-card.png`,
+    source: `${SBI_IMG}/card/card-face-assets/for-website/front/horizontal/prime-sbi-card.png`,
     page: `${SBI}/sbi-card-prime.html`,
   },
   "sbi-flipkart": {
-    image: `${SBI_IMG}/card/card-face-assets/for-website/front/vertical/flipkart-card-face-min.png`,
+    source: `${SBI_IMG}/card/card-face-assets/for-website/front/vertical/flipkart-card-face-min.png`,
     page: `${SBI}/flipkart-sbi-card.html`,
   },
 
   "icici-amazon-pay": {
-    image: `${ICICI_IMG}/icicibank/india/managed-assets/revamp-page-images/cards/amazon/amazon-card-banner.webp`,
+    source: `${ICICI_IMG}/icicibank/india/managed-assets/revamp-page-images/cards/amazon/amazon-card-banner.webp`,
     page: `${ICICI}/amazon-pay-credit-card`,
   },
   "icici-coral-rupay": {
-    image: `${ICICI_IMG}/icicibank-revamp/credit-card/desktop/coral.webp`,
+    source: `${ICICI_IMG}/icicibank-revamp/credit-card/desktop/coral.webp`,
     page: `${ICICI}/coral-rupay-card`,
   },
   "icici-sapphiro": {
-    image: `${ICICI_IMG}/icicibank/india/managed-assets/revamp-page-images/cards/sapphiro-credit-card/sapphiro-desktop.webp`,
+    source: `${ICICI_IMG}/icicibank/india/managed-assets/revamp-page-images/cards/sapphiro-credit-card/sapphiro-desktop.webp`,
     page: `${ICICI}/sapphiro-card`,
   },
   "icici-emeralde-private": {
-    image: `${ICICI_IMG}/icicibank-revamp/credit-card/desktop/emaralde-private.webp`,
+    source: `${ICICI_IMG}/icicibank-revamp/credit-card/desktop/emaralde-private.webp`,
     page: `${ICICI}/emeralde-private-metal-credit-card`,
   },
 
   "axis-flipkart": {
-    image: `${AXIS_IMG}/flipkart.webp`,
+    source: `${AXIS_IMG}/flipkart.webp`,
     page: `${AXIS}/flipkart-axisbank-credit-card`,
   },
   "axis-ace": {
-    image: `${AXIS_IMG}/ace.webp`,
+    source: `${AXIS_IMG}/ace.webp`,
     page: `${AXIS}/axis-bank-ace-credit-card`,
   },
   "axis-myzone": {
-    image: `${AXIS_IMG}/myzone.webp`,
+    source: `${AXIS_IMG}/myzone.webp`,
     page: `${AXIS}/axis-bank-my-zone-credit-card`,
   },
   "axis-neo": {
-    image: `${AXIS_IMG}/neo.webp`,
+    source: `${AXIS_IMG}/neo.webp`,
     page: `${AXIS}/axis-bank-neo-credit-card`,
   },
   "axis-atlas": {
-    image: `${AXIS_IMG}/atlas.webp`,
+    source: `${AXIS_IMG}/atlas.webp`,
     page: `${AXIS}/axis-bank-atlas-credit-card`,
   },
   "axis-magnus": {
-    image: `${AXIS_IMG}/magnus.webp`,
+    source: `${AXIS_IMG}/magnus.webp`,
     page: `${AXIS}/axis-bank-magnus-credit-card`,
   },
-  "axis-magnus-burgundy": { image: null, page: null },
+  "axis-magnus-burgundy": {
+    source:
+      "https://www.axis.bank.in/images/default-source/burgundy/png/magnus-desk.png",
+    page: null,
+  },
   "axis-airtel": {
-    image: `${AXIS_IMG}/airtel.webp`,
+    source: `${AXIS_IMG}/airtel.webp`,
     page: `${AXIS}/airtel-axis-bank-credit-card`,
   },
 
   "idfc-first-select": {
-    image: `${IDFC_IMG}/SELECT-2x-credit-card-image-updated.webp`,
+    source: `${IDFC_IMG}/SELECT-2x-credit-card-image-updated.webp`,
     page: `${IDFC}/select`,
   },
   "idfc-first-wealth": {
-    image: `${IDFC_IMG}/WEALTH-2x-credit-card-image-updated.webp`,
+    source: `${IDFC_IMG}/WEALTH-2x-credit-card-image-updated.webp`,
     page: `${IDFC}/wealth`,
   },
-  // IDFC shows Millennia as a pair of variants in one picture: drawn instead.
-  "idfc-first-millennia": { image: null, page: `${IDFC}/millennia` },
+  "idfc-first-millennia": {
+    source: `${IDFC_IMG}/MILLENNIA-2x-credit-card-image-updated.webp`,
+    page: `${IDFC}/millennia`,
+  },
   "idfc-first-power-plus": {
-    image: `${IDFC_IMG}/POWER-Plus-2x-credit-card-image-updated.webp`,
+    source: `${IDFC_IMG}/POWER-Plus-2x-credit-card-image-updated.webp`,
     page: null,
   },
 
   "au-lit": {
-    image: "https://aemassets.au.bank.in/is/image/aubank/lit?fmt=webp",
+    source: "https://aemassets.au.bank.in/is/image/aubank/lit?fmt=webp",
     page: "https://www.au.bank.in/personal-banking/credit-cards/lit-credit-card",
   },
   "au-altura": {
-    image: null,
+    source:
+      "https://www.au.bank.in/content/dam/aubank/in/en/au-0101/banners/all-credit-cards/Card-faces-500x250-Altura.jpg",
     page: "https://www.au.bank.in/personal-banking/credit-cards/altura-credit-card",
   },
 
   "indusind-tiger": {
-    image: `${INDUS_IMG}/Card-Tiger-CC.webp`,
+    source: `${INDUS_IMG}/Card-Tiger-CC.webp`,
     page: `${INDUS}/tiger-credit-card.html`,
   },
   "indusind-legend": {
-    image: `${INDUS_IMG}/Legend_card-image_396x257px.webp`,
+    source: `${INDUS_IMG}/Legend_card-image_396x257px.webp`,
     page: `${INDUS}/legend-credit-card.html`,
   },
   "cred-indusind-rupay": {
-    image: null,
+    source:
+      "https://www.indusind.bank.in/content/dam/indusind-platform-images/banner-images/cred-indusind-bank-rupay-credit-card/card-image.webp",
     page: `${INDUS}/CRED-IndusInd-Bank-ruPay-credit-card.html`,
   },
 
   "kotak-811": {
-    image:
+    source:
       "https://d2gwgwt9a7yxle.cloudfront.net/FD_Backed_Credit_Card_5063759935.png",
     page: "https://www.kotak.bank.in/en/personal-banking/cards/credit-cards/811-dream-different-credit-card.html",
   },
   "kotak-league-platinum": {
-    image: null,
+    source:
+      "https://www.kotak.bank.in/content/dam/Kotak/mobile_images/Website-640-x-430-18.jpg",
     page: "https://www.kotak.bank.in/en/personal-banking/cards/credit-cards/league-platinum-card.html",
   },
 
   "amex-mrcc": {
-    image: `${AMEX_IMG}/Membership_Rewards_Card.png`,
+    source: `${AMEX_IMG}/Membership_Rewards_Card.png`,
     page: "https://www.americanexpress.com/in/credit-cards/membership-rewards-card/",
   },
   "amex-platinum-travel": {
-    image: `${AMEX_IMG}/Platinum_Travel_Card.png`,
+    source: `${AMEX_IMG}/Platinum_Travel_Card.png`,
     page: "https://www.americanexpress.com/in/credit-cards/platinum-travel-credit-card/",
   },
   "amex-gold-charge": {
-    image: `${AMEX_IMG}/Gold_Card.png`,
+    source: `${AMEX_IMG}/Gold_Card.png`,
     page: "https://www.americanexpress.com/in/charge-cards/gold-card/",
   },
 
   "hsbc-live-plus": {
-    image: null,
+    source:
+      "https://www.hsbc.bank.in/content/dam/hsbc/in/images/16-9/21398-live-plus-visa-infinite-2000X1125.jpg",
     page: "https://www.hsbc.bank.in/credit-cards/products/live-plus/",
   },
   "hsbc-travelone": {
-    image: null,
+    source:
+      "https://www.hsbc.bank.in/content/dam/hsbc/in/images/16-9/15957-hsbc-travelone-credit-t1-front-1280x720.jpg",
     page: "https://www.hsbc.bank.in/credit-cards/products/travelone/",
   },
   "yes-marquee": {
-    image: null,
+    source:
+      "https://www.yes.bank.in/sites/web/content/management/api/v1.1/assets/CONT6938F3CFB422440E9E581D06EDB4CCBD/native/marquee-card-img.png",
     page: "https://www.yes.bank.in/personal-banking/yes-individual/cards/credit-cards/marquee-credit-card",
   },
   "bob-eterna": {
-    image:
+    source:
       "https://media.bobcard.co.in//media/b4pj5ukl/bobcard-eterna_1920-x-1253.png",
     page: "https://www.bobcard.co.in/credit-card-types/eterna",
   },
-  onecard: { image: null, page: "https://www.getonecard.app/" },
-  "scapia-federal": { image: null, page: "https://www.federal.bank.in/scapia" },
-  "kiwi-rupay": { image: null, page: "https://gokiwi.in/" },
+  onecard: {
+    source: "https://www.getonecard.app/images/feature/metal.gif",
+    page: "https://www.getonecard.app/",
+  },
+  "scapia-federal": {
+    source:
+      "https://www.scapia.cards/home/images/KzvOOlH4zIeP8QjjijaWMQsg0__width_494.webp",
+    page: "https://www.federal.bank.in/scapia",
+  },
+  "kiwi-rupay": {
+    source: "https://gokiwi.in/og-gokiwi.png",
+    page: "https://gokiwi.in/",
+  },
   "jupiter-edge-plus": {
-    image: null,
+    source:
+      "https://jupiter.money/content/images/2025/06/Edge---Credit-Card.png",
     page: "https://jupiter.money/edge-plus-upi-rupay-credit-card/",
   },
 };
 
-/** Hosts the image optimiser may fetch from — kept in step with CARD_ART. */
-export const CARD_ART_HOSTS: string[] = [
-  ...new Set(
-    Object.values(CARD_ART)
-      .map((a) => (a.image ? new URL(a.image).hostname : null))
-      .filter((h): h is string => Boolean(h)),
-  ),
-].sort();
+export const CARD_ART: Record<string, CardArtSource> = Object.fromEntries(
+  Object.entries(SOURCES).map(([key, a]) => [
+    key,
+    { ...a, image: `/cards/${key}.webp` },
+  ]),
+);
+
+/** Card faces live in public/cards; none is fetched from a bank at runtime. */
+export const CARD_ART_HOSTS: string[] = [];
