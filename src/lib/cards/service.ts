@@ -26,6 +26,17 @@ import {
 import type { CardProduct, CardTxn, HeldCard } from "./types";
 import { CARD_ART } from "./art";
 import {
+  BUREAUS,
+  FREE_SOURCES,
+  ScoreInputError,
+  bandOf,
+  parseScoreInput,
+  ratingOf,
+  scoreFactors,
+  summarise,
+  type ScoreRow,
+} from "./score";
+import {
   findCards,
   parseAnswers,
   realSpendingUsable,
@@ -124,6 +135,8 @@ export interface CardsView {
   profile: CardProfile & { estimatedIncome: number | null };
   /** What the Card Finder can prefill: is there enough real spending to score on? */
   finder: { realSpending: boolean; monthlySpend: number | null };
+  /** v22: saved credit scores, where to check for free, and what moves them. */
+  score: ScoreView;
   catalog: Array<{
     key: string;
     bank: string;
@@ -228,6 +241,7 @@ export async function loadCards(
       realSpending: realSpendingUsable(txns, days),
       monthlySpend: monthlySpendOf(txns, days),
     },
+    score: await loadScoreView(supabase, userId, today, stress, held.length),
     catalog: CATALOG.map((c) => ({
       key: c.key,
       bank: c.bank,
@@ -571,6 +585,15 @@ export type CardAction =
       spend_tips?: boolean;
     }
   | { action: "clear_stress" }
+  /** v22: save a score the user saw, or delete one. */
+  | {
+      action: "score_add";
+      score: number;
+      bureau: string;
+      checked_on?: string;
+      via?: string;
+    }
+  | { action: "score_remove"; id: string }
   /** Delete every card and the card profile. Spends and messages stay. */
   | { action: "forget" };
 
@@ -682,6 +705,36 @@ export async function applyCardAction(
       if (error) throw error;
       return;
     }
+    case "score_add": {
+      let row;
+      try {
+        row = parseScoreInput(
+          a as unknown as Record<string, unknown>,
+          localDate(),
+        );
+      } catch (err) {
+        if (err instanceof ScoreInputError)
+          throw new CardInputError(err.message);
+        throw err;
+      }
+      const { error } = await supabase
+        .from("credit_scores")
+        .insert({ ...row, user_id: userId });
+      if (error) throw error;
+      await syncScoreBand(supabase, userId, now);
+      return;
+    }
+    case "score_remove": {
+      if (typeof a.id !== "string") throw new CardInputError("id is required");
+      const { error } = await supabase
+        .from("credit_scores")
+        .delete()
+        .eq("id", a.id)
+        .eq("user_id", userId);
+      if (error) throw error;
+      await syncScoreBand(supabase, userId, now);
+      return;
+    }
     case "clear_stress": {
       const { error } = await supabase
         .from("card_profiles")
@@ -697,6 +750,8 @@ export async function applyCardAction(
         supabase.from("user_cards").delete().eq("user_id", userId),
         supabase.from("card_profiles").delete().eq("user_id", userId),
       ]);
+      // Saved scores go too; tolerate the v22 table not existing yet.
+      await supabase.from("credit_scores").delete().eq("user_id", userId);
       if (cards.error) throw cards.error;
       if (profile.error) throw profile.error;
       return;
@@ -704,6 +759,83 @@ export async function applyCardAction(
     default:
       throw new CardInputError("unknown action");
   }
+}
+
+// ── credit score (v22) ──────────────────────────────────────────────────────
+
+export interface ScoreView {
+  summary: ReturnType<typeof summarise>;
+  rating: ReturnType<typeof ratingOf> | null;
+  factors: ReturnType<typeof scoreFactors>;
+  sources: typeof FREE_SOURCES;
+  bureaus: typeof BUREAUS;
+}
+
+export async function loadScoreRows(
+  supabase: SupabaseClient,
+  userId: number,
+): Promise<ScoreRow[]> {
+  const { data, error } = await supabase
+    .from("credit_scores")
+    .select("id, bureau, score, checked_on, via")
+    .eq("user_id", userId)
+    .order("checked_on", { ascending: true })
+    .limit(200);
+  // Before the v22 migration there is no table: no scores, not an error.
+  if (error) return [];
+  return (data ?? []) as ScoreRow[];
+}
+
+async function loadScoreView(
+  supabase: SupabaseClient,
+  userId: number,
+  today: string,
+  stress: Array<{ kind: string; date: string }>,
+  cardsHeld: number,
+): Promise<ScoreView> {
+  const since = new Date(
+    Date.parse(`${today}T00:00:00Z`) - 183 * 86_400_000,
+  ).toISOString();
+  const [rows, recent] = await Promise.all([
+    loadScoreRows(supabase, userId),
+    supabase
+      .from("user_cards")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("hidden", false)
+      .gte("created_at", since),
+  ]);
+  const summary = summarise(rows, today);
+  return {
+    summary,
+    rating: summary.current ? ratingOf(summary.current.score) : null,
+    factors: scoreFactors({
+      stress,
+      cardsHeld,
+      newCards6m: recent.error ? 0 : (recent.count ?? 0),
+    }),
+    sources: FREE_SOURCES,
+    bureaus: BUREAUS,
+  };
+}
+
+/** The finder's score band follows the newest saved score (or goes back to unknown). */
+async function syncScoreBand(
+  supabase: SupabaseClient,
+  userId: number,
+  now: string,
+): Promise<void> {
+  const rows = await loadScoreRows(supabase, userId);
+  const current = summarise(rows, localDate()).current;
+  const { error } = await supabase.from("card_profiles").upsert(
+    {
+      user_id: userId,
+      score_band: current ? bandOf(current.score) : "unknown",
+      updated_at: now,
+    },
+    { onConflict: "user_id" },
+  );
+  if (error) throw error;
 }
 
 // ── helpers ─────────────────────────────────────────────────────────────────

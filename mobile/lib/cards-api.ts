@@ -121,6 +121,54 @@ export interface NextCardView {
   eligibility: { chance: Chance; reasons: string[] };
 }
 
+// ── Credit score (v22) ──────────────────────────────────────────────────────
+
+export type Bureau = "cibil" | "experian" | "equifax" | "crif";
+
+export interface ScoreEntry {
+  id: string;
+  bureau: Bureau;
+  score: number;
+  checked_on: string;
+  via: string | null;
+}
+
+export type LatestScore = ScoreEntry & {
+  change: number | null;
+  ageDays: number;
+};
+
+export interface FreeSource {
+  key: string;
+  name: string;
+  bureau: Bureau;
+  refresh: "monthly" | "yearly";
+  androidPackage: string | null;
+  url: string;
+  how: string;
+}
+
+export interface ScoreFactor {
+  key: string;
+  title: string;
+  weight: "high" | "medium" | "low";
+  status: "good" | "watch" | "risk" | "unknown";
+  text: string;
+}
+
+export interface ScoreView {
+  summary: {
+    latest: LatestScore[];
+    history: ScoreEntry[];
+    current: LatestScore | null;
+    refreshDue: boolean;
+  };
+  rating: { label: string; tone: "great" | "good" | "fair" | "poor" } | null;
+  factors: ScoreFactor[];
+  sources: FreeSource[];
+  bureaus: Record<Bureau, string>;
+}
+
 export interface CardsData {
   days: number;
   catalogVerified: string;
@@ -148,6 +196,8 @@ export interface CardsData {
   };
   /** Card Finder prefill: real spending to score on, and its monthly size. */
   finder?: { realSpending: boolean; monthlySpend: number | null };
+  /** v22: saved credit scores, free places to check, what moves them. */
+  score?: ScoreView;
   catalog: Array<{
     key: string;
     bank: string;
@@ -175,6 +225,14 @@ export type CardAction =
       spend_tips?: boolean;
     }
   | { action: "clear_stress" }
+  | {
+      action: "score_add";
+      score: number;
+      bureau: Bureau;
+      checked_on?: string;
+      via?: string;
+    }
+  | { action: "score_remove"; id: string }
   | { action: "forget" };
 
 function headers(token: string) {

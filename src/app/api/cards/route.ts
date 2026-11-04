@@ -40,6 +40,8 @@ export async function GET(req: NextRequest) {
  * { action: "profile", score_band?, monthly_income? }
  * { action: "clear_stress" }                     — "this is wrong" on the stress card
  * { action: "forget" }                           — delete all cards and the card profile
+ * { action: "score_add", score, bureau, checked_on?, via? } — a score the user saw (v22)
+ * { action: "score_remove", id }
  * Returns the refreshed view.
  */
 export async function POST(req: NextRequest) {

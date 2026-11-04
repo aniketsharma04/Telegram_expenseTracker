@@ -38,6 +38,7 @@ import {
   FinderResults,
   PickDetail,
 } from "./Finder";
+import { ScoreScreen, ScoreTile } from "./CreditScore";
 import {
   CardArt,
   ChanceChip,
@@ -70,7 +71,9 @@ type Screen =
   | { kind: "finder" }
   | { kind: "results" }
   | { kind: "pick"; key: string }
-  | { kind: "compare" };
+  | { kind: "compare" }
+  // v22: credit score.
+  | { kind: "score" };
 
 type Matcher =
   | { mode: "confirm"; queue: CardSuggestion[]; index: number }
@@ -215,7 +218,9 @@ export default function CardsApp({
                   ? (finderPick(top.key)?.product.name ?? "")
                   : top.kind === "compare"
                     ? "Side by side"
-                    : t("calcTitle")
+                    : top.kind === "score"
+                      ? "Credit score"
+                      : t("calcTitle")
     : null;
 
   return (
@@ -427,6 +432,21 @@ export default function CardsApp({
                     setStack((st) => [...st, { kind: "privacy" }])
                   }
                 />
+              ) : top?.kind === "score" ? (
+                <ScoreScreen
+                  data={data}
+                  p={p}
+                  accent={c}
+                  onSave={(e) =>
+                    act(
+                      { action: "score_add", ...e, via: e.via ?? undefined },
+                      "Score saved",
+                    )
+                  }
+                  onRemove={(id) =>
+                    void act({ action: "score_remove", id }, "Deleted")
+                  }
+                />
               ) : top?.kind === "privacy" ? (
                 <PrivacyScreen
                   p={p}
@@ -442,19 +462,29 @@ export default function CardsApp({
                   onTurnOff={onTurnOff}
                 />
               ) : tab === "wallet" ? (
-                <Wallet
-                  data={data}
-                  p={p}
-                  accent={c}
-                  onOpenCard={(id) => setStack([{ kind: "card", id }])}
-                  onMatch={(sug) =>
-                    setMatcher({ mode: "confirm", queue: sug, index: 0 })
-                  }
-                  onSet={(card) => setMatcher({ mode: "set", card })}
-                  onAdd={() => setMatcher({ mode: "add" })}
-                  onSeeMissed={() => setTab("missed")}
-                  onPrivacy={() => setStack([{ kind: "privacy" }])}
-                />
+                <>
+                  {data.score && (
+                    <ScoreTile
+                      data={data}
+                      p={p}
+                      accent={c}
+                      onOpen={() => setStack([{ kind: "score" }])}
+                    />
+                  )}
+                  <Wallet
+                    data={data}
+                    p={p}
+                    accent={c}
+                    onOpenCard={(id) => setStack([{ kind: "card", id }])}
+                    onMatch={(sug) =>
+                      setMatcher({ mode: "confirm", queue: sug, index: 0 })
+                    }
+                    onSet={(card) => setMatcher({ mode: "set", card })}
+                    onAdd={() => setMatcher({ mode: "add" })}
+                    onSeeMissed={() => setTab("missed")}
+                    onPrivacy={() => setStack([{ kind: "privacy" }])}
+                  />
+                </>
               ) : tab === "missed" ? (
                 <Missed
                   data={data}

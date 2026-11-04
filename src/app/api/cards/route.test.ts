@@ -77,6 +77,8 @@ function withDefaults(table: string, row: Row): Row {
       hidden: false,
       ...row,
     };
+  if (table === "credit_scores")
+    return { id: `cs-${nextId++}`, via: null, ...row };
   if (table === "card_profiles")
     return {
       score_band: "unknown",
@@ -197,6 +199,7 @@ function from(table: string) {
       b
     ),
     maybeSingle: () => ((single = true), b),
+    limit: () => b,
     insert: (payload: Row) => ((op = { kind: "insert", payload }), b),
     upsert: (payload: Row, o: { onConflict: string }) => (
       (op = { kind: "upsert", payload, onConflict: o.onConflict }),
@@ -908,5 +911,63 @@ describe("/api/cards/find: the Card Finder", () => {
       (c: { key: string }) => c.key === "hdfc-millennia",
     );
     expect(millennia.image).toBe("/cards/hdfc-millennia.webp");
+  });
+});
+
+describe("/api/cards: credit score (v22)", () => {
+  it("starts empty, with the free places to check", async () => {
+    const r = await get();
+    expect(r.body.score.summary.current).toBeNull();
+    expect(r.body.score.summary.refreshDue).toBe(true);
+    expect(r.body.score.sources.map((s: { key: string }) => s.key)).toContain(
+      "gpay",
+    );
+    expect(r.body.score.factors[0].key).toBe("payments");
+  });
+
+  it("saves a score, tracks the change and sets the finder's band", async () => {
+    await post({
+      action: "score_add",
+      score: 702,
+      bureau: "cibil",
+      checked_on: "2026-08-01",
+      via: "gpay",
+    });
+    const r = await post({
+      action: "score_add",
+      score: 761,
+      bureau: "cibil",
+      via: "gpay",
+    });
+    expect(r.status).toBe(200);
+    const s = r.body.score;
+    expect(s.summary.current.score).toBe(761);
+    expect(s.summary.current.change).toBe(59);
+    expect(s.rating.label).toBe("Excellent");
+    expect(r.body.profile.score_band).toBe("750+");
+  });
+
+  it("rejects what can't be a score, and other users' rows stay put", async () => {
+    expect(
+      (await post({ action: "score_add", score: 950, bureau: "cibil" })).status,
+    ).toBe(400);
+    expect(
+      (await post({ action: "score_add", score: 700, bureau: "fico" })).status,
+    ).toBe(400);
+    await post({ action: "score_add", score: 640, bureau: "experian" });
+    const id = (await get()).body.score.summary.current.id;
+    await post({ action: "score_remove", id }, 2);
+    expect((await get()).body.score.summary.current.score).toBe(640);
+    expect((await get()).body.profile.score_band).toBe("below-650");
+    await post({ action: "score_remove", id });
+    expect((await get()).body.score.summary.current).toBeNull();
+    expect((await get()).body.profile.score_band).toBe("unknown");
+  });
+
+  it("works before the v22 table exists", async () => {
+    db.missing.add("credit_scores");
+    const r = await get();
+    expect(r.status).toBe(200);
+    expect(r.body.score.summary.history).toEqual([]);
   });
 });

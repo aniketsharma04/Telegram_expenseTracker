@@ -28,6 +28,8 @@ import {
 } from "@/lib/subscriptions";
 import { composeWeeklyReview, isReviewDay } from "@/lib/weekly";
 import { htmlToPlain } from "@/lib/push";
+import { loadScoreRows } from "@/lib/cards/service";
+import { BUREAUS, refreshReminderDue, summarise } from "@/lib/cards/score";
 import {
   captureQuietNotice,
   loadCaptureHealth,
@@ -75,6 +77,7 @@ export async function GET(req: NextRequest) {
   let gmailDetected = 0;
   let gmailReauth = 0;
   let captureQuiet = 0;
+  let scoreReminders = 0;
   let billerSync: number | null = null;
   const provider = getBbpsProvider(supabase);
 
@@ -183,6 +186,23 @@ Keep or cancel each one: <code>/subs</code>, or in the app under Bills.`,
         console.error(`capture health failed for user ${userId}`, err);
       }
 
+      // A month since they last saved a credit score: the apps refresh it
+      // monthly for free, so nudge once (stateless: exactly day 30).
+      try {
+        const scores = await loadScoreRows(supabase, userId);
+        if (refreshReminderDue(scores, today)) {
+          const last = summarise(scores, today).current!;
+          await notify(supabase, userId, {
+            kind: "alerts",
+            title: "Time to check your credit score",
+            body: `It's a month since your ${BUREAUS[last.bureau]} score of ${last.score}. Google Pay, Paytm and PhonePe refresh it free every month. Open Aaj → Cards → Credit score to check and save the new one.`,
+          });
+          scoreReminders++;
+        }
+      } catch (err) {
+        console.error(`score reminder failed for user ${userId}`, err);
+      }
+
       // Bills that arrived by email — detected here, confirmed by the user.
       if (gmailConfigured()) {
         const sync = await syncGmail(supabase, userId, today);
@@ -265,6 +285,7 @@ Keep or cancel each one: <code>/subs</code>, or in the app under Bills.`,
     gmailDetected,
     gmailReauth,
     captureQuiet,
+    scoreReminders,
     digests,
     weeklies,
     subscriptionNotices,
