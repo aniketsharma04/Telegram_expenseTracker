@@ -40,6 +40,7 @@ import { Account, ApiData, Expense, fetchData } from "./lib/api";
 import { PlanSummaryCard } from "./components/DailyBudgetCard";
 import { InboxBell, InboxSheet, PushPromptCard } from "./components/Inbox";
 import { CaptureSetupCard } from "./components/CaptureSetupCard";
+import { HealthCard } from "./components/HealthCard";
 import { GoalsCard } from "./components/GoalsCard";
 import CardsApp from "./components/cards/CardsApp";
 import { CardsTile } from "./components/cards/CardsTile";
@@ -609,6 +610,13 @@ function AppInner() {
               <>
                 {offline}
                 <CaptureSetupCard p={p} token={token} />
+                <HealthCard
+                  p={p}
+                  token={token}
+                  capture={data.capture}
+                  gmail={data.gmail}
+                  onChanged={refresh}
+                />
                 {!pushPromptDismissed && (
                   <PushPromptCard
                     p={p}

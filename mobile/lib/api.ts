@@ -154,6 +154,13 @@ export interface DetectedBill {
   detected_at: string;
 }
 
+export interface CaptureHealth {
+  last_at: string | null;
+  recent: number;
+  /** Capture used to work and nothing has arrived for two days. */
+  quiet: boolean;
+}
+
 export interface GmailStatus {
   connected: boolean;
   email: string | null;
@@ -234,6 +241,8 @@ export interface ApiData {
   bills?: BillStatus[];
   detected_bills?: DetectedBill[];
   gmail?: GmailStatus;
+  /** Is the phone still sending bank alerts? (server-judged) */
+  capture?: CaptureHealth | null;
   insights?: { recurring: RecurringCharge[]; anomalies: Anomaly[] };
   accounts?: Account[];
   position?: Position;

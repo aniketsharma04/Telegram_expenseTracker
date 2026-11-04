@@ -18,6 +18,7 @@ import { listTransfers } from "@/lib/transfers";
 import { loadDailyStatus } from "@/lib/plan";
 import { unreadCount } from "@/lib/inbox";
 import { goalOutlook } from "@/lib/goals";
+import { loadCaptureHealth } from "@/lib/capture-health";
 import {
   findSubscriptions,
   listSubscriptions,
@@ -112,6 +113,7 @@ export async function GET(req: NextRequest) {
     daily,
     inboxUnread,
     storedSubs,
+    capture,
   ] = await Promise.all([
     getBudgets(supabase, userId),
     getIncomes(supabase, userId, incomeSince),
@@ -128,6 +130,7 @@ export async function GET(req: NextRequest) {
     }),
     unreadCount(supabase, userId),
     listSubscriptions(supabase, userId),
+    loadCaptureHealth(supabase, userId).catch(() => null),
   ]);
 
   const body = {
@@ -199,6 +202,8 @@ export async function GET(req: NextRequest) {
           last_sync_at: null,
           needs_reauth: false,
         },
+    // Is the phone still sending bank alerts? `quiet` puts a fix-it card on Home.
+    capture,
     // v19: subscriptions to keep or cancel (new finds included, unsaved).
     subscriptions: subscriptionView(storedSubs, findSubscriptions(mine, today)),
     insights: {

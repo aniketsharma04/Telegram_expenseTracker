@@ -28,6 +28,11 @@ import {
 } from "@/lib/subscriptions";
 import { composeWeeklyReview, isReviewDay } from "@/lib/weekly";
 import { htmlToPlain } from "@/lib/push";
+import {
+  captureQuietNotice,
+  loadCaptureHealth,
+  quietNoticeDue,
+} from "@/lib/capture-health";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -69,6 +74,7 @@ export async function GET(req: NextRequest) {
   let billFetches = 0;
   let gmailDetected = 0;
   let gmailReauth = 0;
+  let captureQuiet = 0;
   let billerSync: number | null = null;
   const provider = getBbpsProvider(supabase);
 
@@ -162,6 +168,21 @@ Keep or cancel each one: <code>/subs</code>, or in the app under Bills.`,
         billFetches++;
       }
 
+      // The phone stopped sending bank alerts (reinstall, unbound listener,
+      // battery saver). Say so once, on the first day of the silence.
+      try {
+        const health = await loadCaptureHealth(supabase, userId);
+        if (quietNoticeDue(health) && health.last_at) {
+          await notify(supabase, userId, {
+            kind: "alerts",
+            ...captureQuietNotice(health.last_at),
+          });
+          captureQuiet++;
+        }
+      } catch (err) {
+        console.error(`capture health failed for user ${userId}`, err);
+      }
+
       // Bills that arrived by email — detected here, confirmed by the user.
       if (gmailConfigured()) {
         const sync = await syncGmail(supabase, userId, today);
@@ -243,6 +264,7 @@ Keep or cancel each one: <code>/subs</code>, or in the app under Bills.`,
     billerSync,
     gmailDetected,
     gmailReauth,
+    captureQuiet,
     digests,
     weeklies,
     subscriptionNotices,

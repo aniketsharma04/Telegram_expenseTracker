@@ -123,7 +123,12 @@ export function CardArt({
         ]}
       >
         <Image
-          source={{ uri: cardImageUrl(image, sm ? 256 : 750) }}
+          // Ask for WebP: without it the server sends JPEG, which turns the
+          // transparent corners around a card black.
+          source={{
+            uri: cardImageUrl(image, sm ? 256 : 750),
+            headers: { Accept: "image/webp,image/*;q=0.8" },
+          }}
           style={StyleSheet.absoluteFill}
           resizeMode="contain"
           onLoad={() => setLoaded(true)}
