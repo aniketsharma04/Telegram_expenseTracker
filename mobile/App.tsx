@@ -49,7 +49,12 @@ import { cardAction } from "./lib/cards-api";
 import { UpdateBanner } from "./components/UpdateBanner";
 import { MoneySplitCard } from "./components/MoneySplitCard";
 import { emiCommitments } from "./lib/money-rules";
-import { PushState, registerForPush, unregisterPush } from "./lib/push";
+import {
+  PushState,
+  pushPermission,
+  registerForPush,
+  unregisterPush,
+} from "./lib/push";
 import {
   connectCapture,
   reportCaptureStatus,
@@ -246,6 +251,13 @@ function AppInner() {
     const drain = async () => {
       const result = await syncCaptures(token);
       if (!cancelled && result.logged > 0) refresh();
+      // Every return to the app, not just launch: the reader's state after
+      // the last payment is what diagnosis needs.
+      void reportCaptureStatus(token, {
+        pushState: await pushPermission(),
+        runtimeVersion: Updates.runtimeVersion,
+        updateId: Updates.updateId,
+      });
     };
 
     drain();
