@@ -1,6 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 import { API_BASE } from "./api";
 import {
+  captureDiagnostics,
   captureSupported,
   drainCaptures,
   ensureListening,
@@ -66,6 +68,42 @@ export function connectCapture(token: string | null): void {
   if (!captureSupported) return;
   setUploadConfig(API_BASE, token ? token.trim() : null);
   if (token && hasCapturePermission()) ensureListening();
+}
+
+/**
+ * Tell the server how capture looks on this phone (v23), so a dead reader can
+ * be diagnosed remotely. Status only: permission, timestamps and versions,
+ * never message text (the server also whitelists the fields).
+ */
+export async function reportCaptureStatus(
+  token: string,
+  extra: {
+    pushState?: string;
+    runtimeVersion?: string | null;
+    updateId?: string | null;
+  },
+): Promise<void> {
+  if (!captureSupported) return;
+  const status = captureStatus();
+  const c = Platform.constants as { Model?: string; Release?: string };
+  try {
+    await fetch(`${API_BASE}/api/capture`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token.trim()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...captureDiagnostics(),
+        ...status,
+        ...extra,
+        model: c?.Model,
+        androidVersion: c?.Release ?? String(Platform.Version),
+      }),
+    });
+  } catch {
+    // Offline: the next app open reports instead.
+  }
 }
 
 export async function lastCaptureSync(): Promise<string | null> {

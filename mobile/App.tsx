@@ -50,7 +50,12 @@ import { UpdateBanner } from "./components/UpdateBanner";
 import { MoneySplitCard } from "./components/MoneySplitCard";
 import { emiCommitments } from "./lib/money-rules";
 import { PushState, registerForPush, unregisterPush } from "./lib/push";
-import { connectCapture, syncCaptures } from "./lib/capture";
+import {
+  connectCapture,
+  reportCaptureStatus,
+  syncCaptures,
+} from "./lib/capture";
+import * as Updates from "expo-updates";
 import {
   CachedData,
   clearCache,
@@ -196,7 +201,17 @@ function AppInner() {
     if (!token) return;
     // Captures upload in the background as this user from now on.
     connectCapture(token);
-    registerForPush(token, { ask: false }).then(setPushState);
+    registerForPush(token, { ask: false }).then((state) => {
+      setPushState(state);
+      // After a moment, so a re-bound reader has had time to come up.
+      setTimeout(() => {
+        void reportCaptureStatus(token, {
+          pushState: state,
+          runtimeVersion: Updates.runtimeVersion,
+          updateId: Updates.updateId,
+        });
+      }, 8000);
+    });
     AsyncStorage.getItem(PUSH_PROMPT_DISMISSED_KEY).then((v) =>
       setPushPromptDismissed(v === "1"),
     );

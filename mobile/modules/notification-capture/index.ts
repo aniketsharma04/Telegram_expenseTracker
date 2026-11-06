@@ -45,6 +45,8 @@ declare class NotificationCaptureModule extends NativeModule<CaptureEvents> {
 /** Epoch ms; 0 means never. */
 export interface CaptureDiagnostics {
   /** Any notification from a watched app (SMS, bank, UPI) reached the listener. */
+  /** Bound to Android right now (1.4.0+). */
+  bound?: boolean;
   lastSeen: number;
   /** One that looked like money and was queued. */
   lastCaptured: number;

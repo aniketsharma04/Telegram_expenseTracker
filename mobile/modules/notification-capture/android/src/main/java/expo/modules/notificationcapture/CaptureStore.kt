@@ -137,6 +137,7 @@ object CaptureStore {
       "disconnectedAt" to p.getLong(KEY_DISCONNECTED, 0L),
       "uploadAt" to p.getLong(KEY_UPLOAD_AT, 0L),
       "uploadResult" to (p.getString(KEY_UPLOAD_RESULT, null) ?: ""),
+      "bound" to BankNotificationListenerService.bound,
       "pending" to pendingCount(context),
       "signedIn" to (uploadConfig(context) != null)
     )

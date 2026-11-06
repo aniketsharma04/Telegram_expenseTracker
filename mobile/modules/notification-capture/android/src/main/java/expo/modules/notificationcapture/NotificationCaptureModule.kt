@@ -3,6 +3,7 @@ package expo.modules.notificationcapture
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
@@ -93,14 +94,38 @@ class NotificationCaptureModule : Module() {
      * app update — and it then hears nothing. Asking for a rebind is cheap.
      */
     Function("ensureListening") {
+      val ctx = context.applicationContext
+      val listener = ComponentName(ctx, BankNotificationListenerService::class.java)
       try {
-        NotificationListenerService.requestRebind(
-          ComponentName(context, BankNotificationListenerService::class.java)
-        )
-        true
+        NotificationListenerService.requestRebind(listener)
       } catch (e: Exception) {
-        false
+        android.util.Log.w("BankNotifCapture", "rebind failed", e)
       }
+      // requestRebind alone doesn't always wake a listener left unbound by an
+      // app update. If it still isn't up after a few seconds, switch the
+      // component off and on: Android then binds it afresh, which is what
+      // toggling access by hand does. A bound listener is left alone.
+      android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+        if (!BankNotificationListenerService.bound) {
+          try {
+            val pm = ctx.packageManager
+            pm.setComponentEnabledSetting(
+              listener,
+              PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+              PackageManager.DONT_KILL_APP
+            )
+            pm.setComponentEnabledSetting(
+              listener,
+              PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+              PackageManager.DONT_KILL_APP
+            )
+            NotificationListenerService.requestRebind(listener)
+          } catch (e: Exception) {
+            android.util.Log.w("BankNotifCapture", "forced rebind failed", e)
+          }
+        }
+      }, 4000)
+      true
     }
 
     /** v22: when the listener last ran, captured and uploaded — see CaptureStore. */

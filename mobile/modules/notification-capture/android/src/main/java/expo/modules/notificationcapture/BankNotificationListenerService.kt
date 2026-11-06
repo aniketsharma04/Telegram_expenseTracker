@@ -71,6 +71,7 @@ class BankNotificationListenerService : NotificationListenerService() {
   override fun onListenerConnected() {
     super.onListenerConnected()
     try {
+      bound = true
       CaptureStore.markConnected(applicationContext)
       if (CaptureStore.pendingCount(applicationContext) > 0) CaptureUploadWorker.schedule(applicationContext)
     } catch (e: Exception) {
@@ -86,6 +87,7 @@ class BankNotificationListenerService : NotificationListenerService() {
   override fun onListenerDisconnected() {
     super.onListenerDisconnected()
     try {
+      bound = false
       CaptureStore.markDisconnected(applicationContext)
       NotificationListenerService.requestRebind(android.content.ComponentName(applicationContext, BankNotificationListenerService::class.java))
     } catch (e: Exception) {
@@ -95,5 +97,9 @@ class BankNotificationListenerService : NotificationListenerService() {
 
   companion object {
     private const val TAG = "BankNotifCapture"
+
+    /** True while Android has this listener bound. Same process as the app. */
+    @Volatile
+    var bound = false
   }
 }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   captureQuietNotice,
+  cleanCaptureReport,
   judgeCapture,
   quietNoticeDue,
 } from "./capture-health";
@@ -42,5 +43,26 @@ describe("capture health", () => {
     expect(n.body).toContain("since 30 Oct");
     expect(n.body).toMatch(/new version/);
     expect(n.html).toContain("<b>");
+  });
+});
+
+describe("cleanCaptureReport", () => {
+  it("keeps status fields and drops anything else, message text included", () => {
+    const out = cleanCaptureReport({
+      granted: true,
+      pending: 3,
+      uploadResult: "401",
+      body: "Rs 500 debited from A/c 1234",
+      messages: ["x"],
+      token: "secret",
+    });
+    expect(out).toEqual({ granted: true, pending: 3, uploadResult: "401" });
+  });
+  it("rejects wrong types and survives junk", () => {
+    expect(cleanCaptureReport({ granted: "yes", pending: "3" })).toEqual({});
+    expect(cleanCaptureReport(null)).toEqual({});
+    expect(cleanCaptureReport({ model: "x".repeat(200) }).model).toHaveLength(
+      60,
+    );
   });
 });

@@ -90,6 +90,18 @@ export function explainCapture(
             : `The server answered ${d.uploadResult}. Aaj will keep retrying.`,
     };
 
+  // Access is on, yet Android has never started the reader on this build.
+  // Android starts it within seconds of access being granted, so all-zero
+  // timestamps mean a dead reader, not a quiet phone.
+  if (!d.connectedAt)
+    return {
+      state: "not-running",
+      ok: false,
+      title: "Aaj's alert reader isn't running",
+      detail:
+        "Access shows as on, but Android hasn't started the reader. Turn Aaj's notification access off and on again.",
+    };
+
   if (d.disconnectedAt > d.connectedAt)
     return {
       state: "not-running",
@@ -99,12 +111,20 @@ export function explainCapture(
     };
 
   if (!d.lastSeen)
-    return {
-      state: "waiting",
-      ok: true,
-      title: "Waiting for the first alert",
-      detail: "Aaj will start logging with the next bank or UPI notification.",
-    };
+    return now - d.connectedAt > SILENT_HOURS * HOUR
+      ? {
+          state: "silent",
+          ok: false,
+          title: "No alerts reaching Aaj",
+          detail: `The reader started ${ago(d.connectedAt, now)} but nothing from your SMS, bank or UPI apps has reached it. Turn Aaj's notification access off and on again.`,
+        }
+      : {
+          state: "waiting",
+          ok: true,
+          title: "Waiting for the first alert",
+          detail:
+            "Aaj will start logging with the next bank or UPI notification.",
+        };
 
   if (now - d.lastSeen > SILENT_HOURS * HOUR)
     return {

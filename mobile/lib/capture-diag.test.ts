@@ -86,6 +86,27 @@ describe("explainCapture", () => {
     expect(v.ok).toBe(true);
   });
 
+  it("never calls a reader that didn't start 'waiting'", () => {
+    // The Nov 2026 false comfort: access on, every timestamp still zero.
+    const v = explainCapture(
+      { ...healthy, lastSeen: 0, lastCaptured: 0, connectedAt: 0 },
+      true,
+      now,
+    )!;
+    expect(v.state).toBe("not-running");
+    expect(v.ok).toBe(false);
+  });
+
+  it("a reader that started days ago and heard nothing is a fault", () => {
+    const v = explainCapture(
+      { ...healthy, lastSeen: 0, lastCaptured: 0, connectedAt: h(72) },
+      true,
+      now,
+    )!;
+    expect(v.state).toBe("silent");
+    expect(v.ok).toBe(false);
+  });
+
   it("signed-out phones can't upload", () => {
     expect(
       explainCapture({ ...healthy, signedIn: false }, true, now)!.state,

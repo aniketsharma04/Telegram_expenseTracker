@@ -107,3 +107,46 @@ export function captureQuietNotice(lastAt: string): {
     html: `📵 <b>Bank alerts stopped reaching Aaj</b>\n\n${body}`,
   };
 }
+
+const REPORT_FLAGS = [
+  "supported",
+  "granted",
+  "bound",
+  "batteryOptimized",
+  "signedIn",
+] as const;
+const REPORT_NUMBERS = [
+  "pending",
+  "lastSeen",
+  "lastCaptured",
+  "connectedAt",
+  "disconnectedAt",
+  "uploadAt",
+] as const;
+const REPORT_TEXT = [
+  "uploadResult",
+  "pushState",
+  "runtimeVersion",
+  "updateId",
+  "model",
+  "androidVersion",
+] as const;
+
+/**
+ * Keep only the known status fields. This is the guarantee that a report can
+ * never carry message text, whatever a client sends.
+ */
+export function cleanCaptureReport(input: unknown): Record<string, unknown> {
+  const src = (input && typeof input === "object" ? input : {}) as Record<
+    string,
+    unknown
+  >;
+  const out: Record<string, unknown> = {};
+  for (const k of REPORT_FLAGS)
+    if (typeof src[k] === "boolean") out[k] = src[k];
+  for (const k of REPORT_NUMBERS)
+    if (typeof src[k] === "number" && Number.isFinite(src[k])) out[k] = src[k];
+  for (const k of REPORT_TEXT)
+    if (typeof src[k] === "string") out[k] = (src[k] as string).slice(0, 60);
+  return out;
+}
