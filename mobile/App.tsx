@@ -1,3 +1,4 @@
+import { isSpend } from "./lib/categories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -49,6 +50,9 @@ import { cardAction } from "./lib/cards-api";
 import { UpdateBanner } from "./components/UpdateBanner";
 import { MoneySplitCard } from "./components/MoneySplitCard";
 import { TaxCard } from "./components/TaxCard";
+import SplitSheet from "./components/SplitSheet";
+import { RepaymentCard, SplitsCard } from "./components/SplitsCard";
+import { fetchSplits, SplitsSummary } from "./lib/splits-api";
 import { emiCommitments } from "./lib/money-rules";
 import {
   PushState,
@@ -117,6 +121,9 @@ function AppInner() {
   const [range, setRange] = useState<RangeKey>("month");
   const [addOpen, setAddOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Expense | null>(null);
+  // v24: splits — the summary, and the expense being split ("new" = a fresh bill).
+  const [splits, setSplits] = useState<SplitsSummary | null>(null);
+  const [splitTarget, setSplitTarget] = useState<Expense | "new" | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   // v8: "new" opens a blank account form, an Account object edits that one.
   const [accountTarget, setAccountTarget] = useState<Account | "new" | null>(
@@ -177,6 +184,8 @@ function AppInner() {
     cacheRef.current = outcome.entry;
     setOfflineSince(null);
     if (outcome.kind === "fresh") setData(outcome.entry.data);
+    // Splits load alongside; until the server has them (v24) the card stays hidden.
+    fetchSplits(token).then((res) => setSplits(res.ok ? res.data : null));
   }, [token]);
 
   // Refresh when it matters: now, on return to the app, when a push lands,
@@ -358,7 +367,7 @@ function AppInner() {
       if (e.user_id !== data.user.id || !e.expense_date.startsWith(monthPrefix))
         continue;
       if (e.category === "Investments") monthInvested += Number(e.amount);
-      else monthSpent += Number(e.amount);
+      else if (isSpend(e.category)) monthSpent += Number(e.amount);
     }
 
     return {
@@ -637,6 +646,12 @@ function AppInner() {
             top={
               <>
                 {offline}
+                <RepaymentCard
+                  p={p}
+                  token={token}
+                  prompt={splits?.repayments[0]}
+                  onChanged={refresh}
+                />
                 <CaptureSetupCard p={p} token={token} />
                 <HealthCard
                   p={p}
@@ -685,6 +700,16 @@ function AppInner() {
         {tab === "activity" && (
           <>
             {scopePicker}
+            {scope === "personal" && (
+              <SplitsCard
+                p={p}
+                token={token}
+                summary={splits}
+                myName={firstName || data.user.name}
+                onSplitNew={() => setSplitTarget("new")}
+                onChanged={refresh}
+              />
+            )}
             <View style={styles.sectionRow}>
               <Text style={{ flex: 1, fontSize: fs(13), color: p.muted }}>
                 {scopeLabel} · {RANGE_LABELS[range].toLowerCase()}
@@ -844,7 +869,28 @@ function AppInner() {
         p={p}
         dark={dark}
         onChanged={refresh}
+        onSplit={
+          splits
+            ? (e) => {
+                setEditTarget(null);
+                setSplitTarget(e);
+              }
+            : undefined
+        }
       />
+
+      {splitTarget && (
+        <SplitSheet
+          p={p}
+          token={token}
+          expense={splitTarget === "new" ? null : splitTarget}
+          people={splits?.people ?? []}
+          categories={data.categories}
+          today={data.today}
+          onClose={() => setSplitTarget(null)}
+          onDone={refresh}
+        />
+      )}
 
       <AccountSheet
         account={accountTarget}

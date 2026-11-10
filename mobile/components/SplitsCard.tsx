@@ -2,11 +2,15 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Linking,
+  Platform,
   Pressable,
   Share,
   StyleSheet,
   View,
 } from "react-native";
+import * as IntentLauncher from "expo-intent-launcher";
+import UpiQr from "./UpiQr";
+import { parseUpiResult, type UpiOutcome } from "../lib/upi";
 import { Text, TextInput } from "./Text";
 import { Card, CardHeader, Icon } from "./ui";
 import { Sheet } from "./cards/parts";
@@ -252,7 +256,19 @@ function PersonSheet({
   const { t, fs } = useSettings();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [mode, setMode] = useState<null | "record" | "myupi" | "edit">(null);
+  const [mode, setMode] = useState<
+    | null
+    | "record"
+    | "myupi"
+    | "edit"
+    | "confirm" // back from the UPI app, result unclear
+    | "failed" // declined or no app: pay by hand
+    | "paid"
+    | "qr"
+  >(null);
+  // What to do once your UPI ID is saved: share the link, or show the QR.
+  const [afterUpi, setAfterUpi] = useState<"share" | "qr">("share");
+  const [paying, setPaying] = useState(0); // paise, the last Pay attempt
   const [amount, setAmount] = useState(
     String(Math.abs(person.balance) / 100 || ""),
   );
@@ -292,16 +308,53 @@ function PersonSheet({
     }).catch(() => {});
   };
 
-  const payThem = () => {
+  /** Record what you paid from the Pay button; its bank alert gets linked later. */
+  const recordUpi = (amt: number) =>
+    run(
+      () =>
+        recordPayment(token, {
+          personId: person.id,
+          direction: "i_paid",
+          amount: amt / 100,
+          via: "upi",
+        }),
+      () => setMode("paid"),
+    );
+
+  /**
+   * Pay: Android's own chooser lists the UPI apps on this phone; the app the
+   * user picks reports back how it went. Success is recorded straight away;
+   * anything unclear is asked; a decline offers paying by hand.
+   */
+  const payThem = async () => {
     if (!person.upi_id) return setMode("edit");
-    Linking.openURL(
-      upiLink({
-        upiId: person.upi_id,
-        name: person.name,
-        amount: Math.min(-person.balance, UPI_LIMIT),
-        note: t("splitPayNote"),
-      }),
-    ).catch(() => setError(t("splitNoUpiApp")));
+    const amt = Math.min(-person.balance, UPI_LIMIT);
+    const link = upiLink({
+      upiId: person.upi_id,
+      name: person.name,
+      amount: amt,
+      note: t("splitPayNote"),
+    });
+    setPaying(amt);
+    setError(null);
+    let outcome: UpiOutcome = "unknown";
+    try {
+      if (Platform.OS === "android")
+        outcome = parseUpiResult(
+          await IntentLauncher.startActivityAsync(
+            "android.intent.action.VIEW",
+            {
+              data: link,
+            },
+          ),
+        );
+      else await Linking.openURL(link);
+    } catch {
+      setError(t("splitNoUpiApp"));
+      return setMode("failed");
+    }
+    if (outcome === "success") return recordUpi(amt);
+    setMode(outcome === "failure" ? "failed" : "confirm");
   };
 
   const input = [
@@ -338,9 +391,23 @@ function PersonSheet({
             <Pressable
               style={btn(true)}
               accessibilityRole="button"
-              onPress={() => (myUpiId ? askToPay(myUpiId) : setMode("myupi"))}
+              onPress={() => {
+                if (myUpiId) return askToPay(myUpiId);
+                setAfterUpi("share");
+                setMode("myupi");
+              }}
             >
               <Text style={btnText(true)}>{t("splitAskBack")}</Text>
+            </Pressable>
+            <Pressable
+              style={btn(false)}
+              accessibilityRole="button"
+              onPress={() => {
+                setAfterUpi("qr");
+                setMode(myUpiId ? "qr" : "myupi");
+              }}
+            >
+              <Text style={btnText(false)}>{t("splitShowQr")}</Text>
             </Pressable>
             <Pressable
               style={btn(false)}
@@ -397,6 +464,7 @@ function PersonSheet({
                 run(
                   () => setMyUpiId(token, v),
                   () => {
+                    if (afterUpi === "qr") return setMode("qr");
                     setMode(null);
                     askToPay(v);
                   },
@@ -431,6 +499,8 @@ function PersonSheet({
                       personId: person.id,
                       direction: owesMe ? "they_paid" : "i_paid",
                       amount: a,
+                      // Recorded by hand: never auto-matched to a bank alert.
+                      via: "cash",
                     }),
                   () => setMode(null),
                 );
@@ -441,6 +511,157 @@ function PersonSheet({
           </View>
         )}
 
+        {mode === "confirm" && (
+          <View style={{ gap: 8 }}>
+            <Text style={{ color: p.ink, fontSize: fs(15), fontWeight: "700" }}>
+              {t("splitDidItGo")} {r(paying)} → {person.name}?
+            </Text>
+            <Text
+              style={{ color: p.ink2, fontSize: fs(12.5), lineHeight: fs(18) }}
+            >
+              {t("splitDidItGoHint")}
+            </Text>
+            <Pressable
+              style={btn(true)}
+              accessibilityRole="button"
+              onPress={() => recordUpi(paying)}
+            >
+              <Text style={btnText(true)}>{t("splitYesWent")}</Text>
+            </Pressable>
+            <Pressable
+              style={btn(false)}
+              accessibilityRole="button"
+              onPress={() => setMode("failed")}
+            >
+              <Text style={btnText(false)}>{t("splitNoDidnt")}</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {mode === "failed" && person.upi_id && (
+          <View style={{ gap: 8 }}>
+            <Text style={{ color: p.ink, fontSize: fs(15), fontWeight: "700" }}>
+              {t("splitPayFailedTitle")}
+            </Text>
+            <Text
+              style={{ color: p.ink2, fontSize: fs(12.5), lineHeight: fs(18) }}
+            >
+              {t("splitPayFailedHint")}
+            </Text>
+            <View
+              style={[
+                styles.manual,
+                { borderColor: p.grid, backgroundColor: p.page },
+              ]}
+            >
+              <Text style={{ color: p.muted, fontSize: fs(12) }}>
+                {t("splitUpiIdIs")}
+              </Text>
+              <Text
+                selectable
+                style={{ color: p.ink, fontSize: fs(17), fontWeight: "700" }}
+              >
+                {person.upi_id}
+              </Text>
+              <Text
+                selectable
+                style={{ color: p.ink, fontSize: fs(15), fontWeight: "600" }}
+              >
+                {r(paying || -person.balance)}
+              </Text>
+              <Text style={{ color: p.muted, fontSize: fs(11.5) }}>
+                {t("splitLongPressCopy")}
+              </Text>
+            </View>
+            <Pressable
+              style={btn(true)}
+              accessibilityRole="button"
+              onPress={payThem}
+            >
+              <Text style={btnText(true)}>{t("splitTryAnotherApp")}</Text>
+            </Pressable>
+            <Pressable
+              style={btn(false)}
+              accessibilityRole="button"
+              onPress={() =>
+                recordUpi(paying || Math.min(-person.balance, UPI_LIMIT))
+              }
+            >
+              <Text style={btnText(false)}>{t("splitIvePaid")}</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {mode === "paid" && (
+          <View
+            style={[
+              styles.manual,
+              { borderColor: p.accent, backgroundColor: p.accentSoft },
+            ]}
+          >
+            <Text style={{ color: p.ink, fontSize: fs(15), fontWeight: "700" }}>
+              ✓ {t("splitPaidDone")} {r(paying)} → {person.name}
+            </Text>
+            <Text
+              style={{ color: p.ink2, fontSize: fs(12.5), lineHeight: fs(18) }}
+            >
+              {t("splitPaidMatch")}
+            </Text>
+            <Pressable onPress={() => setMode(null)} hitSlop={8}>
+              <Text
+                style={{
+                  color: p.accent,
+                  fontWeight: "700",
+                  fontSize: fs(13.5),
+                }}
+              >
+                {t("splitDone")}
+              </Text>
+            </Pressable>
+          </View>
+        )}
+
+        {mode === "qr" && myUpiId && owesMe && (
+          <View style={{ gap: 10 }}>
+            <Text
+              style={{
+                color: p.ink2,
+                fontSize: fs(13),
+                lineHeight: fs(19),
+                textAlign: "center",
+              }}
+            >
+              {t("splitQrHint")} {r(Math.min(person.balance, UPI_LIMIT))}
+            </Text>
+            <UpiQr
+              value={upiLink({
+                upiId: myUpiId,
+                name: myName,
+                amount: Math.min(person.balance, UPI_LIMIT),
+                note: t("splitPayNote"),
+              })}
+            />
+            <Text
+              selectable
+              style={{ color: p.ink, fontSize: fs(13), textAlign: "center" }}
+            >
+              {myUpiId}
+            </Text>
+            <Pressable
+              style={btn(false)}
+              accessibilityRole="button"
+              onPress={() => setMode("record")}
+            >
+              <Text style={btnText(false)}>{t("splitTheyPaid")}</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {mode === "edit" && iOwe && !person.upi_id && (
+          <Text style={{ color: p.ink2, fontSize: fs(13), lineHeight: fs(19) }}>
+            {t("splitAddTheirUpi")}
+          </Text>
+        )}
         {mode === "edit" && (
           <View style={{ gap: 8 }}>
             <TextInput
@@ -666,6 +887,7 @@ export function RepaymentCard({
 }
 
 const styles = StyleSheet.create({
+  manual: { borderWidth: 1, borderRadius: 14, padding: 14, gap: 4 },
   quiet: {
     flexDirection: "row",
     alignItems: "center",

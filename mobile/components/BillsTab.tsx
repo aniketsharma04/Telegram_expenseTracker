@@ -46,11 +46,15 @@ const KIND_CATEGORY: Record<BillKind, string> = {
 
 /** Popular UPI apps, for the no-UPI-ID fallback ("open the app, pay there"). */
 const UPI_APPS = [
-  { label: "Google Pay", pkg: "com.google.android.apps.nbu.paisa.user" },
-  { label: "PhonePe", pkg: "com.phonepe.app" },
-  { label: "Paytm", pkg: "net.one97.paytm" },
-  { label: "Amazon", pkg: "in.amazon.mShop.android.shopping" },
-  { label: "BHIM", pkg: "in.org.npci.upiapp" },
+  {
+    label: "Google Pay",
+    pkg: "com.google.android.apps.nbu.paisa.user",
+    scheme: "tez://upi/",
+  },
+  { label: "PhonePe", pkg: "com.phonepe.app", scheme: "phonepe://" },
+  { label: "Paytm", pkg: "net.one97.paytm", scheme: "paytmmp://" },
+  { label: "Amazon", pkg: "in.amazon.mShop.android.shopping", scheme: null },
+  { label: "BHIM", pkg: "in.org.npci.upiapp", scheme: null },
 ];
 
 interface Props {
@@ -113,17 +117,32 @@ export default function BillsTab({
     setChooser(bill);
   };
 
-  const openApp = async (pkg: string, bill: BillStatus) => {
+  /**
+   * Open the chosen UPI app's home screen. (v25 fix: the old MAIN intent
+   * ignored the package name — expo-intent-launcher only uses it with a
+   * class name — so it never opened the app picked.) Android 11+ hides other
+   * apps until the manifest lists them, so the app's own link scheme is the
+   * fallback until the next native build adds those <queries>.
+   */
+  const openApp = async (app: (typeof UPI_APPS)[number], bill: BillStatus) => {
     setChooser(null);
     try {
-      await IntentLauncher.startActivityAsync("android.intent.action.MAIN", {
-        packageName: pkg,
-        category: "android.intent.category.LAUNCHER",
-      });
+      IntentLauncher.openApplication(app.pkg);
       setPending(bill);
+      return;
     } catch {
-      setError("That app doesn't seem to be installed.");
+      // not visible to us, or not installed — try the scheme
     }
+    if (app.scheme) {
+      try {
+        await Linking.openURL(app.scheme);
+        setPending(bill);
+        return;
+      } catch {
+        // fall through
+      }
+    }
+    setError(`Couldn't open ${app.label}. Open it yourself and pay there.`);
   };
 
   const refreshOne = async (bill: BillStatus) => {
@@ -506,7 +525,7 @@ export default function BillsTab({
                     styles.chooserBtn,
                     { borderColor: p.border, backgroundColor: p.page },
                   ]}
-                  onPress={() => openApp(a.pkg, chooser)}
+                  onPress={() => openApp(a, chooser)}
                 >
                   <Text
                     style={{

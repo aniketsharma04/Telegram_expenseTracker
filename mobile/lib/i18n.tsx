@@ -482,6 +482,25 @@ const STRINGS = {
   splitPayingBack: "paying you back?",
   splitNotRepayment: "No, something else",
   splitThis: "Split this",
+  splitShowQr: "Show QR to scan",
+  splitQrHint: "Ask them to scan this with any UPI app to pay you",
+  splitDidItGo: "Did",
+  splitDidItGoHint:
+    "Your UPI app didn't say clearly. If the money left your account, tap yes: it'll be matched to your bank's alert.",
+  splitYesWent: "Yes, it went through",
+  splitNoDidnt: "No, it didn't",
+  splitPayFailedTitle: "That payment didn't go through",
+  splitPayFailedHint:
+    "Some UPI apps block payments to a person when another app starts them. Open your UPI app and pay this UPI ID yourself, or try a different app.",
+  splitLongPressCopy: "Long-press to copy",
+  splitTryAnotherApp: "Try a UPI app again",
+  splitIvePaid: "I've paid it myself",
+  splitPaidDone: "Paid",
+  splitPaidMatch:
+    "Recorded. When your bank's alert arrives it's matched to this, so it won't count as spending.",
+  splitDone: "Done",
+  splitAddTheirUpi:
+    "Add their UPI ID to pay them from here. Ask them, or find it in your UPI app's history with them.",
   splitPartOf: "Part of a split. Its share is what counts as your spending.",
   splitRemove: "Remove split",
   // v24: tax pack

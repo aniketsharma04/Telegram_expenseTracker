@@ -122,6 +122,8 @@ export const recordPayment = (
     amount?: number; // rupees
     incomeId?: string;
     expenseId?: string;
+    /** v25: "upi" from the Pay button (its bank alert gets linked); "cash" otherwise. */
+    via?: "upi" | "cash";
   },
 ) => call<{ payment: SplitRecord }>(token, "POST", "/api/splits/settle", body);
 
