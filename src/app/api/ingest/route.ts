@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authedUser } from "@/lib/api-auth";
+import { getUser } from "@/lib/identity";
 import { createServiceClient } from "@/lib/supabase-server";
 import { loadBalanceSheet } from "@/lib/accounts";
 import { ingestBankMessages, listBankMessages } from "@/lib/ingest";
@@ -35,6 +36,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const userId = authedUser(req);
   if (!userId) return fail("unauthorized", 401);
+  // Never capture into a deleted account (another phone may still be signed in).
+  const owner = await getUser(createServiceClient(), userId).catch(() => null);
+  if (!owner || owner.deleted_at) return fail("unauthorized", 401);
 
   let payload: Record<string, unknown>;
   try {

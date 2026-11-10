@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getUser } from "@/lib/identity";
 import { authedUser } from "@/lib/api-auth";
 import { respondWithEtag } from "@/lib/etag";
 import { createServiceClient } from "@/lib/supabase-server";
@@ -42,15 +43,10 @@ export async function GET(req: NextRequest) {
 
   const supabase = createServiceClient();
 
-  const { data: users, error: userError } = await supabase
-    .from("users")
-    .select("id, first_name, username")
-    .eq("id", userId)
-    .limit(1);
-  if (userError)
-    return NextResponse.json({ error: userError.message }, { status: 500 });
-  const user = users?.[0];
-  if (!user)
+  // A deleted account's session must stop working at once: the app signs
+  // out on 401, which also stops it capturing into a deleted account.
+  const user = await getUser(supabase, userId).catch(() => null);
+  if (!user || user.deleted_at)
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const family = await getFamily(supabase, userId);

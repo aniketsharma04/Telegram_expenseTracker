@@ -252,7 +252,7 @@ function greedy(people: [Key, number][]): [Key, Key, number][] {
 
 // ── Paying back ─────────────────────────────────────────────────────────────
 
-export const UPI_ID = /^[A-Za-z0-9._-]{2,256}@[A-Za-z][A-Za-z0-9.-]{1,64}$/;
+export const UPI_ID = /^[A-Za-z0-9._-]{2,64}@[A-Za-z][A-Za-z0-9.-]{1,64}$/;
 
 /**
  * A UPI Intent link: the friend taps it and pays in their own UPI app. Aaj

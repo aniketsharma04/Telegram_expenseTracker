@@ -22,14 +22,14 @@ on conflict (name) do nothing;
 
 -- Your UPI ID, for "pay me back" links (asked once, optional).
 alter table users add column if not exists upi_id text
-  check (upi_id is null or upi_id ~ '^[A-Za-z0-9._-]{2,256}@[A-Za-z][A-Za-z0-9.-]{1,64}$');
+  check (upi_id is null or upi_id ~ '^[A-Za-z0-9._-]{2,64}@[A-Za-z][A-Za-z0-9.-]{1,64}$');
 
 -- People you split with. Third parties under DPDP: keep it minimal.
 create table if not exists people (
   id              uuid primary key default gen_random_uuid(),
   owner_id        bigint not null references users (id) on delete cascade,
   name            text   not null check (length(trim(name)) between 1 and 60),
-  upi_id          text check (upi_id is null or upi_id ~ '^[A-Za-z0-9._-]{2,256}@[A-Za-z][A-Za-z0-9.-]{1,64}$'),
+  upi_id          text check (upi_id is null or upi_id ~ '^[A-Za-z0-9._-]{2,64}@[A-Za-z][A-Za-z0-9.-]{1,64}$'),
   phone           text check (phone is null or phone ~ '^\+?[0-9]{10,13}$'),
   -- Names the bank used for this person ("RAHUL K SHARMA"), learned when a
   -- repayment is confirmed, so the next one matches without asking twice.
