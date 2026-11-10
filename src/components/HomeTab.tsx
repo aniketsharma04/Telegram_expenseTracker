@@ -1,5 +1,6 @@
 "use client";
 
+import { NON_SPEND_CATEGORIES } from "@/lib/insights";
 import type { Expense } from "@/lib/types";
 import { formatINR } from "./theme";
 import { RANGE_LABELS, RangeKey } from "./App";
@@ -25,7 +26,7 @@ interface Props {
 
 function spentOf(list: Expense[]): number {
   return list
-    .filter((e) => e.category !== "Investments")
+    .filter((e) => !NON_SPEND_CATEGORIES.has(e.category))
     .reduce((s, e) => s + Number(e.amount), 0);
 }
 

@@ -1,3 +1,4 @@
+import { pickable } from "../lib/categories";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -93,7 +94,7 @@ export default function AddExpenseSheet({
   const [undone, setUndone] = useState(false);
   const [accountId, setAccountId] = useState<string | null>(null);
 
-  const chips = categories.filter((c) => c.name !== "Uncategorized");
+  const chips = categories.filter(pickable);
 
   const resetForm = () => {
     setText("");

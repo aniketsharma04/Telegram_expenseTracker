@@ -1,3 +1,5 @@
+import { isSpend, pickable } from "../lib/categories";
+import { deleteSplit, fetchSplitForExpense } from "../lib/splits-api";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -29,6 +31,8 @@ interface Props {
   p: Palette;
   dark: boolean;
   onChanged: () => void;
+  /** v24: open the split sheet for this expense (absent until splits are live). */
+  onSplit?: (e: Expense) => void;
 }
 
 function yesterdayOf(iso: string): string {
@@ -48,6 +52,7 @@ export default function EditExpenseSheet({
   p,
   dark,
   onChanged,
+  onSplit,
 }: Props) {
   const { t, fs } = useSettings();
   const [amount, setAmount] = useState("");
@@ -72,10 +77,30 @@ export default function EditExpenseSheet({
 
   if (!expense) return null;
 
-  const chips = categories.filter((c) => c.name !== "Uncategorized");
+  const chips = categories.filter(pickable);
   const parsedAmount = parseFloat(amount.replace(/,/g, ""));
   const ready = Number.isFinite(parsedAmount) && parsedAmount > 0 && !!category;
   const isSplit = !!expense.split_id;
+  // v24 splits keep paid_by empty; the old family splits set it.
+  const friendSplit = isSplit && expense.paid_by == null;
+
+  const removeSplit = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    const found = await fetchSplitForExpense(token, expense.id);
+    const done =
+      found.ok && found.data.split
+        ? await deleteSplit(token, found.data.split.id)
+        : null;
+    setBusy(false);
+    if (!done || !done.ok) {
+      setError(done && !done.ok ? done.error : t("saveFailed"));
+      return;
+    }
+    onChanged();
+    onClose();
+  };
 
   const save = async () => {
     if (!ready || busy) return;
@@ -179,7 +204,7 @@ export default function EditExpenseSheet({
                   },
                 ]}
               >
-                {t("partOfSplit")}
+                {friendSplit ? t("splitPartOf") : t("partOfSplit")}
               </Text>
             )}
 
@@ -192,6 +217,8 @@ export default function EditExpenseSheet({
                 value={amount}
                 onChangeText={setAmount}
                 keyboardType="numeric"
+                // A split row's amount comes from the split; change the split instead.
+                editable={!friendSplit}
               />
             </View>
 
@@ -322,6 +349,39 @@ export default function EditExpenseSheet({
                 {t("countsHint")}
               </Text>
             </View>
+
+            {!isSplit && onSplit && isSpend(expense.category) && (
+              <Pressable
+                onPress={() => onSplit(expense)}
+                disabled={busy}
+                accessibilityRole="button"
+                style={[styles.flipBtn, { borderColor: p.border }]}
+              >
+                <Text
+                  style={{
+                    color: p.accent,
+                    fontWeight: "600",
+                    fontSize: fs(14),
+                  }}
+                >
+                  ÷ {t("splitThis")}
+                </Text>
+              </Pressable>
+            )}
+            {friendSplit && (
+              <Pressable
+                onPress={removeSplit}
+                disabled={busy}
+                accessibilityRole="button"
+                style={[styles.flipBtn, { borderColor: p.border }]}
+              >
+                <Text
+                  style={{ color: p.warn, fontWeight: "600", fontSize: fs(14) }}
+                >
+                  {t("splitRemove")}
+                </Text>
+              </Pressable>
+            )}
 
             {!isSplit && (
               <Pressable

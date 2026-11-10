@@ -1,3 +1,4 @@
+import { pickable } from "../lib/categories";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -131,7 +132,7 @@ function BudgetEditor({
 
   const options: Array<string | null> = [
     null,
-    ...categories.filter((c) => c.name !== "Uncategorized").map((c) => c.name),
+    ...categories.filter(pickable).map((c) => c.name),
   ];
   const capNum = parseFloat(cap.replace(/,/g, ""));
   const ready = Number.isFinite(capNum) && capNum > 0;

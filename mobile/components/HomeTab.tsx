@@ -1,3 +1,4 @@
+import { isSpend } from "../lib/categories";
 import { useMemo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Text } from "./Text";
@@ -31,7 +32,7 @@ interface Props {
 
 function spentOf(list: Expense[]): number {
   return list
-    .filter((e) => e.category !== "Investments")
+    .filter((e) => isSpend(e.category))
     .reduce((s, e) => s + Number(e.amount), 0);
 }
 
@@ -62,8 +63,13 @@ export default function HomeTab(props: Props) {
 
   const categories = useMemo(() => {
     const totals = new Map<string, number>();
+    // Lent and Settle up are money moving between friends, not a category of spending.
     for (const e of inRange)
-      totals.set(e.category, (totals.get(e.category) ?? 0) + Number(e.amount));
+      if (isSpend(e.category) || e.category === "Investments")
+        totals.set(
+          e.category,
+          (totals.get(e.category) ?? 0) + Number(e.amount),
+        );
     const sorted = [...totals.entries()].sort((a, b) => b[1] - a[1]);
     const head = sorted.slice(0, 7);
     const tail = sorted.slice(7);

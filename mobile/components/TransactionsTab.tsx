@@ -1,3 +1,4 @@
+import { isSpend } from "../lib/categories";
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Text } from "./Text";
@@ -140,7 +141,7 @@ export default function TransactionsTab({
             <Text style={[styles.groupText, { color: p.muted }]}>
               {formatINR(
                 rows
-                  .filter((e) => e.category !== "Investments")
+                  .filter((e) => isSpend(e.category))
                   .reduce((s, e) => s + Number(e.amount), 0),
               )}
             </Text>

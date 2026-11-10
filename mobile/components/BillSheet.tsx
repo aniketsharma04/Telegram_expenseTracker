@@ -1,3 +1,4 @@
+import { pickable } from "../lib/categories";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -287,7 +288,7 @@ export default function BillSheet({
     color: active ? p.ink : p.ink2,
     fontWeight: active ? ("600" as const) : ("400" as const),
   });
-  const expenseChips = categories.filter((c) => c.name !== "Uncategorized");
+  const expenseChips = categories.filter(pickable);
 
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onClose}>

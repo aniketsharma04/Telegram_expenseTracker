@@ -1,3 +1,4 @@
+import { isSpend } from "../lib/categories";
 import { useMemo } from "react";
 import { Linking, Pressable, Share, StyleSheet, View } from "react-native";
 import { Text } from "./Text";
@@ -27,7 +28,7 @@ export default function FamilyTab({ p, dark, data, memberName }: Props) {
         continue;
       if (e.category === "Investments") {
         invested += Number(e.amount);
-      } else {
+      } else if (isSpend(e.category)) {
         spent += Number(e.amount);
         byMember.set(
           e.user_id,
