@@ -9,5 +9,7 @@ export default defineConfig({
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   esbuild: {
     tsconfigRaw: JSON.stringify({ compilerOptions: { target: "es2022" } }),
+    // Page tests render server components; Next uses the automatic runtime.
+    jsx: "automatic",
   },
 });

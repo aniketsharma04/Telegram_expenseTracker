@@ -526,6 +526,14 @@ function label(e: ScopedExpense): string {
   return esc(e.merchant?.trim() || e.category);
 }
 
+/** Why a row isn't in today's number, in a word or two. */
+function asideWhy(e: ScopedExpense): string {
+  if (e.category === "Lent") return "lent";
+  if (e.category === "Settle up") return "paid back";
+  if (e.category === "Investments") return "invested";
+  return e.scope === "savings" ? "savings" : "fixed";
+}
+
 /** "A fresh budget starts Sun 1 Dec." — the overspent month's way out. */
 function overspentTail(s: DailyStatus): string {
   return `A fresh budget starts ${prettyDate(isoAdd(s.cycleEnd, 1))}. Anything spent until then comes out of savings.`;
@@ -607,10 +615,7 @@ export function eveningReport(s: DailyStatus, today: string): string {
     lines.push(
       "",
       `Not counted: ${aside
-        .map(
-          (e) =>
-            `${label(e)} ${inr(Number(e.amount))} (${e.scope === "savings" ? "savings" : "fixed"})`,
-        )
+        .map((e) => `${label(e)} ${inr(Number(e.amount))} (${asideWhy(e)})`)
         .join(", ")}`,
     );
 

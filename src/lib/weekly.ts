@@ -12,7 +12,12 @@ import { addDays, type ExpenseLike } from "./insights";
  */
 
 /** Deliberate money movements and fixed obligations aren't "spending" here. */
-const NOT_WEEKLY_SPEND = new Set(["Investments", "Loans & EMI"]);
+const NOT_WEEKLY_SPEND = new Set([
+  "Investments",
+  "Loans & EMI",
+  "Lent",
+  "Settle up",
+]);
 /** Weeks before last week used for "usual". */
 const BASELINE_WEEKS = 4;
 /** Below this many earlier weeks with spending, there's no fair "usual". */

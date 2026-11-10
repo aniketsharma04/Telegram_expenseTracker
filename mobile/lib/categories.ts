@@ -16,7 +16,21 @@ const ICONS: Record<string, IconName> = {
   Travel: "map",
   Education: "book-open",
   "Gifts & donations": "gift",
+  Lent: "users",
+  "Settle up": "repeat",
 };
+
+/**
+ * Money out that isn't your spending (mirror of the server's
+ * NON_SPEND_CATEGORIES): investments, the part of a split you paid for
+ * others, and paying a friend back.
+ */
+export const NON_SPEND = new Set(["Investments", "Lent", "Settle up"]);
+export const isSpend = (category: string) => !NON_SPEND.has(category);
+
+/** Categories the app manages itself; never offered in a picker. */
+const NOT_PICKABLE = new Set(["Uncategorized", "Lent", "Settle up"]);
+export const pickable = (c: { name: string }) => !NOT_PICKABLE.has(c.name);
 
 export function categoryIcon(category: string): IconName {
   return ICONS[category] ?? "circle";

@@ -38,7 +38,16 @@ export interface Anomaly {
 }
 
 /** Categories that are deliberate money movements, not "spending". */
-export const NON_SPEND_CATEGORIES = new Set(["Investments"]);
+/**
+ * Money that left the account but isn't your spending: investments, the part
+ * of a split you paid for others (v24 "Lent"), and paying a friend back
+ * ("Settle up").
+ */
+export const NON_SPEND_CATEGORIES = new Set([
+  "Investments",
+  "Lent",
+  "Settle up",
+]);
 /** Fixed obligations — excluded from anomaly nudges (they're *supposed* to repeat). */
 const STEADY_CATEGORIES = new Set(["Investments", "Loans & EMI"]);
 
@@ -80,7 +89,9 @@ export function budgetProgress(
   return budgets.map((b) => {
     const spent = month
       .filter((e) =>
-        b.category ? e.category === b.category : countsTowardOverall(e.category),
+        b.category
+          ? e.category === b.category
+          : countsTowardOverall(e.category),
       )
       .reduce((s, e) => s + Number(e.amount), 0);
     return { ...b, spent, pct: b.monthly_cap > 0 ? spent / b.monthly_cap : 0 };
@@ -114,7 +125,10 @@ export function detectRecurring(
     // Collapse same-day duplicates (e.g. re-logged) to one occurrence.
     const dates: ExpenseLike[] = [];
     for (const e of sorted) {
-      if (dates.length === 0 || dates[dates.length - 1].expense_date !== e.expense_date)
+      if (
+        dates.length === 0 ||
+        dates[dates.length - 1].expense_date !== e.expense_date
+      )
         dates.push(e);
     }
     if (dates.length < 2) continue;

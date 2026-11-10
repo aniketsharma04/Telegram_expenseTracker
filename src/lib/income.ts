@@ -50,14 +50,18 @@ export async function getIncomes(
   sinceDate: string,
 ): Promise<Income[]> {
   try {
-    const { data, error } = await supabase
-      .from("incomes")
-      .select("id, user_id, amount, source, income_date, logged_at")
-      .eq("user_id", userId)
-      .gte("income_date", sinceDate)
-      .order("income_date", { ascending: false });
-    if (error) throw error;
-    return (data ?? []) as Income[];
+    const query = () =>
+      supabase
+        .from("incomes")
+        .select("id, user_id, amount, source, income_date, logged_at")
+        .eq("user_id", userId)
+        .gte("income_date", sinceDate)
+        .order("income_date", { ascending: false });
+    // v24: a friend paying you back is money in, not earnings.
+    let res = await query().is("split_id", null);
+    if (res.error) res = await query(); // pre-v24: no split_id column yet
+    if (res.error) throw res.error;
+    return (res.data ?? []) as Income[];
   } catch (err) {
     console.error("getIncomes failed (migration applied?)", err);
     return [];

@@ -427,7 +427,60 @@ async function findManualTwin(
     .limit(5);
   // Only a human-entered row counts as the twin; another auto-capture is
   // handled by the message-level dedupe above.
-  return (data ?? []).some((e) => !String(e.source ?? "").startsWith("auto_"));
+  if ((data ?? []).some((e) => isManual(e.source))) return true;
+  return splitTwin(supabase, userId, txn.amount, onDate);
+}
+
+const isManual = (source: unknown) => {
+  const s = String(source ?? "");
+  return !s.startsWith("auto_") && !s.startsWith("split_");
+};
+
+/**
+ * A split typed in by hand is stored as parts (your share + the lent part,
+ * or — in the old family splits — one row per member), so the bank alert for
+ * the whole bill never equals any single row. Compare it with each split's
+ * total instead, or the dinner gets counted twice.
+ */
+export async function splitTwin(
+  supabase: SupabaseClient,
+  userId: number,
+  amount: number,
+  onDate: string,
+): Promise<boolean> {
+  const mine = await supabase
+    .from("expenses")
+    .select("split_id, source")
+    .eq("user_id", userId)
+    .eq("expense_date", onDate)
+    .not("split_id", "is", null)
+    .limit(50);
+  const ids = [
+    ...new Set(
+      (mine.data ?? [])
+        .filter((r) => isManual(r.source))
+        .map((r) => r.split_id as string),
+    ),
+  ];
+  if (!ids.length) return false;
+  const all = await supabase
+    .from("expenses")
+    .select("split_id, user_id, paid_by, amount")
+    .in("split_id", ids);
+  const totals = new Map<string, number>();
+  for (const r of (all.data ?? []) as {
+    split_id: string;
+    user_id: number;
+    paid_by: number | null;
+    amount: number;
+  }[]) {
+    // New splits: your own rows. Old family splits: every member's row you paid for.
+    const counts =
+      r.paid_by == null ? r.user_id === userId : r.paid_by === userId;
+    if (counts)
+      totals.set(r.split_id, (totals.get(r.split_id) ?? 0) + Number(r.amount));
+  }
+  return [...totals.values()].some((t) => Math.abs(t - amount) < 0.01);
 }
 
 /**
