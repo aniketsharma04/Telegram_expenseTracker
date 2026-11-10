@@ -644,6 +644,10 @@ export function eveningReport(s: DailyStatus, today: string): string {
 /** One line after a spend lands — the live "coffee −₹200" tally. */
 export function spendLine(e: ScopedExpense, s: DailyStatus): string {
   const amount = Number(e.amount);
+  if (e.category === "Settle up")
+    return `🤝 ${label(e)} ${inr(amount)}: paying a friend back. Today's budget is unchanged.`;
+  if (e.category === "Lent")
+    return `🤝 ${label(e)} ${inr(amount)} lent in a split. Today's budget is unchanged.`;
   if (e.scope === "savings")
     return `💰 ${label(e)} ${inr(amount)} from savings. Today's budget is unchanged.`;
   if (e.scope === "fixed" && e.dailyAmount === 0)
@@ -749,9 +753,13 @@ export function spendPush(
     return {
       title: `${plainLabel(e)} ${inr(amount)}`,
       body:
-        e.scope === "savings"
-          ? "From savings. Today's budget is unchanged."
-          : "Fixed cost. Today's budget is unchanged.",
+        e.category === "Settle up"
+          ? "Paying a friend back. Today's budget is unchanged."
+          : e.category === "Lent"
+            ? "Lent in a split. Today's budget is unchanged."
+            : e.scope === "savings"
+              ? "From savings. Today's budget is unchanged."
+              : "Fixed cost. Today's budget is unchanged.",
       bigSpend: false,
     };
   const left =

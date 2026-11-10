@@ -13,6 +13,7 @@ import {
 import { collectBudgetAlerts, deliverBudgetAlerts } from "@/lib/budgets";
 import { getFamily, familyMembers } from "@/lib/family";
 import { resolveAccountId } from "@/lib/accounts";
+import { deleteSplit, splitForExpense } from "@/lib/splits";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // free-text mode may call the LLM fallback
@@ -164,6 +165,19 @@ export async function PATCH(req: NextRequest) {
   const supabase = createServiceClient();
   const patch: Record<string, unknown> = {};
 
+  // v24: a split row's amount is set by the split; changing it alone would
+  // leave the shares adding up to the wrong total.
+  if (body.amount !== undefined) {
+    const split = await splitForExpense(supabase, userId, body.id).catch(
+      () => null,
+    );
+    if (split)
+      return NextResponse.json(
+        { error: "This is part of a split. Change the split instead." },
+        { status: 409 },
+      );
+  }
+
   if (body.amount !== undefined) {
     const amount = Number(body.amount);
     if (!Number.isFinite(amount) || amount <= 0 || amount > 100_000_000) {
@@ -255,6 +269,22 @@ export async function DELETE(req: NextRequest) {
 
   const supabase = createServiceClient();
   try {
+    // v24: undo the split first (merging the lent part back, restoring a
+    // repayment), then delete what's left of the original payment.
+    const split = await splitForExpense(supabase, userId, id).catch(() => null);
+    if (split) {
+      await deleteSplit(supabase, userId, split.id);
+      const left = [split.expense_id, split.lent_id].filter(
+        Boolean,
+      ) as string[];
+      const { data } = await supabase
+        .from("expenses")
+        .delete()
+        .eq("user_id", userId)
+        .in("id", left)
+        .select("id");
+      return NextResponse.json({ deleted: true, removed: data?.length ?? 0 });
+    }
     const removed = await deleteExpenseScoped(supabase, userId, id);
     return NextResponse.json({ deleted: removed > 0, removed });
   } catch (err) {

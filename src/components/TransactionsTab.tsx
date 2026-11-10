@@ -1,5 +1,6 @@
 "use client";
 
+import { NON_SPEND_CATEGORIES } from "@/lib/insights";
 import { useMemo, useState } from "react";
 import type { Expense } from "@/lib/types";
 import {
@@ -78,7 +79,7 @@ export default function TransactionsTab({
   }, [filtered]);
 
   const total = filtered
-    .filter((e) => e.category !== "Investments")
+    .filter((e) => !NON_SPEND_CATEGORIES.has(e.category))
     .reduce((s, e) => s + Number(e.amount), 0);
   const today = new Date().toISOString().slice(0, 10);
 
@@ -120,7 +121,7 @@ export default function TransactionsTab({
             <span>
               {formatINR(
                 rows
-                  .filter((e) => e.category !== "Investments")
+                  .filter((e) => !NON_SPEND_CATEGORIES.has(e.category))
                   .reduce((s, e) => s + Number(e.amount), 0),
               )}
             </span>

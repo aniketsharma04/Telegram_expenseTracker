@@ -183,7 +183,7 @@ async function monthlySummary(
         (r) =>
           r.user_id !== null &&
           memberIds.has(r.user_id) &&
-          r.category !== "Investments",
+          !NON_SPEND_CATEGORIES.has(r.category),
       )
       .reduce((s, r) => s + Number(r.amount), 0);
     familyLine = `\n👨‍👩‍👧 ${family.name}: ${fmtINR(familySpent)} this month`;
@@ -911,7 +911,9 @@ async function sendMonthReport(userId: number, categoryName: string | null) {
     .slice(0, 3)
     .map(([name, sum]) => `• ${name}: ${fmtINR(sum)}`)
     .join("\n");
-  const txCount = rows.filter((r) => r.category !== "Investments").length;
+  const txCount = rows.filter(
+    (r) => !NON_SPEND_CATEGORIES.has(r.category),
+  ).length;
   await reply(
     userId,
     `📊 <b>This month (since ${monthLabel})</b>\nSpent: ${fmtINR(spent)} across ${txCount} transactions` +

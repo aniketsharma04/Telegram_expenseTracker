@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     "What Aaj collects, why, who processes it, and how to delete it.",
 };
 
-const UPDATED = "24 October 2026";
+const UPDATED = "10 November 2026";
 const SUPPORT = process.env.NEXT_PUBLIC_SUPPORT_EMAIL;
 
 /**
@@ -61,6 +61,14 @@ export default function PrivacyPage() {
         <li>
           <b>Device:</b> a push-notification token for each phone you sign in
           on, so we can send your daily messages.
+        </li>
+        <li>
+          <b>People you split bills with (only if you use splits):</b> the name
+          you give each person and, only if you add them, their UPI ID or phone
+          number, plus the payer name your bank showed when they paid you back
+          (so the next repayment is recognised). Your own UPI ID, if you add it,
+          to build &ldquo;pay me back&rdquo; links. We never contact these
+          people; you share any link yourself.
         </li>
       </ul>
       <p>

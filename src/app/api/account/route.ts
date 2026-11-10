@@ -52,6 +52,12 @@ const OWNED_TABLES = [
   "family_members",
 ] as const;
 
+/**
+ * v24 split tables are keyed by owner_id. Splits first (their members
+ * cascade), then the people they pointed at.
+ */
+const OWNER_TABLES = ["splits", "people", "split_groups"] as const;
+
 /** Everything worth handing back in an export. */
 const EXPORT_TABLES = [
   "expenses",
@@ -89,6 +95,13 @@ export async function GET(req: NextRequest) {
         .from(table)
         .select("*")
         .eq("user_id", userId);
+      data[table] = rows ?? [];
+    }
+    for (const table of OWNER_TABLES) {
+      const { data: rows } = await supabase
+        .from(table)
+        .select(table === "splits" ? "*, split_members (*)" : "*")
+        .eq("owner_id", userId);
       data[table] = rows ?? [];
     }
     return NextResponse.json(
@@ -183,6 +196,16 @@ export async function DELETE(req: NextRequest) {
   const supabase = createServiceClient();
   const removed: Record<string, number> = {};
 
+  for (const table of OWNER_TABLES) {
+    const { data, error } = await supabase
+      .from(table)
+      .delete()
+      .eq("owner_id", userId)
+      .select("id");
+    if (error) continue; // pre-v24 deployment
+    removed[table] = data?.length ?? 0;
+  }
+
   for (const table of OWNED_TABLES) {
     const { data, error } = await supabase
       .from(table)
@@ -193,6 +216,10 @@ export async function DELETE(req: NextRequest) {
     if (error) continue;
     removed[table] = data?.length ?? 0;
   }
+
+  // v24: your UPI ID, separately so a pre-v24 database (no column) can't
+  // block the deletion.
+  await supabase.from("users").update({ upi_id: null }).eq("id", userId);
 
   // The user row goes last, and is marked deleted rather than dropped so a
   // Telegram message from that chat can't silently recreate the account.

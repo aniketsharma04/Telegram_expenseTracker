@@ -10,6 +10,7 @@ import { listAccounts, type Account } from "./accounts";
 import { loadMerchantRules, normaliseMerchant } from "./merchants";
 import { insertExpense, loadCategories } from "./log-expense";
 import { logIncome } from "./income";
+import { linkUpiSettlement } from "./splits";
 import { categoryByKeyword, localDate } from "./parser";
 import { redactForAI } from "./redact";
 import { directionWithLLM } from "./llm";
@@ -340,6 +341,26 @@ export async function ingestBankMessage(
     await markMessage(supabase, message?.id, "logged", {
       expense_id: expense.id,
     });
+
+    // v25: the bank's alert for a payment made from the Pay button — file it
+    // as a settle-up so paying a friend back never counts as spending.
+    const settled = await linkUpiSettlement(supabase, userId, {
+      id: expense.id,
+      amount: txn.amount,
+      category,
+      merchant,
+      expense_date: onDate,
+      source: `auto_${input.source}`,
+      split_id: null,
+    }).catch(() => false);
+    if (settled)
+      return {
+        ...base,
+        status: "logged",
+        note: "Matched to the payment you made to a friend.",
+        expenseId: expense.id,
+        incomeId: null,
+      };
 
     return {
       ...base,
