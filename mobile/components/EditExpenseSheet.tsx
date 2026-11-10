@@ -5,11 +5,16 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   View,
 } from "react-native";
 import { Text, TextInput } from "./Text";
-import { deleteExpense, Expense, flipEntry, patchExpense } from "../lib/api";
+import {
+  BudgetScope,
+  deleteExpense,
+  Expense,
+  flipEntry,
+  patchExpense,
+} from "../lib/api";
 import { formatINR, Palette, seriesColor } from "../lib/theme";
 import { useSettings } from "../lib/i18n";
 import ReceiptLines from "./ReceiptLines";
@@ -49,7 +54,8 @@ export default function EditExpenseSheet({
   const [category, setCategory] = useState<string>("");
   const [merchant, setMerchant] = useState("");
   const [day, setDay] = useState<DayPick>("keep");
-  const [fromSavings, setFromSavings] = useState(false);
+  // null = let the app decide (fixed-cost match, category); set = the user said so.
+  const [scope, setScope] = useState<BudgetScope | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +65,7 @@ export default function EditExpenseSheet({
       setCategory(expense.category);
       setMerchant(expense.merchant ?? "");
       setDay("keep");
-      setFromSavings(expense.budget_scope === "savings");
+      setScope(expense.budget_scope ?? null);
       setError(null);
     }
   }, [expense]);
@@ -83,8 +89,7 @@ export default function EditExpenseSheet({
         patch.merchant = merchant.trim() || null;
       if (day !== "keep")
         patch.expense_date = day === "today" ? today : yesterdayOf(today);
-      if (fromSavings !== (expense.budget_scope === "savings"))
-        patch.budget_scope = fromSavings ? "savings" : null;
+      if (scope !== (expense.budget_scope ?? null)) patch.budget_scope = scope;
 
       if (Object.keys(patch).length === 0) {
         onClose();
@@ -270,22 +275,52 @@ export default function EditExpenseSheet({
               ))}
             </View>
 
-            <View style={styles.savingsRow}>
-              <View style={{ flex: 1, gap: 2 }}>
-                <Text
-                  style={{ color: p.ink, fontSize: fs(14), fontWeight: "500" }}
-                >
-                  {t("fromSavings")}
-                </Text>
-                <Text style={{ color: p.ink2, fontSize: fs(12) }}>
-                  {t("fromSavingsHint")}
-                </Text>
+            <View style={{ gap: 6 }}>
+              <Text
+                style={{ color: p.ink, fontSize: fs(14), fontWeight: "500" }}
+              >
+                {t("countsAs")}
+              </Text>
+              <View style={styles.dayRow}>
+                {(
+                  [
+                    ["daily", t("countsEveryday")],
+                    ["fixed", t("countsFixed")],
+                    ["savings", t("countsSavings")],
+                  ] as [BudgetScope, string][]
+                ).map(([value, label]) => {
+                  const on = scope === value;
+                  return (
+                    <Pressable
+                      key={value}
+                      // Tapping the chosen one again hands it back to the app.
+                      onPress={() => setScope(on ? null : value)}
+                      accessibilityRole="radio"
+                      accessibilityState={{ selected: on }}
+                      style={[
+                        styles.dayBtn,
+                        {
+                          borderColor: on ? p.accent : p.border,
+                          backgroundColor: on ? p.accentSoft : p.page,
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={{
+                          fontSize: fs(13),
+                          color: on ? p.ink : p.ink2,
+                          fontWeight: on ? "600" : "400",
+                        }}
+                      >
+                        {label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
-              <Switch
-                value={fromSavings}
-                onValueChange={setFromSavings}
-                trackColor={{ true: p.accent }}
-              />
+              <Text style={{ color: p.ink2, fontSize: fs(12) }}>
+                {t("countsHint")}
+              </Text>
             </View>
 
             {!isSplit && (
@@ -366,7 +401,6 @@ export default function EditExpenseSheet({
 }
 
 const styles = StyleSheet.create({
-  savingsRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   backdrop: {
     flex: 1,
     justifyContent: "flex-end",

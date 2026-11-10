@@ -376,6 +376,23 @@ const STRINGS = {
   fromSavings: "Paid from savings",
   fromSavingsHint: "Won't touch your daily budget.",
   perDay: "/day",
+  // v24: a calmer daily budget
+  forDaysLeft: "for the next",
+  monthUsedUp: "This month's everyday money is used up",
+  freshBudgetOn: "A fresh budget starts",
+  overBy: "over",
+  spentSoFar: "Spent so far",
+  leftForMonth: "Left for the month",
+  countingFromNote:
+    "You joined partway through the month, so this month counts from",
+  countsAs: "Counts as",
+  countsEveryday: "Everyday",
+  countsFixed: "Fixed cost",
+  countsSavings: "From savings",
+  countsHint:
+    "Fixed costs and spends from savings don't change today's number.",
+  budgetMath: "How your daily number works",
+  savingsWord: "saving",
 
   // v18: money rules — the salary split and goal rules of thumb
   moneySplit: "Your money split",

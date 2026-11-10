@@ -105,19 +105,35 @@ export function PlanSummaryCard({
             value={formatINR(daily.pool)}
             strong
           />
-          <Text style={{ color: p.muted, fontSize: fs(12.5) }}>
-            ≈ {formatINR(daily.baseDaily)}
-            {t("perDay")}
-            {daily.cycleStart && daily.cycleEnd
-              ? ` · ${shortDate(daily.cycleStart)} – ${shortDate(daily.cycleEnd)}`
-              : ""}
-          </Text>
-          <History p={p} history={daily.history.slice(-14)} />
-          {daily.history.length >= 2 && (
-            <Text style={{ color: p.muted, fontSize: fs(12) }}>
-              {t("last14")}
+          {daily.countingFrom && daily.fullPool ? (
+            <Text
+              style={{ color: p.muted, fontSize: fs(12.5), lineHeight: 18 }}
+            >
+              {t("countingFromNote")} {shortDate(daily.countingFrom)}:{" "}
+              {formatINR(daily.pool)} of {formatINR(daily.fullPool)}.
             </Text>
-          )}
+          ) : null}
+          <Line
+            p={p}
+            label={t("spentSoFar")}
+            value={`− ${formatINR(daily.poolSpent)}`}
+          />
+          <Line
+            p={p}
+            label={t("leftForMonth")}
+            value={
+              daily.poolLeft < 0
+                ? `${formatINR(-daily.poolLeft)} ${t("overBy")}`
+                : formatINR(daily.poolLeft)
+            }
+            strong
+          />
+          {daily.cycleStart && daily.cycleEnd ? (
+            <Text style={{ color: p.muted, fontSize: fs(12.5) }}>
+              {shortDate(daily.cycleStart)} – {shortDate(daily.cycleEnd)} ·{" "}
+              {daily.daysLeft} {t("daysWord")}
+            </Text>
+          ) : null}
         </View>
       )}
       {setupOpen && (
@@ -190,46 +206,6 @@ function Line({
       >
         {value}
       </Text>
-    </View>
-  );
-}
-
-/** Columns of spend per day, with a tick at that day's budget. */
-function History({
-  p,
-  history,
-}: {
-  p: Palette;
-  history: DailyStatus["history"];
-}) {
-  if (history.length < 2) return null;
-  const max = Math.max(1, ...history.map((h) => Math.max(h.budget, h.spent)));
-  const H = 56;
-  return (
-    <View
-      style={[styles.chart, { height: H, marginTop: 8 }]}
-      accessibilityLabel="Spend per day against that day's budget, last 14 days"
-    >
-      {history.map((h) => {
-        const over = h.spent > h.budget;
-        return (
-          <View key={h.date} style={styles.col}>
-            <View
-              style={{
-                height: Math.max(2, (h.spent / max) * H),
-                backgroundColor: over ? p.warn : p.accent,
-                borderRadius: 3,
-              }}
-            />
-            <View
-              style={[
-                styles.tick,
-                { bottom: (h.budget / max) * H, backgroundColor: p.ink2 },
-              ]}
-            />
-          </View>
-        );
-      })}
     </View>
   );
 }
@@ -383,6 +359,28 @@ export function PlanSheet({
     key: "morning_brief" | "evening_report" | "live_updates",
     value: boolean,
   ) => run(() => savePlan(token, { [key]: value }));
+
+  // The sum as typed, so the effect of a change shows before saving.
+  const typedIncome = parseAmount(income) ?? 0;
+  const typedSave = savings.trim() ? (parseAmount(savings) ?? 0) : 0;
+  const fixedTotal = commitments.reduce((sum, c) => sum + Number(c.amount), 0);
+  const goalsTotal = daily?.goals ?? 0;
+  const days = daily?.daysInMonth || 30;
+  const previewPool = Math.max(
+    0,
+    typedIncome - fixedTotal - typedSave - goalsTotal,
+  );
+  const preview =
+    typedIncome > 0
+      ? {
+          income: typedIncome,
+          fixed: fixedTotal,
+          save: typedSave,
+          goals: goalsTotal,
+          pool: previewPool,
+          perDay: Math.round(previewPool / days),
+        }
+      : null;
 
   const inputBox = [
     styles.inputBox,
@@ -568,22 +566,41 @@ export function PlanSheet({
                 )}
               </View>
 
-              {daily?.ready && (
-                <Text
-                  style={{ color: p.ink2, fontSize: fs(13), lineHeight: 19 }}
+              {preview && (
+                <View
+                  style={[
+                    styles.preview,
+                    { backgroundColor: p.page, borderColor: p.grid },
+                  ]}
                 >
-                  {formatINR(daily.income)} − {formatINR(daily.fixed)} −{" "}
-                  {formatINR(daily.savingsGoal)}
-                  {daily.goals
-                    ? ` − ${formatINR(daily.goals)} (${t("goals").toLowerCase()})`
-                    : ""}{" "}
-                  ={" "}
-                  <Text style={{ color: p.ink, fontWeight: "700" }}>
-                    {formatINR(daily.pool)}
-                  </Text>{" "}
-                  · ≈{formatINR(daily.baseDaily)}
-                  {t("perDay")}
-                </Text>
+                  <Text style={{ color: p.ink2, fontSize: fs(12.5) }}>
+                    {t("budgetMath")}
+                  </Text>
+                  <Text
+                    style={{ color: p.ink2, fontSize: fs(13), lineHeight: 19 }}
+                  >
+                    {formatINR(preview.income)} − {formatINR(preview.fixed)}{" "}
+                    {t("fixedCosts").toLowerCase()} − {formatINR(preview.save)}{" "}
+                    {t("savingsWord")}
+                    {preview.goals
+                      ? ` − ${formatINR(preview.goals)} ${t("goals").toLowerCase()}`
+                      : ""}{" "}
+                    ={" "}
+                    <Text style={{ color: p.ink, fontWeight: "700" }}>
+                      {formatINR(preview.pool)}
+                    </Text>
+                  </Text>
+                  <Text
+                    style={{
+                      color: p.ink,
+                      fontSize: fs(14),
+                      fontWeight: "600",
+                    }}
+                  >
+                    ≈ {formatINR(preview.perDay)}
+                    {t("perDay")}
+                  </Text>
+                </View>
               )}
 
               {
@@ -700,16 +717,6 @@ const styles = StyleSheet.create({
   hero: { fontWeight: "800", letterSpacing: -0.5 },
   spendRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   footer: { flexDirection: "row", flexWrap: "wrap", columnGap: 24, rowGap: 10 },
-  chart: { flexDirection: "row", alignItems: "flex-end", gap: 4 },
-  col: { flex: 1, justifyContent: "flex-end", height: "100%" },
-  tick: {
-    position: "absolute",
-    left: -1,
-    right: -1,
-    height: 2,
-    borderRadius: 1,
-    opacity: 0.6,
-  },
   backdrop: {
     flex: 1,
     justifyContent: "flex-end",
@@ -756,6 +763,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   btn: { borderRadius: 14, paddingVertical: 13, alignItems: "center" },
+  preview: { borderWidth: 1, borderRadius: 14, padding: 12, gap: 4 },
   btnGhost: {
     borderWidth: 1,
     borderRadius: 14,

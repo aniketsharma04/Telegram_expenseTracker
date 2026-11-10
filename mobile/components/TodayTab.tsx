@@ -197,11 +197,44 @@ export default function TodayTab({
   );
 }
 
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const dayAfter = (iso: string) => {
+  const d = new Date(Date.parse(`${iso}T00:00:00Z`) + 86_400_000);
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
+};
+
+/**
+ * One number, one line under it. "Tomorrow" used to sit here too, but it
+ * moves with every spend today — two moving numbers read as one confusing one.
+ */
 function HeroNumber({ d }: { d: DailyStatus }) {
   const { t, fs } = useSettings();
-  const over = d.todayLeft < 0;
-  const left = d.todayBudget > 0 ? Math.max(0, d.todayLeft) / d.todayBudget : 0;
-  const shown = useCountUp(Math.abs(d.todayLeft));
+  const usedUp = !!d.overspent;
+  const over = usedUp ? d.poolLeft < 0 : d.todayLeft < 0;
+  const value = usedUp ? Math.max(0, -d.poolLeft) : Math.abs(d.todayLeft);
+  const left =
+    !usedUp && d.todayBudget > 0 ? Math.max(0, d.todayLeft) / d.todayBudget : 0;
+  const shown = useCountUp(value);
+  const label = usedUp
+    ? over
+      ? t("overBy")
+      : t("leftTodayCap")
+    : over
+      ? t("overToday")
+      : t("leftTodayCap");
 
   return (
     <View style={styles.heroNumber}>
@@ -219,7 +252,7 @@ function HeroNumber({ d }: { d: DailyStatus }) {
             fontWeight: "500",
           }}
         >
-          {over ? t("overToday") : t("leftTodayCap")}
+          {label}
         </Text>
         <Text
           style={{
@@ -228,28 +261,24 @@ function HeroNumber({ d }: { d: DailyStatus }) {
             fontWeight: "800",
             letterSpacing: -1.5,
           }}
-          accessibilityLabel={`${formatINR(Math.abs(d.todayLeft))} ${over ? t("overToday") : t("leftTodayShort")}`}
+          accessibilityLabel={`${formatINR(value)} ${label}`}
         >
           {formatINR(shown)}
         </Text>
-        <Text style={{ color: "rgba(255,255,255,0.75)", fontSize: fs(12.5) }}>
-          {t("ofToday")} {formatINR(d.todayBudget)}
-        </Text>
+        {!usedUp && (
+          <Text style={{ color: "rgba(255,255,255,0.75)", fontSize: fs(12.5) }}>
+            {t("ofToday")} {formatINR(d.todayBudget)}
+          </Text>
+        )}
       </Ring>
-      <View style={styles.pills}>
-        <View style={styles.pill}>
-          <Text style={[styles.pillText, { fontSize: fs(13) }]}>
-            {t("tomorrow")}{" "}
-            {d.tomorrowBudget !== null
-              ? formatINR(d.tomorrowBudget)
-              : t("newMonth")}
-          </Text>
-        </View>
-        <View style={styles.pill}>
-          <Text style={[styles.pillText, { fontSize: fs(13) }]}>
-            {formatINR(d.poolLeft)} · {d.daysLeft} {t("daysWord")}
-          </Text>
-        </View>
+      <View style={styles.pill}>
+        <Text
+          style={[styles.pillText, { fontSize: fs(13), textAlign: "center" }]}
+        >
+          {usedUp
+            ? `${t("monthUsedUp")}. ${t("freshBudgetOn")} ${d.cycleEnd ? dayAfter(d.cycleEnd) : t("newMonth").toLowerCase()}.`
+            : `${formatINR(Math.max(0, d.poolLeft))} ${t("forDaysLeft")} ${d.daysLeft} ${t("daysWord")}`}
+        </Text>
       </View>
     </View>
   );
@@ -367,6 +396,8 @@ function TodayList({
 /** "On track" or "off pace", with the last seven days as small bars. */
 function Pace({ p, d }: { p: Palette; d: DailyStatus }) {
   const { t, fs } = useSettings();
+  // A projection from one or two days is noise ("₹30,000 ahead!" on day 2).
+  if (d.paceReady === false || d.overspent) return null;
   const ahead = d.projectedLeftover >= 0;
   const week = d.history.slice(-7);
   const max = Math.max(1, ...week.map((h) => Math.max(h.spent, h.budget)));
@@ -446,12 +477,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 15,
     paddingHorizontal: 28,
-  },
-  pills: {
-    flexDirection: "row",
-    gap: 8,
-    flexWrap: "wrap",
-    justifyContent: "center",
   },
   pill: {
     backgroundColor: "rgba(255,255,255,0.15)",

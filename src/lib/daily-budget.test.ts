@@ -323,3 +323,111 @@ describe("salary cycles", () => {
     expect(s.history[0].date).toBe("2026-10-25");
   });
 });
+
+describe("budget fixes (v24)", () => {
+  // Income 60k, saving 10k, rent 20k typed by hand: no category, keyword "rent".
+  const p = { monthly_income: 60000, savings_goal: 10000 };
+  const handRent = [
+    { id: "r", name: "Rent", amount: 20000, category: null, match: "rent" },
+  ];
+
+  it("matches a hand-typed fixed cost by amount when the payee name differs", () => {
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: handRent,
+      expenses: [e(20000, "Transfers", "SHARMA PROPERTIES", "2026-11-03")],
+      today: "2026-11-04",
+    });
+    // Counted once, off the top — not again as everyday spending.
+    expect(s.poolSpent).toBe(0);
+    expect(s.commitments[0].paid).toBe(20000);
+    expect(s.todayBudget).toBe(1111); // 30,000 over the 27 days left
+  });
+
+  it("keeps the uncategorised amount match tight", () => {
+    const [far] = scopeExpenses(
+      [e(15000, "Shopping", "Croma", "2026-11-03")],
+      handRent,
+    );
+    expect(far.scope).toBe("daily");
+    const [small] = scopeExpenses(
+      [e(300, "Food", "Cafe", "2026-11-03")],
+      [
+        {
+          id: "n",
+          name: "Netflix",
+          amount: 299,
+          category: null,
+          match: "netflix",
+        },
+      ],
+    );
+    expect(small.scope).toBe("daily"); // under ₹500: too likely a coincidence
+  });
+
+  it("prorates the first month when tracking starts partway through", () => {
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: handRent,
+      expenses: [],
+      today: "2026-11-20",
+      trackingSince: "2026-11-20",
+    });
+    expect(s.fullPool).toBe(30000);
+    expect(s.pool).toBe(11000); // 11 of 30 days
+    expect(s.todayBudget).toBe(1000); // not 30,000 squeezed into 11 days
+    expect(s.countingFrom).toBe("2026-11-20");
+    expect(s.history).toHaveLength(1);
+  });
+
+  it("doesn't prorate when earlier spending was backfilled", () => {
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: handRent,
+      expenses: [e(500, "Food", "Swiggy", "2026-11-05")],
+      today: "2026-11-20",
+      trackingSince: "2026-11-20",
+    });
+    expect(s.pool).toBe(30000);
+    expect(s.countingFrom).toBeNull();
+  });
+
+  it("projects only from finished days", () => {
+    const early = computeDailyStatus({
+      plan: p,
+      commitments: handRent,
+      expenses: [],
+      today: "2026-11-02",
+    });
+    expect(early.paceReady).toBe(false);
+    // Nine days at ₹1,000, then a ₹4,000 morning: pace is still ₹1,000/day.
+    const days = Array.from({ length: 9 }, (_, i) =>
+      e(1000, "Food", "Lunch", `2026-11-0${i + 1}`),
+    );
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: handRent,
+      expenses: [...days, e(4000, "Shopping", "Shoes", "2026-11-10")],
+      today: "2026-11-10",
+    });
+    expect(s.paceReady).toBe(true);
+    // 30,000 − 9,000 − 4,000 today − 20 more days × 1,000 = −3,000
+    expect(s.projectedLeftover).toBe(-3000);
+  });
+
+  it("says the month is used up instead of 'spend ₹0'", () => {
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: handRent,
+      expenses: [e(35000, "Shopping", "Phone", "2026-11-02")],
+      today: "2026-11-10",
+    });
+    expect(s.overspent).toBe(true);
+    expect(s.poolLeft).toBe(-5000);
+    const msg = morningBrief(s, null, null);
+    expect(msg).toContain("used up");
+    expect(msg).toContain("₹5,000 over");
+    expect(msg).toContain("Tue 1 Dec");
+    expect(msg).not.toContain("Today you can spend");
+  });
+});

@@ -439,6 +439,14 @@ export interface DailyStatus {
   poolLeft: number;
   tomorrowBudget: number | null;
   projectedLeftover: number;
+  /** v24: enough finished days for the projection to mean something. */
+  paceReady?: boolean;
+  /** v24: the month's everyday money is used up. */
+  overspent?: boolean;
+  /** v24: first month counted from this date (joined partway through). */
+  countingFrom?: string | null;
+  /** v24: the full month's everyday money, before first-month proration. */
+  fullPool?: number;
   streak: number;
   savedFromSavings: number;
   commitments: Array<{

@@ -11,7 +11,7 @@ import { Card, CardHeader, TrackBar } from "./ui";
  * The salary split (v18): the plan's own numbers laid against 50/30/20 (or
  * 60/20/20 when rent-heavy fixed costs pass half the income), with a one-tap
  * fix when saving falls short of 20%. Advice only — nothing changes unless
- * the user taps.
+ * the user taps. v24: hidden while the split is healthy.
  */
 export function MoneySplitCard({
   p,
@@ -40,6 +40,9 @@ export function MoneySplitCard({
   const emiPct = Math.round(
     (emiCommitments(daily.commitments ?? []) / daily.income) * 100,
   );
+  // A healthy split is a pat on the back, not a card: the Plan tab only
+  // shows it when there's something to fix.
+  if (split.status === "good" && emiPct <= 40) return null;
 
   const rows = [
     {

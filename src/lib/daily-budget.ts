@@ -50,6 +50,18 @@ const FIXED_CATEGORIES = new Set(["Loans & EMI"]);
 
 /** Category + amount matching tolerance, when a commitment has no keyword hit. */
 const AMOUNT_TOLERANCE = 0.3;
+/**
+ * A fixed cost typed by hand ("Rent ₹20,000") has no category, and the bank
+ * names the payee ("SHARMA PROPERTIES"), not the purpose — so the keyword
+ * rarely hits. Without a fallback the rent counts twice: once off the top,
+ * once as everyday spending. A near-exact amount is the fallback; tight, and
+ * only for amounts big enough not to be a coincidence.
+ */
+const UNCATEGORISED_TOLERANCE = 0.1;
+const UNCATEGORISED_MIN = 500;
+
+/** Finished, tracked days before the month-end projection means anything. */
+const PACE_MIN_DAYS = 3;
 
 /** A spend this many days' worth (and at least ₹1,000) gets the "from savings?" offer. */
 const BIG_SPEND_DAYS = 3;
@@ -109,6 +121,17 @@ export interface DailyStatus {
   tomorrowBudget: number | null;
   /** Where the month ends if the pace so far holds: + saved beyond the goal, − short. */
   projectedLeftover: number;
+  /** Enough finished days for projectedLeftover to mean something (≥3). */
+  paceReady: boolean;
+  /** Everyday money for the month is used up: the daily number is 0 until payday. */
+  overspent: boolean;
+  /**
+   * Set when tracking began partway through this budget month with nothing
+   * logged before it: the pool covers only the days from here on.
+   */
+  countingFrom: string | null;
+  /** The full month's everyday money, before any first-month proration. */
+  fullPool: number;
   /** Consecutive finished days at or under budget, ending yesterday. */
   streak: number;
   savedFromSavings: number;
@@ -188,8 +211,11 @@ function keywordHit(c: CommitmentLike, e: BudgetExpense): boolean {
 }
 
 function amountHit(c: CommitmentLike, e: BudgetExpense): boolean {
-  if (!c.category || c.category !== e.category) return false;
-  return Math.abs(Number(e.amount) - c.amount) / c.amount <= AMOUNT_TOLERANCE;
+  if (!(c.amount > 0)) return false;
+  const off = Math.abs(Number(e.amount) - c.amount) / c.amount;
+  if (!c.category)
+    return c.amount >= UNCATEGORISED_MIN && off <= UNCATEGORISED_TOLERANCE;
+  return c.category === e.category && off <= AMOUNT_TOLERANCE;
 }
 
 /**
@@ -288,12 +314,26 @@ export function computeDailyStatus(input: {
   const fixed = commitments.reduce((s, c) => s + Number(c.amount), 0);
   const savingsGoal = Number(plan?.savings_goal ?? 0);
   const goals = Math.max(0, input.goalsMonthly ?? 0);
-  const pool = Math.max(0, income - fixed - savingsGoal - goals);
+  const fullPool = Math.max(0, income - fixed - savingsGoal - goals);
 
   const month = input.expenses.filter(
     (e) => e.expense_date >= monthStart && e.expense_date <= today,
   );
   const scoped = scopeExpenses(month, commitments);
+
+  // Joined on the 20th with nothing logged before: the first month is the
+  // days from here on, not the whole month's money squeezed into 11 days.
+  // Backfilled spending (an email import) means the month is known — no cut.
+  const since = input.trackingSince;
+  const startIdx =
+    since &&
+    since > monthStart &&
+    since <= today &&
+    !month.some((e) => e.expense_date < since)
+      ? daysFrom(monthStart, since) + 1
+      : 1;
+  const countedDays = daysInMonth - startIdx + 1;
+  const pool = (fullPool * countedDays) / daysInMonth;
 
   const byDay = new Map<string, number>();
   for (const e of scoped)
@@ -307,7 +347,7 @@ export function computeDailyStatus(input: {
   // over the days that remained.
   const history: DayPoint[] = [];
   let spentBefore = 0;
-  for (let d = 1; d <= dayOfMonth; d++) {
+  for (let d = startIdx; d <= dayOfMonth; d++) {
     const date = isoAdd(monthStart, d - 1);
     const budget = Math.max(0, (pool - spentBefore) / (daysInMonth - d + 1));
     const spent = byDay.get(date) ?? 0;
@@ -328,10 +368,23 @@ export function computeDailyStatus(input: {
     streak++;
   }
 
-  const avgPerDay = spentBefore / dayOfMonth;
+  // Pace from finished days only: a half-spent today, or a first morning with
+  // nothing logged yet, says nothing about the rest of the month.
+  const finishedDays = dayOfMonth - startIdx;
+  const spentFinished = spentBefore - todaySpent;
+  const paceReady = finishedDays >= PACE_MIN_DAYS;
+  const avgPerDay = paceReady
+    ? spentFinished / finishedDays
+    : spentBefore / (finishedDays + 1);
   const projectedLeftover = round(
-    pool - spentBefore - avgPerDay * (daysLeft - 1),
+    paceReady
+      ? pool -
+          spentFinished -
+          Math.max(todaySpent, avgPerDay) -
+          avgPerDay * (daysLeft - 1)
+      : pool - spentBefore - avgPerDay * (daysLeft - 1),
   );
+  const overspent = fullPool > 0 && (poolLeft < 0 || todayBudget === 0);
 
   const paidBy = new Map<string, number>();
   for (const e of scoped)
@@ -350,7 +403,9 @@ export function computeDailyStatus(input: {
     savingsGoal: round(savingsGoal),
     goals: round(goals),
     pool: round(pool),
-    baseDaily: round(pool / daysInMonth),
+    fullPool: round(fullPool),
+    countingFrom: startIdx > 1 ? isoAdd(monthStart, startIdx - 1) : null,
+    baseDaily: round(pool / countedDays),
     cycleStart: cycle.start,
     cycleEnd: cycle.end,
     daysInMonth,
@@ -366,6 +421,8 @@ export function computeDailyStatus(input: {
         ? round(Math.max(0, pool - spentBefore) / (daysLeft - 1))
         : null,
     projectedLeftover,
+    paceReady,
+    overspent,
     streak,
     savedFromSavings: round(
       scoped
@@ -420,6 +477,11 @@ function label(e: ScopedExpense): string {
   return esc(e.merchant?.trim() || e.category);
 }
 
+/** "A fresh budget starts Sun 1 Dec." — the overspent month's way out. */
+function overspentTail(s: DailyStatus): string {
+  return `A fresh budget starts ${prettyDate(isoAdd(s.cycleEnd, 1))}. Anything spent until then comes out of savings.`;
+}
+
 export const SETUP_HINT =
   "Set your monthly income to get a daily budget: <code>/plan 100000</code>";
 
@@ -432,12 +494,19 @@ export function morningBrief(
   const hello = `☀️ Good morning${name ? `, ${esc(name)}` : ""}!`;
   if (!s.ready) return `${hello}\n\n${SETUP_HINT}`;
 
-  const lines = [
-    hello,
-    "",
-    `Today you can spend <b>${inr(s.todayBudget)}</b>.`,
-    `<i>${inr(s.poolLeft)} left for everyday spending · ${s.daysLeft} day${s.daysLeft === 1 ? "" : "s"} to go</i>`,
-  ];
+  const lines = s.overspent
+    ? [
+        hello,
+        "",
+        `This month's everyday money is used up${s.poolLeft < 0 ? ` (${inr(-s.poolLeft)} over)` : ""}.`,
+        `<i>${overspentTail(s)}</i>`,
+      ]
+    : [
+        hello,
+        "",
+        `Today you can spend <b>${inr(s.todayBudget)}</b>.`,
+        `<i>${inr(s.poolLeft)} left for everyday spending · ${s.daysLeft} day${s.daysLeft === 1 ? "" : "s"} to go</i>`,
+      ];
 
   if (yesterday) {
     const diff = yesterday.budget - yesterday.spent;
@@ -502,11 +571,12 @@ export function eveningReport(s: DailyStatus, today: string): string {
   );
   if (s.tomorrowBudget !== null) {
     lines.push(`Tomorrow's budget: <b>${inr(s.tomorrowBudget)}</b>`);
-    lines.push(
-      s.projectedLeftover >= 0
-        ? `At this pace you'll finish the month ${inr(s.projectedLeftover)} ahead of your savings goal.`
-        : `At this pace you'll be ${inr(-s.projectedLeftover)} short by month-end.`,
-    );
+    if (s.paceReady)
+      lines.push(
+        s.projectedLeftover >= 0
+          ? `At this pace you'll finish the month ${inr(s.projectedLeftover)} ahead of your savings goal.`
+          : `At this pace you'll be ${inr(-s.projectedLeftover)} short by month-end.`,
+      );
   } else {
     lines.push(
       s.poolLeft >= 0
@@ -561,6 +631,12 @@ export function morningPush(
     return {
       title: "Good morning",
       body: "Add your monthly income in the app to get a daily budget.",
+    };
+  if (s.overspent)
+    return {
+      title: "This month's everyday money is used up",
+      body:
+        (s.poolLeft < 0 ? `${inr(-s.poolLeft)} over. ` : "") + overspentTail(s),
     };
   const lines = [
     `${inr(s.poolLeft)} left for everyday spending · ${s.daysLeft} day${s.daysLeft === 1 ? "" : "s"} to go.`,
