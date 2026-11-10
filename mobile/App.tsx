@@ -48,6 +48,7 @@ import { CARDS_OFF_KEY } from "./components/cards/parts";
 import { cardAction } from "./lib/cards-api";
 import { UpdateBanner } from "./components/UpdateBanner";
 import { MoneySplitCard } from "./components/MoneySplitCard";
+import { TaxCard } from "./components/TaxCard";
 import { emiCommitments } from "./lib/money-rules";
 import {
   PushState,
@@ -764,6 +765,7 @@ function AppInner() {
               today={data.today}
               onChanged={refresh}
             />
+            <TaxCard p={p} today={data.today} />
             <AccountsCard
               p={p}
               accounts={data.accounts ?? []}

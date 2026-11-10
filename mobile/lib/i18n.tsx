@@ -393,6 +393,60 @@ const STRINGS = {
     "Fixed costs and spends from savings don't change today's number.",
   budgetMath: "How your daily number works",
   savingsWord: "saving",
+  howWorkedOut: "How is this worked out?",
+  whyTitle: "How today's number is worked out",
+  whyPoolNote: "Income minus fixed costs, saving and goals.",
+  whySpentBefore: "Spent before today",
+  whyLeftMorning: "Left this morning",
+  whyDaysLeft: "Days left, today included",
+  whyUntil: "Until",
+  whyToday: "Today's number",
+  whySpentToday: "Spent today",
+  whyRollover:
+    "Spend less today and the rest is shared across the days ahead, so tomorrow's number goes up. Spend more and it goes down.",
+  whyFixedTitle: "Fixed costs (kept out of the number)",
+  whyFixedNote:
+    "These were taken off before the month started, so paying them doesn't change today's number.",
+  whyPaid: "Paid",
+  whyPaidSoFar: "paid so far",
+  whyNotYet: "Not paid yet",
+  toWord: "to",
+  confirmIsYour: "— is this your",
+  confirmHint:
+    "The amount matches, so it's kept out of today's number. Tell us and we'll remember the payee.",
+  confirmYes: "Yes,",
+  confirmNo: "No, everyday spend",
+  // v24: tax pack
+  taxTitle: "Income tax",
+  taxCompare: "Compare",
+  taxHint:
+    "Old or new regime? Put in your yearly income and deductions to see which costs less.",
+  taxGross: "Yearly income before tax",
+  taxGrossHint:
+    "Gross salary from your salary slip or Form 16, plus any other income. Not take-home.",
+  taxSalaried: "Salaried",
+  taxNotSalaried: "Not salaried",
+  taxOldDeductions: "Deductions (old regime only)",
+  taxOldDeductionsHint:
+    "Leave blank what you don't have. Limits are applied for you.",
+  tax80C: "80C: PF, PPF, life insurance, tuition fees…",
+  tax80D: "80D: health insurance premiums",
+  taxNps: "Own NPS contribution, 80CCD(1B)",
+  taxHomeLoan: "Home loan interest",
+  taxHra: "HRA exemption (from Form 16)",
+  taxNew: "New regime",
+  taxOld: "Old regime",
+  taxSaves: "saves",
+  taxSame: "Both regimes come to",
+  taxTaxable: "Taxable",
+  taxSurcharge:
+    "Above ₹50 lakh a surcharge applies, so the real tax is higher than shown.",
+  taxDisclaimer:
+    "An estimate for residents under 60, including 4% cess. Information only, not tax advice. Your numbers stay on this phone. Check your Form 16 or ask a CA before you decide.",
+  advanceTaxNext: "Next advance-tax date:",
+  advanceTaxShare: "of the year's tax due by then",
+  advanceTaxWho:
+    "Only if you have income besides salary (rent, interest, freelancing, gains) and owe ₹10,000 or more after TDS.",
 
   // v18: money rules — the salary split and goal rules of thumb
   moneySplit: "Your money split",

@@ -6,6 +6,7 @@ import { categoryIcon, clockTime, tint } from "../lib/categories";
 import { useSettings } from "../lib/i18n";
 import { formatINR, Palette } from "../lib/theme";
 import SetupFlow from "./SetupFlow";
+import { ConfirmMatchCard, WhySheet } from "./BudgetExplain";
 import { Text } from "./Text";
 import {
   Card,
@@ -60,6 +61,7 @@ export default function TodayTab({
   const insets = useSafeAreaInsets();
   const { t, fs } = useSettings();
   const [setupOpen, setSetupOpen] = useState(false);
+  const [whyOpen, setWhyOpen] = useState(false);
   const daily = data.daily;
   const ready = !!daily?.ready && !!daily.plan;
   const initial = (data.user.name || "?").slice(0, 1).toUpperCase();
@@ -111,7 +113,7 @@ export default function TodayTab({
         </View>
 
         {ready && daily ? (
-          <HeroNumber d={daily} />
+          <HeroNumber d={daily} onWhy={() => setWhyOpen(true)} />
         ) : (
           <View style={styles.heroEmpty}>
             <Ring
@@ -170,6 +172,12 @@ export default function TodayTab({
         {top}
         {ready && daily && (
           <>
+            <ConfirmMatchCard
+              p={p}
+              d={daily}
+              token={token}
+              onChanged={onChanged}
+            />
             <TodayList
               p={p}
               dark={dark}
@@ -185,6 +193,14 @@ export default function TodayTab({
         {bottom}
       </View>
 
+      {ready && daily && (
+        <WhySheet
+          p={p}
+          d={daily}
+          visible={whyOpen}
+          onClose={() => setWhyOpen(false)}
+        />
+      )}
       {setupOpen && (
         <SetupFlow
           p={p}
@@ -220,7 +236,7 @@ const dayAfter = (iso: string) => {
  * One number, one line under it. "Tomorrow" used to sit here too, but it
  * moves with every spend today — two moving numbers read as one confusing one.
  */
-function HeroNumber({ d }: { d: DailyStatus }) {
+function HeroNumber({ d, onWhy }: { d: DailyStatus; onWhy: () => void }) {
   const { t, fs } = useSettings();
   const usedUp = !!d.overspent;
   const over = usedUp ? d.poolLeft < 0 : d.todayLeft < 0;
@@ -238,39 +254,47 @@ function HeroNumber({ d }: { d: DailyStatus }) {
 
   return (
     <View style={styles.heroNumber}>
-      <Ring
-        size={204}
-        stroke={13}
-        fraction={left}
-        color="#fff"
-        track="rgba(255,255,255,0.18)"
+      <Pressable
+        onPress={onWhy}
+        accessibilityRole="button"
+        accessibilityHint={t("howWorkedOut")}
       >
-        <Text
-          style={{
-            color: "rgba(255,255,255,0.8)",
-            fontSize: fs(13),
-            fontWeight: "500",
-          }}
+        <Ring
+          size={204}
+          stroke={13}
+          fraction={left}
+          color="#fff"
+          track="rgba(255,255,255,0.18)"
         >
-          {label}
-        </Text>
-        <Text
-          style={{
-            color: over ? "#fdd0b1" : "#fff",
-            fontSize: fs(46),
-            fontWeight: "800",
-            letterSpacing: -1.5,
-          }}
-          accessibilityLabel={`${formatINR(value)} ${label}`}
-        >
-          {formatINR(shown)}
-        </Text>
-        {!usedUp && (
-          <Text style={{ color: "rgba(255,255,255,0.75)", fontSize: fs(12.5) }}>
-            {t("ofToday")} {formatINR(d.todayBudget)}
+          <Text
+            style={{
+              color: "rgba(255,255,255,0.8)",
+              fontSize: fs(13),
+              fontWeight: "500",
+            }}
+          >
+            {label}
           </Text>
-        )}
-      </Ring>
+          <Text
+            style={{
+              color: over ? "#fdd0b1" : "#fff",
+              fontSize: fs(46),
+              fontWeight: "800",
+              letterSpacing: -1.5,
+            }}
+            accessibilityLabel={`${formatINR(value)} ${label}`}
+          >
+            {formatINR(shown)}
+          </Text>
+          {!usedUp && (
+            <Text
+              style={{ color: "rgba(255,255,255,0.75)", fontSize: fs(12.5) }}
+            >
+              {t("ofToday")} {formatINR(d.todayBudget)}
+            </Text>
+          )}
+        </Ring>
+      </Pressable>
       <View style={styles.pill}>
         <Text
           style={[styles.pillText, { fontSize: fs(13), textAlign: "center" }]}
@@ -280,6 +304,17 @@ function HeroNumber({ d }: { d: DailyStatus }) {
             : `${formatINR(Math.max(0, d.poolLeft))} ${t("forDaysLeft")} ${d.daysLeft} ${t("daysWord")}`}
         </Text>
       </View>
+      <Pressable onPress={onWhy} hitSlop={10} accessibilityRole="button">
+        <Text
+          style={{
+            color: "rgba(255,255,255,0.85)",
+            fontSize: fs(12.5),
+            textDecorationLine: "underline",
+          }}
+        >
+          {t("howWorkedOut")}
+        </Text>
+      </Pressable>
     </View>
   );
 }

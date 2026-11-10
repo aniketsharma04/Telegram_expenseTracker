@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { Text, TextInput } from "./Text";
-import { BOT_URL, emailSignIn } from "../lib/api";
+import { API_BASE, BOT_URL, emailSignIn } from "../lib/api";
 import { usePalette } from "../lib/theme";
 import { KeyboardAware } from "./ui";
 
@@ -38,6 +38,14 @@ export default function LoginScreen({ onLogin }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  // DPDP treats anyone under 18 as a child (parental consent needed), so a
+  // money app asks up front instead.
+  const [adult, setAdult] = useState(false);
+  const needAdult = () => {
+    if (adult) return false;
+    setError("Please confirm you're 18 or older to continue.");
+    return true;
+  };
 
   const inputStyle = [
     styles.input,
@@ -45,7 +53,7 @@ export default function LoginScreen({ onLogin }: Props) {
   ];
 
   const sendCode = async () => {
-    if (!email.trim() || busy) return;
+    if (!email.trim() || busy || needAdult()) return;
     setBusy(true);
     setError(null);
     setNote(null);
@@ -77,7 +85,7 @@ export default function LoginScreen({ onLogin }: Props) {
   };
 
   const signInWithTelegram = async () => {
-    if (!telegramCode.trim() || busy) return;
+    if (!telegramCode.trim() || busy || needAdult()) return;
     setBusy(true);
     setError(null);
     const err = await onLogin(telegramCode.trim());
@@ -136,6 +144,40 @@ export default function LoginScreen({ onLogin }: Props) {
               </Pressable>
             ))}
           </View>
+
+          <Pressable
+            onPress={() => {
+              setAdult(!adult);
+              setError(null);
+            }}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: adult }}
+            style={styles.agree}
+          >
+            <View
+              style={[
+                styles.box,
+                {
+                  borderColor: adult ? p.accent : p.border,
+                  backgroundColor: adult ? p.accent : "transparent",
+                },
+              ]}
+            >
+              {adult && <Text style={styles.tick}>✓</Text>}
+            </View>
+            <Text
+              style={{ flex: 1, color: p.ink2, fontSize: 13, lineHeight: 19 }}
+            >
+              I'm 18 or older and agree to the{" "}
+              <Text
+                style={{ color: p.accent, fontWeight: "600" }}
+                onPress={() => Linking.openURL(`${API_BASE}/privacy`)}
+              >
+                privacy policy
+              </Text>
+              .
+            </Text>
+          </Pressable>
 
           {mode === "email" ? (
             <>
@@ -261,6 +303,22 @@ export default function LoginScreen({ onLogin }: Props) {
 
 const styles = StyleSheet.create({
   wrap: { flex: 1 },
+  agree: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    alignSelf: "stretch",
+  },
+  box: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
+  },
+  tick: { color: "#fff", fontSize: 14, fontWeight: "800", lineHeight: 16 },
   scroll: {
     flexGrow: 1,
     alignItems: "center",

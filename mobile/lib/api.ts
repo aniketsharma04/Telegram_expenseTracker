@@ -416,6 +416,15 @@ export interface DailySpend {
   dailyAmount: number;
 }
 
+export interface MatchToConfirm {
+  expenseId: string;
+  merchant: string | null;
+  amount: number;
+  date: string;
+  commitmentId: string;
+  commitmentName: string;
+}
+
 export interface DailyStatus {
   ready: boolean;
   reason: "no_income" | null;
@@ -447,6 +456,8 @@ export interface DailyStatus {
   countingFrom?: string | null;
   /** v24: the full month's everyday money, before first-month proration. */
   fullPool?: number;
+  /** v24: payments guessed to be a fixed cost from the amount alone. */
+  toConfirm?: MatchToConfirm[];
   streak: number;
   savedFromSavings: number;
   commitments: Array<{
