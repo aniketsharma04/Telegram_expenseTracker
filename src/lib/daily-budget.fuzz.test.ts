@@ -140,6 +140,17 @@ describe("daily budget invariants (randomised)", () => {
       if (s.ready && s.fullPool > 0 && s.poolLeft - -s.todaySpent > s.daysLeft)
         expect(s.todayBudget, ctx).toBeGreaterThan(0);
 
+      // Every "is this your rent?" question points at a real, unconfirmed
+      // payment in this month and an uncategorised fixed cost.
+      for (const q of s.toConfirm) {
+        const exp = input.expenses.find((x) => x.id === q.expenseId);
+        const c = input.commitments.find((x) => x.id === q.commitmentId);
+        expect(exp && c, ctx).toBeTruthy();
+        expect(c!.category, ctx).toBeNull();
+        expect(exp!.budget_scope === "fixed", ctx).toBe(false);
+        expect(q.date >= s.cycleStart && q.date <= input.today, ctx).toBe(true);
+      }
+
       // Every message renders without leaking NaN/undefined.
       const texts = [
         morningBrief(s, "A", s.history.at(-2) ?? null),

@@ -431,3 +431,88 @@ describe("budget fixes (v24)", () => {
     expect(msg).not.toContain("Today you can spend");
   });
 });
+
+describe("confirming guessed fixed costs", () => {
+  const p = { monthly_income: 60000, savings_goal: 10000 };
+  const rent = [
+    { id: "r", name: "Rent", amount: 20000, category: null, match: "rent" },
+  ];
+  const pay = (scope: "daily" | "fixed" | null = null) => ({
+    id: "x1",
+    ...e(20000, "Transfers", "SHARMA PROPERTIES", "2026-11-03", scope),
+  });
+
+  it("asks about an amount-only match", () => {
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: rent,
+      expenses: [pay()],
+      today: "2026-11-04",
+    });
+    expect(s.toConfirm).toEqual([
+      {
+        expenseId: "x1",
+        merchant: "SHARMA PROPERTIES",
+        amount: 20000,
+        date: "2026-11-03",
+        commitmentId: "r",
+        commitmentName: "Rent",
+      },
+    ]);
+  });
+
+  it("stops asking after yes (marked fixed) and keeps it off the daily number", () => {
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: rent,
+      expenses: [pay("fixed")],
+      today: "2026-11-04",
+    });
+    expect(s.toConfirm).toEqual([]);
+    expect(s.poolSpent).toBe(0);
+    expect(s.commitments[0].paid).toBe(20000);
+  });
+
+  it("stops asking after yes (payee learned as the keyword) next month too", () => {
+    const learned = [{ ...rent[0], match: "sharma properties" }];
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: learned,
+      expenses: [{ ...pay(), expense_date: "2026-12-03" }],
+      today: "2026-12-04",
+    });
+    expect(s.toConfirm).toEqual([]);
+    expect(s.commitments[0].paid).toBe(20000);
+  });
+
+  it("stops asking after no, and counts it as everyday spending", () => {
+    const s = computeDailyStatus({
+      plan: p,
+      commitments: rent,
+      expenses: [pay("daily")],
+      today: "2026-11-04",
+    });
+    expect(s.toConfirm).toEqual([]);
+    expect(s.poolSpent).toBe(20000);
+    expect(s.commitments[0].paid).toBe(0);
+  });
+
+  it("never asks about keyword matches or categorised fixed costs", () => {
+    const kw = computeDailyStatus({
+      plan: p,
+      commitments: rent,
+      expenses: [
+        { id: "k", ...e(20000, "Transfers", "Rent Nov", "2026-11-03") },
+      ],
+      today: "2026-11-04",
+    });
+    expect(kw.toConfirm).toEqual([]);
+    const cat = computeDailyStatus({
+      plan: p,
+      commitments: [{ ...rent[0], category: "Transfers" }],
+      expenses: [pay()],
+      today: "2026-11-04",
+    });
+    expect(cat.toConfirm).toEqual([]);
+  });
+});

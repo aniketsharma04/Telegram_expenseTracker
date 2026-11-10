@@ -72,6 +72,21 @@ export interface ScopedExpense extends BudgetExpense {
   /** The part that counts against everyday money (an over-plan fixed cost counts in part). */
   dailyAmount: number;
   commitmentId: string | null;
+  /** How the commitment was found: its keyword in the payee, or a near-equal amount. */
+  matchedBy?: "keyword" | "amount";
+}
+
+/**
+ * A payment the app guessed is a fixed cost from its amount alone. Worth one
+ * question: "Is ₹20,000 to SHARMA PROPERTIES your Rent?"
+ */
+export interface MatchToConfirm {
+  expenseId: string;
+  merchant: string | null;
+  amount: number;
+  date: string;
+  commitmentId: string;
+  commitmentName: string;
 }
 
 export interface DayPoint {
@@ -132,6 +147,8 @@ export interface DailyStatus {
   countingFrom: string | null;
   /** The full month's everyday money, before any first-month proration. */
   fullPool: number;
+  /** Guessed fixed-cost matches the user hasn't confirmed yet, newest first. */
+  toConfirm: MatchToConfirm[];
   /** Consecutive finished days at or under budget, ending yesterday. */
   streak: number;
   savedFromSavings: number;
@@ -255,7 +272,8 @@ export function scopeExpenses(
       commitments.find((c) => !claimedByAmount.has(c.id) && amountHit(c, e));
 
     if (commitment) {
-      if (!keywordHit(commitment, e)) claimedByAmount.add(commitment.id);
+      const byKeyword = keywordHit(commitment, e);
+      if (!byKeyword) claimedByAmount.add(commitment.id);
       const before = paid.get(commitment.id) ?? 0;
       paid.set(commitment.id, before + amount);
       // Only what goes past the plan is everyday money.
@@ -268,6 +286,7 @@ export function scopeExpenses(
         scope: "fixed",
         dailyAmount: overPlan,
         commitmentId: commitment.id,
+        matchedBy: byKeyword ? "keyword" : "amount",
       };
     }
 
@@ -423,6 +442,7 @@ export function computeDailyStatus(input: {
     projectedLeftover,
     paceReady,
     overspent,
+    toConfirm: guessedMatches(scoped, commitments),
     streak,
     savedFromSavings: round(
       scoped
@@ -438,6 +458,35 @@ export function computeDailyStatus(input: {
     history,
     today: scoped.filter((e) => e.expense_date === today),
   };
+}
+
+/**
+ * Amount-only matches to hand-typed (uncategorised) fixed costs. Once the user
+ * says yes (the expense is marked fixed, and the payee becomes the keyword) or
+ * no (marked everyday), it stops being a guess and drops off this list.
+ */
+function guessedMatches(
+  scoped: ScopedExpense[],
+  commitments: CommitmentLike[],
+): MatchToConfirm[] {
+  const byId = new Map(commitments.map((c) => [c.id, c]));
+  return scoped
+    .filter(
+      (e) =>
+        e.matchedBy === "amount" &&
+        !!e.id &&
+        e.budget_scope !== "fixed" &&
+        !byId.get(e.commitmentId ?? "")?.category,
+    )
+    .map((e) => ({
+      expenseId: e.id as string,
+      merchant: e.merchant?.trim() || null,
+      amount: round(Number(e.amount)),
+      date: e.expense_date,
+      commitmentId: e.commitmentId as string,
+      commitmentName: byId.get(e.commitmentId as string)?.name ?? "",
+    }))
+    .reverse();
 }
 
 /** Worth offering "paid from savings?" for this one. */
